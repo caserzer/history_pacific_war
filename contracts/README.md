@@ -601,6 +601,7 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 - 日期有效性与允许历史范围
 - **阶段时间完整性（D1）**：`time.start` 与 `time.end` 都必须是带时区的合法 ISO 8601；两者都落在战役 `startDate`–`endDate` 内；`end >= start`；阶段按 `sequence` 时间递增、显式区间不重叠
 - claim 的 locator 精度与每个来源的定位覆盖；数字/日期 claim 的定位
+- **跨章节数值/类别矛盾（严格规则）**：正文小节、`summary`、关联 claim 中出现同一数字被归为不同机种类别即错误；参考案例（18 架飞机类别冲突）的验证方式是**先证明夹具/构造文档基线为 0 条矛盾 → 注入唯一一处冲突 → 断言恰好 1 条且点名事件/小节/claim/数量/两侧类别/原文 → 把两侧改成一致类别后回到 0 条（反向对照）**，不声称该矛盾存在于候选或已集成内容中
 - 阅读问题五部分覆盖、答案深度、实体/来源/claim 关联
 - coverage 的重点文章深度、必需事件、阶段问题门禁
 - **早期扩张战役结构（ARCH-02）**：每个 early-campaign 事件必须有 `analysisProfiles` 十键（标题固定、每键 ≥80 汉字、必含要素命中正文、各自带来源与 claim），并声明 `researchStatus`；旧五键 `earlyCampaignAnalysis` 始终被拒绝；part 3 导读必须包含“盟军为何连续失败”“日本的补给与防御压力”

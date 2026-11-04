@@ -5756,15 +5756,22 @@ function buildSelfTests() {
 
   // ===== ARCH-02：跨章节数值/类别矛盾（达尔文 18 架飞机）=====
   tests.push([
-    'ARCH-02 跨章节矛盾识别器能识别达尔文 18 架飞机的类别冲突（参考案例）',
+    'ARCH-02 跨章节机种分类抽取器：18 架两类别解析正确（抽取器单测，不调用检测器）',
     () => {
+      // 本项只测 extractAircraftClaims 的解析，不声称检测器工作；检测器端到端断言在下面的具名负例中。
       const items = extractAircraftClaims('十八架重型轰炸机出现');
       if (items.length !== 1 || items[0].count !== 18 || items[0].category !== 'level-bomber') {
         throw new Error(`未能正确抽取『十八架重型轰炸机』：${JSON.stringify(items)}`);
       }
+      if (!items[0].raw.includes('十八架重型轰炸机')) throw new Error(`raw 片段不符：${JSON.stringify(items[0])}`);
       const other = extractAircraftClaims('18 架俯冲轰炸机');
       if (other.length !== 1 || other[0].count !== 18 || other[0].category !== 'dive-bomber') {
         throw new Error(`未能正确抽取『18 架俯冲轰炸机』：${JSON.stringify(other)}`);
+      }
+      if (!other[0].raw.includes('18 架俯冲轰炸机')) throw new Error(`raw 片段不符：${JSON.stringify(other[0])}`);
+      // 基线用词必须真正“无类别、无数量”：抽取器不得从双方参战部队这类叙述里造出任何飞机断言。
+      if (extractAircraftClaims('双方参战部队出现，防守方没有任何预警。').length !== 0) {
+        throw new Error('类别/数量中性的基线叙述不应被抽取为飞机断言');
       }
     },
   ]);
@@ -5799,29 +5806,68 @@ function buildSelfTests() {
     },
   ]);
   tests.push([
-    'ARCH-02 跨章节矛盾检查精确指出事件与章节（具名负例）',
+    'ARCH-02 跨章节矛盾端到端：干净基线为 0，注入 18 架类别冲突后恰好 1 条并点名事件/章节/claim（具名负例）',
     () => {
+      // 构造达尔文参考案例：先证明“注入前”完全没有跨章节矛盾（干净基线），
+      // 再注入唯一一处类别冲突，断言检测器恰好报出这一条并逐字段点名。
       const doc = clone(base);
       const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
       ev.article = [
-        { heading: '一次没有预警的空袭', body: '十八架重型轰炸机出现，防守方没有任何预警。', sourceIds: [doc.sources[0].id], claimIds: [doc.claims[0].id] },
+        {
+          heading: '一次没有预警的空袭',
+          body: '双方参战部队出现，防守方没有任何预警。',
+          sourceIds: [doc.sources[0].id],
+          claimIds: [doc.claims[0].id],
+        },
       ];
       doc.events.push(ev);
+      const claimId = 'claim-selftest-darwin-category';
       doc.claims.push({
-        id: 'claim-selftest-darwin-category',
-        text: '约 72 架水平轰炸机与 18 架俯冲轰炸机参与了这次空袭。',
+        id: claimId,
+        text: '这次空袭中双方参战部队均有损失，具体数字按来源口径统计。',
         claimType: 'fact',
         entityIds: ['event-darwin-air-raid-1942'],
         sourceIds: [doc.sources[0].id],
         locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
       });
-      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
-      const hit = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
-      if (hit.length === 0) throw new Error(`矛盾未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+      const contradictionsOf = (document) =>
+        validateDocument(document, { coverage, stage: 'strategy', rootDir: REPO_ROOT }).errors.filter((error) =>
+          /跨章节数值\/类别矛盾/.test(error),
+        );
+      // 1) 干净基线：中性叙述下必须 0 条矛盾（否则注入后的“命中”不能归因于注入）
+      const clean = contradictionsOf(doc);
+      if (clean.length !== 0) {
+        throw new Error(`干净基线应为 0 条跨章节矛盾，实际 ${clean.length} 条：${clean.slice(0, 4).join(' | ')}`);
+      }
+      // 2) 注入唯一冲突：正文『十八架重型轰炸机』 vs claim『18 架俯冲轰炸机』
+      const injected = clone(doc);
+      injected.events.find((event) => event.id === 'event-darwin-air-raid-1942').article[0].body =
+        '十八架重型轰炸机出现，防守方没有任何预警。';
+      injected.claims.find((claim) => claim.id === claimId).text = '这次空袭中有 18 架俯冲轰炸机参与。';
+      const hit = contradictionsOf(injected);
+      // 3) 恰好 1 条：多一条或少一条都说明检测器/归因不精确
+      if (hit.length !== 1) {
+        throw new Error(`注入唯一冲突后应恰好命中 1 条，实际 ${hit.length} 条：${hit.join(' | ')}`);
+      }
       const message = hit[0];
+      // 4) 逐字段点名：事件、正文小节标题、claim、数量、两侧类别与原文片段
       if (!/event-darwin-air-raid-1942/.test(message)) throw new Error(`错误未点名事件：${message}`);
       if (!/一次没有预警的空袭/.test(message)) throw new Error(`错误未点名正文小节：${message}`);
-      if (!/claim-selftest-darwin-category/.test(message)) throw new Error(`错误未点名 claim：${message}`);
+      if (!message.includes(claimId)) throw new Error(`错误未点名 claim：${message}`);
+      if (!/同一个数字 18 架/.test(message)) throw new Error(`错误未给出数量 18：${message}`);
+      if (!/level-bomber/.test(message) || !/dive-bomber/.test(message)) {
+        throw new Error(`错误未写出两侧机种类别：${message}`);
+      }
+      if (!/十八架重型轰炸机/.test(message) || !/18 架俯冲轰炸机/.test(message)) {
+        throw new Error(`错误未写出两侧原文片段：${message}`);
+      }
+      // 5) 反向对照：把两侧改成一致类别后应回到 0 条，证明命中的确实是“类别冲突”而非任意文本。
+      const fixed = clone(injected);
+      fixed.claims.find((claim) => claim.id === claimId).text = '这次空袭中有 18 架重型轰炸机参与。';
+      const fixedHits = contradictionsOf(fixed);
+      if (fixedHits.length !== 0) {
+        throw new Error(`两侧类别一致后仍报矛盾（误报）：${fixedHits.join(' | ')}`);
+      }
     },
   ]);
   tests.push([
@@ -5840,7 +5886,7 @@ function buildSelfTests() {
     },
   ]);
   tests.push([
-    'ARCH-02 跨章节矛盾错误真的输出 eventId（具名断言）',
+    'ARCH-02 跨章节矛盾错误恰好 1 条且 pointer 含 eventId（具名断言）',
     () => {
       const doc = clone(base);
       const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
@@ -5863,9 +5909,13 @@ function buildSelfTests() {
       });
       const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
       const hit = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
-      if (hit.length === 0) throw new Error('矛盾未被检出');
+      // 恰好 1 条：既证明检测器真的报错，也证明没有重复/额外矛盾被顺带触发。
+      if (hit.length !== 1) throw new Error(`应恰好检出 1 条矛盾，实际 ${hit.length} 条：${hit.join(' | ')}`);
       const message = hit[0];
-      // 这条断言就是测试名承诺的内容：错误信息里必须真的出现 eventId
+      // 这条断言就是测试名承诺的内容：错误 pointer 必须真的包含 eventId。
+      if (!/^\$\.events\[\d+\] \(event-darwin-air-raid-1942\)/.test(message)) {
+        throw new Error(`错误 pointer 未以 '\$.events[N] (eventId)' 开头：${message.slice(0, 200)}`);
+      }
       if (!message.includes('event-darwin-air-raid-1942')) {
         throw new Error(`错误信息没有输出 eventId：${message.slice(0, 200)}`);
       }
@@ -6047,7 +6097,7 @@ function buildSelfTests() {
       const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
       const errored = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
       const warned = result.warnings.filter((warning) => /跨章节数值\/类别矛盾/.test(warning));
-      if (errored.length === 0) throw new Error('门禁没有把跨章节矛盾作为错误报告');
+      if (errored.length !== 1) throw new Error(`门禁应恰好报 1 条矛盾错误，实际 ${errored.length} 条`);
       if (warned.length > 0) throw new Error('跨章节矛盾仍被降级为警告（transition 豁免未被移除）');
     },
   ]);
@@ -6494,6 +6544,22 @@ function buildSelfTests() {
       );
       if (unexpectedWarnings.length > 0) {
         throw new Error(`早期战役夹具出现非预期警告：${unexpectedWarnings.join(' | ')}`);
+      }
+      // 参考案例的干净基线：夹具里不得已经存在跨章节矛盾/飞机数量断言，
+      // 否则后面对“注入 18 架冲突”的断言就无法归因于注入。
+      const fixtureContradictions = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
+      if (fixtureContradictions.length !== 0) {
+        throw new Error(`早期战役夹具的跨章节矛盾基线不为 0：${fixtureContradictions.join(' | ')}`);
+      }
+      for (const event of earlyDoc.events) {
+        for (const section of Array.isArray(event.article) ? event.article : []) {
+          if (extractAircraftClaims(section.body).length > 0) {
+            throw new Error(`${event.id} article『${section.heading}』含飞机数量断言，参考案例基线不干净`);
+          }
+        }
+        if (extractAircraftClaims(event.summary).length > 0) {
+          throw new Error(`${event.id} summary 含飞机数量断言，参考案例基线不干净`);
+        }
       }
     },
   ]);
