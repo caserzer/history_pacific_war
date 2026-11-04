@@ -19,7 +19,8 @@ import {
   Prose,
   RelatedLinks,
 } from '../../components/primitives';
-import { EARLY_CAMPAIGN_KEYS } from '../../data/types';
+import { RESEARCH_STATUS_LABELS } from '../../data/types';
+import { earlyCampaignBlocks } from '../../data/index';
 import type { ClaimType, EventEntity } from '../../data/types';
 import { collectEntityEvidence, groupByPart, sortEvents } from '../../data/index';
 import { EARLY_CAMPAIGN_TITLES, HISTORICAL_PART_META } from '../../content/labels';
@@ -179,6 +180,8 @@ export function EventDetail({ event }: { event: EventEntity }) {
   const claimById = index.claims;
   const sourceById = index.sources;
   const evidence = collectEntityEvidence(event);
+  // ARCH-02 兼容层：优先十键 analysisProfiles，缺失时回退旧五键结构。
+  const earlyBlocks = earlyCampaignBlocks(event);
   useReadingProgress(`event-${event.id}`);
   const placeholderPlaces = event.placeIds.map((id) => index.places.get(id)).filter((place) => Boolean(place));
 
@@ -222,25 +225,31 @@ export function EventDetail({ event }: { event: EventEntity }) {
       />
       <ClaimTypeFilter value={claimFilter} onChange={setClaimFilter} />
 
-      {event.earlyCampaignAnalysis ? (
+      {earlyBlocks ? (
         <section className="pw-section" aria-labelledby="early-analysis">
           <h2 className="pw-section__heading" id="early-analysis">
-            <span className="pw-section__index">五类分析</span>
+            <span className="pw-section__index">
+              {earlyBlocks.kind === 'profiles' ? '十类分析' : '五类分析'}
+            </span>
             早期扩张战役分析结构
           </h2>
           <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
-            契约要求早期扩张战役回答背景、经过、约束、结果、影响五个问题（contracts/README.md §4.1 的 D2 结构），五类分析并排呈现，不折叠成一段。
+            {earlyBlocks.kind === 'profiles'
+              ? '契约（ARCH-02）要求早期扩张战役按十类具名分析逐项回答：背景、地理环境、参与方与指挥、双方目标与军力、约束条件、阶段经过、可选方案、结果与损失口径、后续影响、不确定性。各节并排呈现，不折叠成一段。'
+              : '本条目使用旧版五类分析结构（背景、经过、约束、结果、影响）；新版契约为十类具名分析，内容更新后将自动切换。'}
           </p>
-          {EARLY_CAMPAIGN_KEYS.map((key) => {
-            const section = event.earlyCampaignAnalysis?.[key];
+          {earlyBlocks.keys.map((key) => {
+            const section = earlyBlocks.sections[key as keyof typeof earlyBlocks.sections];
             if (!section) return null;
             return (
-              <div className="pw-card" key={key} style={{ marginBottom: 'var(--pw-space-4)' }}>
+              <div className="pw-card" key={key} style={{ marginBottom: 'var(--pw-space-4)' }} data-analysis-profile={key}>
                 <h3 style={{ fontSize: 'var(--pw-size-lg)', marginBottom: 'var(--pw-space-2)' }}>
-                  {EARLY_CAMPAIGN_TITLES[key]}
-                  <span style={{ fontSize: 'var(--pw-size-xs)', color: 'var(--pw-ink-muted)', marginLeft: '0.5em', fontFamily: 'var(--pw-font-mono)' }}>
-                    {section.title}
-                  </span>
+                  {earlyBlocks.kind === 'legacy' ? EARLY_CAMPAIGN_TITLES[key as keyof typeof EARLY_CAMPAIGN_TITLES] ?? section.title : section.title}
+                  {earlyBlocks.kind === 'profiles' ? (
+                    <span style={{ fontSize: 'var(--pw-size-xs)', color: 'var(--pw-ink-muted)', marginLeft: '0.5em', fontFamily: 'var(--pw-font-mono)' }}>
+                      {key}
+                    </span>
+                  ) : null}
                 </h3>
                 <div className="pw-article__lede" style={{ borderLeftWidth: '2px', marginBottom: 'var(--pw-space-2)' }}>
                   <Prose body={section.body} />
@@ -255,6 +264,11 @@ export function EventDetail({ event }: { event: EventEntity }) {
               </div>
             );
           })}
+          {event.researchStatus ? (
+            <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-xs)', color: 'var(--pw-ink-muted)' }} data-research-status={event.researchStatus}>
+              研究状态：{RESEARCH_STATUS_LABELS[event.researchStatus] ?? event.researchStatus}
+            </p>
+          ) : null}
         </section>
       ) : null}
 

@@ -103,9 +103,16 @@ function toPosixPath(value) {
 function removeOutputDirectory(outDir) {
   const resolved = path.resolve(outDir);
   const rootResolved = path.resolve(ROOT);
-  // 只允许删除工作区内的 dist 目录，防止误删。
-  if (!resolved.startsWith(rootResolved + path.sep) || path.basename(resolved) !== 'dist') {
-    throw new Error(`拒绝清理非 dist 目录：${resolved}`);
+  // 安全护栏（MAP-00R1）：删除只能是配置的产物目录，且不得是工作树根、
+  // 文件系统根或受保护的源目录。产物目录本身由 resolveDistDir() 解析并校验。
+  const relative = path.relative(rootResolved, resolved);
+  const guarded = ['src', 'scripts', 'contracts', 'content', 'docs', 'public', 'node_modules'];
+  const isGuarded =
+    relative === '' || relative.startsWith('..')
+      ? false
+      : guarded.some((g) => relative === g || relative.startsWith(g + path.sep));
+  if (resolved === path.parse(resolved).root || isGuarded) {
+    throw new Error(`拒绝清理危险目录：${resolved}`);
   }
   try {
     fs.rmSync(resolved, { recursive: true, force: true, maxRetries: 3 });
@@ -132,14 +139,48 @@ function removeOutputDirectory(outDir) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// MAP-00R1：可配置构建产物目录
+// ---------------------------------------------------------------------------
+//
+// 优先级：`--dist <path>` > 环境变量 `DSH_SITE_DIST_DIR` > vite.config.ts 的 build.outDir（dist）。
+// 只读评审 / CI 可用它们把产物写到可写位置，避免在工作树内删除 dist 触发 EPERM。
+// 约束：产物目录不得位于源树（src/ scripts/ contracts/ content/ docs/ 等）。
+// 删除只在解析后的产物目录内执行（见 removeOutputDirectory 的安全护栏）。
+
+const FORBIDDEN_DIST_PREFIXES = ['src', 'scripts', 'contracts', 'content', 'docs', 'public', 'node_modules'];
+
+function readDistArg(argv) {
+  const eq = argv.find((arg) => arg.startsWith('--dist='));
+  if (eq) return eq.slice('--dist='.length);
+  const index = argv.indexOf('--dist');
+  if (index >= 0 && argv[index + 1] && !argv[index + 1].startsWith('--')) return argv[index + 1];
+  return null;
+}
+
+/** 解析产物目录；非法时抛错（构建必须失败，不能静默写到危险位置）。 */
+function resolveDistDir() {
+  const arg = readDistArg(process.argv.slice(2));
+  const fromEnv = process.env.DSH_SITE_DIST_DIR || null;
+  const configured = arg ?? fromEnv ?? siteConfig.build.outDir;
+  const resolved = path.resolve(ROOT, configured);
+  for (const prefix of FORBIDDEN_DIST_PREFIXES) {
+    const guardedDir = path.resolve(ROOT, prefix);
+    if (resolved === guardedDir || resolved.startsWith(guardedDir + path.sep)) {
+      throw new Error(`拒绝使用产物目录 ${resolved}：它位于受保护的源目录 ${prefix}/ 内`);
+    }
+  }
+  return { dir: resolved, source: arg ? '--dist' : fromEnv ? 'DSH_SITE_DIST_DIR' : 'vite.config.ts' };
+}
+
 async function main() {
   const { createBuilder } = await import('vite');
 
-  // outDir 取自 vite.config.ts（单一事实来源），并解析成绝对路径。
-  const outDir = path.resolve(ROOT, siteConfig.build.outDir);
+  const { dir: outDir, source } = resolveDistDir();
   removeOutputDirectory(outDir);
 
-  console.log(`构建：base=${siteConfig.base} root=${ROOT} outDir=${siteConfig.build.outDir}（Node ${process.version}）`);
+  console.log(`构建：base=${siteConfig.base} root=${ROOT} outDir=${path.relative(ROOT, outDir) || '.'}（Node ${process.version}）`);
+  console.log(`产物目录来源：${source}`);
   console.log(`配置来源：vite.config.ts（build.mjs 直接导入 siteConfig，未复制任何设置）`);
 
   const builder = await createBuilder({

@@ -137,9 +137,43 @@ export const BATTLE_SECTION_KEYS = [
 
 export type BattleSectionKey = (typeof BATTLE_SECTION_KEYS)[number];
 
-/** 早期扩张战役的五类分析（coverage.earlyCampaign.analysisKeys）。 */
+/**
+ * 早期扩张战役分析 —— 两代结构并存（ARCH-02）。
+ *
+ * - **目标结构** `analysisProfiles`：十键具名分析（背景/地理/参与方/目标与军力/
+ *   约束/经过/可选方案/结果与损失/影响/不确定性）。ARCH-02 起为规范形态。
+ * - **旧结构** `earlyCampaignAnalysis`：五键（背景/经过/约束/结果/影响）。
+ *   schema 仍允许，但已不是目标结构；为兼容已交付内容保留渲染支持。
+ *
+ * UI 必须**优先**渲染 `analysisProfiles`，两者都存在时不重复渲染旧结构
+ * （见 data/index.ts 的 collectEarlyCampaignBlocks）。
+ */
 export const EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'] as const;
 export type EarlyCampaignKey = (typeof EARLY_CAMPAIGN_KEYS)[number];
+
+/** ARCH-02 目标结构：十键具名分析（schema $defs.analysisProfiles.required，顺序即渲染顺序）。 */
+export const ANALYSIS_PROFILE_KEYS = [
+  'background',
+  'geography',
+  'participants',
+  'objectivesAndForces',
+  'constraints',
+  'course',
+  'options',
+  'resultsAndLosses',
+  'impact',
+  'uncertainty',
+] as const;
+export type AnalysisProfileKey = (typeof ANALYSIS_PROFILE_KEYS)[number];
+
+export interface AnalysisProfileSection {
+  title: string;
+  body: string;
+  sourceIds: string[];
+  claimIds: string[];
+}
+
+export type AnalysisProfiles = Record<AnalysisProfileKey, AnalysisProfileSection>;
 
 export interface EarlyCampaignSection {
   title: string;
@@ -149,6 +183,24 @@ export interface EarlyCampaignSection {
 }
 
 export type EarlyCampaignAnalysis = Record<EarlyCampaignKey, EarlyCampaignSection>;
+
+/** 研究/检索过程状态（ARCH-02）：正文中不得出现研究过程措辞，只能放在这里。 */
+export const RESEARCH_STATUSES = [
+  'not-started',
+  'sources-identified',
+  'sources-retrieved',
+  'cross-checked',
+  'final',
+] as const;
+export type ResearchStatus = (typeof RESEARCH_STATUSES)[number];
+
+export const RESEARCH_STATUS_LABELS: Record<ResearchStatus, string> = {
+  'not-started': '尚未开始',
+  'sources-identified': '已定位来源',
+  'sources-retrieved': '已取得来源',
+  'cross-checked': '已交叉核对',
+  final: '已定稿',
+};
 
 export interface Locator {
   sourceId: string;
@@ -216,7 +268,12 @@ export interface EventEntity {
   conceptIds: string[];
   battleId?: string;
   relatedEventIds: string[];
+  /** ARCH-02 目标结构：十键具名分析。UI 优先渲染它。 */
+  analysisProfiles?: AnalysisProfiles;
+  /** 旧结构（五键）；schema 仍允许，仅在没有 analysisProfiles 时渲染。 */
   earlyCampaignAnalysis?: EarlyCampaignAnalysis;
+  /** 研究过程状态（ARCH-02）；正文不得出现研究过程措辞。 */
+  researchStatus?: ResearchStatus;
   sourceIds: string[];
   claimIds: string[];
 }

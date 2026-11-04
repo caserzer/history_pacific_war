@@ -25,6 +25,8 @@ import type {
   Source,
   UnitEntity,
 } from './types';
+import { ANALYSIS_PROFILE_KEYS, type AnalysisProfileKey } from './types';
+export { ANALYSIS_PROFILE_KEYS, type AnalysisProfileKey } from './types';
 
 export type EntityMap<T> = ReadonlyMap<string, T>;
 
@@ -216,6 +218,32 @@ export interface EvidenceBlock {
 }
 
 /**
+ * 早期扩张战役分析的**唯一**取值入口（ARCH-02 兼容层）。
+ *
+ * - `kind: 'profiles'` → 使用 ARCH-02 的十键 `analysisProfiles`（优先）；
+ * - `kind: 'legacy'`   → 回退到旧五键 `earlyCampaignAnalysis`；
+ * - `null`             → 两者都没有（纯时间线条目，或分析尚未交付）。
+ *
+ * 视图与验证器都通过它取数据，避免两处各写一套判断而产生分歧。
+ */
+export type EarlyCampaignBlockSection = { title: string; body: string; sourceIds: string[]; claimIds: string[] };
+
+export type EarlyCampaignBlocks =
+  | { kind: 'profiles'; keys: readonly AnalysisProfileKey[]; sections: Partial<Record<AnalysisProfileKey, EarlyCampaignBlockSection>> }
+  | { kind: 'legacy'; keys: readonly string[]; sections: Record<string, EarlyCampaignBlockSection> };
+
+export function earlyCampaignBlocks(event: EventEntity): EarlyCampaignBlocks | null {
+  if (event.analysisProfiles && typeof event.analysisProfiles === 'object') {
+    return { kind: 'profiles', keys: ANALYSIS_PROFILE_KEYS, sections: event.analysisProfiles };
+  }
+  if (event.earlyCampaignAnalysis && typeof event.earlyCampaignAnalysis === 'object') {
+    const sections = event.earlyCampaignAnalysis as Record<string, EarlyCampaignBlockSection>;
+    return { kind: 'legacy', keys: Object.keys(sections), sections };
+  }
+  return null;
+}
+
+/**
  * 抽取一个实体的**全部小节级证据块**。
  * 契约 §3.3：文章正文里每一节都携带自己的 sourceIds 与 claimIds。
  */
@@ -232,7 +260,14 @@ export function collectEvidenceBlocks(entity: ArticleEntity): EvidenceBlock[] {
   if ('article' in entity && Array.isArray(entity.article)) {
     entity.article.forEach((section, i) => add(`article-${i}`, section.heading, section.sourceIds, section.claimIds));
   }
-  if ('earlyCampaignAnalysis' in entity && entity.earlyCampaignAnalysis) {
+  // 早期扩张战役分析：优先 ARCH-02 的十键 analysisProfiles；只有它缺失时才回退到旧五键结构，
+  // 避免两代结构同时存在时重复渲染同一批证据。
+  if ('analysisProfiles' in entity && entity.analysisProfiles) {
+    for (const key of ANALYSIS_PROFILE_KEYS) {
+      const section = entity.analysisProfiles[key];
+      if (section) add(`profile-${key}`, section.title, section.sourceIds, section.claimIds);
+    }
+  } else if ('earlyCampaignAnalysis' in entity && entity.earlyCampaignAnalysis) {
     for (const [key, section] of Object.entries(entity.earlyCampaignAnalysis)) {
       add(`early-${key}`, section.title, section.sourceIds, section.claimIds);
     }

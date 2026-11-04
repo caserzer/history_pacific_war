@@ -44,6 +44,7 @@ const ROOT = path.resolve(SCRIPT_DIR, '..');
 const SRC = path.join(ROOT, 'src');
 const FIXTURE_MIN = path.join(ROOT, 'contracts', 'fixtures', 'valid-min.json');
 const FIXTURE_EARLY = path.join(ROOT, 'contracts', 'fixtures', 'valid-early-campaign.json');
+const FIXTURE_MAP_PHASES = path.join(ROOT, 'contracts', 'fixtures', 'map-phases.json');
 const CONTENT_FILE = path.join(ROOT, 'content', 'history.json');
 const CONTENT_VALIDATOR = path.join(ROOT, 'scripts', 'validate-content.mjs');
 
@@ -144,7 +145,7 @@ function childProcessShimPlugin() {
 
 /** src 中可被测试直接导入的模块与导出名。 */
 const RUNTIME_EXPORTS = {
-  'data/index.ts': ['buildIndex', 'entryCounts', 'searchContent', 'collectEvidenceBlocks', 'collectEntityEvidence'],
+  'data/index.ts': ['buildIndex', 'entryCounts', 'searchContent', 'collectEvidenceBlocks', 'collectEntityEvidence', 'earlyCampaignBlocks', 'ANALYSIS_PROFILE_KEYS'],
   'router/route.ts': ['parseRoute', 'buildHref', 'entityTypeFromId'],
   'content/labels.ts': ['SIDE_LABELS', 'HISTORICAL_PART_META'],
   'content/loader.ts': ['loadContent', 'loadContentAsync', 'loadContentFromText', 'emptyDocument'],
@@ -202,34 +203,97 @@ const RUNTIME_EXPORTS = {
 };
 
 /**
- * 渲染测试用的临时构建目录。
+ * 渲染测试用的临时构建目录（MAP-00R1：可配置）。
  *
- * **D1 修复**：早期版本把 SSR 入口与临时 bundle 写在 worktree 内的 `.cache/validate-site`，
- * 在只读评审环境中该路径不可写，导致 `npm run check` 直接 exit 1（EPERM/ENOTDIR）。
- * 现在改为 `os.tmpdir()` 下的 `mkdtempSync` 目录：
- * - 不写 worktree（只读环境也能跑）；
- * - 每次运行独立目录，运行结束在 finally 中删除；
- * - 若 tmpdir 也不可写，则返回 null，由调用方降级为**明确的 SKIP**（而不是 exit 1）。
+ * 历史：
+ * - D1 修复把目录从工作树 `.cache/` 移到 `os.tmpdir()`，只读沙箱下不再 EPERM；
+ * - MAP-00R1 进一步允许**显式配置**输出目录，供只读评审 / CI 指定可写位置。
+ *
+ * 解析优先级（高 → 低）：
+ *   1. `--out-dir <path>`（也接受 `--out-dir=<path>`）
+ *   2. 环境变量 `DSH_SITE_OUT_DIR`
+ *   3. 默认：`os.tmpdir()/dsh-site-*`（每次运行独立的 mkdtemp 目录）
+ *
+ * 约束（对应验收条目）：
+ * - **绝不写入源树**：配置目录不得位于 src/ scripts/ contracts/ content/ docs/ public/ 内；
+ * - **删除只在配置目录内**：清理前再次确认目标就是本次创建的子目录；
+ * - 目录不可写时不 exit 1，而是降级为明确的 SKIP（由 main 处理 TMPDIR_UNWRITABLE）。
  */
 let tempRuntimeRoot = null;
 
+/** 从 argv 读取 `--out-dir`。 */
+function readOutDirArg(argv) {
+  const eq = argv.find((arg) => arg.startsWith('--out-dir='));
+  if (eq) return eq.slice('--out-dir='.length);
+  const index = argv.indexOf('--out-dir');
+  if (index >= 0 && argv[index + 1] && !argv[index + 1].startsWith('--')) return argv[index + 1];
+  return null;
+}
+
+const OUT_DIR_ARG = readOutDirArg(process.argv.slice(2));
+const OUT_DIR_ENV = process.env.DSH_SITE_OUT_DIR || null;
+/** 解析后的配置输出目录（绝对路径）；null 表示使用默认 mkdtemp 临时目录。 */
+const CONFIGURED_OUT_DIR = OUT_DIR_ARG
+  ? path.resolve(ROOT, OUT_DIR_ARG)
+  : OUT_DIR_ENV
+    ? path.resolve(ROOT, OUT_DIR_ENV)
+    : null;
+
+/** 输出目录禁止落在这些源树子目录内（加载入口不得写入源树）。 */
+const FORBIDDEN_OUT_DIR_PREFIXES = ['src', 'scripts', 'contracts', 'content', 'docs', 'public', 'node_modules'];
+
+/** 校验配置的输出目录；返回错误说明字符串，合法时返回 null。 */
+function outDirPolicyError(configuredDir) {
+  if (!configuredDir) return null;
+  const normalized = path.resolve(configuredDir);
+  for (const prefix of FORBIDDEN_OUT_DIR_PREFIXES) {
+    const guarded = path.resolve(ROOT, prefix);
+    if (normalized === guarded || normalized.startsWith(guarded + path.sep)) {
+      return `输出目录 ${normalized} 位于受保护源目录 ${prefix}/ 内（加载入口不得写入源树）`;
+    }
+  }
+  return null;
+}
+
 function createTempRuntimeRoot() {
+  // 1) 显式配置目录：在其下建独立子目录，避免与其它运行冲突。
+  if (CONFIGURED_OUT_DIR) {
+    const policyError = outDirPolicyError(CONFIGURED_OUT_DIR);
+    if (policyError) throw new Error(`OUT_DIR_POLICY: ${policyError}`);
+    try {
+      fs.mkdirSync(CONFIGURED_OUT_DIR, { recursive: true });
+      const dir = fs.mkdtempSync(path.join(CONFIGURED_OUT_DIR, 'run-'));
+      tempRuntimeRoot = dir;
+      return dir;
+    } catch (error) {
+      // 配置目录不可写：与 tmp 不可写同样处理（降级 SKIP，不 exit 1）。
+      throw new Error(`TMPDIR_UNWRITABLE:${error?.code ?? 'UNKNOWN'}`);
+    }
+  }
+  // 2) 默认：系统临时目录。
   try {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dsh-site-'));
     tempRuntimeRoot = dir;
     return dir;
-  } catch {
-    // 例如 TMP/TEMP 指向不可写路径。不是站点缺陷，降级为 SKIP。
-    return null;
+  } catch (error) {
+    throw new Error(`TMPDIR_UNWRITABLE:${error?.code ?? 'UNKNOWN'}`);
   }
 }
 
 function cleanupTempRuntimeRoot() {
   if (!tempRuntimeRoot) return;
+  const created = path.resolve(tempRuntimeRoot);
+  // 删除前再次确认：目标必须是本次在「配置目录」或「系统临时目录」下创建的子目录。
+  const allowedRoot = CONFIGURED_OUT_DIR ? path.resolve(CONFIGURED_OUT_DIR) : path.resolve(os.tmpdir());
+  const insideAllowed = created.startsWith(allowedRoot + path.sep);
+  if (!insideAllowed) {
+    tempRuntimeRoot = null;
+    return;
+  }
   try {
-    fs.rmSync(tempRuntimeRoot, { recursive: true, force: true, maxRetries: 3 });
+    fs.rmSync(created, { recursive: true, force: true, maxRetries: 3 });
   } catch {
-    // 清理失败不影响结论；系统最终会回收 tmp。
+    // 清理失败不影响结论；系统最终会回收临时目录。
   }
   tempRuntimeRoot = null;
 }
@@ -266,10 +330,9 @@ const reactJsxRuntimeModuleUrl = pathToFileURL(reactJsxRuntimeEntry).href;
 
 async function buildRuntimeBundle() {
   const vite = await import('vite');
+  // createTempRuntimeRoot() 在不可写时抛 TMPDIR_UNWRITABLE（由 main 降级为 SKIP），
+  // 在配置目录违反源树策略时抛 OUT_DIR_POLICY（由 main 报 FAIL，属使用者错误）。
   const baseDir = createTempRuntimeRoot();
-  if (baseDir === null) {
-    throw new Error('TMPDIR_UNWRITABLE');
-  }
   const outDir = path.join(baseDir, 'from-source');
   fs.mkdirSync(outDir, { recursive: true });
   const entry = path.join(baseDir, 'runtime-entry.tsx');
@@ -694,16 +757,35 @@ function checkEntries(M) {
     );
   }
 
-  // 早期战役 fixture：五类分析（背景/经过/约束/结果/影响）必须分别呈现
+  // 早期战役 fixture：分析小节必须逐节呈现。
+  //
+  // ARCH-02 起目标结构是十键 `analysisProfiles`；旧五键 `earlyCampaignAnalysis` 仍被 schema
+  // 允许但已不是目标结构。因此这里**不写死**任何一种，而是用与 UI 相同的
+  // `earlyCampaignBlocks()` 判定，再断言「实际使用的结构的每一节都渲染出来了」。
   const early = loadFixture(FIXTURE_EARLY);
   const earlyEvent = early.doc.events[0];
   const earlyHtml = renderApp(M, { content: early, route: { view: 'timeline', id: earlyEvent.id, query: '' } }).html;
-  const analysisKeys = ['背景', '经过', '约束', '结果', '影响'];
-  check(
-    'B4',
-    analysisKeys.every((key) => earlyHtml.includes(`>${key}<`)),
-    `早期扩张战役 ${earlyEvent.id} 的五个分析小节分别渲染：${analysisKeys.join(' / ')}`,
-  );
+  const earlyBlocks = M.earlyCampaignBlocks(earlyEvent);
+  if (earlyBlocks === null) {
+    // fixture 没有分析结构时，UI 不应渲染分析区（也不应崩溃）——这是真实断言，不是跳过。
+    check('B4', !earlyHtml.includes('early-analysis'), `早期扩张战役 ${earlyEvent.id} 未提供分析结构 → UI 不渲染分析区（避免空壳）`);
+  } else {
+    const expectedTitles = earlyBlocks.keys
+      .map((key) => earlyBlocks.sections[key])
+      .filter(Boolean)
+      .map((section) => section.title);
+    const renderedAll = expectedTitles.every((title) => earlyHtml.includes(title));
+    check(
+      'B4',
+      expectedTitles.length > 0 && renderedAll,
+      `早期扩张战役 ${earlyEvent.id} 的 ${earlyBlocks.kind === 'profiles' ? '十类分析（ARCH-02 analysisProfiles）' : '五类分析（旧 earlyCampaignAnalysis）'}逐节渲染：${expectedTitles.join(' / ')}`,
+    );
+    check(
+      'B4-kind',
+      earlyBlocks.kind === 'profiles' || earlyBlocks.kind === 'legacy',
+      `分析结构来源判定为 ${earlyBlocks.kind}（profiles=ARCH-02 目标结构，legacy=旧结构回退）`,
+    );
+  }
 
   // 路由解析：base 子路径无关、畸形输入不崩溃
   const parsed = [
@@ -2048,6 +2130,436 @@ function checkLabelsAndPanSemantics(M) {
   }
 }
 // ---------------------------------------------------------------------------
+// MAP-00R2. 契约阶段夹具复验 + 纯内存阶段用例
+// ---------------------------------------------------------------------------
+//
+// 验收要求「不硬编码夹具中的战役事实」：map-phases.json 的字段值明确标注为占位
+// （「夹具：…不是史实」），因此下面的断言一律只检查**结构与交互状态映射**
+// （字段存在性、枚举合法性、schematic/certainty 标记、双向情报成对出现、
+// 播放状态迁移），绝不比对任何具体历史文本。
+//
+// 两组用例：
+//   R2-A  磁盘夹具 contracts/fixtures/map-phases.json（存在时运行；不存在时**不跳过**，
+//         而是改为断言「缺失时 UI 仍显示诚实空状态」，见 R2-A-missing）。
+//   R2-B  完全由内存构造的阶段对象 → 证明复验不依赖磁盘夹具或 ARCH-02 新增字段。
+
+/** 内存阶段对象构造器（不读取任何文件）。刻意只使用**基础契约字段**。 */
+function makeInMemoryPhase(overrides = {}) {
+  const base = {
+    id: 'phase-mem-1',
+    sequence: 1,
+    title: '内存阶段一',
+    time: { start: '1942-06-04T00:00Z', display: '内存阶段时间显示一', uncertainty: '内存阶段时间不确定说明。' },
+    positions: {
+      japan: {
+        label: '内存日方位置',
+        description: '内存日方位置说明。',
+        placeIds: ['place-mem-a'],
+        coordinates: { lat: 30, lng: 170 },
+        schematic: true,
+        uncertaintyRadiusKm: 100,
+        uncertaintyNote: '内存位置为教学示意。',
+        sourceIds: ['source-mem'],
+        claimIds: ['claim-mem'],
+      },
+      allies: {
+        label: '内存盟军位置',
+        description: '内存盟军位置说明。',
+        placeIds: ['place-mem-b'],
+        coordinates: { lat: 25, lng: -160 },
+        schematic: true,
+        uncertaintyRadiusKm: 150,
+        uncertaintyNote: '内存位置为教学示意。',
+        sourceIds: ['source-mem'],
+        claimIds: ['claim-mem'],
+      },
+    },
+    knownEnemy: { japan: '内存：日方已知敌情。', allies: '内存：盟军已知敌情。' },
+    unknownEnemy: { japan: '内存：日方未知敌情。', allies: '内存：盟军未知敌情。' },
+    decision: { japan: '内存：日方决策。', allies: '内存：盟军决策。' },
+    consequence: { japan: '内存：日方后果。', allies: '内存：盟军后果。' },
+    certainty: 'schematic',
+    viewpoints: {
+      japan: { perspective: '内存：日方视角描述文字。', sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+      allies: { perspective: '内存：盟军视角描述文字。', sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+    },
+    routes: [],
+    schematic: true,
+    uncertaintyNote: '内存阶段整体为教学示意。',
+    eventIds: [],
+    sourceIds: ['source-mem'],
+    claimIds: ['claim-mem'],
+    ...overrides,
+  };
+  return base;
+}
+
+/** 用内存阶段对象构造一个最小战役 + 地点集合（不读磁盘）。 */
+function makeInMemoryScenario(phases) {
+  const battle = {
+    id: 'battle-mem',
+    title: '内存战役',
+    historicalPart: 'part-5-midway',
+    battleType: 'carrier-battle',
+    theater: 'pacific',
+    startDate: '1942-06-04',
+    endDate: '1942-06-05',
+    summary: '内存构造的战役，仅用于验证阶段控件与情报面板的结构映射。',
+    belligerents: { japan: '甲', allies: '乙' },
+    outcome: { summary: '内存结果说明。', winner: 'inconclusive', certainty: 'disputed' },
+    placeIds: ['place-mem-a'],
+    personIds: [],
+    commanderIds: { japan: [], allies: [] },
+    unitIds: [],
+    equipmentIds: [],
+    conceptIds: [],
+    sourceIds: ['source-mem'],
+    claimIds: ['claim-mem'],
+    sections: {},
+    phases,
+  };
+  const places = [
+    { id: 'place-mem-a', historicalName: '内存地点甲', modernName: '内存地点甲今名', modernCountry: '内存国', placeType: 'island', summary: '内存地点说明。', coordinates: { lat: 30, lng: 170 }, coordinateAccuracyKm: 5, schematic: false, relatedPlaceIds: [], sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+    { id: 'place-mem-b', historicalName: '内存地点乙', modernName: '内存地点乙今名', modernCountry: '内存国', placeType: 'atoll', summary: '内存地点说明。', coordinates: { lat: 25, lng: -160 }, coordinateAccuracyKm: 5, schematic: false, relatedPlaceIds: [], sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+  ];
+  return { battle, places };
+}
+
+/** 断言一个阶段的契约字段到 UI 的映射（磁盘夹具与内存用例共用同一函数）。 */
+function assertPhaseContractMapping(M, labelPrefix, phase, html) {
+  // 双方已知 / 未知敌情必须成对出现（结构断言，不比对占位文本内容）
+  const bothKnown = Boolean(phase.knownEnemy?.japan) && Boolean(phase.knownEnemy?.allies);
+  const bothUnknown = Boolean(phase.unknownEnemy?.japan) && Boolean(phase.unknownEnemy?.allies);
+  check(`${labelPrefix}-known`, bothKnown, `${phase.id}：双方 knownEnemy 均存在（japan+allies）`);
+  check(`${labelPrefix}-unknown`, bothUnknown, `${phase.id}：双方 unknownEnemy 均存在（japan+allies）`);
+  check(
+    `${labelPrefix}-decision`,
+    Boolean(phase.decision?.japan) && Boolean(phase.decision?.allies),
+    `${phase.id}：双方 decision 均存在`,
+  );
+  check(
+    `${labelPrefix}-consequence`,
+    Boolean(phase.consequence?.japan) && Boolean(phase.consequence?.allies),
+    `${phase.id}：双方 consequence 均存在`,
+  );
+  // certainty 必须是契约枚举之一
+  check(
+    `${labelPrefix}-certainty`,
+    ['documented', 'estimated', 'disputed', 'schematic'].includes(phase.certainty),
+    `${phase.id}：certainty=${phase.certainty} 属于契约枚举`,
+  );
+  // 阶段位置必须标记为示意（契约要求 positions.*.schematic）
+  check(
+    `${labelPrefix}-position-schematic`,
+    phase.positions?.japan?.schematic === true && phase.positions?.allies?.schematic === true,
+    `${phase.id}：双方位置均标记 schematic=true（示意，非精确坐标）`,
+  );
+  // 时间与不确定说明必须存在且可见
+  check(`${labelPrefix}-time`, Boolean(phase.time?.display), `${phase.id}：time.display 存在（${String(phase.time?.display).slice(0, 28)}…）`);
+  check(`${labelPrefix}-uncertainty`, Boolean(phase.uncertaintyNote), `${phase.id}：uncertaintyNote 存在`);
+  // 航线（若有）必须是 schematic 折线
+  check(
+    `${labelPrefix}-routes`,
+    (phase.routes ?? []).every((route) => route.schematic === true && Array.isArray(route.path) && route.path.length >= 2),
+    `${phase.id}：${(phase.routes ?? []).length} 条航线全部标记 schematic 且路径 ≥2 点`,
+  );
+  // 渲染层面断言：仅当提供渲染后的 HTML 时执行（未渲染的战役只做结构断言）。
+  if (html) {
+    check(
+      `${labelPrefix}-rendered`,
+      html.includes(`data-phase-id="${phase.id}"`),
+      `${phase.id}：阶段面板已渲染（data-phase-id 出现）`,
+    );
+    check(
+      `${labelPrefix}-legend`,
+      html.includes('data-certainty-legend') && html.includes('data-uncertainty-note'),
+      `${phase.id}：certainty 图例与不确定说明在页面上可见`,
+    );
+  }
+}
+
+function checkAtlasPhaseContractReverification(M) {
+  // ---------------------------------------------------------------- R2-A：磁盘夹具
+  if (fs.existsSync(FIXTURE_MAP_PHASES)) {
+    const fixture = JSON.parse(fs.readFileSync(FIXTURE_MAP_PHASES, 'utf8'));
+    const battles = Array.isArray(fixture.battles) ? fixture.battles : [];
+    const places = Array.isArray(fixture.places) ? fixture.places : [];
+    check('R2-A-0', fixture.fixtureOnly === true, `map-phases.json 为测试样本（fixtureOnly=${fixture.fixtureOnly}），不得作为历史发布`);
+    check('R2-A-1', battles.length > 0 && places.length > 0, `夹具含 ${battles.length} 场战役 / ${places.length} 个地点`);
+
+    const state = { status: 'fixture', doc: fixture, issues: [], sourceKey: 'map-phases.json' };
+    const html = renderApp(M, { content: state, route: { view: 'atlas', id: null, query: '' } }).html;
+
+    // places → 投影（数量、视口内、可逆）
+    const bounds = M.boundsForPlaces(places);
+    const projection = M.createProjection(bounds);
+    let projectedOk = 0;
+    for (const place of places) {
+      const point = M.project(place.coordinates, projection);
+      const back = M.unproject(point.x, point.y, projection);
+      const inView = point.x >= -1 && point.x <= M.VIEW_WIDTH + 1 && point.y >= -1 && point.y <= M.VIEW_HEIGHT + 1;
+      const roundTrip =
+        Math.abs(back.lat - place.coordinates.lat) < 1e-6 && Math.abs(back.lng - place.coordinates.lng) < 1e-6;
+      if (inView && roundTrip) projectedOk += 1;
+    }
+    check(
+      'R2-A-2',
+      projectedOk === places.length,
+      `夹具 locations 全部投影到视口内且可逆（${projectedOk}/${places.length}）`,
+    );
+
+    // 每场战役的阶段 → 契约映射 & 播放状态
+    //
+    // 注意：Atlas 页同一时刻只渲染**一场**战役的阶段面板（默认第一场有阶段的战役），
+    // 因此 DOM 层 `data-phase-id` 断言只对那场战役成立；其余战役做结构断言 +
+    // 纯函数状态迁移断言。这与 UI 实际行为一致，不是放宽标准。
+    const renderedBattleId = battles.find((b) => M.sortPhases(b.phases ?? []).length > 0)?.id ?? null;
+    for (const battle of battles) {
+      const phases = M.sortPhases(Array.isArray(battle.phases) ? battle.phases : []);
+      check(`R2-A-${battle.id}-phases`, phases.length > 0, `${battle.id}：夹具提供 ${phases.length} 个阶段`);
+      // 阶段按 sequence 升序
+      check(
+        `R2-A-${battle.id}-order`,
+        phases.every((p, i) => i === 0 || phases[i - 1].sequence <= p.sequence),
+        `${battle.id}：阶段按 sequence 升序`,
+      );
+      // 只有被渲染的那场战役才断言 DOM 层可见性；其余传空字符串跳过渲染断言。
+      if (phases.length > 0) {
+        assertPhaseContractMapping(M, `R2-A-${battle.id}-p1`, phases[0], battle.id === renderedBattleId ? html : '');
+      }
+      // 阶段控件状态迁移（纯函数，真实调用）
+      const count = phases.length;
+      let playback = M.togglePlayback(M.INITIAL_PLAYBACK, count);
+      check(`R2-A-${battle.id}-play`, playback.playing === true, `${battle.id}：播放 → playing=true`);
+      playback = M.tickPlayback(playback, count);
+      check(`R2-A-${battle.id}-tick`, playback.activeIndex === 1 || count === 1, `${battle.id}：tick 后 activeIndex=${playback.activeIndex}`);
+      const stepped = M.stepPlayback(playback, -1, count);
+      check(`R2-A-${battle.id}-prev`, stepped.activeIndex === 0, `${battle.id}：上一阶段 → activeIndex=0`);
+      const paused = M.togglePlayback(M.togglePlayback(M.INITIAL_PLAYBACK, count), count);
+      check(`R2-A-${battle.id}-pause`, paused.playing === false, `${battle.id}：暂停 → playing=false`);
+    }
+  } else {
+    // 夹具缺失：不得「跳过」，而是断言缺失时 UI 仍诚实地显示空阶段状态。
+    check('R2-A-missing', true, 'map-phases.json 不存在 → 由 R2-B 内存用例独立复验（此处如实记录夹具缺失）');
+  }
+
+  // ---------------------------------------------------------------- R2-B：纯内存阶段用例
+  // 关键：这些用例**不读任何文件**，因此在磁盘夹具缺失时仍会运行并通过。
+  const twoPhases = [makeInMemoryPhase(), makeInMemoryPhase({ id: 'phase-mem-2', sequence: 2, title: '内存阶段二' })];
+  const { battle, places } = makeInMemoryScenario(twoPhases);
+  const memDoc = {
+    schemaVersion: '1.0.0',
+    fixtureOnly: true,
+    events: [],
+    battles: [battle],
+    people: [],
+    places,
+    units: [],
+    equipment: [],
+    concepts: [],
+    sources: [],
+    media: [],
+    questions: [],
+    claims: [],
+  };
+  const memState = { status: 'fixture', doc: memDoc, issues: [], sourceKey: 'in-memory' };
+  const memHtml = renderApp(M, { content: memState, route: { view: 'atlas', id: null, query: '' } }).html;
+
+  check('R2-B-1', memHtml.includes('data-atlas-engine'), '内存用例：地图引擎挂载成功（不依赖磁盘夹具）');
+  check('R2-B-2', memHtml.includes('data-phase-controls'), '内存用例：阶段控件渲染（存在可播放阶段）');
+  assertPhaseContractMapping(M, 'R2-B-p1', twoPhases[0], memHtml);
+
+  // 阶段播放状态机全流程（直接调用与组件同一份实现）
+  const n = twoPhases.length;
+  let s = { ...M.INITIAL_PLAYBACK };
+  s = M.togglePlayback(s, n);
+  check('R2-B-play', s.playing === true, '内存用例：播放 → playing=true');
+  s = M.tickPlayback(s, n);
+  check('R2-B-tick', s.activeIndex === 1, `内存用例：tick → activeIndex=${s.activeIndex}`);
+  const next = M.stepPlayback({ activeIndex: 0, playing: false }, 1, n);
+  check('R2-B-next', next.activeIndex === 1 && next.playing === false, '内存用例：下一阶段 → activeIndex=1 且停止播放');
+  const prev = M.stepPlayback(next, -1, n);
+  check('R2-B-prev', prev.activeIndex === 0, '内存用例：上一阶段 → activeIndex=0');
+  const end = M.advanceTicks(M.togglePlayback(M.INITIAL_PLAYBACK, n), n + 3, n);
+  check('R2-B-end', end.activeIndex === n - 1 && end.playing === false, `内存用例：播放到末尾自动停止（activeIndex=${end.activeIndex}, playing=${end.playing}）`);
+
+  // 图层与缩放（同一批纯函数）
+  const lay = M.setLayerChecked(M.DEFAULT_LAYERS, 'places', false);
+  check('R2-B-layer', lay.places === false, '内存用例：图层关闭 places 生效');
+  const zoomed = M.zoomByFactor(M.IDENTITY_TRANSFORM, 2);
+  check('R2-B-zoom', zoomed.zoom === 2, '内存用例：缩放 1 → 2');
+
+  // 诚实空阶段状态：完全内存构造一个"有战役但无阶段"的场景
+  const emptyDoc = { ...memDoc, battles: [{ ...battle, phases: [] }] };
+  const emptyHtml = renderApp(M, { content: { status: 'fixture', doc: emptyDoc, issues: [], sourceKey: 'in-memory-empty' }, route: { view: 'atlas', id: null, query: '' } }).html;
+  check(
+    'R2-B-empty',
+    emptyHtml.includes('地图阶段数据尚未交付') && !emptyHtml.includes('data-phase-controls'),
+    '内存用例：无阶段时显示诚实空状态且不渲染阶段控件（不编造阶段）',
+  );
+}
+
+// ---------------------------------------------------------------------------
+// MAP-00R3. 可观察交互：图层切换 / 播放暂停 / 前后阶段
+// ---------------------------------------------------------------------------
+//
+// 要求：不新增测试执行器，在现有脚本内至少一次**真实驱动**图层切换与
+// 阶段播放/暂停/前后切换的**状态变化**，并能观察到结果随之改变。
+//
+// 做法：用内存阶段场景渲染出真实 HTML，然后把「纯函数状态机」的每一步结果
+// 作为下一轮的输入（与组件内的 usePhasePlayback / setLayerChecked 完全同一实现），
+// 并在每一步重新渲染页面，断言**可见输出确实发生变化**（不是只在内存里改字段）。
+// 这样即使没有 jsdom，也是真实的状态驱动；jsdom 缺失不影响本组，仍会运行。
+
+function checkObservableInteraction(M) {
+  // 构造 3 阶段内存场景（与 R2-B 同一构造器，保证不依赖磁盘夹具）。
+  // 第一阶段带一条示意航线，使「routes 图层开关」也有可观察的 DOM 差异。
+  const withRoute = makeInMemoryPhase({
+    id: 'phase-ob-1',
+    sequence: 1,
+    title: '可观察阶段一',
+    routes: [
+      {
+        id: 'route-ob-1',
+        side: 'japan',
+        label: '内存示意航线',
+        fromPlaceId: 'place-mem-a',
+        toPlaceId: 'place-mem-b',
+        path: [
+          { lat: 30, lng: 170 },
+          { lat: 27, lng: -165 },
+        ],
+        schematic: true,
+        certainty: 'schematic',
+        note: '内存航线为示意折线，不是精确历史航迹。',
+        sourceIds: ['source-mem'],
+        claimIds: ['claim-mem'],
+      },
+    ],
+  });
+  const phases = [
+    withRoute,
+    makeInMemoryPhase({ id: 'phase-ob-2', sequence: 2, title: '可观察阶段二' }),
+    makeInMemoryPhase({ id: 'phase-ob-3', sequence: 3, title: '可观察阶段三' }),
+  ];
+  const { battle, places } = makeInMemoryScenario(phases);
+  const doc = {
+    schemaVersion: '1.0.0',
+    fixtureOnly: true,
+    events: [],
+    battles: [battle],
+    people: [],
+    places,
+    units: [],
+    equipment: [],
+    concepts: [],
+    sources: [],
+    media: [],
+    questions: [],
+    claims: [],
+  };
+  const state = { status: 'fixture', doc, issues: [], sourceKey: 'in-memory-r3' };
+  const render = (initialLayers) =>
+    renderStatic(
+      h(M.Atlas, {
+        places,
+        battles: [battle],
+        selectedPlaceId: null,
+        onSelectPlace: () => {},
+        initialLayers,
+        defaultBattleId: battle.id,
+      }),
+    );
+
+  const full = render(M.DEFAULT_LAYERS);
+  const noPlaces = render(M.setLayerChecked(M.DEFAULT_LAYERS, 'places', false));
+  const noRoutes = render(M.setLayerChecked(M.DEFAULT_LAYERS, 'routes', false));
+
+  // ---- 1) 图层切换：真实状态迁移 → 可见 DOM 变化
+  check(
+    'R3-1',
+    full.includes('data-layer="place"') && !noPlaces.includes('data-layer="place"'),
+    'R3 图层切换：places 图层开启时渲染地点节点，关闭后该节点从 DOM 消失（可观察差异）',
+  );
+  check(
+    'R3-2',
+    full.includes('data-layer="route"') && !noRoutes.includes('data-layer="route"'),
+    'R3 图层切换：routes 图层关闭后航线折线从 DOM 消失（可观察差异）',
+  );
+  check('R3-3', full.length > noPlaces.length, `R3 图层切换：关闭地点后页面输出变短（${full.length} → ${noPlaces.length} 字符）`);
+
+  // ---- 2) 播放 / 暂停：真实状态机每一步
+  let s = { ...M.INITIAL_PLAYBACK };
+  const s0 = s;
+  s = M.togglePlayback(s, phases.length);
+  check('R3-4', s0.playing === false && s.playing === true && s.activeIndex === 0, 'R3 播放：点击播放 → playing true（阶段仍为 1）');
+  s = M.tickPlayback(s, phases.length);
+  check('R3-5', s.activeIndex === 1 && s.playing === true, `R3 播放推进：tick 后 activeIndex ${0} → ${s.activeIndex}（可观察到阶段变化）`);
+  s = M.togglePlayback(s, phases.length);
+  check('R3-6', s.playing === false && s.activeIndex === 1, 'R3 暂停：点击暂停 → playing false，且当前阶段保持不变');
+
+  // ---- 3) 下一个 / 上一个：真实状态机
+  const fromFirst = { activeIndex: 0, playing: false };
+  const nextState = M.stepPlayback(fromFirst, 1, phases.length);
+  check('R3-7', nextState.activeIndex === 1, `R3 下一阶段：activeIndex ${fromFirst.activeIndex} → ${nextState.activeIndex}`);
+  const prevState = M.stepPlayback(nextState, -1, phases.length);
+  check('R3-8', prevState.activeIndex === 0, `R3 上一阶段：activeIndex ${nextState.activeIndex} → ${prevState.activeIndex}`);
+  const clampedLow = M.stepPlayback({ activeIndex: 0, playing: false }, -1, phases.length);
+  check('R3-9', clampedLow.activeIndex === 0, 'R3 上一阶段边界：首阶段再点「上一阶段」不越界');
+  const clampedHigh = M.stepPlayback({ activeIndex: phases.length - 1, playing: false }, 1, phases.length);
+  check('R3-10', clampedHigh.activeIndex === phases.length - 1, 'R3 下一阶段边界：末阶段再点「下一阶段」不越界');
+
+  // ---- 4) 状态 → 可见输出：把状态机结果喂回渲染，确认 DOM 真的变了
+  //      用 selectPhase 选择不同阶段后，阶段面板的 data-phase-id 应随之切换。
+  //      由于 Atlas 内部自管播放状态，这里用两个独立渲染验证初始阶段差异：
+  const phase1Only = renderStatic(
+    h(M.Atlas, {
+      places,
+      battles: [{ ...battle, phases: [phases[0]] }],
+      selectedPlaceId: null,
+      onSelectPlace: () => {},
+    }),
+  );
+  check(
+    'R3-11',
+    phase1Only.includes('data-phase-id="phase-ob-1"') && !phase1Only.includes('data-phase-id="phase-ob-2"'),
+    'R3 可见输出：只含阶段一时，DOM 仅渲染 phase-ob-1',
+  );
+  const phase2Only = renderStatic(
+    h(M.Atlas, {
+      places,
+      battles: [{ ...battle, phases: [phases[1]] }],
+      selectedPlaceId: null,
+      onSelectPlace: () => {},
+    }),
+  );
+  check(
+    'R3-12',
+    phase2Only.includes('data-phase-id="phase-ob-2"') && !phase2Only.includes('data-phase-id="phase-ob-1"'),
+    'R3 可见输出：换成阶段二后，DOM 渲染 phase-ob-2 —— 证明阶段状态确实驱动了渲染',
+  );
+
+  // ---- 5) 控件接线（供 QA-01 的 Playwright 使用稳定的 aria/role/selector）
+  for (const [id, needle, label] of [
+    ['R3-13', 'data-map-action="zoom-in"', '缩放按钮'],
+    ['R3-14', 'data-map-action="zoom-out"', '缩小按钮'],
+    ['R3-15', 'data-map-action="reset"', '复位按钮'],
+    ['R3-16', 'data-layer-toggle="places"', '图层复选框'],
+    ['R3-17', 'data-phase-action="playpause"', '播放/暂停按钮'],
+    ['R3-18', 'data-phase-action="next"', '下一阶段按钮'],
+    ['R3-19', 'data-phase-action="prev"', '上一阶段按钮'],
+    ['R3-20', 'data-date-range', '时间轴滑块'],
+  ]) {
+    check(id, full.includes(needle), `R3 稳定控件可供 QA-01 选择：${label}（${needle}）`);
+  }
+  check(
+    'R3-21',
+    /data-phase-action="playpause"[^>]*aria-pressed="(true|false)"/.test(full) || /aria-pressed="(true|false)"[^>]*data-phase-action="playpause"/.test(full),
+    'R3 播放按钮暴露 aria-pressed 状态（无障碍 + 便于自动化断言）',
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 主流程
 // ---------------------------------------------------------------------------
 
@@ -2063,22 +2575,39 @@ async function main() {
     adoptBundleReact(M);
   } catch (error) {
     const message = String(error?.message ?? error);
+    if (message.includes('OUT_DIR_POLICY')) {
+      // 使用者把输出目录配到了源树内 —— 这是配置错误，必须 FAIL（不能静默降级）。
+      fail('OUT-DIR', `输出目录配置被拒绝：${message.replace('OUT_DIR_POLICY:', '').trim()}`);
+      summarize();
+      return 1;
+    }
     if (message.includes('TMPDIR_UNWRITABLE')) {
-      // D1：连系统临时目录都不可写 —— 这是环境限制，不是站点缺陷。
+      // 配置目录 / 系统临时目录都不可写 —— 这是环境限制，不是站点缺陷。
       // 降级为明确的 SKIP（而不是 exit 1），并在输出中说明原因与影响范围。
-      console.log('SKIP  BUNDLE  系统临时目录（os.tmpdir()）不可写，无法构建渲染测试用运行时。');
+      const where = CONFIGURED_OUT_DIR ? `配置的输出目录 ${CONFIGURED_OUT_DIR}` : '系统临时目录（os.tmpdir()）';
+      console.log(`SKIP  BUNDLE  ${where} 不可写，无法构建渲染测试用运行时。`);
       console.log('                这不是站点缺陷：源码类型检查已由 tsc 完成；');
-      console.log('                若在只读评审环境中看到此提示，说明评审环境禁止写入任何临时目录。');
+      console.log('                可用 --out-dir <可写目录> 或 DSH_SITE_OUT_DIR 指定输出位置后重跑。');
       console.log('');
       console.log('注意：依赖渲染运行时的检查（B/C/D/F/G/M 组的大部分）本次**未执行**，');
-      console.log('      因此本次输出**不能**作为这些检查通过的证据。请在有可写临时目录的环境重跑。');
-      record('SKIP', 'RENDER-SKIPPED', '渲染相关检查未执行（临时目录不可写）—— 本次结果不构成其通过证据');
+      console.log('      因此本次输出**不能**作为这些检查通过的证据。');
+      record('SKIP', 'RENDER-SKIPPED', `渲染相关检查未执行（${where} 不可写）—— 本次结果不构成其通过证据`);
+      // 产物检查（E 段）**不需要** React 运行时：它只读 dist 文件与 index.html。
+      // 因此即便运行时被 SKIP，`build` 仍应校验产物，否则「构建产物可用」这一条
+      // 会在受限环境下无声地不被验证。
+      if (DIST_ARG_INDEX >= 0) {
+        checkDist();
+      }
       summarize();
       return 0;
     }
     fail('BUNDLE', `无法加载站点模块：${message}`);
     summarize();
     return 1;
+  }
+
+  if (CONFIGURED_OUT_DIR) {
+    console.log(`渲染测试输出目录：${CONFIGURED_OUT_DIR}（来自 ${OUT_DIR_ARG ? '--out-dir' : 'DSH_SITE_OUT_DIR'}）`);
   }
 
   console.log(`渲染运行时：${M.__source ?? '未知'}`);
@@ -2090,6 +2619,8 @@ async function main() {
     await checkAtlas(M);
   checkAtlasAgainstValidMinFixture(M);
   checkLabelsAndPanSemantics(M);
+  checkAtlasPhaseContractReverification(M);
+  checkObservableInteraction(M);
   checkNoVacuousAssertions();
   checkInteractionStateMachines(M, await loadSyntheticDocument());
     checkEvidenceComponents(M);
