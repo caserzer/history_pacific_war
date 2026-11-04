@@ -1,0 +1,182 @@
+[
+  {
+    "id": "HIST-BACKGROUND",
+    "description": "战争背景、侵略、资源、禁运与双方决策",
+    "scope": "local"
+  },
+  {
+    "id": "HIST-EXPANSION",
+    "description": "全部早期扩张事件及补给限制",
+    "scope": "local"
+  },
+  {
+    "id": "BATTLE-PEARL",
+    "description": "珍珠港十四类深度分析",
+    "scope": "local"
+  },
+  {
+    "id": "BATTLE-CORAL",
+    "description": "珊瑚海十四类深度分析",
+    "scope": "local"
+  },
+  {
+    "id": "BATTLE-MIDWAY",
+    "description": "中途岛十四类深度分析及战略争议",
+    "scope": "local"
+  },
+  {
+    "id": "PEOPLE-DEPTH",
+    "description": "山本、南云、尼米兹、斯普鲁恩斯、弗莱彻的决策型人物档案",
+    "scope": "local"
+  },
+  {
+    "id": "CONCEPTS-DEPTH",
+    "description": "航母、舰载机、雷达、补给、密码分析、海军航空作战分层解释",
+    "scope": "local"
+  },
+  {
+    "id": "QUESTIONS-DEPTH",
+    "description": "五大历史部分均有证据支持的探究问题和答案",
+    "scope": "local"
+  },
+  {
+    "id": "CONTENT-AGE",
+    "description": "11 岁可读、术语分层、非血腥但不回避平民苦难与战争罪行",
+    "scope": "local"
+  },
+  {
+    "id": "CONTENT-EVIDENCE",
+    "description": "日期、数量、观点和判断可追溯到来源及定位",
+    "scope": "local"
+  },
+  {
+    "id": "CONTENT-UNCERTAINTY",
+    "description": "事实、解释、争议、教学简化明确区分",
+    "scope": "local"
+  },
+  {
+    "id": "MEDIA-COVERAGE",
+    "description": "每篇重点文章的适当图解及媒体矩阵",
+    "scope": "local"
+  },
+  {
+    "id": "MEDIA-LICENSE",
+    "description": "每个素材作者、来源、许可及署名",
+    "scope": "local"
+  },
+  {
+    "id": "ROUTES-SIX",
+    "description": "六种阅读入口共享内容并非空",
+    "scope": "local"
+  },
+  {
+    "id": "ROUTES-LINKS",
+    "description": "时间、地点、人物、事件互链和当前上下文",
+    "scope": "local"
+  },
+  {
+    "id": "UI-CITATIONS",
+    "description": "正文展示事实类型、来源、定位与争议信息",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-OFFLINE",
+    "description": "本地无商业 Key 基础地图，无外部瓦片依赖",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-NAVIGATION",
+    "description": "缩放、平移、键盘触摸、地点与图层",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-GEOGRAPHY",
+    "description": "重要节点、历史现代地名、图例及近似比例尺",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-TIMELINE",
+    "description": "时间线选择和地图联动",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-PHASES",
+    "description": "三场关键战役的阶段、播放暂停与前后操作",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-INTELLIGENCE",
+    "description": "阶段展示双方已知与未知敌情、情报约束",
+    "scope": "local"
+  },
+  {
+    "id": "MAP-DECISIONS",
+    "description": "阶段展示时间、双方位置、行动、决策与后果及不确定性",
+    "scope": "local"
+  },
+  {
+    "id": "VISUAL-DESIGN",
+    "description": "档案馆海军地图视觉、一致排版及响应式",
+    "scope": "local"
+  },
+  {
+    "id": "A11Y-DEVICES",
+    "description": "桌面、手机、平板、Chromium/WebKit、键盘触摸和 reduced-motion",
+    "scope": "local"
+  },
+  {
+    "id": "A11Y-AUDIT",
+    "description": "axe 严重缺陷为零并核对对比度",
+    "scope": "local"
+  },
+  {
+    "id": "PERFORMANCE",
+    "description": "JS/CSS gzip<=500KiB，历史 JSON<=1.5MiB，核心资产<=3MiB",
+    "scope": "local"
+  },
+  {
+    "id": "ENGINEERING-TYPES",
+    "description": "TypeScript 检查、内容和组件分离",
+    "scope": "local"
+  },
+  {
+    "id": "ENGINEERING-CONTENT",
+    "description": "内容 schema、阶段验证与真实负例",
+    "scope": "local"
+  },
+  {
+    "id": "ENGINEERING-LINKS",
+    "description": "链接、资源、来源和许可校验",
+    "scope": "local"
+  },
+  {
+    "id": "ENGINEERING-BROWSER",
+    "description": "关键交互真实浏览器回归",
+    "scope": "local"
+  },
+  {
+    "id": "ENGINEERING-BUILD",
+    "description": "Node24静态构建与仓库子路径",
+    "scope": "local"
+  },
+  {
+    "id": "MAINTENANCE",
+    "description": "内容维护、来源许可、部署、扩展与简化说明",
+    "scope": "local"
+  },
+  {
+    "id": "TEAM-PILOT",
+    "description": "双线管理、门禁、隔离、中断恢复与审查审计证据",
+    "scope": "local"
+  },
+  {
+    "id": "RELEASE-CI",
+    "description": "远程目标提交的构建与部署工作流实际成功",
+    "scope": "release"
+  },
+  {
+    "id": "RELEASE-PAGES",
+    "description": "Pages URL 及子路径关键资产实际可访问",
+    "scope": "release"
+  }
+]

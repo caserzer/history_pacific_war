@@ -1,0 +1,363 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixtureOnly": true,
+  "events": [
+    {
+      "id": "event-overview-part-1-why-war",
+      "title": "战争为什么爆发：导读",
+      "historicalPart": "part-1-why-war",
+      "eventType": "background",
+      "startDate": "1931-09-18",
+      "endDate": "1941-12-07",
+      "summary": "测试样本：用四个小节展示第一部分导读的字段和证据关联，不代替正式历史文章。",
+      "article": [
+        {
+          "heading": "日本扩张与资源依赖",
+          "body": "20世纪30年代，日本军部不断扩大在中国大陆的侵略战争。战争需要石油、钢铁和机械，而日本本土能提供的资源有限，许多关键原料要从海外进口。1941年，美国国务院的一份内部文件把石油称为日本不可缺少的进口品，同时讨论限制出口会给日本和出口国带来什么影响。资源依赖并没有自动导致战争，但它让日本领导层把“取得稳定资源”与“排除美国干涉”放在同一张战略桌面上，也让每一次外交谈判都带着军事倒计时的压力。",
+          "sourceIds": ["source-frus-1941-v04", "source-jacar-imperial-conference-1941"],
+          "claimIds": ["claim-japan-imports-oil", "claim-japan-expands-china"]
+        },
+        {
+          "heading": "美国禁运与战略困境",
+          "body": "美国对日本侵华的反应逐步从口头抗议走向经济压力。1940年至1941年间，美国限制航空汽油等出口，冻结日本在美资产，并在谈判中要求日本从中国撤军。对日本来说，这些措施触及燃料与战争持续能力；对美国来说，既想阻止日本扩张，又担心逼得太紧会加速战争。双方都在试探：日本希望用谈判争取时间，美国希望用压力迫使日本退让。到1941年11月，谈判仍未解决核心分歧，日本领导层开始把对美英荷开战当作一条现实选项。",
+          "sourceIds": ["source-frus-1941-v04", "source-jacar-imperial-conference-1941"],
+          "claimIds": ["claim-japan-imports-oil", "claim-imperial-conference-war"]
+        },
+        {
+          "heading": "为什么选择袭击珍珠港",
+          "body": "日本军方把美国太平洋舰队视为西太平洋行动的最大障碍。1941年12月1日，日本御前会议决定对美国、英国和荷兰开战。袭击珍珠港的计划试图用突然性削弱美国舰队，为日本向南夺取资源争取时间。但突然袭击也有风险：它可能把原本分裂的美国舆论迅速团结起来，让美国以工业能力投入长期战争。因此，珍珠港不是“日本已经赢定”的证明，而是一场把战术时机与战略风险放在一起的赌博。",
+          "sourceIds": ["source-jacar-imperial-conference-1941", "source-nara-infamy"],
+          "claimIds": ["claim-imperial-conference-war", "claim-pearl-attack-date"]
+        },
+        {
+          "heading": "美国为何没有及时防范",
+          "body": "珍珠港并非完全没有预警设备。12月7日清晨，欧帕纳雷达站的士兵在7时02分发现大批飞机，并向信息中心报告；值班军官把雷达回波判断为预定抵达的B-17轰炸机，没有发出警报。这个细节不能解释一切，但它说明预警链条需要“发现—识别—判断—传递”每一步都成立。把失败简单归为某一个人的疏忽，会忽略当时的训练、通信和情报判断条件。历史研究更关心的是：为什么多个环节同时没有把异常变成有效行动。",
+          "sourceIds": ["source-nps-opana-radar", "source-nara-infamy"],
+          "claimIds": ["claim-opana-warning", "claim-pearl-attack-date"]
+        }
+      ],
+      "placeIds": ["place-pearl-harbor", "place-tokyo", "place-washington-dc"],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "relatedEventIds": [
+        "event-japan-expansion-china",
+        "event-us-oil-embargo-1941",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04",
+        "source-nara-infamy",
+        "source-jacar-imperial-conference-1941",
+        "source-nps-opana-radar"
+      ],
+      "claimIds": [
+        "claim-japan-imports-oil",
+        "claim-japan-expands-china",
+        "claim-imperial-conference-war",
+        "claim-pearl-attack-date",
+        "claim-opana-warning"
+      ]
+    },
+    {
+      "id": "event-japan-expansion-china",
+      "title": "日本扩大侵华战争",
+      "historicalPart": "part-1-why-war",
+      "eventType": "background",
+      "startDate": "1937-07-07",
+      "endDate": "1941-12-07",
+      "summary": "测试样本：说明日本侵华战争如何成为太平洋战争的重要背景，并连接资源与战略困境。",
+      "article": [
+        {
+          "heading": "侵略战争扩大",
+          "body": "1937年以后，日本在中国的作战规模不断扩大，占领区需要军队、运输和行政管理，战争成本持续上升。美国国务院1941年的文件仍把“继续征服中国”列为日本政策的一部分，并担心日本把这种扩张模式推向东南亚。对日本领导层来说，中国战场既是既得利益，也是难以脱身的负担。",
+          "sourceIds": ["source-frus-1941-v04"],
+          "claimIds": ["claim-japan-expands-china"]
+        },
+        {
+          "heading": "资源与战略困境",
+          "body": "长期战争消耗石油、钢铁和工业产能。日本本土资源有限，必须从海外进口关键物资。美国国务院文件把石油称为日本不可缺少的进口品，这说明资源问题不是战争之外的背景，而是影响日本判断的核心约束。资源需求可以解释日本为什么关注东南亚，却不能单独说明它为什么选择袭击美国。",
+          "sourceIds": ["source-frus-1941-v04"],
+          "claimIds": ["claim-japan-imports-oil"]
+        }
+      ],
+      "placeIds": ["place-beijing", "place-tokyo"],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "relatedEventIds": ["event-overview-part-1-why-war"],
+      "sourceIds": ["source-frus-1941-v04"],
+      "claimIds": ["claim-japan-expands-china", "claim-japan-imports-oil"]
+    },
+    {
+      "id": "event-us-oil-embargo-1941",
+      "title": "美国收紧对日经济压力",
+      "historicalPart": "part-1-why-war",
+      "eventType": "policy",
+      "startDate": "1941-07-26",
+      "endDate": "1941-12-07",
+      "summary": "测试样本：概括1941年美国对日经济压力与谈判困境，不把它简化为战争唯一原因。",
+      "article": [
+        {
+          "heading": "美国的经济压力",
+          "body": "1940年至1941年，美国逐步限制对日出口，冻结日本在美资产，并把从中国撤军等要求带入谈判。美国希望用经济压力阻止日本继续扩张，同时又担心过度施压会促使日本更快动武。对日本而言，石油等战略物资的限制触及军队持续作战的能力，谈判因此变得更为紧迫。",
+          "sourceIds": ["source-frus-1941-v04"],
+          "claimIds": ["claim-japan-imports-oil"]
+        },
+        {
+          "heading": "日本的选择空间",
+          "body": "经济压力并没有自动关闭所有选择。日本可以继续谈判、调整扩张节奏，或寻找其他石油来源，但其领导层认为这些方案不能满足安全与资源需求。1941年12月1日的御前会议最终决定对美英荷开战。理解这一决定，需要同时看到资源约束、国内政治和军方对时机的判断，而不是把禁运当作唯一原因。",
+          "sourceIds": ["source-frus-1941-v04", "source-jacar-imperial-conference-1941"],
+          "claimIds": ["claim-imperial-conference-war"]
+        }
+      ],
+      "placeIds": ["place-washington-dc", "place-tokyo"],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "relatedEventIds": ["event-overview-part-1-why-war", "event-japan-war-decision-1941"],
+      "sourceIds": ["source-frus-1941-v04", "source-jacar-imperial-conference-1941"],
+      "claimIds": ["claim-japan-imports-oil", "claim-imperial-conference-war"]
+    },
+    {
+      "id": "event-japan-war-decision-1941",
+      "title": "日本御前会议决定开战",
+      "historicalPart": "part-1-why-war",
+      "eventType": "policy",
+      "startDate": "1941-12-01",
+      "summary": "测试样本：以日本官方档案记录的开战决定为节点，连接资源困境、先发打击与战略风险。",
+      "article": [
+        {
+          "heading": "御前会议",
+          "body": "日本国立公文书馆亚洲历史资料中心公开的档案条目标题明确写着：1941年12月1日，日本对美国、英国和荷兰开战。档案说明指出，此前根据“帝国国策遂行要领”进行的对美谈判没有成立，日本因此决定开战。这说明袭击珍珠港是更大战争决定的一部分，而不是一次孤立的战术行动。",
+          "sourceIds": ["source-jacar-imperial-conference-1941"],
+          "claimIds": ["claim-imperial-conference-war"]
+        },
+        {
+          "heading": "先发打击的逻辑与风险",
+          "body": "日本军方希望通过突然打击削弱美国太平洋舰队，为向南夺取资源争取时间。但先发打击并没有消除美国的工业能力，也可能让美国社会迅速团结。1941年12月7日的珍珠港袭击确实造成了突然性，却没有摧毁美国航母等关键力量。评价这个决定，必须把日本当时掌握的信息与后来的结果分开。",
+          "sourceIds": ["source-jacar-imperial-conference-1941", "source-nara-infamy"],
+          "claimIds": ["claim-pearl-attack-date"]
+        }
+      ],
+      "placeIds": ["place-tokyo"],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "relatedEventIds": ["event-overview-part-1-why-war", "event-us-oil-embargo-1941"],
+      "sourceIds": ["source-jacar-imperial-conference-1941", "source-nara-infamy"],
+      "claimIds": ["claim-imperial-conference-war", "claim-pearl-attack-date"]
+    }
+  ],
+  "battles": [],
+  "people": [],
+  "places": [
+    {
+      "id": "place-pearl-harbor",
+      "historicalName": "珍珠港（Pearl Harbor）",
+      "modernName": "珍珠港",
+      "modernCountry": "美国",
+      "placeType": "naval-base",
+      "summary": "夏威夷瓦胡岛南岸的海军基地，1941年12月7日遭日本海军航空兵袭击。",
+      "coordinates": { "lat": 21.3527, "lng": -157.95 },
+      "coordinateAccuracyKm": 2,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": ["source-nara-infamy", "source-nps-opana-radar"],
+      "claimIds": ["claim-pearl-attack-date", "claim-opana-warning"]
+    },
+    {
+      "id": "place-tokyo",
+      "historicalName": "东京",
+      "modernName": "东京",
+      "modernCountry": "日本",
+      "placeType": "capital",
+      "summary": "日本帝国首都与政治军事决策中心，1941年御前会议在此作出开战决定。",
+      "coordinates": { "lat": 35.6762, "lng": 139.6503 },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": ["source-jacar-imperial-conference-1941", "source-frus-1941-v04"],
+      "claimIds": ["claim-imperial-conference-war", "claim-japan-imports-oil"]
+    },
+    {
+      "id": "place-washington-dc",
+      "historicalName": "华盛顿哥伦比亚特区",
+      "modernName": "华盛顿哥伦比亚特区",
+      "modernCountry": "美国",
+      "placeType": "capital",
+      "summary": "美国首都，1941年美日谈判和对日经济政策的重要决策地点。",
+      "coordinates": { "lat": 38.9072, "lng": -77.0369 },
+      "coordinateAccuracyKm": 3,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": ["source-frus-1941-v04"],
+      "claimIds": ["claim-japan-imports-oil"]
+    },
+    {
+      "id": "place-beijing",
+      "historicalName": "北平",
+      "modernName": "北京",
+      "modernCountry": "中国",
+      "placeType": "city",
+      "summary": "中国华北城市；1937年后处于日本侵华战争的占领与作战背景下。",
+      "coordinates": { "lat": 39.9042, "lng": 116.4074 },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": ["source-frus-1941-v04"],
+      "claimIds": ["claim-japan-expands-china"]
+    }
+  ],
+  "units": [],
+  "equipment": [],
+  "concepts": [],
+  "sources": [
+    {
+      "id": "source-frus-1941-v04",
+      "title": "Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV, Document 602",
+      "creator": "United States Department of State, Office of the Historian",
+      "publisher": "U.S. Government Publishing Office",
+      "year": 1956,
+      "sourceType": "primary-document",
+      "url": "https://history.state.gov/historicaldocuments/frus1941v04/d602",
+      "accessedDate": "2026-11-04",
+      "citation": "United States Department of State, Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV (Washington, DC: U.S. Government Printing Office, 1956), Document 602, pp. 777–779.",
+      "reliabilityNote": "美国国务院官方历史文献系列，属于同时代政府文件；用于说明1941年美国对日本石油依赖与出口限制的判断，不把它当作唯一解释。",
+      "language": "en",
+      "archiveCollectionId": "frus1941v04/d602"
+    },
+    {
+      "id": "source-nara-infamy",
+      "title": "'A Date Which Will Live in Infamy': The First Typed Draft of Franklin D. Roosevelt's War Address",
+      "creator": "U.S. National Archives and Records Administration",
+      "publisher": "U.S. National Archives and Records Administration",
+      "year": 2019,
+      "sourceType": "archive",
+      "url": "https://www.archives.gov/education/lessons/day-of-infamy",
+      "accessedDate": "2026-11-04",
+      "citation": "U.S. National Archives and Records Administration, \"'A Date Which Will Live in Infamy': The First Typed Draft of Franklin D. Roosevelt's War Address,\" Educator Resources, last reviewed December 12, 2019.",
+      "reliabilityNote": "美国国家档案馆教育页面，提供罗斯福战时演说与对日宣战的时间背景；具体战斗损失数字不由此页承担，需另引官方战斗叙事。",
+      "language": "en"
+    },
+    {
+      "id": "source-jacar-imperial-conference-1941",
+      "title": "December 1, 1941 Outbreak of war against the U.S., Britain and the Netherlands",
+      "creator": "Imperial Conference of Japan",
+      "publisher": "Japan Center for Asian Historical Records, National Archives of Japan",
+      "year": 1941,
+      "sourceType": "archive",
+      "url": "https://www.jacar.archives.go.jp/das/meta-en/C12120240100",
+      "accessedDate": "2026-11-04",
+      "citation": "Imperial Conference of Japan, “December 1, 1941 Outbreak of war against the U.S., Britain and the Netherlands,” JACAR Ref. C12120240100, National Institute for Defense Studies, Ministry of Defense.",
+      "reliabilityNote": "日本官方档案目录及说明，用于确认御前会议开战决定的日期与文本；2026-11-04 实测可读取，Contents 字段为日文原文，目录英文说明不等于完整翻译，正式引用时应并列原档。",
+      "language": "ja/en",
+      "archiveCollectionId": "C12120240100"
+    },
+    {
+      "id": "source-nps-opana-radar",
+      "title": "Opana Mobile Radar Site",
+      "creator": "U.S. National Park Service, Pearl Harbor National Memorial",
+      "publisher": "U.S. National Park Service",
+      "year": 2024,
+      "sourceType": "official-history",
+      "url": "https://www.nps.gov/perl/learn/historyculture/opana-mobile-radar-site.htm",
+      "accessedDate": "2026-11-04",
+      "citation": "U.S. National Park Service, Pearl Harbor National Memorial, “Opana Mobile Radar Site,” last updated September 25, 2024.",
+      "reliabilityNote": "美国国家公园管理局官方历史页面，依据雷达站与信息中心记录概述预警过程；2026-11-04 实测可读取，含 07:02/07:06/07:15/07:23/07:45/07:50 分钟序列；对“错过警报”的解释仍需结合指挥与通信研究。",
+      "language": "en"
+    }
+  ],
+  "media": [],
+  "questions": [
+    {
+      "id": "question-fixture-why-war",
+      "historicalPart": "part-1-why-war",
+      "prompt": "日本为什么在1941年选择对美国开战？",
+      "answer": "日本在1941年选择对美开战，不是由单一原因造成的。第一，日本在中国大陆的侵略战争需要大量石油、钢铁和运输能力，而本土资源不足。第二，美国在1941年逐步收紧对日经济压力，围绕石油等战略物资的限制成为谈判焦点，日本领导层担心军队持续作战的能力受到威胁。第三，日本军方把美国太平洋舰队视为向南扩张的主要障碍，希望用突然打击争取时间。1941年12月1日的御前会议决定对美英荷开战，12月7日的珍珠港袭击把这一决定变成战争。需要区分的是：资源依赖和禁运是重要条件，但不能单独证明日本“只能”开战；日本仍有继续谈判、收缩战线等选项，只是其领导层认为这些选项代价更高。评价这一决策时，还要看到它没有摧毁美国航母和工业能力，反而促使美国全面参战。",
+      "entityIds": [
+        "event-overview-part-1-why-war",
+        "event-us-oil-embargo-1941",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": ["source-frus-1941-v04", "source-jacar-imperial-conference-1941", "source-nara-infamy"],
+      "claimIds": ["claim-japan-imports-oil", "claim-imperial-conference-war", "claim-pearl-attack-date"]
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-japan-imports-oil",
+      "text": "1941年，美国国务院的一份文件把石油称为日本不可缺少的进口品，并指出限制对日出口会同时影响双方经济。",
+      "claimType": "fact",
+      "entityIds": ["event-us-oil-embargo-1941", "place-tokyo"],
+      "sourceIds": ["source-frus-1941-v04"],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04",
+          "locatorType": "page-range",
+          "locator": "Document 602, pp. 777–779"
+        }
+      ]
+    },
+    {
+      "id": "claim-japan-expands-china",
+      "text": "美国国务院1941年文件记录，日本仍在继续征服中国的战争，并把向东南亚扩张视为可能的新行动。",
+      "claimType": "fact",
+      "entityIds": ["event-japan-expansion-china", "place-beijing"],
+      "sourceIds": ["source-frus-1941-v04"],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04",
+          "locatorType": "page-range",
+          "locator": "Document 602, p. 779"
+        }
+      ]
+    },
+    {
+      "id": "claim-imperial-conference-war",
+      "text": "1941年12月1日，日本御前会议决定对美国、英国和荷兰开战。",
+      "claimType": "fact",
+      "entityIds": ["event-japan-war-decision-1941", "event-us-oil-embargo-1941", "place-tokyo"],
+      "sourceIds": ["source-jacar-imperial-conference-1941"],
+      "locators": [
+        {
+          "sourceId": "source-jacar-imperial-conference-1941",
+          "locatorType": "archival-item",
+          "locator": "Reference Code C12120240100, item Contents"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-attack-date",
+      "text": "1941年12月7日，日本海军航空兵袭击珍珠港；美国随后对日宣战。",
+      "claimType": "fact",
+      "entityIds": ["event-overview-part-1-why-war", "event-japan-war-decision-1941", "place-pearl-harbor"],
+      "sourceIds": ["source-nara-infamy"],
+      "locators": [
+        {
+          "sourceId": "source-nara-infamy",
+          "locatorType": "section-paragraph",
+          "locator": "Background, paragraphs 1–2"
+        }
+      ]
+    },
+    {
+      "id": "claim-opana-warning",
+      "text": "1941年12月7日清晨，欧帕纳雷达站发现来袭飞机并向信息中心报告，但值班军官把回波判断为预定抵达的轰炸机。",
+      "claimType": "fact",
+      "entityIds": ["event-overview-part-1-why-war", "place-pearl-harbor"],
+      "sourceIds": ["source-nps-opana-radar"],
+      "locators": [
+        {
+          "sourceId": "source-nps-opana-radar",
+          "locatorType": "section-paragraph",
+          "locator": "The Missed Warning at Opana Radar Site, paragraphs 1–2"
+        }
+      ]
+    }
+  ]
+}

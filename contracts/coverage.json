@@ -1,0 +1,591 @@
+{
+  "schemaVersion": "1.0.0",
+  "stageOrder": ["strategy", "background", "pearl", "coral", "full"],
+  "stages": [
+    {
+      "id": "strategy",
+      "histTask": "HIST-00",
+      "title": "战略背景与基础",
+      "summary": "建立战争背景、侵略与资源禁运、双方战略困境的基础叙述。",
+      "requiredQuestionParts": ["part-1-why-war"]
+    },
+    {
+      "id": "background",
+      "histTask": "HIST-01",
+      "title": "日本快速扩张",
+      "summary": "增加香港、马来亚与新加坡、菲律宾、荷属东印度、威克岛、关岛、达尔文、印度洋等早期扩张内容及补给限制。",
+      "requiredQuestionParts": ["part-1-why-war", "part-3-expansion"]
+    },
+    {
+      "id": "pearl",
+      "histTask": "HIST-02",
+      "title": "珍珠港与战争爆发",
+      "summary": "增加珍珠港十四类分析、山本与南云档案，以及航母、舰载机、海军航空作战基础专题。",
+      "requiredQuestionParts": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion"]
+    },
+    {
+      "id": "coral",
+      "histTask": "HIST-03",
+      "title": "战局开始变化",
+      "summary": "增加美军早期航母行动、杜立特空袭、珊瑚海与莫尔兹比港、弗莱彻档案、雷达与密码分析专题。",
+      "requiredQuestionParts": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point"]
+    },
+    {
+      "id": "full",
+      "histTask": "HIST-04",
+      "title": "中途岛与全量交付",
+      "summary": "增加中途岛十四类分析、尼米兹与斯普鲁恩斯档案、补给专题，交付全部重点文章、五部分问题与最终门禁。",
+      "requiredQuestionParts": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+    }
+  ],
+  "historicalParts": [
+    {
+      "id": "part-1-why-war",
+      "title": "第一部分：战争为什么爆发",
+      "questionStage": "strategy"
+    },
+    {
+      "id": "part-2-pearl-harbor",
+      "title": "第二部分：珍珠港与战争爆发",
+      "questionStage": "pearl"
+    },
+    {
+      "id": "part-3-expansion",
+      "title": "第三部分：日本的快速扩张",
+      "questionStage": "background"
+    },
+    {
+      "id": "part-4-turning-point",
+      "title": "第四部分：战局开始发生变化",
+      "questionStage": "coral"
+    },
+    {
+      "id": "part-5-midway",
+      "title": "第五部分：中途岛海战",
+      "questionStage": "full"
+    }
+  ],
+  "battleSectionKeys": [
+    { "key": "background", "title": "背景" },
+    { "key": "geography", "title": "地理环境" },
+    { "key": "participants", "title": "主要参与方" },
+    { "key": "commanders", "title": "主要指挥官" },
+    { "key": "forces", "title": "双方军力对比" },
+    { "key": "objectives", "title": "各自战略目标" },
+    { "key": "constraints", "title": "决策约束" },
+    { "key": "plan", "title": "作战计划" },
+    { "key": "course", "title": "战斗经过" },
+    { "key": "decisions", "title": "关键决策" },
+    { "key": "results", "title": "结果与损失" },
+    { "key": "aftermath", "title": "后续影响" },
+    { "key": "controversies", "title": "历史争议" },
+    { "key": "furtherReading", "title": "延伸阅读" }
+  ],
+  "battleSectionMinHanChars": 160,
+  "questionMinimumAnswerHanChars": 160,
+  "questionMinimumEntityRefs": 2,
+  "keyArticleIds": [
+    "event-overview-part-1-why-war",
+    "event-overview-part-3-expansion",
+    "event-overview-part-2-pearl-harbor",
+    "battle-pearl-harbor",
+    "person-yamamoto-isoroku",
+    "person-nagumo-chuichi",
+    "concept-aircraft-carrier",
+    "concept-carrier-aircraft",
+    "concept-naval-aviation",
+    "event-overview-part-4-turning-point",
+    "battle-coral-sea",
+    "person-fletcher-frank-jack",
+    "concept-radar",
+    "concept-codebreaking",
+    "event-overview-part-5-midway",
+    "battle-midway",
+    "person-nimitz-chester",
+    "person-spruance-raymond",
+    "concept-logistics"
+  ],
+  "requiredMediaTypes": {
+    "event-overview-part-1-why-war": ["map"],
+    "event-overview-part-3-expansion": ["map"],
+    "event-overview-part-2-pearl-harbor": ["map"],
+    "battle-pearl-harbor": ["battle-map", "photograph"],
+    "person-yamamoto-isoroku": ["portrait"],
+    "person-nagumo-chuichi": ["portrait"],
+    "concept-aircraft-carrier": ["diagram"],
+    "concept-carrier-aircraft": ["diagram"],
+    "concept-naval-aviation": ["diagram"],
+    "event-overview-part-4-turning-point": ["map"],
+    "battle-coral-sea": ["battle-map", "photograph"],
+    "person-fletcher-frank-jack": ["portrait"],
+    "concept-radar": ["diagram"],
+    "concept-codebreaking": ["diagram"],
+    "event-overview-part-5-midway": ["map"],
+    "battle-midway": ["battle-map", "photograph"],
+    "person-nimitz-chester": ["portrait"],
+    "person-spruance-raymond": ["portrait"],
+    "concept-logistics": ["diagram"]
+  },
+  "keyArticles": [
+    {
+      "id": "event-overview-part-1-why-war",
+      "kind": "part-overview",
+      "entityType": "event",
+      "stage": "strategy",
+      "titleZh": "战争为什么爆发：导读",
+      "minimumDepth": {
+        "articleSections": 4,
+        "hanChars": 600,
+        "sourceIds": 3,
+        "claimIds": 3,
+        "placeIds": 2
+      },
+      "requiredArticleHeadings": [
+        "日本扩张与资源依赖",
+        "美国禁运与战略困境",
+        "为什么选择袭击珍珠港",
+        "美国为何没有及时防范"
+      ]
+    },
+    {
+      "id": "event-overview-part-3-expansion",
+      "kind": "part-overview",
+      "entityType": "event",
+      "stage": "background",
+      "titleZh": "日本的快速扩张：导读",
+      "minimumDepth": {
+        "articleSections": 8,
+        "hanChars": 1200,
+        "sourceIds": 4,
+        "claimIds": 6,
+        "placeIds": 5
+      },
+      "requiredArticleHeadings": [
+        "香港",
+        "马来亚与新加坡",
+        "菲律宾、巴丹与科雷希多尔",
+        "荷属东印度与石油",
+        "威克岛与关岛",
+        "达尔文与印度洋",
+        "盟军为何连续失败",
+        "日本的补给与防御压力"
+      ]
+    },
+    {
+      "id": "event-overview-part-2-pearl-harbor",
+      "kind": "part-overview",
+      "entityType": "event",
+      "stage": "pearl",
+      "titleZh": "珍珠港与战争爆发：导读",
+      "minimumDepth": {
+        "articleSections": 5,
+        "hanChars": 900,
+        "sourceIds": 4,
+        "claimIds": 5,
+        "placeIds": 2
+      },
+      "requiredArticleHeadings": [
+        "战略目标与准备",
+        "袭击经过、损失与未毁设施",
+        "南云的决策限制",
+        "航母与战列舰的不同作用",
+        "美国参战及其后果"
+      ]
+    },
+    {
+      "id": "battle-pearl-harbor",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "pearl",
+      "titleZh": "珍珠港袭击",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 3,
+        "personIds": 3,
+        "placeIds": 2,
+        "sourceIds": 4,
+        "claimIds": 6,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "person-yamamoto-isoroku",
+      "kind": "commander-profile",
+      "entityType": "person",
+      "stage": "pearl",
+      "titleZh": "山本五十六：实力差距与先发打击",
+      "minimumDepth": {
+        "profileHanChars": 500,
+        "decisions": 3,
+        "sourceIds": 3,
+        "claimIds": 4
+      }
+    },
+    {
+      "id": "person-nagumo-chuichi",
+      "kind": "commander-profile",
+      "entityType": "person",
+      "stage": "pearl",
+      "titleZh": "南云忠一：有限信息下的航母指挥",
+      "minimumDepth": {
+        "profileHanChars": 500,
+        "decisions": 3,
+        "sourceIds": 3,
+        "claimIds": 3
+      }
+    },
+    {
+      "id": "concept-aircraft-carrier",
+      "kind": "concept-article",
+      "entityType": "concept",
+      "stage": "pearl",
+      "titleZh": "航空母舰是什么",
+      "minimumDepth": {
+        "layers": 3,
+        "hanChars": 600,
+        "sourceIds": 2,
+        "claimIds": 3,
+        "relatedEntityIds": 3
+      }
+    },
+    {
+      "id": "concept-carrier-aircraft",
+      "kind": "concept-article",
+      "entityType": "concept",
+      "stage": "pearl",
+      "titleZh": "舰载机如何起飞、回收与整备",
+      "minimumDepth": {
+        "layers": 3,
+        "hanChars": 600,
+        "sourceIds": 2,
+        "claimIds": 3,
+        "relatedEntityIds": 3
+      }
+    },
+    {
+      "id": "concept-naval-aviation",
+      "kind": "concept-article",
+      "entityType": "concept",
+      "stage": "pearl",
+      "titleZh": "海军航空作战：搜索、攻击与时间差",
+      "minimumDepth": {
+        "layers": 3,
+        "hanChars": 700,
+        "sourceIds": 2,
+        "claimIds": 3,
+        "relatedEntityIds": 3
+      }
+    },
+    {
+      "id": "event-overview-part-4-turning-point",
+      "kind": "part-overview",
+      "entityType": "event",
+      "stage": "coral",
+      "titleZh": "战局开始变化：导读",
+      "minimumDepth": {
+        "articleSections": 5,
+        "hanChars": 850,
+        "sourceIds": 4,
+        "claimIds": 5,
+        "placeIds": 3
+      },
+      "requiredArticleHeadings": [
+        "美国航母的早期行动",
+        "杜立特空袭",
+        "珊瑚海、莫尔兹比港与澳大利亚方向",
+        "航母作战方式的变化",
+        "日本为何转向中途岛"
+      ]
+    },
+    {
+      "id": "battle-coral-sea",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "coral",
+      "titleZh": "珊瑚海海战",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 4,
+        "personIds": 3,
+        "placeIds": 2,
+        "sourceIds": 4,
+        "claimIds": 6,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "person-fletcher-frank-jack",
+      "kind": "commander-profile",
+      "entityType": "person",
+      "stage": "coral",
+      "titleZh": "弗莱彻：珊瑚海上的风险权衡",
+      "minimumDepth": {
+        "profileHanChars": 500,
+        "decisions": 3,
+        "sourceIds": 3,
+        "claimIds": 3
+      }
+    },
+    {
+      "id": "concept-radar",
+      "kind": "concept-article",
+      "entityType": "concept",
+      "stage": "coral",
+      "titleZh": "雷达：看见看不见的敌人",
+      "minimumDepth": {
+        "layers": 3,
+        "hanChars": 550,
+        "sourceIds": 2,
+        "claimIds": 3,
+        "relatedEntityIds": 3
+      }
+    },
+    {
+      "id": "concept-codebreaking",
+      "kind": "concept-article",
+      "entityType": "concept",
+      "stage": "coral",
+      "titleZh": "密码分析：从碎片到判断",
+      "minimumDepth": {
+        "layers": 3,
+        "hanChars": 650,
+        "sourceIds": 2,
+        "claimIds": 4,
+        "relatedEntityIds": 3
+      }
+    },
+    {
+      "id": "event-overview-part-5-midway",
+      "kind": "part-overview",
+      "entityType": "event",
+      "stage": "full",
+      "titleZh": "中途岛海战：导读",
+      "minimumDepth": {
+        "articleSections": 8,
+        "hanChars": 1200,
+        "sourceIds": 5,
+        "claimIds": 6,
+        "placeIds": 2
+      },
+      "requiredArticleHeadings": [
+        "日本的计划与内部假设",
+        "美国情报与密码分析",
+        "双方兵力、指挥官与盲区",
+        "搜索、侦察、攻击与整备的时间差",
+        "运气、情报、组织、指挥与战术",
+        "损失、失败原因与战略争议",
+        "中途岛是否真正改变战略主动权",
+        "长期影响"
+      ]
+    },
+    {
+      "id": "battle-midway",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "full",
+      "titleZh": "中途岛海战",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 5,
+        "personIds": 3,
+        "placeIds": 2,
+        "sourceIds": 5,
+        "claimIds": 7,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "person-nimitz-chester",
+      "kind": "commander-profile",
+      "entityType": "person",
+      "stage": "full",
+      "titleZh": "尼米兹：用有限兵力冒必要风险",
+      "minimumDepth": {
+        "profileHanChars": 500,
+        "decisions": 3,
+        "sourceIds": 3,
+        "claimIds": 3
+      }
+    },
+    {
+      "id": "person-spruance-raymond",
+      "kind": "commander-profile",
+      "entityType": "person",
+      "stage": "full",
+      "titleZh": "斯普鲁恩斯：首次指挥航母编队的判断",
+      "minimumDepth": {
+        "profileHanChars": 500,
+        "decisions": 3,
+        "sourceIds": 3,
+        "claimIds": 3
+      }
+    },
+    {
+      "id": "concept-logistics",
+      "kind": "concept-article",
+      "entityType": "concept",
+      "stage": "full",
+      "titleZh": "补给：航程、油料与舰队的隐形边界",
+      "minimumDepth": {
+        "layers": 3,
+        "hanChars": 650,
+        "sourceIds": 2,
+        "claimIds": 3,
+        "relatedEntityIds": 3
+      }
+    }
+  ],
+  "requiredEvents": [
+    {
+      "id": "event-japan-expansion-china",
+      "stage": "strategy",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-us-oil-embargo-1941",
+      "stage": "strategy",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-japan-war-decision-1941",
+      "stage": "strategy",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-hong-kong-1941",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-malaya-singapore-1942",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 260,
+        "sourceIds": 2,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-philippines-bataan-corregidor-1942",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 260,
+        "sourceIds": 2,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-dutch-east-indies-1942",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 260,
+        "sourceIds": 2,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-wake-island-1941",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-guam-1941",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-darwin-air-raid-1942",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-indian-ocean-raid-1942",
+      "stage": "background",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 260,
+        "sourceIds": 2,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-us-declares-war-1941",
+      "stage": "pearl",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 1,
+        "claimIds": 1
+      }
+    },
+    {
+      "id": "event-doolittle-raid-1942",
+      "stage": "coral",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 240,
+        "sourceIds": 2,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-us-carrier-raids-early-1942",
+      "stage": "coral",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 220,
+        "sourceIds": 2,
+        "claimIds": 2
+      }
+    }
+  ],
+  "finalGate": {
+    "stage": "full",
+    "fixtureOnlyMustBeFalse": true,
+    "allKeyArticlesRequired": true,
+    "allQuestionPartsRequired": true,
+    "allRequiredEventsRequired": true,
+    "mediaRequiresFullStage": true,
+    "readabilityEvidence": "tests/evidence/pedagogy.md",
+    "readabilityEvidenceIsStructuralCheck": false,
+    "note": "结构验证通过不等于可读性通过；可读性必须由提交的 tests/evidence/pedagogy.md 记录人工评审。"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "_note": "本文件是工单里由 central engine 提供的 team-pilot 证据包的逐字存档，用于 TEAM-PILOT 需求的可审计引用。它不是本模块的成果，也不表示任何 central verified/done 状态。请勿在此添加本模块自行编写的结论。",
+  "_source": "ARCH-01 工单 \"Team pilot evidence supplied by central engine\" 一节，由 knowledge-lead 下发，verbatim 存档。",
+  "_archivedBy": "knowledge-architect",
+  "_archivedDate": "2026-11-04",
+  "bundle": {
+    "planHash": "a61d094a43b2c9242b92d257373c06e14b08d81be394a9c8c87ba937b4005a7c",
+    "organization": {
+      "agents": [
+        { "id": "project-director", "role": "director" },
+        { "id": "knowledge-lead", "module": "knowledge", "role": "module-lead", "deliveryManager": "project-director" },
+        {
+          "id": "knowledge-architect",
+          "module": "knowledge",
+          "role": "architect",
+          "deliveryManager": "knowledge-lead",
+          "functionalManager": "chief-architect"
+        },
+        { "id": "knowledge-developer", "module": "knowledge", "role": "developer" },
+        { "id": "knowledge-content_creator", "module": "knowledge", "role": "content_creator" },
+        { "id": "knowledge-tester", "module": "knowledge", "role": "tester" }
+      ],
+      "approvalMatrix": {
+        "dispatch": "module-lead",
+        "moduleAcceptance": "module-lead",
+        "professionalReview": "assigned-functional-leader",
+        "integrationAndVerification": "integration",
+        "exceptions": "project-director"
+      }
+    }
+  }
+}

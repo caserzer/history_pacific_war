@@ -1,0 +1,974 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/dsh-team/contracts/content.schema.json",
+  "title": "太平洋战争中文交互教材统一内容模型",
+  "description": "content/history.json 的结构契约。稳定 ID、证据定位、地图阶段与阅读入口共享同一份数据。语义和最低深度由 scripts/validate-content.mjs 与 contracts/coverage.json 共同约束。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "fixtureOnly",
+    "events",
+    "battles",
+    "people",
+    "places",
+    "units",
+    "equipment",
+    "concepts",
+    "sources",
+    "media",
+    "questions",
+    "claims"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0",
+      "description": "内容模型版本。破坏性字段变更必须由首席架构师审查。"
+    },
+    "fixtureOnly": {
+      "type": "boolean",
+      "description": "测试样本必须为 true；正式内容必须为 false。--stage full 拒绝 fixtureOnly=true。"
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" },
+      "description": "时间线事件、背景事件、阶段导读文章。"
+    },
+    "battles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/battle" },
+      "description": "战役文章与动态地图阶段。"
+    },
+    "people": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/person" },
+      "description": "决策型人物档案。"
+    },
+    "places": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/place" },
+      "description": "真实已知地理节点，不是舰队轨迹。"
+    },
+    "units": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/unit" },
+      "description": "军队、舰队、航空队等编制单位。"
+    },
+    "equipment": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/equipment" },
+      "description": "舰艇、飞机、雷达等装备类型。"
+    },
+    "concepts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/concept" },
+      "description": "分层解释的知识专题。"
+    },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/source" },
+      "description": "可追溯的来源记录。"
+    },
+    "media": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/media" },
+      "description": "public/media 下的素材及其授权。"
+    },
+    "questions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/question" },
+      "description": "按五个历史部分组织的探究问题。"
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" },
+      "description": "事实、解释、争议与示意判断，均须带精确来源定位。"
+    }
+  },
+  "$defs": {
+    "dateString": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "YYYY-MM-DD。"
+    },
+    "dateTimeString": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(?::[0-9]{2})?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "带时区的 ISO 8601 时间；历史时间不确定时必须同时给出 uncertainty 文本。"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 120,
+      "pattern": "^[a-z]+-[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "全局唯一稳定 ID；前缀必须与实体类型一致。"
+    },
+    "eventId": {
+      "type": "string",
+      "pattern": "^event-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "battleId": {
+      "type": "string",
+      "pattern": "^battle-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "personId": {
+      "type": "string",
+      "pattern": "^person-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "placeId": {
+      "type": "string",
+      "pattern": "^place-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "unitId": {
+      "type": "string",
+      "pattern": "^unit-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "equipmentId": {
+      "type": "string",
+      "pattern": "^equipment-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "conceptId": {
+      "type": "string",
+      "pattern": "^concept-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "sourceId": {
+      "type": "string",
+      "pattern": "^source-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "mediaId": {
+      "type": "string",
+      "pattern": "^media-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "questionId": {
+      "type": "string",
+      "pattern": "^question-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "claimId": {
+      "type": "string",
+      "pattern": "^claim-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "entityRef": {
+      "type": "string",
+      "pattern": "^(?:event|battle|person|place|unit|equipment|concept)-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/sourceId" },
+      "description": "至少一个来源；所有来源必须存在于 sources。"
+    },
+    "claimRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/claimId" },
+      "description": "至少一个 claim；所有 claim 必须存在于 claims。"
+    },
+    "eventRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/eventId" }
+    },
+    "personRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/personId" }
+    },
+    "placeRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/placeId" }
+    },
+    "unitRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/unitId" }
+    },
+    "equipmentRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/equipmentId" }
+    },
+    "conceptRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/conceptId" }
+    },
+    "battleRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/battleId" }
+    },
+    "articleSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heading", "body", "sourceIds", "claimIds"],
+      "properties": {
+        "heading": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "body": { "type": "string", "minLength": 1, "description": "中文叙述段落；换行以 \\n 表示。" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "article": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/articleSection" },
+      "description": "可被 UI 直接按小节渲染的文章。时间线事件可为空；阶段导读由 coverage 强制节数与标题。"
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "historicalPart",
+        "eventType",
+        "startDate",
+        "summary",
+        "article",
+        "placeIds",
+        "personIds",
+        "unitIds",
+        "equipmentIds",
+        "conceptIds",
+        "relatedEventIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/eventId" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "historicalPart": {
+          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+        },
+        "eventType": {
+          "enum": ["background", "diplomacy", "policy", "campaign", "battle", "raid", "occupation", "aftermath", "analysis"]
+        },
+        "startDate": { "$ref": "#/$defs/dateString" },
+        "endDate": { "$ref": "#/$defs/dateString" },
+        "summary": { "type": "string", "minLength": 8, "maxLength": 300 },
+        "article": { "$ref": "#/$defs/article" },
+        "placeIds": { "$ref": "#/$defs/placeRefs", "minItems": 1 },
+        "personIds": { "$ref": "#/$defs/personRefs" },
+        "unitIds": { "$ref": "#/$defs/unitRefs" },
+        "equipmentIds": { "$ref": "#/$defs/equipmentRefs" },
+        "conceptIds": { "$ref": "#/$defs/conceptRefs" },
+        "battleId": { "$ref": "#/$defs/battleId" },
+        "relatedEventIds": { "$ref": "#/$defs/eventRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      },
+      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。"
+    },
+    "battleSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "body", "sourceIds", "claimIds"],
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 20 },
+        "body": { "type": "string", "minLength": 1 },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "battleSections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "background",
+        "geography",
+        "participants",
+        "commanders",
+        "forces",
+        "objectives",
+        "constraints",
+        "plan",
+        "course",
+        "decisions",
+        "results",
+        "aftermath",
+        "controversies",
+        "furtherReading"
+      ],
+      "properties": {
+        "background": { "$ref": "#/$defs/battleSection" },
+        "geography": { "$ref": "#/$defs/battleSection" },
+        "participants": { "$ref": "#/$defs/battleSection" },
+        "commanders": { "$ref": "#/$defs/battleSection" },
+        "forces": { "$ref": "#/$defs/battleSection" },
+        "objectives": { "$ref": "#/$defs/battleSection" },
+        "constraints": { "$ref": "#/$defs/battleSection" },
+        "plan": { "$ref": "#/$defs/battleSection" },
+        "course": { "$ref": "#/$defs/battleSection" },
+        "decisions": { "$ref": "#/$defs/battleSection" },
+        "results": { "$ref": "#/$defs/battleSection" },
+        "aftermath": { "$ref": "#/$defs/battleSection" },
+        "controversies": { "$ref": "#/$defs/battleSection" },
+        "furtherReading": { "$ref": "#/$defs/battleSection" }
+      },
+      "description": "十四类字段。键名固定；标题必须与 coverage.battleSectionKeys 映射一致。"
+    },
+    "coordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lat", "lng"],
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lng": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "description",
+        "placeIds",
+        "coordinates",
+        "schematic",
+        "uncertaintyRadiusKm",
+        "uncertaintyNote",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "label": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "description": { "type": "string", "minLength": 10 },
+        "placeIds": { "$ref": "#/$defs/placeRefs", "minItems": 1 },
+        "coordinates": { "$ref": "#/$defs/coordinates" },
+        "schematic": { "type": "boolean" },
+        "uncertaintyRadiusKm": { "type": "number", "minimum": 0, "maximum": 5000 },
+        "uncertaintyNote": { "type": "string", "minLength": 6 },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      },
+      "description": "阶段位置。schematic=true 表示教学示意，不是精确历史坐标；必须给出不确定半径和说明。"
+    },
+    "views": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["japan", "allies"],
+      "properties": {
+        "japan": { "type": "string", "minLength": 8 },
+        "allies": { "type": "string", "minLength": 8 }
+      }
+    },
+    "sideViewpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["perspective", "sourceIds", "claimIds"],
+      "properties": {
+        "perspective": { "type": "string", "minLength": 30 },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "viewpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["japan", "allies"],
+      "properties": {
+        "japan": { "$ref": "#/$defs/sideViewpoint" },
+        "allies": { "$ref": "#/$defs/sideViewpoint" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "side",
+        "label",
+        "fromPlaceId",
+        "toPlaceId",
+        "path",
+        "schematic",
+        "certainty",
+        "note",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^route-[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "side": { "enum": ["japan", "allies"] },
+        "label": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "fromPlaceId": { "$ref": "#/$defs/placeId" },
+        "toPlaceId": { "$ref": "#/$defs/placeId" },
+        "path": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/coordinates" },
+          "description": "示意折线，按 [lat,lng] 对象顺序连接。"
+        },
+        "schematic": { "const": true },
+        "certainty": { "enum": ["documented", "estimated", "disputed", "schematic"] },
+        "note": { "type": "string", "minLength": 13 },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      },
+      "description": "舰队/飞机航线必须是示意；禁止把估计航迹表示为精确历史轨迹。"
+    },
+    "phaseTime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "display", "uncertainty"],
+      "properties": {
+        "start": { "$ref": "#/$defs/dateTimeString" },
+        "end": { "$ref": "#/$defs/dateTimeString" },
+        "display": { "type": "string", "minLength": 10 },
+        "uncertainty": { "type": "string", "minLength": 8 }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sequence",
+        "title",
+        "time",
+        "positions",
+        "knownEnemy",
+        "unknownEnemy",
+        "decision",
+        "consequence",
+        "certainty",
+        "viewpoints",
+        "routes",
+        "schematic",
+        "uncertaintyNote",
+        "eventIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^phase-[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "time": { "$ref": "#/$defs/phaseTime" },
+        "positions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["japan", "allies"],
+          "properties": {
+            "japan": { "$ref": "#/$defs/position" },
+            "allies": { "$ref": "#/$defs/position" }
+          }
+        },
+        "knownEnemy": { "$ref": "#/$defs/views" },
+        "unknownEnemy": { "$ref": "#/$defs/views" },
+        "decision": { "$ref": "#/$defs/views" },
+        "consequence": { "$ref": "#/$defs/views" },
+        "certainty": { "enum": ["documented", "estimated", "disputed", "schematic"] },
+        "viewpoints": { "$ref": "#/$defs/viewpoints" },
+        "routes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/route" },
+          "description": "无移动时可为空；存在航线时必须逐条标记 schematic。"
+        },
+        "schematic": { "type": "boolean" },
+        "uncertaintyNote": { "type": "string", "minLength": 10 },
+        "eventIds": { "$ref": "#/$defs/eventRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      },
+      "description": "双方位置、已知/未知敌情、决策、后果、视角与证据均按阶段分别记录。"
+    },
+    "battle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "historicalPart",
+        "battleType",
+        "theater",
+        "startDate",
+        "endDate",
+        "summary",
+        "belligerents",
+        "outcome",
+        "placeIds",
+        "personIds",
+        "commanderIds",
+        "unitIds",
+        "equipmentIds",
+        "conceptIds",
+        "sourceIds",
+        "claimIds",
+        "sections",
+        "phases"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/battleId" },
+        "title": { "type": "string", "minLength": 3, "maxLength": 80 },
+        "historicalPart": {
+          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+        },
+        "battleType": { "enum": ["air-raid", "carrier-battle", "surface-battle", "amphibious", "mixed"] },
+        "theater": { "enum": ["pacific"] },
+        "startDate": { "$ref": "#/$defs/dateString" },
+        "endDate": { "$ref": "#/$defs/dateString" },
+        "summary": { "type": "string", "minLength": 20, "maxLength": 400 },
+        "belligerents": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["japan", "allies"],
+          "properties": {
+            "japan": { "type": "string", "minLength": 2 },
+            "allies": { "type": "string", "minLength": 2 }
+          }
+        },
+        "outcome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["summary", "winner", "certainty"],
+          "properties": {
+            "summary": { "type": "string", "minLength": 10 },
+            "winner": { "enum": ["japan", "allies", "inconclusive"] },
+            "certainty": { "enum": ["documented", "estimated", "disputed", "schematic"] }
+          }
+        },
+        "placeIds": { "$ref": "#/$defs/placeRefs", "minItems": 1 },
+        "personIds": { "$ref": "#/$defs/personRefs", "minItems": 1 },
+        "commanderIds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["japan", "allies"],
+          "properties": {
+            "japan": { "$ref": "#/$defs/personRefs", "minItems": 1 },
+            "allies": { "$ref": "#/$defs/personRefs", "minItems": 1 }
+          }
+        },
+        "unitIds": { "$ref": "#/$defs/unitRefs" },
+        "equipmentIds": { "$ref": "#/$defs/equipmentRefs" },
+        "conceptIds": { "$ref": "#/$defs/conceptRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" },
+        "sections": { "$ref": "#/$defs/battleSections" },
+        "phases": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/phase" },
+          "description": "按 sequence 排序；重点战役由 coverage 强制最低阶段数。"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "context",
+        "options",
+        "choice",
+        "constraints",
+        "consequence",
+        "certainty",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^decision-[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "title": { "type": "string", "minLength": 4, "maxLength": 80 },
+        "context": { "type": "string", "minLength": 30 },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string", "minLength": 8 }
+        },
+        "choice": { "type": "string", "minLength": 10 },
+        "constraints": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string", "minLength": 8 }
+        },
+        "consequence": { "type": "string", "minLength": 20 },
+        "certainty": { "enum": ["documented", "estimated", "disputed", "schematic"] },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      },
+      "description": "人物决策卡。必须给出当时可见的信息、备选方案、约束与结果，禁止事后诸葛亮式判断。"
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "side",
+        "role",
+        "summary",
+        "profile",
+        "decisions",
+        "relatedPersonIds",
+        "placeIds",
+        "eventIds",
+        "battleIds",
+        "conceptIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/personId" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 40 },
+        "originalName": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "side": { "enum": ["japan", "allies", "neutral"] },
+        "role": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "service": { "enum": ["navy", "army", "air", "government", "other"] },
+        "birthDate": { "$ref": "#/$defs/dateString" },
+        "deathDate": { "$ref": "#/$defs/dateString" },
+        "summary": { "type": "string", "minLength": 20, "maxLength": 300 },
+        "profile": { "type": "string", "minLength": 80 },
+        "decisions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/decision" }
+        },
+        "relatedPersonIds": { "$ref": "#/$defs/personRefs" },
+        "placeIds": { "$ref": "#/$defs/placeRefs" },
+        "eventIds": { "$ref": "#/$defs/eventRefs" },
+        "battleIds": { "$ref": "#/$defs/battleRefs" },
+        "conceptIds": { "$ref": "#/$defs/conceptRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "historicalName",
+        "modernName",
+        "modernCountry",
+        "placeType",
+        "summary",
+        "coordinates",
+        "coordinateAccuracyKm",
+        "schematic",
+        "relatedPlaceIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/placeId" },
+        "historicalName": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "modernName": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "modernCountry": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "placeType": {
+          "enum": ["city", "island", "atoll", "base", "naval-base", "capital", "sea", "strait", "region", "port", "airfield", "other"]
+        },
+        "summary": { "type": "string", "minLength": 10 },
+        "coordinates": { "$ref": "#/$defs/coordinates" },
+        "coordinateAccuracyKm": { "type": "number", "minimum": 0, "maximum": 1000 },
+        "schematic": { "const": false },
+        "relatedPlaceIds": { "$ref": "#/$defs/placeRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      },
+      "description": "地理节点必须是真实已知地点。舰队位置与航线不写入 places。"
+    },
+    "unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "side",
+        "service",
+        "echelon",
+        "description",
+        "eventIds",
+        "personIds",
+        "equipmentIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/unitId" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "side": { "enum": ["japan", "allies", "neutral"] },
+        "service": { "enum": ["navy", "army", "air", "other"] },
+        "echelon": {
+          "enum": ["fleet", "task-force", "squadron", "division", "brigade", "regiment", "battalion", "air-group", "other"]
+        },
+        "parentUnitId": { "$ref": "#/$defs/unitId" },
+        "description": { "type": "string", "minLength": 20 },
+        "eventIds": { "$ref": "#/$defs/eventRefs" },
+        "personIds": { "$ref": "#/$defs/personRefs" },
+        "equipmentIds": { "$ref": "#/$defs/equipmentRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "equipment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "category",
+        "side",
+        "summary",
+        "limitations",
+        "conceptIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/equipmentId" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "category": {
+          "enum": ["aircraft-carrier", "battleship", "cruiser", "destroyer", "submarine", "aircraft", "radar", "weapon", "other"]
+        },
+        "side": { "enum": ["japan", "allies", "neutral"] },
+        "summary": { "type": "string", "minLength": 20 },
+        "limitations": { "type": "string", "minLength": 20 },
+        "conceptIds": { "$ref": "#/$defs/conceptRefs" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "conceptLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "title", "body", "sourceIds", "claimIds"],
+      "properties": {
+        "level": { "enum": [1, 2, 3] },
+        "title": { "type": "string", "minLength": 3, "maxLength": 80 },
+        "body": { "type": "string", "minLength": 50 },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "summary",
+        "layers",
+        "whyItMatters",
+        "relatedEntityIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/conceptId" },
+        "title": { "type": "string", "minLength": 3, "maxLength": 80 },
+        "summary": { "type": "string", "minLength": 30, "maxLength": 300 },
+        "layers": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/conceptLayer" },
+          "description": "第 1 层是什么，第 2 层怎样运作，第 3 层为何影响战役决策。"
+        },
+        "whyItMatters": { "type": "string", "minLength": 60 },
+        "relatedEntityIds": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityRef" }
+        },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "creator",
+        "publisher",
+        "year",
+        "sourceType",
+        "url",
+        "accessedDate",
+        "citation",
+        "reliabilityNote"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/sourceId" },
+        "title": { "type": "string", "minLength": 4, "maxLength": 300 },
+        "creator": { "type": "string", "minLength": 2, "maxLength": 200 },
+        "publisher": { "type": "string", "minLength": 2, "maxLength": 200 },
+        "year": {
+          "type": "integer",
+          "minimum": 1800,
+          "maximum": 2100,
+          "description": "来源出版/发布年；档案原件可在 citation 中另注形成年。"
+        },
+        "sourceType": {
+          "enum": ["official-history", "archive", "museum", "academic", "primary-document", "reference", "other"]
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https?://[^\\s]+$",
+          "maxLength": 1000
+        },
+        "accessedDate": { "$ref": "#/$defs/dateString" },
+        "citation": { "type": "string", "minLength": 20, "maxLength": 1000 },
+        "reliabilityNote": { "type": "string", "minLength": 20, "maxLength": 600 },
+        "language": { "type": "string", "minLength": 2, "maxLength": 40 },
+        "archiveCollectionId": { "type": "string", "minLength": 2, "maxLength": 200 }
+      }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "mediaType",
+        "path",
+        "author",
+        "license",
+        "rightsStatement",
+        "sourceId",
+        "creditLine",
+        "alt",
+        "caption",
+        "articleIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/mediaId" },
+        "title": { "type": "string", "minLength": 3, "maxLength": 200 },
+        "mediaType": {
+          "enum": ["photograph", "portrait", "battle-map", "map", "diagram", "illustration", "timeline-diagram"]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^public/media/(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*[A-Za-z0-9][A-Za-z0-9._-]*\\.(?:png|jpg|jpeg|webp|svg)$",
+          "description": "必须位于 public/media 下，使用正斜杠，不允许 .. 或绝对路径。"
+        },
+        "author": { "type": "string", "minLength": 2, "maxLength": 200 },
+        "license": {
+          "enum": ["public-domain", "cc0-1.0", "cc-by-4.0", "cc-by-sa-4.0", "original-work", "permission-granted"]
+        },
+        "licenseUrl": {
+          "type": "string",
+          "pattern": "^https?://[^\\s]+$",
+          "maxLength": 1000
+        },
+        "rightsStatement": { "type": "string", "minLength": 20, "maxLength": 600 },
+        "sourceId": { "$ref": "#/$defs/sourceId" },
+        "sourcePage": {
+          "type": "string",
+          "pattern": "^https?://[^\\s]+$",
+          "maxLength": 1000
+        },
+        "creditLine": { "type": "string", "minLength": 4, "maxLength": 300 },
+        "alt": { "type": "string", "minLength": 10, "maxLength": 300 },
+        "caption": { "type": "string", "minLength": 10, "maxLength": 500 },
+        "articleIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityRef" },
+          "description": "必须引用 contracts/coverage.json 的 keyArticleIds；--media 对每个重点文章检查所需类型与真实文件。"
+        },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "historicalPart",
+        "prompt",
+        "answer",
+        "entityIds",
+        "sourceIds",
+        "claimIds"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/questionId" },
+        "historicalPart": {
+          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 200,
+          "pattern": "[?？]$"
+        },
+        "answer": {
+          "type": "string",
+          "minLength": 40,
+          "description": "实质性回答，不是提示或关键词列表；full 阶段至少 160 个汉字。"
+        },
+        "entityIds": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityRef" }
+        },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceId", "locatorType", "locator"],
+      "properties": {
+        "sourceId": { "$ref": "#/$defs/sourceId" },
+        "locatorType": {
+          "enum": [
+            "page",
+            "page-range",
+            "chapter-section",
+            "section-paragraph",
+            "table",
+            "figure",
+            "archival-item",
+            "timecode",
+            "transcript-line"
+          ]
+        },
+        "locator": { "type": "string", "minLength": 4, "maxLength": 300 }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "claimType", "entityIds", "sourceIds", "locators"],
+      "properties": {
+        "id": { "$ref": "#/$defs/claimId" },
+        "text": { "type": "string", "minLength": 10, "maxLength": 600 },
+        "claimType": { "enum": ["fact", "interpretation", "disputed", "schematic"] },
+        "entityIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityRef" }
+        },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "locators": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/locator" },
+          "description": "每个 sourceId 至少对应一个精确定位；不接受“整个网页”这类泛定位。"
+        },
+        "note": { "type": "string", "minLength": 10, "maxLength": 400 }
+      }
+    }
+  }
+}
