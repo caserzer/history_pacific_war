@@ -256,10 +256,35 @@
         "conceptIds": { "$ref": "#/$defs/conceptRefs" },
         "battleId": { "$ref": "#/$defs/battleId" },
         "relatedEventIds": { "$ref": "#/$defs/eventRefs" },
+        "earlyCampaignAnalysis": { "$ref": "#/$defs/earlyCampaignAnalysis" },
         "sourceIds": { "$ref": "#/$defs/sourceRefs" },
         "claimIds": { "$ref": "#/$defs/claimRefs" }
       },
-      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。"
+      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。earlyCampaignAnalysis 是早期扩张战役必须提供的五类分析（背景/经过/约束/结果/影响），由 coverage.earlyCampaign 强制。"
+    },
+    "earlyCampaignSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "body", "sourceIds", "claimIds"],
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 20 },
+        "body": { "type": "string", "minLength": 1, "description": "中文分析段落；必须回答该键对应的分析问题，不能只写时间线。" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "earlyCampaignAnalysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["background", "course", "constraints", "results", "impact"],
+      "properties": {
+        "background": { "$ref": "#/$defs/earlyCampaignSection" },
+        "course": { "$ref": "#/$defs/earlyCampaignSection" },
+        "constraints": { "$ref": "#/$defs/earlyCampaignSection" },
+        "results": { "$ref": "#/$defs/earlyCampaignSection" },
+        "impact": { "$ref": "#/$defs/earlyCampaignSection" }
+      },
+      "description": "早期扩张战役的五类分析结构。键名固定，标题必须与 coverage.earlyCampaign.analysisKeys 一致；每节独立带来源与 claim。"
     },
     "battleSection": {
       "type": "object",

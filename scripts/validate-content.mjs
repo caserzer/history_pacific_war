@@ -83,6 +83,11 @@ const SECTION_KEYS = [
   'controversies',
   'furtherReading',
 ];
+
+/**
+ * 早期扩张战役必需的 5 类分析（D2）。与 coverage.earlyCampaign.analysisKeys 必须一致。
+ */
+const EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'];
 const COLLECTIONS = [
   'events',
   'battles',
@@ -199,15 +204,76 @@ const KEY_ENTITY_COLLECTION = {
   concept: 'concepts',
 };
 
-const CONTENT_SCHEMA = readJson(SCHEMA_PATH, 'content.schema.json');
+const REAL_FILE_SYSTEM = createRealFileSystem();
+
+const CONTENT_SCHEMA = readJson(SCHEMA_PATH, 'content.schema.json', REAL_FILE_SYSTEM);
 
 // ---------------------------------------------------------------------------
 // 基础工具
 // ---------------------------------------------------------------------------
 
-function readJson(filePath, label = filePath) {
+/**
+ * 可注入的文件系统层（D4）。
+ *
+ * 默认实现直接读写真实磁盘；自测会注入一个纯内存实现，因此
+ * `--self-test` 在只读沙箱里不需要任何可写的 OS 临时目录，也不需要写工作区。
+ * 只在需要时才接触真实磁盘，且从未在自测路径上创建文件。
+ */
+function createRealFileSystem() {
+  // 真实文件系统接受“便携键”（POSIX 风格全路径），转成本机路径再访问磁盘。
+  const toNative = (key) => (path.sep === '/' ? String(key) : String(key).replace(/\//g, path.sep));
+  return {
+    readText(filePath) {
+      return fs.readFileSync(toNative(filePath), 'utf8');
+    },
+    exists(filePath) {
+      return fs.existsSync(toNative(filePath));
+    },
+    stat(filePath) {
+      const stat = fs.statSync(toNative(filePath));
+      return { isFile: stat.isFile(), size: stat.size };
+    },
+  };
+}
+
+/**
+ * 纯内存文件系统。用于自测：路径只是键，没有任何磁盘副作用。
+ * `files` 是 Map<posixPath, string>；stat 返回的大小即内容字节长度。
+ */
+function createMemoryFileSystem(files = new Map()) {
+  return {
+    files,
+    readText(filePath) {
+      const key = String(filePath);
+      if (!files.has(key)) {
+        const error = new Error(`ENOENT: no such file or directory, open '${key}'`);
+        error.code = 'ENOENT';
+        throw error;
+      }
+      return files.get(key);
+    },
+    exists(filePath) {
+      return files.has(String(filePath));
+    },
+    stat(filePath) {
+      const key = String(filePath);
+      if (!files.has(key)) {
+        const error = new Error(`ENOENT: no such file or directory, stat '${key}'`);
+        error.code = 'ENOENT';
+        throw error;
+      }
+      return { isFile: true, size: Buffer.byteLength(files.get(key), 'utf8') };
+    },
+    set(filePath, content) {
+      files.set(String(filePath), content);
+      return this;
+    },
+  };
+}
+
+function readJson(filePath, label = filePath, fileSystem = REAL_FILE_SYSTEM) {
   try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    return JSON.parse(fileSystem.readText(filePath));
   } catch (error) {
     throw new Error(`无法读取 ${label}: ${error.message}`);
   }
@@ -676,6 +742,9 @@ function validateCoverageContract(coverage) {
   if (typeof coverage.battleSectionMinHanChars !== 'number' || coverage.battleSectionMinHanChars < 40) {
     addError(errors, 'battleSectionMinHanChars 必须是 >=40 的数字');
   }
+  errors.push(...validateEarlyCampaignContract(coverage));
+  errors.push(...validateStageOwnershipContract(coverage));
+  errors.push(...validateMediaTypeContract(coverage));
   if (typeof coverage.questionMinimumAnswerHanChars !== 'number' || coverage.questionMinimumAnswerHanChars < 60) {
     addError(errors, 'questionMinimumAnswerHanChars 必须是 >=60 的数字');
   }
@@ -697,10 +766,270 @@ function validateCoverageContract(coverage) {
   return errors;
 }
 
+/**
+ * 早期扩张战役结构契约自检（D2）。
+ * 保证 coverage.earlyCampaign 自身完整、与 section 键常量一致，
+ * 并且它锁定的每个事件都确实在 requiredEvents 里注册、处于 background 阶段。
+ */
+function validateEarlyCampaignContract(coverage) {
+  const errors = [];
+  const block = coverage.earlyCampaign;
+  if (!isPlainObject(block)) {
+    return ['coverage.earlyCampaign 缺失：早期扩张战役必须声明 background/course/constraints/results/impact 分析结构'];
+  }
+
+  const keys = Array.isArray(block.analysisKeys) ? block.analysisKeys.map((entry) => entry && entry.key) : [];
+  if (canonicalJson(keys) !== canonicalJson(EARLY_CAMPAIGN_KEYS)) {
+    errors.push(
+      `coverage.earlyCampaign.analysisKeys 必须严格为 ${EARLY_CAMPAIGN_KEYS.join(', ')}，实际 ${keys.join(', ') || '空'}`,
+    );
+  }
+  for (const entry of Array.isArray(block.analysisKeys) ? block.analysisKeys : []) {
+    if (!isPlainObject(entry)) {
+      errors.push('coverage.earlyCampaign.analysisKeys 含非对象项');
+      continue;
+    }
+    if (!isNonEmptyString(entry.title)) errors.push(`coverage.earlyCampaign.analysisKeys.${entry.key}: 缺少中文标题`);
+    if (!isNonEmptyString(entry.question)) errors.push(`coverage.earlyCampaign.analysisKeys.${entry.key}: 缺少分析问题描述`);
+  }
+
+  if (typeof block.minHanCharsPerKey !== 'number' || block.minHanCharsPerKey < 40) {
+    errors.push('coverage.earlyCampaign.minHanCharsPerKey 必须是 >=40 的数字');
+  }
+  if (typeof block.minSourceIds !== 'number' || block.minSourceIds < 1) {
+    errors.push('coverage.earlyCampaign.minSourceIds 必须是 >=1 的数字');
+  }
+  if (typeof block.minClaimIds !== 'number' || block.minClaimIds < 1) {
+    errors.push('coverage.earlyCampaign.minClaimIds 必须是 >=1 的数字');
+  }
+
+  if (!Array.isArray(block.eventIds) || block.eventIds.length < 1) {
+    errors.push('coverage.earlyCampaign.eventIds 不能为空');
+  } else {
+    const seen = new Set();
+    const requiredIds = new Set((Array.isArray(coverage.requiredEvents) ? coverage.requiredEvents : []).map((e) => e && e.id));
+    const backgroundIds = new Set(
+      (Array.isArray(coverage.requiredEvents) ? coverage.requiredEvents : [])
+        .filter((entry) => entry && entry.stage === 'background')
+        .map((entry) => entry.id),
+    );
+    for (const id of block.eventIds) {
+      if (seen.has(id)) errors.push(`coverage.earlyCampaign.eventIds 重复 ${id}`);
+      seen.add(id);
+      if (!requiredIds.has(id)) {
+        errors.push(`coverage.earlyCampaign.eventIds 中的 ${id} 没有在 requiredEvents 注册`);
+      } else if (!backgroundIds.has(id)) {
+        errors.push(`coverage.earlyCampaign.eventIds 中的 ${id} 不属于 background 阶段`);
+      }
+    }
+    // 反向：background 阶段的每个必需事件都必须有早期战役分析，否则可以绕过结构。
+    for (const id of backgroundIds) {
+      if (!seen.has(id)) {
+        errors.push(`background 阶段必需事件 ${id} 没有登记到 coverage.earlyCampaign.eventIds，早期战役分析结构会被绕过`);
+      }
+    }
+  }
+
+  const overview = block.overviewTopics;
+  if (!isPlainObject(overview)) {
+    errors.push('coverage.earlyCampaign.overviewTopics 缺失：盟军连败/补给压力必须由导读小节正式承担');
+  } else {
+    const keyIds = Array.isArray(coverage.keyArticleIds) ? coverage.keyArticleIds : [];
+    if (!keyIds.includes(overview.overviewArticleId)) {
+      errors.push(`coverage.earlyCampaign.overviewTopics.overviewArticleId '${overview.overviewArticleId}' 不是重点文章`);
+    }
+    if (!Array.isArray(overview.requiredHeadings) || overview.requiredHeadings.length < 1) {
+      errors.push('coverage.earlyCampaign.overviewTopics.requiredHeadings 不能为空');
+    }
+    const detail = (Array.isArray(coverage.keyArticles) ? coverage.keyArticles : []).find(
+      (entry) => entry && entry.id === overview.overviewArticleId,
+    );
+    if (detail && Array.isArray(overview.requiredHeadings)) {
+      const declared = Array.isArray(detail.requiredArticleHeadings) ? detail.requiredArticleHeadings : [];
+      for (const heading of overview.requiredHeadings) {
+        if (!declared.includes(heading)) {
+          errors.push(
+            `coverage.earlyCampaign.overviewTopics 的标题 '${heading}' 未出现在 ${overview.overviewArticleId} 的 requiredArticleHeadings 中`,
+          );
+        }
+      }
+    }
+    if (typeof overview.minHanCharsPerHeading !== 'number' || overview.minHanCharsPerHeading < 40) {
+      errors.push('coverage.earlyCampaign.overviewTopics.minHanCharsPerHeading 必须是 >=40 的数字');
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * 单个早期扩张事件的五类分析深度检查（D2）。
+ */
+function isEarlyCampaignEvent(event, coverage) {
+  const block = coverage && coverage.earlyCampaign;
+  if (!isPlainObject(block) || !Array.isArray(block.eventIds)) return false;
+  return typeof event.id === 'string' && block.eventIds.includes(event.id);
+}
+
+function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
+  const block = coverage.earlyCampaign || {};
+  const analysis = isPlainObject(event) ? event.earlyCampaignAnalysis : null;
+  if (!isPlainObject(analysis)) {
+    addError(
+      errors,
+      `${pointer}.earlyCampaignAnalysis: 早期扩张战役必须提供 ${EARLY_CAMPAIGN_KEYS.join('/')} 五类分析结构`,
+    );
+    return;
+  }
+  const minHan = block.minHanCharsPerKey || 80;
+  for (const key of EARLY_CAMPAIGN_KEYS) {
+    const section = analysis[key];
+    if (!isPlainObject(section)) {
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 缺少必需的 '${key}' 分析小节`);
+      continue;
+    }
+    const canonicalTitle = (Array.isArray(block.analysisKeys) ? block.analysisKeys : []).find((entry) => entry && entry.key === key);
+    if (canonicalTitle && comparableText(section.title) !== canonicalTitle.title) {
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}.title: 必须是 '${canonicalTitle.title}'`);
+    }
+    const han = hanCount(section.body);
+    if (han < minHan) {
+      addError(
+        errors,
+        `${pointer}.earlyCampaignAnalysis.${key}.body: 只有 ${han} 个汉字，早期战役每类分析至少需要 ${minHan} 个`,
+      );
+    }
+    checkEvidence(section, `${pointer}.earlyCampaignAnalysis.${key}`, maps, errors);
+    const sectionSources = unionSets(section.sourceIds);
+    if (sectionSources.size < (block.minSourceIds || 1)) {
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 至少需要 ${block.minSourceIds || 1} 个来源`);
+    }
+    if (unionSets(section.claimIds).size < (block.minClaimIds || 1)) {
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 至少需要 ${block.minClaimIds || 1} 个 claim`);
+    }
+  }
+}
+
+/**
+ * 交付阶段归属契约自检（D3）。
+ * 不变式：
+ *   1. stageOwnership 只包含合法阶段 id；
+ *   2. keyArticleIds 中每一篇都被恰好一个阶段拥有（不重不漏）；
+ *   3. 每篇文章的 keyArticles[].stage 必须等于拥有它的阶段；
+ *   4. 每个阶段都必须确实拥有至少一篇文章（否则该阶段门禁形同虚设）。
+ */
+function validateStageOwnershipContract(coverage) {
+  const errors = [];
+  const ownership = coverage.stageOwnership;
+  if (!isPlainObject(ownership)) {
+    return ['coverage.stageOwnership 缺失：重点文章的交付阶段归属必须被契约锁定'];
+  }
+  const keyIds = Array.isArray(coverage.keyArticleIds) ? coverage.keyArticleIds : [];
+  const keySet = new Set(keyIds);
+
+  const ownershipStages = Object.keys(ownership).filter((key) => key !== 'description');
+  for (const stage of ownershipStages) {
+    if (!STAGE_IDS.includes(stage)) errors.push(`coverage.stageOwnership 含未知阶段 '${stage}'`);
+  }
+  for (const stage of STAGE_IDS) {
+    if (!hasOwn(ownership, stage)) errors.push(`coverage.stageOwnership 缺少阶段 '${stage}'`);
+    else if (!Array.isArray(ownership[stage])) errors.push(`coverage.stageOwnership.${stage} 必须是数组`);
+  }
+
+  const ownedCounts = new Map();
+  for (const stage of STAGE_IDS) {
+    const list = Array.isArray(ownership[stage]) ? ownership[stage] : [];
+    if (list.length === 0) errors.push(`coverage.stageOwnership.${stage}: 该阶段没有拥有任何重点文章`);
+    for (const id of list) {
+      ownedCounts.set(id, (ownedCounts.get(id) || 0) + 1);
+      if (!keySet.has(id)) {
+        errors.push(`coverage.stageOwnership.${stage}: '${id}' 不是 keyArticleIds 中的重点文章（孤立 ID）`);
+      }
+    }
+  }
+
+  for (const [id, count] of ownedCounts.entries()) {
+    if (count > 1) errors.push(`'${id}' 被 ${count} 个阶段重复拥有（每个重点文章必须只有一个交付阶段）`);
+  }
+  for (const id of keyIds) {
+    if (!ownedCounts.has(id)) errors.push(`重点文章 '${id}' 没有 stageOwnership 阶段归属`);
+  }
+
+  // keyArticles[].stage 必须与 stageOwnership 一致
+  for (const entry of Array.isArray(coverage.keyArticles) ? coverage.keyArticles : []) {
+    if (!isPlainObject(entry)) continue;
+    let declaredStage = null;
+    for (const stage of STAGE_IDS) {
+      if (Array.isArray(ownership[stage]) && ownership[stage].includes(entry.id)) declaredStage = stage;
+    }
+    if (declaredStage && entry.stage !== declaredStage) {
+      errors.push(
+        `coverage.keyArticles ${entry.id}: stage='${entry.stage}' 与 stageOwnership 的 '${declaredStage}' 不一致`,
+      );
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * 每篇文章的素材类型契约自检（D3）。
+ * 不变式：
+ *   1. requiredMediaTypes 的键集合精确等于 keyArticleIds（不重不漏）；
+ *   2. 每个重点文章至少声明一种素材类型，且类型都在白名单内、无重复；
+ *   3. 媒体类型要求与文章种类相符（战役需 battle-map、指挥官需 portrait、专题需 diagram、导读需 map）。
+ */
+const MEDIA_TYPES_BY_KIND = {
+  battle: 'battle-map',
+  'commander-profile': 'portrait',
+  'concept-article': 'diagram',
+  'part-overview': 'map',
+};
+
+function validateMediaTypeContract(coverage) {
+  const errors = [];
+  const required = coverage.requiredMediaTypes;
+  if (!isPlainObject(required)) return ['coverage.requiredMediaTypes 缺失'];
+  const keyIds = Array.isArray(coverage.keyArticleIds) ? coverage.keyArticleIds : [];
+  const keySet = new Set(keyIds);
+
+  for (const key of Object.keys(required)) {
+    if (!keySet.has(key)) errors.push(`coverage.requiredMediaTypes 含孤立 ID '${key}'（不是重点文章）`);
+  }
+  for (const id of keyIds) {
+    if (!hasOwn(required, id)) {
+      errors.push(`重点文章 '${id}' 没有 requiredMediaTypes 条目（每篇都必须声明所需素材类型）`);
+    }
+  }
+
+  for (const entry of Array.isArray(coverage.keyArticles) ? coverage.keyArticles : []) {
+    if (!isPlainObject(entry)) continue;
+    const types = required[entry.id];
+    if (!Array.isArray(types) || types.length === 0) {
+      errors.push(`coverage.requiredMediaTypes.${entry.id}: 至少需要声明一种素材类型`);
+      continue;
+    }
+    if (new Set(types).size !== types.length) {
+      errors.push(`coverage.requiredMediaTypes.${entry.id}: 素材类型重复`);
+    }
+    for (const type of types) {
+      if (!MEDIA_TYPES.includes(type)) errors.push(`coverage.requiredMediaTypes.${entry.id}: 未知素材类型 '${type}'`);
+    }
+    // 战役由 --media 另行要求 battle-map + photograph，这里只锁定最小必需类型。
+    const expectedType = MEDIA_TYPES_BY_KIND[entry.kind];
+    if (expectedType && !types.includes(expectedType)) {
+      errors.push(
+        `coverage.requiredMediaTypes.${entry.id}: ${entry.kind} 文章必须包含素材类型 '${expectedType}'，实际 [${types.join(', ')}]`,
+      );
+    }
+  }
+
+  return errors;
+}
+
 // ---------------------------------------------------------------------------
 // 索引与引用
 // ---------------------------------------------------------------------------
-
 function buildIndexes(doc, errors) {
   const maps = {};
   const globalIds = new Map();
@@ -1017,6 +1346,9 @@ function validateBattle(battle, index, errors, maps, coverage, keyEntry) {
 
   if (!Array.isArray(battle.phases)) return;
   const sequences = new Set();
+  const phaseTimes = [];
+  const battleStartDateOk = validDateString(battle.startDate);
+  const battleEndDateOk = validDateString(battle.endDate);
   battle.phases.forEach((phase, phaseIndex) => {
     const phasePointer = `${pointer}.phases[${phaseIndex}]`;
     if (!isPlainObject(phase)) return;
@@ -1024,20 +1356,66 @@ function validateBattle(battle, index, errors, maps, coverage, keyEntry) {
       if (sequences.has(phase.sequence)) addError(errors, `${phasePointer}.sequence: 阶段序号重复 ${phase.sequence}`);
       sequences.add(phase.sequence);
     }
-    if (isPlainObject(phase.time) && isNonEmptyString(phase.time.start)) {
-      if (!validDateTimeString(phase.time.start)) {
-        addError(errors, `${phasePointer}.time.start: 不是带时区的有效 ISO 8601 时间`);
+    if (isPlainObject(phase.time)) {
+      const timePointer = `${phasePointer}.time`;
+      let startMs = null;
+      let endMs = null;
+
+      // --- time.start ---
+      if (!isNonEmptyString(phase.time.start)) {
+        addError(errors, `${timePointer}.start: 必须有带时区的 ISO 8601 开始时间`);
+      } else if (!validDateTimeString(phase.time.start)) {
+        addError(errors, `${timePointer}.start: 不是带时区的有效 ISO 8601 时间`);
       } else {
+        startMs = Date.parse(phase.time.start);
         const phaseDate = phase.time.start.slice(0, 10);
-        if (
-          validDateString(battle.startDate) &&
-          validDateString(battle.endDate) &&
-          (phaseDate < battle.startDate || phaseDate > battle.endDate)
-        ) {
-          addError(errors, `${phasePointer}.time.start: 阶段日期 ${phaseDate} 不在战役 ${battle.startDate}–${battle.endDate} 范围内`);
+        if (battleStartDateOk && battleEndDateOk && (phaseDate < battle.startDate || phaseDate > battle.endDate)) {
+          addError(errors, `${timePointer}.start: 阶段开始日期 ${phaseDate} 不在战役 ${battle.startDate}–${battle.endDate} 范围内`);
         }
       }
+
+      // --- time.end（D1：此前完全没有校验）---
+      // end 为可选字段；一旦提供就必须是合法带时区时间，且落在战役窗口内、不早于 start。
+      if (hasOwn(phase.time, 'end') && phase.time.end !== undefined && phase.time.end !== null) {
+        if (!isNonEmptyString(phase.time.end)) {
+          addError(errors, `${timePointer}.end: 提供了 end 就必须是带时区的 ISO 8601 时间（空值请直接省略该字段）`);
+        } else if (!validDateTimeString(phase.time.end)) {
+          addError(errors, `${timePointer}.end: 不是带时区的有效 ISO 8601 时间`);
+        } else {
+          endMs = Date.parse(phase.time.end);
+          const endDate = phase.time.end.slice(0, 10);
+          if (battleStartDateOk && battleEndDateOk && (endDate < battle.startDate || endDate > battle.endDate)) {
+            addError(
+              errors,
+              `${timePointer}.end: 阶段结束日期 ${endDate} 不在战役 ${battle.startDate}–${battle.endDate} 范围内`,
+            );
+          }
+          if (startMs !== null && endMs < startMs) {
+            addError(errors, `${timePointer}.end: 阶段结束时间 ${phase.time.end} 早于开始时间 ${phase.time.start}`);
+          }
+        }
+      }
+
+      // --- display / uncertainty ---
+      if (!isNonEmptyString(phase.time.display) || hanCount(phase.time.display) < 4) {
+        addError(errors, `${timePointer}.display: 必须给出面向读者的时间显示文本`);
+      }
+      if (!isNonEmptyString(phase.time.uncertainty) || hanCount(phase.time.uncertainty) < 6) {
+        addError(errors, `${timePointer}.uncertainty: 必须说明时间本身的不确定性`);
+      }
+
+      if (startMs !== null) {
+        phaseTimes.push({
+          phaseIndex,
+          pointer: timePointer,
+          sequence: Number.isInteger(phase.sequence) ? phase.sequence : null,
+          startMs,
+          startRaw: phase.time.start,
+          endMs,
+        });
+      }
     }
+
     validateSideTexts(phase.knownEnemy, `${phasePointer}.knownEnemy`, errors, 6);
     validateSideTexts(phase.unknownEnemy, `${phasePointer}.unknownEnemy`, errors, 6);
     validateSideTexts(phase.decision, `${phasePointer}.decision`, errors, 8);
@@ -1114,6 +1492,45 @@ function validateBattle(battle, index, errors, maps, coverage, keyEntry) {
       addError(errors, `${phasePointer}.schematic: 重点战役阶段必须明确标记示意（true）`);
     }
   });
+
+  // --- 阶段时间轴单调性（D1 追加）---
+  // 播放/暂停与前后切换依赖 sequence 顺序即时间顺序；两者矛盾会让地图回放出错。
+  const ordered = phaseTimes
+    .filter((entry) => entry.sequence !== null)
+    .sort((a, b) => a.sequence - b.sequence);
+  for (let index = 1; index < ordered.length; index += 1) {
+    const previous = ordered[index - 1];
+    const current = ordered[index];
+    if (current.startMs < previous.startMs) {
+      addError(
+        errors,
+        `${current.pointer}.start: 阶段序号 ${current.sequence} 的开始时间 ${current.startRaw} 早于序号 ${previous.sequence} 的开始时间 ${previous.startRaw}；阶段应按 sequence 时间递增`,
+      );
+    }
+    // 未声明 end 的阶段视为持续到下一个阶段开始；若显式 end 已越过下一阶段开始，说明数据自相矛盾。
+    if (previous.endMs !== null && previous.endMs > current.startMs) {
+      addError(
+        errors,
+        `${previous.pointer}.end: 阶段序号 ${previous.sequence} 的结束时间晚于下一阶段（序号 ${current.sequence}）的开始时间，时间区间不能重叠且逆序`,
+      );
+    }
+  }
+
+  // --- 战役窗口必须包含全部阶段 ---
+  // 注意：阶段时间带各自时区偏移，“窗口”应以**日期字符串**比较（上面已逐项检查），
+  // 不能把本地时间换算成 UTC 再与 T23:59:59Z 比较——否则 -11:00 时区的 06-05T20:00
+  // 会越过 UTC 午夜，被误判为越界。
+  if (battleStartDateOk && battleEndDateOk) {
+    for (const entry of phaseTimes) {
+      const startDate = entry.startRaw.slice(0, 10);
+      if (startDate < battle.startDate) {
+        addError(
+          errors,
+          `${entry.pointer}.start: 阶段开始日期 ${startDate} 早于战役开始 ${battle.startDate}（战役窗口必须完整包含全部阶段）`,
+        );
+      }
+    }
+  }
 }
 
 function validatePerson(person, index, errors, maps, coverage, keyEntry) {
@@ -1265,15 +1682,17 @@ function validateMedia(media, index, errors, maps, coverage, options) {
     }
   }
   if (options.media) {
+    const fileSystem = options.fileSystem || REAL_FILE_SYSTEM;
     const resolved = resolveMediaPath(options.rootDir, media.path);
     if (resolved.error) {
       addError(errors, `${pointer}.path: ${resolved.error}`);
-    } else if (!fs.existsSync(resolved.filePath)) {
+    } else if (!fileSystem.exists(resolved.portableKey)) {
       addError(errors, `${pointer}.path: 素材文件不存在 ${media.path}`);
     } else {
       try {
-        const stat = fs.statSync(resolved.filePath);
-        if (!stat.isFile()) addError(errors, `${pointer}.path: 路径不是文件 ${media.path}`);
+        const stat = fileSystem.stat(resolved.portableKey);
+        // stat.isFile / stat.size 是属性（真实层与内存层返回同一形状）。
+        if (stat.isFile !== true) addError(errors, `${pointer}.path: 路径不是文件 ${media.path}`);
         else if (stat.size === 0) addError(errors, `${pointer}.path: 素材文件为空 ${media.path}`);
       } catch (error) {
         addError(errors, `${pointer}.path: 无法读取素材文件 (${error.message})`);
@@ -1296,7 +1715,10 @@ function resolveMediaPath(rootDir, relativePath) {
   if (relativeToMedia.startsWith('..') || path.isAbsolute(relativeToMedia)) {
     return { error: '路径越出 public/media 根目录' };
   }
-  return { filePath, mediaRoot };
+  // 便携键：真实文件系统与内存文件系统都按 POSIX 风格全路径定位，
+  // 因此在任何平台上自测注入的文件系统都能命中同一键。
+  const portableKey = `${rootDir.replace(/[\\/]+$/, '').replace(/\\/g, '/')}/${relativePath}`;
+  return { filePath, mediaRoot, portableKey };
 }
 
 // ---------------------------------------------------------------------------
@@ -1575,7 +1997,13 @@ export function validateDocument(doc, options = {}) {
     if (isPlainObject(question)) validateQuestion(question, index, errors, maps, coverage);
   }
   for (const [index, event] of (Array.isArray(doc.events) ? doc.events : []).entries()) {
-    if (isPlainObject(event)) validateEvent(event, index, errors, maps);
+    if (isPlainObject(event)) {
+      validateEvent(event, index, errors, maps);
+      // D2：早期扩张战役必须给出五类分析结构；只要事件存在，部分阶段也要满足。
+      if (isEarlyCampaignEvent(event, coverage)) {
+        earlyCampaignDepthErrors(event, coverage, maps, `$.events[${index}]`, errors);
+      }
+    }
   }
   for (const [index, battle] of (Array.isArray(doc.battles) ? doc.battles : []).entries()) {
     if (!isPlainObject(battle)) continue;
@@ -1600,7 +2028,13 @@ export function validateDocument(doc, options = {}) {
     if (isPlainObject(concept)) validateConcept(concept, index, errors, maps);
   }
   for (const [index, media] of (Array.isArray(doc.media) ? doc.media : []).entries()) {
-    if (isPlainObject(media)) validateMedia(media, index, errors, maps, coverage, { media: options.media, rootDir });
+    if (isPlainObject(media)) {
+      validateMedia(media, index, errors, maps, coverage, {
+        media: options.media,
+        rootDir,
+        fileSystem: options.fileSystem,
+      });
+    }
   }
 
   validateCoverageGate(doc, maps, coverage, stage, errors);
@@ -1625,14 +2059,41 @@ function loadCoverageOrThrow() {
 /**
  * 校验 contracts/requirements.json 与工单 canonical 清单完全一致。
  * 顺序也要一致：工单要求“ids and scope verbatim, no additions/removals”。
+ *
+ * D4：既接受文件路径（默认契约路径），也接受内存中的数组，
+ * 因此自测完全不需要创建临时文件。
+ *
+ * @param {string|Array|{path?:string, document?:Array, fileSystem?:object}} [source]
+ *   - 省略：读取默认契约路径
+ *   - 字符串：读取该路径
+ *   - 数组：直接校验内存文档（自测用，绝不落盘）
+ *   - 对象：{ path } 读文件，或 { document } 校验内存文档
  */
-function requirementsFileErrors(requirementsPath = REQUIREMENTS_PATH) {
+function requirementsFileErrors(source) {
   const errors = [];
   let actual;
-  try {
-    actual = readJson(requirementsPath, 'requirements.json');
-  } catch (error) {
-    return [String(error.message)];
+  if (Array.isArray(source)) {
+    actual = source; // 直接传入内存文档
+  } else {
+    let filePath = REQUIREMENTS_PATH;
+    let fileSystem = REAL_FILE_SYSTEM;
+    let document;
+    if (typeof source === 'string') {
+      filePath = source;
+    } else if (isPlainObject(source)) {
+      if (hasOwn(source, 'document')) document = source.document;
+      if (typeof source.path === 'string') filePath = source.path;
+      if (source.fileSystem) fileSystem = source.fileSystem;
+    }
+    if (document !== undefined) {
+      actual = document;
+    } else {
+      try {
+        actual = readJson(filePath, 'requirements.json', fileSystem);
+      } catch (error) {
+        return [String(error.message)];
+      }
+    }
   }
   if (!Array.isArray(actual)) return ['requirements.json 根节点必须是数组'];
   if (actual.length !== CANONICAL_REQUIREMENTS.length) {
@@ -1778,6 +2239,44 @@ function runContractChecks() {
       console.log(`FAIL  coverage 重点集合（${compositionErrors.length} 个问题）`);
       for (const error of compositionErrors) console.log(`      - ${error}`);
     }
+
+    // D2：早期战役五类分析结构
+    const earlyErrors = validateEarlyCampaignContract(coverage);
+    if (earlyErrors.length === 0) {
+      const block = coverage.earlyCampaign;
+      console.log(
+        `PASS  早期战役结构锁定（${block.eventIds.length} 个事件 × [${EARLY_CAMPAIGN_KEYS.join('/')}]，每类 >=${block.minHanCharsPerKey} 汉字；导读强制小节 ${block.overviewTopics.requiredHeadings.join('、')}）`,
+      );
+    } else {
+      failures.push('early-campaign');
+      console.log(`FAIL  早期战役结构（${earlyErrors.length} 个问题）`);
+      for (const error of earlyErrors) console.log(`      - ${error}`);
+    }
+
+    // D3：阶段归属不变式
+    const ownershipErrors = validateStageOwnershipContract(coverage);
+    if (ownershipErrors.length === 0) {
+      const shape = STAGE_IDS.map((stage) => `${stage} ${coverage.stageOwnership[stage].length}`).join(' + ');
+      console.log(`PASS  阶段归属锁定（${shape} = ${coverage.keyArticleIds.length}，无重复、无孤立、无未归属）`);
+    } else {
+      failures.push('stage-ownership');
+      console.log(`FAIL  阶段归属（${ownershipErrors.length} 个问题）`);
+      for (const error of ownershipErrors) console.log(`      - ${error}`);
+    }
+
+    // D3：每篇文章的素材类型契约
+    const mediaTypeErrors = validateMediaTypeContract(coverage);
+    if (mediaTypeErrors.length === 0) {
+      const totalTypes = coverage.keyArticleIds.reduce(
+        (sum, id) => sum + (coverage.requiredMediaTypes[id] || []).length,
+        0,
+      );
+      console.log(`PASS  素材类型锁定（${coverage.keyArticleIds.length} 篇文章共 ${totalTypes} 项“文章 × 类型”要求，无孤立 ID）`);
+    } else {
+      failures.push('media-types');
+      console.log(`FAIL  素材类型契约（${mediaTypeErrors.length} 个问题）`);
+      for (const error of mediaTypeErrors) console.log(`      - ${error}`);
+    }
   }
 
   try {
@@ -1819,6 +2318,44 @@ function runContractChecks() {
       failures.push('schema-phase');
       console.log(`FAIL  schema phase 缺少必填字段：${missingPhase.join(', ')}`);
     }
+
+    // D1：phase.time 必须声明端到端时间字段
+    const phaseTimeDef = schema.$defs && schema.$defs.phaseTime;
+    const phaseTimeProps = phaseTimeDef && isPlainObject(phaseTimeDef.properties) ? Object.keys(phaseTimeDef.properties) : [];
+    const phaseTimeRequired = phaseTimeDef && Array.isArray(phaseTimeDef.required) ? phaseTimeDef.required : [];
+    const phaseTimeProblems = [];
+    if (phaseTimeProps.length === 0) phaseTimeProblems.push('缺少 $defs.phaseTime');
+    if (phaseTimeProps.length > 0 && !phaseTimeProps.includes('end')) phaseTimeProblems.push('phaseTime 缺少 end 属性');
+    for (const field of ['start', 'display', 'uncertainty']) {
+      if (phaseTimeProps.length > 0 && !phaseTimeRequired.includes(field)) phaseTimeProblems.push(`phaseTime 未要求 ${field}`);
+    }
+    if (phaseTimeProblems.length === 0) {
+      console.log('PASS  schema 的 phaseTime 声明 start/end/display/uncertainty（end 由验证器做窗口与顺序校验）');
+    } else {
+      failures.push('schema-phase-time');
+      console.log(`FAIL  schema phaseTime：${phaseTimeProblems.join('；')}`);
+    }
+
+    // D2：schema 必须定义早期战役五类分析
+    const earlyDef = schema.$defs && schema.$defs.earlyCampaignAnalysis;
+    const earlyRequired = earlyDef && Array.isArray(earlyDef.required) ? earlyDef.required : [];
+    if (canonicalJson(earlyRequired) === canonicalJson(EARLY_CAMPAIGN_KEYS)) {
+      console.log(`PASS  schema 的 earlyCampaignAnalysis 恰好要求 ${EARLY_CAMPAIGN_KEYS.join('/')}`);
+    } else {
+      failures.push('schema-early-campaign');
+      console.log(
+        `FAIL  schema earlyCampaignAnalysis 必填键 [${earlyRequired.join(',')}] 与验证器 [${EARLY_CAMPAIGN_KEYS.join(',')}] 不一致`,
+      );
+    }
+    const eventProps = schema.$defs && schema.$defs.event && isPlainObject(schema.$defs.event.properties)
+      ? schema.$defs.event.properties
+      : {};
+    if (hasOwn(eventProps, 'earlyCampaignAnalysis')) {
+      console.log('PASS  schema 的 event 允许 earlyCampaignAnalysis 字段');
+    } else {
+      failures.push('schema-event-early');
+      console.log('FAIL  schema event 未声明 earlyCampaignAnalysis 字段');
+    }
   } catch (error) {
     failures.push('content.schema.json');
     console.log(`FAIL  content.schema.json 无法读取：${error.message}`);
@@ -1841,6 +2378,64 @@ function loadSelfTestBase() {
   const coverage = loadCoverageOrThrow();
   const fixture = readJson(FIXTURE_PATH, 'contracts/fixtures/valid-min.json');
   return { coverage, fixture };
+}
+
+/**
+ * 构造一个合规的“早期扩张战役”合成事件（D2 自测用）。
+ * 使用已有 base 文档的来源/claim/地点，保证引用完整；内容明确标注为合成。
+ */
+function makeEarlyCampaignEvent(base, { omitAnalysis = false, id = 'event-hong-kong-1941' } = {}) {
+  const sourceId = base.sources[0].id;
+  const claimId = base.claims[0].id;
+  const placeId = base.places[0].id;
+  const body =
+    '这是验证器自测使用的合成早期战役分析文字，不对应任何真实战役，也不得作为历史内容发布。它只用于让五类分析结构的深度检查发生，并确保每类分析都带有来源与 claim 引用。'.repeat(
+      2,
+    );
+  const event = {
+    id,
+    title: '合成早期战役（仅供结构自测）',
+    historicalPart: 'part-3-expansion',
+    eventType: 'campaign',
+    startDate: '1941-12-08',
+    endDate: '1941-12-25',
+    summary: '这是验证器自测使用的合成早期战役事件，不对应真实历史，不得发布。',
+    article: [
+      {
+        heading: '合成导读',
+        body: '这是验证器自测使用的合成导读小节，仅用于补齐事件的文章结构，不对应真实历史内容。',
+        sourceIds: [sourceId],
+        claimIds: [claimId],
+      },
+    ],
+    placeIds: [placeId],
+    personIds: [],
+    unitIds: [],
+    equipmentIds: [],
+    conceptIds: [],
+    relatedEventIds: [],
+    sourceIds: [sourceId],
+    claimIds: [claimId],
+  };
+  if (!omitAnalysis) {
+    const titleFor = {
+      background: '背景',
+      course: '经过',
+      constraints: '约束',
+      results: '结果',
+      impact: '影响',
+    };
+    event.earlyCampaignAnalysis = {};
+    for (const key of EARLY_CAMPAIGN_KEYS) {
+      event.earlyCampaignAnalysis[key] = {
+        title: titleFor[key],
+        body,
+        sourceIds: [sourceId],
+        claimIds: [claimId],
+      };
+    }
+  }
+  return event;
 }
 
 function makeSyntheticBattle(base) {
@@ -1927,7 +2522,9 @@ function makeSyntheticBattle(base) {
         title: '合成阶段',
         time: {
           start: '1942-06-04T04:30:00-11:00',
-          display: '1942年6月4日约04:30（合成测试时间）',
+          // D1：自带一个合法的 end，让基础样本覆盖 end 的正向路径。
+          end: '1942-06-04T09:30:00-11:00',
+          display: '1942年6月4日约04:30至09:30（合成测试时间）',
           uncertainty: '合成时间仅用于结构自测，不对应真实历史时刻。',
         },
         positions: {
@@ -2008,6 +2605,7 @@ function expectNoErrors(name, doc, coverage, options = {}) {
     stage: options.stage || 'strategy',
     rootDir: options.rootDir || REPO_ROOT,
     media: Boolean(options.media),
+    fileSystem: options.fileSystem,
   });
   if (result.errors.length > 0) {
     throw new Error(`${name}: 预期通过，实际有 ${result.errors.length} 个错误：\n${result.errors.slice(0, 5).join('\n')}`);
@@ -2021,6 +2619,7 @@ function expectErrors(name, doc, coverage, pattern, options = {}) {
     stage: options.stage || 'strategy',
     rootDir: options.rootDir || REPO_ROOT,
     media: Boolean(options.media),
+    fileSystem: options.fileSystem,
   });
   if (result.errors.length === 0) throw new Error(`${name}: 预期失败，实际通过`);
   if (pattern && !result.errors.some((error) => pattern.test(error))) {
@@ -2055,34 +2654,30 @@ function runSelfTests() {
   tests.push([
     'requirements.json 偏离 canonical 清单会被发现（负例）',
     () => {
-      const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'dsh-req-'));
-      try {
-        const mutated = clone(CANONICAL_REQUIREMENTS);
-        mutated.push({ id: 'HIST-EXTRA', description: '工单没有的需求', scope: 'local' });
-        const p1 = path.join(temp, 'extra.json');
-        fs.writeFileSync(p1, JSON.stringify(mutated));
-        if (requirementsFileErrors(p1).length === 0) throw new Error('多出条目没有被发现');
+      // D4：全部在内存数组中构造，不创建任何临时文件。
+      const extra = clone(CANONICAL_REQUIREMENTS);
+      extra.push({ id: 'HIST-EXTRA', description: '工单没有的需求', scope: 'local' });
+      if (requirementsFileErrors(extra).length === 0) throw new Error('多出条目没有被发现');
 
-        const mutated2 = clone(CANONICAL_REQUIREMENTS);
-        mutated2[0].description = '改写过的描述';
-        const p2 = path.join(temp, 'rewritten.json');
-        fs.writeFileSync(p2, JSON.stringify(mutated2));
-        if (requirementsFileErrors(p2).length === 0) throw new Error('改写 description 没有被发现');
+      const rewritten = clone(CANONICAL_REQUIREMENTS);
+      rewritten[0].description = '改写过的描述';
+      if (requirementsFileErrors(rewritten).length === 0) throw new Error('改写 description 没有被发现');
 
-        const mutated3 = clone(CANONICAL_REQUIREMENTS);
-        mutated3.pop();
-        const p3 = path.join(temp, 'short.json');
-        fs.writeFileSync(p3, JSON.stringify(mutated3));
-        if (requirementsFileErrors(p3).length === 0) throw new Error('缺少条目没有被发现');
+      const short = clone(CANONICAL_REQUIREMENTS);
+      short.pop();
+      if (requirementsFileErrors(short).length === 0) throw new Error('缺少条目没有被发现');
 
-        const mutated4 = clone(CANONICAL_REQUIREMENTS);
-        mutated4[5].scope = 'release';
-        const p4 = path.join(temp, 'scope.json');
-        fs.writeFileSync(p4, JSON.stringify(mutated4));
-        if (requirementsFileErrors(p4).length === 0) throw new Error('改写 scope 没有被发现');
-      } finally {
-        fs.rmSync(temp, { recursive: true, force: true });
-      }
+      const rescoped = clone(CANONICAL_REQUIREMENTS);
+      rescoped[5].scope = 'release';
+      if (requirementsFileErrors(rescoped).length === 0) throw new Error('改写 scope 没有被发现');
+
+      const reordered = clone(CANONICAL_REQUIREMENTS);
+      [reordered[0], reordered[1]] = [reordered[1], reordered[0]];
+      if (requirementsFileErrors(reordered).length === 0) throw new Error('顺序颠倒没有被发现');
+
+      const injected = clone(CANONICAL_REQUIREMENTS);
+      injected[3].priority = 'high';
+      if (requirementsFileErrors(injected).length === 0) throw new Error('额外字段没有被发现');
     },
   ]);
   tests.push([
@@ -2315,6 +2910,402 @@ function runSelfTests() {
         /time|缺少必填字段/,
       ),
   ]);
+  // --- D1: phase.time.end 系列负例（审查者用 6/4–6/5 战役 + 6/10 结束时间命中过缺陷）---
+  tests.push([
+    'D1 阶段 time.end 超出战役窗口被拒绝（6/10 结尾于 6/4–6/5 战役）',
+    () =>
+      expectErrors(
+        'phase time.end outside battle window',
+        (() => {
+          const doc = clone(base);
+          doc.battles[0].startDate = '1942-06-04';
+          doc.battles[0].endDate = '1942-06-05';
+          doc.battles[0].phases[0].time.start = '1942-06-04T04:30:00-11:00';
+          doc.battles[0].phases[0].time.end = '1942-06-10T04:30:00-11:00';
+          return doc;
+        })(),
+        coverage,
+        /time\.end.*不在战役|time\.end.*晚于战役结束/,
+      ),
+  ]);
+  tests.push([
+    'D1 阶段 time.end 早于 time.start 被拒绝',
+    () =>
+      expectErrors(
+        'phase time.end before start',
+        (() => {
+          const doc = clone(base);
+          doc.battles[0].phases[0].time.start = '1942-06-04T09:30:00-11:00';
+          doc.battles[0].phases[0].time.end = '1942-06-04T04:30:00-11:00';
+          return doc;
+        })(),
+        coverage,
+        /time\.end.*早于开始时间/,
+      ),
+  ]);
+  tests.push([
+    'D1 阶段 time.end 格式非法被拒绝',
+    () =>
+      expectErrors(
+        'phase time.end invalid format',
+        (() => {
+          const doc = clone(base);
+          doc.battles[0].phases[0].time.end = '1942-06-04 09:30';
+          return doc;
+        })(),
+        coverage,
+        /time\.end.*不是带时区的有效 ISO 8601/,
+      ),
+  ]);
+  tests.push([
+    'D1 阶段 time.end 无时区被拒绝',
+    () =>
+      expectErrors(
+        'phase time.end missing timezone',
+        (() => {
+          const doc = clone(base);
+          doc.battles[0].phases[0].time.end = '1942-06-04T09:30:00';
+          return doc;
+        })(),
+        coverage,
+        /time\.end.*不是带时区的有效 ISO 8601/,
+      ),
+  ]);
+  tests.push([
+    'D1 阶段缺 time.start 被拒绝',
+    () =>
+      expectErrors(
+        'phase missing time.start',
+        (() => {
+          const doc = clone(base);
+          delete doc.battles[0].phases[0].time.start;
+          return doc;
+        })(),
+        coverage,
+        /time\.start.*必须有带时区的 ISO 8601 开始时间/,
+      ),
+  ]);
+  tests.push([
+    'D1 阶段 time.end 显式空值被拒绝（必须省略而不是留空）',
+    () =>
+      expectErrors(
+        'phase time.end empty string',
+        (() => {
+          const doc = clone(base);
+          doc.battles[0].phases[0].time.end = '';
+          return doc;
+        })(),
+        coverage,
+        /time\.end.*必须/,
+      ),
+  ]);
+  tests.push([
+    'D1 阶段序号与时间顺序矛盾被拒绝',
+    () =>
+      expectErrors(
+        'phase sequence vs time order',
+        (() => {
+          const doc = clone(base);
+          const first = clone(doc.battles[0].phases[0]);
+          // 追加一个 sequence=2 但时间更早的阶段
+          const second = clone(first);
+          second.id = 'phase-fixture-two';
+          second.sequence = 2;
+          second.time.start = '1942-06-04T03:00:00-11:00';
+          second.time.end = '1942-06-04T03:30:00-11:00';
+          doc.battles[0].phases.push(second);
+          return doc;
+        })(),
+        coverage,
+        /早于序号 1|按 sequence 时间递增/,
+      ),
+  ]);
+  tests.push([
+    'D1 前一阶段 end 越过下一阶段 start 被拒绝',
+    () =>
+      expectErrors(
+        'phase ranges overlap',
+        (() => {
+          const doc = clone(base);
+          const second = clone(doc.battles[0].phases[0]);
+          second.id = 'phase-fixture-three';
+          second.sequence = 2;
+          second.time.start = '1942-06-04T08:00:00-11:00';
+          second.time.end = '1942-06-04T12:00:00-11:00';
+          doc.battles[0].phases.push(second);
+          return doc;
+        })(),
+        coverage,
+        /结束时间晚于下一阶段/,
+      ),
+  ]);
+  tests.push([
+    'D1 合法 time.end 通过（正向对照）',
+    () =>
+      expectNoErrors(
+        'phase time.end valid',
+        (() => {
+          const doc = clone(base);
+          doc.battles[0].phases[0].time.end = '1942-06-04T20:00:00-11:00';
+          return doc;
+        })(),
+        coverage,
+        { stage: 'strategy' },
+      ),
+  ]);
+  tests.push([
+    'D1 时区不造成假阳性：战役末日 -11:00 晚间不越界',
+    () => {
+      // 回归防护：曾用 UTC 窗口比较，导致 1942-06-05T20:00-11:00 被误判越界。
+      const doc = clone(base);
+      doc.battles[0].startDate = '1942-06-04';
+      doc.battles[0].endDate = '1942-06-05';
+      doc.battles[0].phases[0].time.start = '1942-06-04T04:30:00-11:00';
+      doc.battles[0].phases[0].time.end = '1942-06-05T20:00:00-11:00';
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const timeErrors = result.errors.filter((error) => /time\.(start|end)/.test(error));
+      if (timeErrors.length > 0) {
+        throw new Error(`合法时区时间被误判：${timeErrors.slice(0, 3).join('; ')}`);
+      }
+    },
+  ]);
+  // --- D2: 早期扩张战役五类分析结构 ---
+  tests.push([
+    'D2 早期战役缺整块 earlyCampaignAnalysis 被拒绝',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makeEarlyCampaignEvent(doc, { omitAnalysis: true }));
+      return expectErrors('early campaign missing analysis', doc, coverage, /earlyCampaignAnalysis.*五类分析结构/);
+    },
+  ]);
+  for (const key of ['background', 'course', 'constraints', 'results', 'impact']) {
+    tests.push([
+      `D2 早期战役缺 '${key}' 分析被拒绝`,
+      () => {
+        const doc = clone(base);
+        const event = makeEarlyCampaignEvent(doc);
+        delete event.earlyCampaignAnalysis[key];
+        doc.events.push(event);
+        return expectErrors(
+          `early campaign missing ${key}`,
+          doc,
+          coverage,
+          new RegExp(`earlyCampaignAnalysis\\.${key}|缺少必需的 '${key}'`),
+        );
+      },
+    ]);
+  }
+  tests.push([
+    'D2 早期战役某类分析正文过浅被拒绝',
+    () => {
+      const doc = clone(base);
+      const event = makeEarlyCampaignEvent(doc);
+      event.earlyCampaignAnalysis.course.body = '太短了。';
+      doc.events.push(event);
+      return expectErrors('early campaign shallow course', doc, coverage, /earlyCampaignAnalysis\.course\.body.*汉字/);
+    },
+  ]);
+  tests.push([
+    'D2 早期战役分析小节标题错误被拒绝',
+    () => {
+      const doc = clone(base);
+      const event = makeEarlyCampaignEvent(doc);
+      event.earlyCampaignAnalysis.impact.title = '随便写的标题';
+      doc.events.push(event);
+      return expectErrors('early campaign wrong title', doc, coverage, /earlyCampaignAnalysis\.impact\.title/);
+    },
+  ]);
+  tests.push([
+    'D2 早期战役分析小节缺来源被拒绝',
+    () => {
+      const doc = clone(base);
+      const event = makeEarlyCampaignEvent(doc);
+      event.earlyCampaignAnalysis.results.sourceIds = [];
+      doc.events.push(event);
+      return expectErrors('early campaign no sources', doc, coverage, /earlyCampaignAnalysis\.results|至少需要 1 个来源/);
+    },
+  ]);
+  tests.push([
+    'D2 合规的早期战役五类分析通过（正向对照）',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makeEarlyCampaignEvent(doc));
+      // background 阶段会因其它 coverage 缺失而失败，这里单独看这个事件条目没有分析类错误。
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const analysisErrors = result.errors.filter((error) => /earlyCampaignAnalysis/.test(error));
+      if (analysisErrors.length > 0) {
+        throw new Error(`合规早期战役分析被误判：${analysisErrors.slice(0, 5).join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D2 早期战役 fixture 通过结构检查（无 earlyCampaignAnalysis 错误）',
+    () => {
+      const earlyPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'valid-early-campaign.json');
+      if (!fs.existsSync(earlyPath)) throw new Error(`早期战役 fixture 缺失：${earlyPath}`);
+      const earlyDoc = readJson(earlyPath, 'valid-early-campaign.json');
+      if (earlyDoc.fixtureOnly !== true) throw new Error('早期战役 fixture 必须 fixtureOnly=true');
+      const result = validateDocument(earlyDoc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const analysisErrors = result.errors.filter((error) => /earlyCampaignAnalysis/.test(error));
+      if (analysisErrors.length > 0) {
+        throw new Error(`早期战役 fixture 未满足五类分析结构：${analysisErrors.slice(0, 5).join('; ')}`);
+      }
+      const schemaErrors = result.errors.filter((error) => /不允许的字段|缺少必填字段/.test(error));
+      if (schemaErrors.length > 0) {
+        throw new Error(`早期战役 fixture 有 schema 错误：${schemaErrors.slice(0, 5).join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D2 coverage.earlyCampaign 缺键或漏登记事件会被契约检查发现（负例）',
+    () => {
+      const noBlock = clone(coverage);
+      delete noBlock.earlyCampaign;
+      if (validateEarlyCampaignContract(noBlock).length === 0) throw new Error('缺少 earlyCampaign 块没有被发现');
+
+      const missingKey = clone(coverage);
+      missingKey.earlyCampaign.analysisKeys = missingKey.earlyCampaign.analysisKeys.filter((entry) => entry.key !== 'impact');
+      if (validateEarlyCampaignContract(missingKey).length === 0) throw new Error('缺少 impact 分析键没有被发现');
+
+      const missingEvent = clone(coverage);
+      missingEvent.earlyCampaign.eventIds = missingEvent.earlyCampaign.eventIds.filter((id) => id !== 'event-guam-1941');
+      if (validateEarlyCampaignContract(missingEvent).length === 0) {
+        throw new Error('background 阶段事件未登记到 earlyCampaign 没有被发现');
+      }
+
+      const badOverview = clone(coverage);
+      badOverview.earlyCampaign.overviewTopics.requiredHeadings = ['不存在的标题'];
+      if (validateEarlyCampaignContract(badOverview).length === 0) {
+        throw new Error('导读缺强制标题没有被发现');
+      }
+    },
+  ]);
+  // --- D3: 阶段归属与素材类型契约不变式 ---
+  tests.push([
+    'D3 真实契约的阶段归属与素材类型不变式成立（正向对照）',
+    () => {
+      const ownershipErrors = validateStageOwnershipContract(coverage);
+      if (ownershipErrors.length > 0) throw new Error(`stageOwnership: ${ownershipErrors.join('; ')}`);
+      const mediaErrors = validateMediaTypeContract(coverage);
+      if (mediaErrors.length > 0) throw new Error(`requiredMediaTypes: ${mediaErrors.join('; ')}`);
+      const total = STAGE_IDS.reduce((sum, stage) => sum + coverage.stageOwnership[stage].length, 0);
+      if (total !== coverage.keyArticleIds.length) {
+        throw new Error(`阶段归属合计 ${total} 与重点文章数 ${coverage.keyArticleIds.length} 不一致`);
+      }
+    },
+  ]);
+  tests.push([
+    'D3 阶段缺 owner（没有阶段拥有任何文章）被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.coral = [];
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('空阶段归属没有被发现');
+      if (!errors.some((error) => /coral/.test(error))) throw new Error(`错误未点名 coral：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 重点文章缺少 stageOwnership 归属被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.keyArticleIds.push('battle-orphan-article');
+      broken.keyArticles.push({
+        id: 'battle-orphan-article',
+        kind: 'battle',
+        entityType: 'battle',
+        stage: 'full',
+        minimumDepth: { sectionCount: 14, phases: 3 },
+      });
+      broken.requiredMediaTypes['battle-orphan-article'] = ['battle-map'];
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('缺少阶段归属没有被发现');
+      if (!errors.some((error) => /battle-orphan-article/.test(error))) {
+        throw new Error(`错误未点名 battle-orphan-article：${errors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D3 同一文章被两个阶段重复拥有被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.full.push('event-overview-part-1-why-war');
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('重复归属没有被发现');
+      if (!errors.some((error) => /重复拥有/.test(error))) throw new Error(`错误未指出重复拥有：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 文章被归属到一个比它自身 stage 更早的阶段被拒绝',
+    () => {
+      const broken = clone(coverage);
+      // battle-midway 属于 full；把它挪到 strategy 归属，与 keyArticles[].stage 冲突。
+      broken.stageOwnership.full = broken.stageOwnership.full.filter((id) => id !== 'battle-midway');
+      broken.stageOwnership.strategy.push('battle-midway');
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('阶段归属与 keyArticles.stage 冲突没有被发现');
+      if (!errors.some((error) => /battle-midway/.test(error))) throw new Error(`错误未点名 battle-midway：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 阶段归属含孤立 ID 被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.pearl.push('battle-does-not-exist');
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('孤立 ID 没有被发现');
+      if (!errors.some((error) => /孤立 ID/.test(error))) throw new Error(`错误未指出孤立 ID：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 阶段归属含未知阶段名被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.midway = [];
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('未知阶段名没有被发现');
+      if (!errors.some((error) => /midway/.test(error))) throw new Error(`错误未点名 midway：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 重点文章缺 requiredMediaTypes 条目被拒绝',
+    () => {
+      const broken = clone(coverage);
+      delete broken.requiredMediaTypes['battle-midway'];
+      const errors = validateMediaTypeContract(broken);
+      if (errors.length === 0) throw new Error('缺少素材类型条目没有被发现');
+      if (!errors.some((error) => /battle-midway/.test(error))) throw new Error(`错误未点名 battle-midway：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 文章种类与素材类型不符被拒绝（战役缺 battle-map）',
+    () => {
+      const broken = clone(coverage);
+      broken.requiredMediaTypes['battle-midway'] = ['photograph'];
+      const errors = validateMediaTypeContract(broken);
+      if (errors.length === 0) throw new Error('战役缺 battle-map 没有被发现');
+      if (!errors.some((error) => /battle-map/.test(error))) throw new Error(`错误未指出 battle-map：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 requiredMediaTypes 出现孤立 ID 被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.requiredMediaTypes['concept-does-not-exist'] = ['diagram'];
+      const errors = validateMediaTypeContract(broken);
+      if (errors.length === 0) throw new Error('素材类型孤立 ID 没有被发现');
+      if (!errors.some((error) => /孤立 ID/.test(error))) throw new Error(`错误未指出孤立 ID：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'D3 素材类型为空数组被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.requiredMediaTypes['person-nimitz-chester'] = [];
+      const errors = validateMediaTypeContract(broken);
+      if (errors.length === 0) throw new Error('空素材类型数组没有被发现');
+      if (!errors.some((error) => /person-nimitz-chester/.test(error))) throw new Error(errors.join('; '));
+    },
+  ]);
   tests.push([
     '航线未标示意被拒绝',
     () =>
@@ -2535,19 +3526,62 @@ function runSelfTests() {
   tests.push([
     '媒体路径缺失被拒绝',
     () => {
-      const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'dsh-content-media-'));
-      try {
-        const good = resolveMediaPath(tempRoot, 'public/media/selftest/ok.svg');
-        if (!good.filePath) throw new Error('合法路径被拒绝');
-        fs.mkdirSync(path.dirname(good.filePath), { recursive: true });
-        fs.writeFileSync(good.filePath, '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
-        if (!fs.existsSync(good.filePath)) throw new Error('素材文件未写入');
-        const bad = resolveMediaPath(tempRoot, 'public/media/../secret.png');
-        if (!bad.error) throw new Error('路径穿越未被拒绝');
-        const outside = resolveMediaPath(tempRoot, 'assets/outside.png');
-        if (!outside.error) throw new Error('public/media 之外的路径未被拒绝');
-      } finally {
-        fs.rmSync(tempRoot, { recursive: true, force: true });
+      // D4：使用纯内存文件系统，不创建临时目录、不写工作区。
+      const memoryFs = createMemoryFileSystem();
+      const root = '/virtual-root';
+      const good = resolveMediaPath(root, 'public/media/selftest/ok.svg');
+      if (!good.filePath) throw new Error('合法路径被拒绝');
+
+      memoryFs.set(good.portableKey, '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+      if (!memoryFs.exists(good.portableKey)) throw new Error('内存文件系统中素材文件未登记');
+      if (memoryFs.stat(good.portableKey).size === 0) throw new Error('内存素材大小计算错误');
+
+      const bad = resolveMediaPath(root, 'public/media/../secret.png');
+      if (!bad.error) throw new Error('路径穿越未被拒绝');
+      const outside = resolveMediaPath(root, 'assets/outside.png');
+      if (!outside.error) throw new Error('public/media 之外的路径未被拒绝');
+
+      // 真正走一次 --media 的文件存在性检查：缺失文件必须报错，存在文件必须通过。
+      const missingDoc = clone(base);
+      missingDoc.fixtureOnly = false;
+      missingDoc.media = [
+        {
+          id: 'media-selftest-missing',
+          title: '合成测试素材（缺失文件）',
+          mediaType: 'map',
+          path: 'public/media/selftest/definitely-missing.svg',
+          author: '验证器自测',
+          license: 'original-work',
+          rightsStatement: '验证器自测使用的原创示意图，不发布，不含真实历史主张。',
+          sourceId: missingDoc.sources[0].id,
+          creditLine: '验证器自测素材，不得发布。',
+          alt: '验证器自测用合成地图，不代表真实地理。',
+          caption: '验证器自测用合成地图，不对应真实历史。',
+          articleIds: [coverage.keyArticleIds[0]],
+        },
+      ];
+      const missingResult = validateDocument(missingDoc, {
+        coverage,
+        stage: 'strategy',
+        rootDir: root,
+        media: true,
+        fileSystem: memoryFs,
+      });
+      if (!missingResult.errors.some((error) => /素材文件不存在/.test(error))) {
+        throw new Error(`内存文件系统下缺失素材未被检出：${missingResult.errors.slice(0, 5).join('; ')}`);
+      }
+
+      const presentDoc = clone(missingDoc);
+      presentDoc.media[0].path = 'public/media/selftest/ok.svg';
+      const presentResult = validateDocument(presentDoc, {
+        coverage,
+        stage: 'strategy',
+        rootDir: root,
+        media: true,
+        fileSystem: memoryFs,
+      });
+      if (presentResult.errors.some((error) => /素材文件不存在|素材文件为空|无法读取素材文件/.test(error))) {
+        throw new Error(`内存文件系统下已登记素材被误判为缺失：${presentResult.errors.slice(0, 5).join('; ')}`);
       }
     },
   ]);
@@ -2587,44 +3621,75 @@ function runSelfTests() {
         questionMinimumEntityRefs: 2,
         finalGate: { stage: 'full' },
       };
-      const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'dsh-content-media-gate-'));
-      try {
-        const doc = clone(base);
-        doc.fixtureOnly = false;
-        doc.media = [
-          {
-            id: 'media-fixture-selftest-map',
-            title: '合成测试地图',
-            mediaType: 'map',
-            path: 'public/media/fixture/selftest-map.svg',
-            author: '验证器自测',
-            license: 'original-work',
-            rightsStatement: '验证器自测生成的原创示意图，不发布，不包含真实历史主张。',
-            sourceId: doc.sources[0].id,
-            creditLine: '验证器自测素材，不得发布。',
-            alt: '验证器自测用合成地图，不代表真实地理。',
-            caption: '验证器自测用合成地图，不对应真实历史。',
-            articleIds: [customCoverage.keyArticleIds[0]],
-            width: 800,
-            height: 600,
-          },
-        ];
-        const mediaPath = path.join(tempRoot, 'public', 'media', 'fixture', 'selftest-map.svg');
-        fs.mkdirSync(path.dirname(mediaPath), { recursive: true });
-        fs.writeFileSync(mediaPath, '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"></svg>');
-        const result = validateDocument(doc, { coverage: customCoverage, stage: 'full', media: true, rootDir: tempRoot });
-        if (result.errors.length > 0) {
-          throw new Error(`媒体精确集合正例失败：\n${result.errors.slice(0, 8).join('\n')}`);
-        }
-        const missing = clone(doc);
-        missing.media = [];
-        const failed = validateDocument(missing, { coverage: customCoverage, stage: 'full', media: true, rootDir: tempRoot });
-        if (!failed.errors.some((error) => /media|素材/.test(error))) {
-          throw new Error('媒体缺项没有被拒绝');
-        }
-      } finally {
-        fs.rmSync(tempRoot, { recursive: true, force: true });
+      // D4：纯内存文件系统，不创建临时目录。
+      const memoryFs = createMemoryFileSystem();
+      const root = '/virtual-media-gate-root';
+
+      const doc = clone(base);
+      doc.fixtureOnly = false;
+      doc.media = [
+        {
+          id: 'media-fixture-selftest-map',
+          title: '合成测试地图',
+          mediaType: 'map',
+          path: 'public/media/fixture/selftest-map.svg',
+          author: '验证器自测',
+          license: 'original-work',
+          rightsStatement: '验证器自测生成的原创示意图，不发布，不包含真实历史主张。',
+          sourceId: doc.sources[0].id,
+          creditLine: '验证器自测素材，不得发布。',
+          alt: '验证器自测用合成地图，不代表真实地理。',
+          caption: '验证器自测用合成地图，不对应真实历史。',
+          articleIds: [customCoverage.keyArticleIds[0]],
+          width: 800,
+          height: 600,
+        },
+      ];
+      const resolvedMedia = resolveMediaPath(root, 'public/media/fixture/selftest-map.svg');
+      if (!resolvedMedia.portableKey) throw new Error('媒体便携键解析失败');
+      memoryFs.set(
+        resolvedMedia.portableKey,
+        '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"></svg>',
+      );
+
+      const result = validateDocument(doc, {
+        coverage: customCoverage,
+        stage: 'full',
+        media: true,
+        rootDir: root,
+        fileSystem: memoryFs,
+      });
+      if (result.errors.length > 0) {
+        throw new Error(`媒体精确集合正例失败：\n${result.errors.slice(0, 8).join('\n')}`);
       }
+      const missing = clone(doc);
+      missing.media = [];
+      const failed = validateDocument(missing, {
+        coverage: customCoverage,
+        stage: 'full',
+        media: true,
+        rootDir: root,
+        fileSystem: memoryFs,
+      });
+      if (!failed.errors.some((error) => /media|素材/.test(error))) {
+        throw new Error('媒体缺项没有被拒绝');
+      }
+    },
+  ]);
+  tests.push([
+    '自测全程不依赖可写临时目录（D4）',
+    () => {
+      // 断言自测代码路径与验证器默认路径都不要求写权限：
+      // 1) 内存文件系统本身可读写且完全在内存中；
+      // 2) 验证器在只读模式（不传 --media 文件检查所需之外的写操作）不会创建文件。
+      const memoryFs = createMemoryFileSystem();
+      memoryFs.set('public/media/x.svg', '<svg/>');
+      if (!memoryFs.exists('public/media/x.svg')) throw new Error('内存文件系统读取失败');
+      if (memoryFs.exists('public/media/missing.svg')) throw new Error('内存文件系统误报存在');
+      if (typeof REAL_FILE_SYSTEM.readText !== 'function') throw new Error('真实文件系统层缺少 readText');
+      // 真实文件系统层必须只暴露读接口，杜绝自测期写入磁盘。
+      const writeyKeys = Object.keys(REAL_FILE_SYSTEM).filter((key) => /write|mkdtemp|mkdir|rm|unlink/i.test(key));
+      if (writeyKeys.length > 0) throw new Error(`真实文件系统层暴露了写接口：${writeyKeys.join(', ')}`);
     },
   ]);
 

@@ -1,8 +1,19 @@
-# 历史内容覆盖矩阵与交付门禁（v2）
+# 历史内容覆盖矩阵与交付门禁（v3）
 
 状态：**契约/覆盖/验证器已交付；内容尚未交付**。`content/history.json` 在本任务中刻意不存在。本文件中的每一条“required”都是后续内容任务的验收条件，不是“已完成内容”的声明。
 
 规范机器文件：`contracts/coverage.json`。本文解释其精确集合；两者冲突时以机器文件与 `contracts/content.schema.json` 为准，并须由架构审查修正。
+
+## 0. v3 修复的四个阻断缺陷
+
+中央审查（attempt 2，priorCommit 2a2ee599）给出四个阻断项；以下为当前状态，全部有机器断言与负例：
+
+| 缺陷 | 修复位置 | 机器断言 | 负例数 |
+|---|---|---|---|
+| **D1** `phase.time.end` 与 `end>=start` 未校验（6/4–6/5 战役接受 6/10 结尾） | `scripts/validate-content.mjs` 阶段校验 | `time.end` 格式+战役窗口+`end>=start`；阶段按 `sequence` 时间递增、区间不重叠 | 9（含审查者原案例） |
+| **D2** 早期战役缺少 background/course/constraints/results/impact 结构 | `coverage.earlyCampaign` + schema `earlyCampaignAnalysis` + 验证器 | 8 事件 × 5 键，每键 ≥80 汉字，独立来源/claim；part 3 导读强制两个小节 | 12 |
+| **D3** 素材类型与阶段归属未契约锁定 | `coverage.stageOwnership` + `requiredMediaTypes` + 验证器不变式 | 19 篇不重不漏归属 5 阶段；每篇有素材类型且与文章种类相符；无孤立 ID | 11 |
+| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下 71/71、0 跳过、不写工作区 | 由只读实测证明 |
 
 ## 1. 阶段与 HIST 任务
 
@@ -32,7 +43,18 @@
 
 `coverage.keyArticleIds` 的顺序如下；`keyArticles[]` 与 `requiredMediaTypes` 必须与这 19 个 ID 精确一一对应。
 
-| # | keyArticleId | 类型 | 阶段 | 最低深度摘要 | 所需媒体类型 |
+**阶段归属是契约锁定字段（D3）**：`coverage.stageOwnership` 为每个阶段列出它必须交付的重点文章，验证器强制以下不变式（任一违反都是错误）：
+
+1. `stageOwnership` 只含合法阶段名，且 5 个阶段一个不缺；
+2. 19 篇重点文章**每一篇都恰好被一个阶段拥有**（不重、不漏、无孤立 ID）；
+3. 每篇文章的 `keyArticles[].stage` 必须等于拥有它的阶段；
+4. 每个阶段都必须至少拥有 1 篇文章（否则该阶段的交付门禁形同虚设）。
+
+当前归属：`strategy 1 + background 1 + pearl 7 + coral 5 + full 5 = 19`。
+
+**素材类型同样是契约锁定字段**：每篇文章在 `requiredMediaTypes` 中至少声明一种类型，且必须包含与其种类相符的必需类型（战役 `battle-map`、指挥官 `portrait`、专题 `diagram`、导读 `map`）；`requiredMediaTypes` 的键集合必须精确等于 `keyArticleIds`，不允许孤立 ID 或空数组。
+
+| # | keyArticleId | 类型 | 拥有阶段 | 最低深度摘要 | 所需媒体类型 |
 |---:|---|---|---|---|---|
 | 1 | `event-overview-part-1-why-war` | part-overview | strategy | 4 节；≥600 汉字；4 个标题；3 来源/3 claim；2 地点 | map |
 | 2 | `event-overview-part-3-expansion` | part-overview | background | 8 节；≥1200 汉字；8 个标题；4 来源/6 claim；5 地点 | map |
@@ -128,7 +150,9 @@
 
 ### 4.2 早期扩张（background；part 3）
 
-| 事件 ID | 主题 | 最低汉字 |
+每个事件都需要两样东西：**通用文章深度**（下表“最低汉字”）和**五类分析结构**（`coverage.earlyCampaign`，D2）。
+
+| 事件 ID | 主题 | 通用文章最低汉字 |
 |---|---|---:|
 | `event-hong-kong-1941` | 香港战役 | 220 |
 | `event-malaya-singapore-1942` | 马来亚战役、新加坡陷落与战俘/平民 | 260 |
@@ -139,7 +163,33 @@
 | `event-darwin-air-raid-1942` | 1942-02-19 达尔文空袭 | 220 |
 | `event-indian-ocean-raid-1942` | 印度洋空袭、英国东方舰队与日本补给压力 | 260 |
 
-“盟军为何连续失败”和“日本扩张中的补给/防御压力”不各自造假事件，而由 part 3 导读的强制小节 `盟军为何连续失败` 与 `日本的补给与防御压力` 承担；导读总深度 ≥1200 汉字。其他早期事件（如香港、威克岛）同时纳入时间线互链。
+#### 4.2.1 五类分析结构（`coverage.earlyCampaign`，机器强制）
+
+上面 8 个事件**必须**各带一个 `earlyCampaignAnalysis` 对象，恰好包含 5 个键，键名与标题固定：
+
+| 键 | 标题（逐字） | 必须回答的分析问题 | 每键最低汉字 |
+|---|---|---|---:|
+| `background` | 背景 | 这场行动之前发生了什么？为什么会发生？ | 80 |
+| `course` | 经过 | 谁在什么时候做了什么？按时间解释行动与转折 | 80 |
+| `constraints` | 约束 | 双方受哪些情报、补给、距离、天气、指挥链限制？ | 80 |
+| `results` | 结果 | 结果、损失与影响如何？统计口径与来源怎么写？ | 80 |
+| `impact` | 影响 | 对后续战役、战略与平民意味着什么？ | 80 |
+
+每节为 `{title, body, sourceIds, claimIds}`，各自至少 1 个来源、1 个 claim（`coverage.earlyCampaign.minSourceIds` / `minClaimIds`）。缺任何一个键、标题不匹配、正文过浅、缺来源或 claim 都是错误。
+
+这条规则的意义：早期扩张不能只写“日军很快占领了某地”。学生需要看到 **为什么打得起来（背景）→ 怎么打的（经过）→ 受什么限制（约束）→ 结果与代价（结果）→ 对后面和当地人的影响（影响）**。验证器无法判断文字质量，但能阻止只给两三句摘要就通过。
+
+参考形状见 `contracts/fixtures/valid-early-campaign.json`（`fixtureOnly=true`，仅供测试）。
+
+#### 4.2.2 两个分析主题由导读承担（已正式锁定）
+
+“盟军为何连续失败”和“日本扩张中的补给/防御压力”不各自造假事件，而由 part 3 导读 `event-overview-part-3-expansion` 的两个强制小节承担：
+
+- 标题逐字：`盟军为何连续失败`、`日本的补给与防御压力`
+- 每节 ≥120 汉字（`coverage.earlyCampaign.overviewTopics.minHanCharsPerHeading`）
+- 这两个标题同时出现在该导读的 `requiredArticleHeadings` 中，契约检查会双向核对
+
+导读总深度仍要求 ≥1200 汉字、8 节。其他早期事件（如香港、威克岛）同时纳入时间线互链。
 
 ### 4.3 珍珠港与战局变化节点
 
@@ -235,15 +285,51 @@ node scripts/validate-content.mjs --self-test
 node scripts/validate-content.mjs --check-contracts
 ```
 
-自测不读取 `content/history.json`，覆盖 **38** 项真实正例/负例/边界：
+自测不读取 `content/history.json`，覆盖 **71** 项真实正例/负例/边界。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。
 
 **契约一致性（7 项）**
 - `requirements.json` 与工单 canonical 清单逐字一致（36 条，id/description/scope/顺序/条数）；
-- 偏离 canonical 清单会被发现（多出条目、改写 description、缺少条目、改写 scope 四种负例）；
+- 偏离 canonical 清单会被发现（多出条目、改写 description、缺少条目、改写 scope、顺序颠倒、额外字段六种负例，**全部在内存数组中构造**）；
 - `coverage` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读 = 19；
 - 少一篇重点文章（去掉 `battle-midway`）会被发现且错误信息点名；
 - `coverage` 契约自身一致；
 - `docs/research/team-pilot-evidence.json` 存在、planHash 与工单一致、6 个 agent 与 5 项 approvalMatrix 齐全、且带“非本模块成果”免责说明。
+
+**D1 阶段时间（9 项）**
+- `time.end` 超出战役窗口被拒绝（**审查者原案例：6/4–6/5 战役 + 6/10 结束**）；
+- `time.end` 早于 `time.start` 被拒绝；
+- `time.end` 格式非法、缺时区被拒绝；
+- `time.start` 缺失被拒绝；
+- `time.end` 显式空字符串被拒绝（应直接省略）；
+- 阶段 `sequence` 与时间顺序矛盾被拒绝；
+- 前一阶段 `end` 越过下一阶段 `start` 被拒绝；
+- 合法 `time.end` 通过（正向对照）。
+
+**D2 早期战役结构（12 项）**
+- 缺整块 `earlyCampaignAnalysis` 被拒绝；
+- 分别缺 background / course / constraints / results / impact 各一个负例（共 5）；
+- 某类分析正文过浅被拒绝；
+- 分析小节标题错误被拒绝；
+- 分析小节缺来源被拒绝；
+- 合规五类分析通过（正向对照）；
+- `coverage.earlyCampaign` 缺块/缺键/漏登记事件/导读缺强制标题会被契约检查发现；
+- `contracts/fixtures/valid-early-campaign.json` 通过结构检查（正向）。
+
+**D3 阶段归属与素材类型（11 项）**
+- 真实契约的不变式成立（正向对照：19 篇不重不漏）；
+- 阶段缺 owner（空归属）被拒绝；
+- 重点文章缺 `stageOwnership` 归属被拒绝；
+- 同一文章被两个阶段重复拥有被拒绝；
+- 文章被归属到比自身 `stage` 更早的阶段被拒绝；
+- 归属含孤立 ID 被拒绝；
+- 归属含未知阶段名被拒绝；
+- 重点文章缺 `requiredMediaTypes` 条目被拒绝；
+- 文章种类与素材类型不符（战役缺 `battle-map`）被拒绝；
+- `requiredMediaTypes` 含孤立 ID 被拒绝；
+- 素材类型为空数组被拒绝。
+
+**D4 只读可用性（1 项）**
+- 断言真实文件系统层不暴露任何写接口，内存文件系统完全在内存中。
 
 **结构与引用（8 项）**
 - 重复 ID；未知实体引用；来源缺失；
@@ -252,7 +338,7 @@ node scripts/validate-content.mjs --check-contracts
 - 泛化 locator；数字 claim 无 locator；
 - 事件日期越界。
 
-**阶段字段（10 项）**
+**其他阶段字段（12 项）**
 - 缺 `knownEnemy`、缺 `unknownEnemy`、缺 `decision`、缺 `consequence`、缺 `certainty`、缺 `schematic`、缺 `time`、缺 `viewpoints`；
 - 重点战役阶段缺双方位置（`positions.allies`）；
 - 航线未标 `schematic`；
@@ -265,17 +351,16 @@ node scripts/validate-content.mjs --check-contracts
 - 阶段顺序单调（后一阶段必须包含前一阶段的全部问题部分，且每个阶段都确有重点文章交付）；
 - 默认阶段是 `full`，且未运行 `--media` 时不会被标记为已通过素材门禁。
 
-**素材与绕过（8 项）**
+**素材与绕过（7 项）**
 - 无效媒体许可（`all-rights-reserved`）；
 - 空泛 Questions；
 - full 覆盖绕过（`fixtureOnly=true` + 缺失重点文章/问题）；
 - 关闭 `fixtureOnly` 后仍缺覆盖；
 - `--media` 隐含 `full`；
-- 媒体路径穿越/越界/缺失；
-- 媒体精确集合正例通过、缺项被拒绝；
-- `fixture` 结构在 `strategy` 阶段真实通过。
+- 媒体路径穿越/越界/缺失（内存文件系统）；
+- 媒体精确集合正例通过、缺项被拒绝（内存文件系统）。
 
-若自测失败，内容验证不得被引用为通过。`--check-contracts` 是同一批契约断言的独立入口，不需要内容文件，可直接进 CI。
+若自测失败，内容验证不得被引用为通过。`--check-contracts` 是同一批契约断言的独立入口，不需要内容文件，可直接进 CI；它同样只读。
 
 ## 10. 36 条 canonical requirements 的逐项映射
 
@@ -284,7 +369,7 @@ node scripts/validate-content.mjs --check-contracts
 | canonical ID | 覆盖位置与契约机制 | 当前状态 / 后续证据 |
 |---|---|---|
 | HIST-BACKGROUND | part 1 导读 + 3 个 strategy 必需事件；schema/coverage | 契约已交付；内容待 HIST-00 |
-| HIST-EXPANSION | part 3 导读 + 8 个 background 必需事件，含补给/失败原因小节 | 契约已交付；内容待 HIST-01 |
+| HIST-EXPANSION | part 3 导读 + 8 个 background 必需事件；**每个事件强制五类分析结构**（`earlyCampaignAnalysis`），导读强制“盟军为何连续失败”“补给与防御压力”两节 | 契约与机器断言已交付（D2）；内容待 HIST-01 |
 | BATTLE-PEARL | `battle-pearl-harbor` 十四类、≥3 阶段、证据门槛 | 契约已交付；内容待 HIST-02 |
 | BATTLE-CORAL | `battle-coral-sea` 十四类、≥4 阶段、证据门槛 | 契约已交付；内容待 HIST-03 |
 | BATTLE-MIDWAY | `battle-midway` 十四类、≥5 阶段、争议 claim | 契约已交付；内容待 HIST-04 |
@@ -294,7 +379,7 @@ node scripts/validate-content.mjs --check-contracts
 | CONTENT-AGE | `docs/research/content-rubric.md` 的年龄/血腥度/叙事规则 | rubric 已交付；人工评审证据待 `tests/evidence/pedagogy.md` |
 | CONTENT-EVIDENCE | claim + locator + source 引用；日期/数字/判断可追溯 | 契约与负例已交付；逐条证据待内容 |
 | CONTENT-UNCERTAINTY | `claimType`、`certainty`、phase uncertainty、schematic 标记 | 契约已交付；内容标注待内容 |
-| MEDIA-COVERAGE | coverage 19 篇/22 个类型要求 + `--media` 精确检查 | 契约已交付；素材待 MEDIA-01 |
+| MEDIA-COVERAGE | coverage 19 篇/22 个类型要求 + `--media` 精确检查；**每篇的阶段归属与素材类型由 `stageOwnership`/`requiredMediaTypes` 契约锁定**（D3） | 契约已交付；素材待 MEDIA-01 |
 | MEDIA-LICENSE | media 的 author/license/rights/source/credit/alt/articleIds；许可白名单 | 契约已交付；实际授权待 MEDIA-01 |
 | ROUTES-SIX | 六入口共享 events/battles/people/places/concepts/questions 数组与稳定 ID | 数据结构已交付；页面/入口待 UI |
 | ROUTES-LINKS | 引用字段（时间/地点/人物/事件/专题）与断链校验 | 引用契约已交付；渲染与当前上下文待 UI |
@@ -303,9 +388,9 @@ node scripts/validate-content.mjs --check-contracts
 | MAP-NAVIGATION | 缩放/平移/键盘/触摸/图层由消费端实现 | 未在本模块实现 |
 | MAP-GEOGRAPHY | place 的 historicalName/modernName/coordinates/accuracy/图例数据 | 字段已交付；地图渲染待 experience |
 | MAP-TIMELINE | event 日期与 phase time 可驱动时间轴 | 字段已交付；联动待 UI |
-| MAP-PHASES | battle.phases 与三场阶段门槛 | 字段与门禁已交付；播放/暂停按钮待 UI/浏览器测试 |
+| MAP-PHASES | battle.phases 与三场阶段门槛；**阶段 `time.start`/`time.end` 窗口与顺序已机器校验**（D1） | 字段与门禁已交付；播放/暂停按钮待 UI/浏览器测试 |
 | MAP-INTELLIGENCE | phase.knownEnemy/unknownEnemy 双方字段 | 字段与负例已交付；地图面板待 UI |
-| MAP-DECISIONS | phase decision/consequence/viewpoints/uncertainty | 字段与负例已交付；地图面板待 UI |
+| MAP-DECISIONS | phase decision/consequence/viewpoints/uncertainty；阶段时间与顺序一致性（D1） | 字段与负例已交付；地图面板待 UI |
 | VISUAL-DESIGN | 不属于本模块；本契约只固定内容语义 | 未实现 |
 | A11Y-DEVICES | 不属于本模块；media 提供 alt/caption 基础 | 未实现/待 UI 与浏览器测试 |
 | A11Y-AUDIT | axe、对比度、reduced-motion 由 QA/UI 执行 | 未实现 |
@@ -324,10 +409,14 @@ node scripts/validate-content.mjs --check-contracts
 
 `node scripts/validate-content.mjs`（默认 full）必须 PASS，且满足：
 
+- [ ] `node scripts/validate-content.mjs --check-contracts` 先 PASS：requirements 逐字一致、重点集合精确、earlyCampaign 结构、stageOwnership 不变式、素材类型契约。
 - [ ] `content/history.json` 存在，`schemaVersion=1.0.0`，`fixtureOnly=false`。
-- [ ] 19 篇重点文章全部存在，实体类型与 coverage 一致。
+- [ ] 19 篇重点文章全部存在，实体类型与 coverage 一致，且归属阶段与 `stageOwnership` 完全一致。
 - [ ] 三场重点战役各有完整 14 节，每节 ≥160 汉字，均有来源/claim；分别 ≥3/4/5 阶段。
 - [ ] 每个重点阶段有双方位置、known/unknown enemy、decision/consequence、双方 viewpoint、示意标记、至少一条示意航线、来源/claim。
+- [ ] **每个阶段 `time.start`/`time.end` 合法、落在战役窗口内、`end>=start`，阶段按 `sequence` 时间递增且区间不重叠（D1）。**
+- [ ] **8 个早期扩张事件各有 `earlyCampaignAnalysis` 的 background/course/constraints/results/impact 五节，标题固定、每节 ≥80 汉字、各自带来源与 claim（D2）。**
+- [ ] **part 3 导读包含 `盟军为何连续失败` 与 `日本的补给与防御压力` 两个强制小节，各 ≥120 汉字（D2）。**
 - [ ] 14 个必需事件全部存在，达到最低节数/汉字/来源/claim，历史部分正确。
 - [ ] 五个历史部分各至少一个 ≥160 汉字、≥2 实体、有来源/claim 的实质问题。
 - [ ] 五位人物、六篇专题达到最低档案/层次/关联/证据深度。
@@ -342,4 +431,7 @@ node scripts/validate-content.mjs --check-contracts
 - 没有执行浏览器、axe、性能、构建、部署或 Pages 探测；这些不在本模块范围。
 - 来源核验结果（详见 `docs/research/sources.md` §2–§3）：FRUS 1941 vol. IV d602、NARA “Day of Infamy”、NPS Opana/USS Arizona、JACAR C12120240100、AWM “Remembering the fall of Singapore”、National WWII Museum “Battle of Midway” **本次已读取正文**；**NHHC 与 CMH 本次 DNS 解析失败**，NAA/IWM 返回 403。因此三场战役的官方战斗叙事、官方页码与官方统计表尚未读到，后续内容不得据此声称“全文核实”，也不得引用未实测的小节标题或页码。
 - 验证器能阻止结构性和引用性绕过，但无法自动判断历史陈述是否准确、观点是否公允、答案是否真正适龄；必须有人工评审（`tests/evidence/pedagogy.md`）。
+- D1 的时间校验只能保证**格式合法、窗口一致、先后自洽**；它无法判断某个历史时刻本身是否准确。历史准确性仍取决于 claim + locator + 人工评审。
+- D2 的五类分析只能保证**结构齐全、深度达标、有证据链接**；它无法判断分析是否真的解释了因果。
+- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（71/71、0 跳过、工作区 mtime 不变），仍不能替代中央审查环境中的独立验证。
 - 本任务提交后仅进入中央审查；**没有任何内容或契约被中央 verified/done**。

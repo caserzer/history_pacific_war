@@ -1,16 +1,26 @@
-# 统一内容契约（v2）
+# 统一内容契约（v3）
 
 状态：契约与验证器已交付，来源 URL 已逐条实测复核。`content/history.json` **尚未创建**；本文件描述的是内容作者/UI 必须遵守的格式，不是已完成的教材内容，也不声称任何历史文章、地图阶段或素材已经通过验收。
+
+## 0. v3 修复的四个阻断缺陷（对应中央审查）
+
+| 缺陷 | 问题 | 修复 |
+|---|---|---|
+| **D1** | `phase.time.end` 与 `end >= start` 完全没有校验；6/4–6/5 战役可以接受 6/10 的阶段结束时间 | 验证器现在校验 `time.end` 的格式（带时区 ISO 8601）、是否落在战役窗口内、是否 `>= time.start`；并新增阶段按 `sequence` 的时间单调性与区间不重叠检查。9 个负例（含审查者用的 6/10 案例）。 |
+| **D2** | 早期扩张战役的「背景/经过/约束/结果/影响」只在散文里，不是机器断言 | `coverage.json` 新增 `earlyCampaign` 块（8 个事件 × 5 类分析键，每类 ≥80 汉字，独立来源/claim）；schema 新增 `earlyCampaignAnalysis`；验证器逐事件强制。“盟军为何连续失败”“日本的补给与防御压力”正式锁定为 part 3 导读的强制小节。12 个负例。 |
+| **D3** | 素材类型与阶段归属没有契约锁定 | `coverage.json` 新增 `stageOwnership`（5 阶段精确归属 19 篇，不重不漏）；验证器新增不变式：每篇有且仅有一个 owner、owner 与 `keyArticles[].stage` 一致、无孤立 ID、每个阶段都拥有文章、每篇都有素材类型且与文章种类相符。11 个负例。 |
+| **D4** | `--self-test` 依赖 OS 临时目录，只读沙箱下 EPERM（35/38） | 引入可注入的文件系统层（`createRealFileSystem` / `createMemoryFileSystem`）；自测全部改为内存克隆与内存文件系统，零临时目录、零工作区写入。只读模拟下 71/71 通过、0 跳过。 |
 
 ## 1. 契约文件
 
 | 文件 | 作用 |
 |---|---|
 | `contracts/content.schema.json` | `content/history.json` 的 Draft 2020-12 JSON Schema；所有结构字段的规范来源 |
-| `contracts/coverage.json` | 阶段、十九篇重点文章、十四类战役字段、必需事件、问题部分覆盖和素材矩阵的机器合同 |
+| `contracts/coverage.json` | 阶段、十九篇重点文章、`stageOwnership`、`requiredMediaTypes`、`earlyCampaign`、十四类战役字段、必需事件、问题部分覆盖和素材矩阵的机器合同 |
 | `contracts/requirements.json` | 工单提供的 36 条 canonical requirements 原样副本，不得增删改；`--check-contracts` 与 `--self-test` 都会逐字比对 |
 | `contracts/fixtures/valid-min.json` | 仅用于 schema/UI/验证器测试的最小 `strategy` 阶段样本，`fixtureOnly=true`，不是教材内容 |
-| `scripts/validate-content.mjs` | 无 npm 依赖的 Node 24 验证器，含真实负例自测与纯契约检查 |
+| `contracts/fixtures/valid-early-campaign.json` | 仅用于测试的早期扩张战役样本，演示 `earlyCampaignAnalysis` 五类结构（D2），`fixtureOnly=true` |
+| `scripts/validate-content.mjs` | 无 npm 依赖的 Node 24 验证器，含 71 项自测与纯契约检查；只读可用 |
 | `docs/research/coverage.md` | 覆盖矩阵、逐项需求映射、阶段与最终门禁说明 |
 | `docs/research/content-rubric.md` | 11 岁可读性、证据类型、侵略/平民苦难/战争罪行的适龄评审标准 |
 | `docs/research/sources.md` | 官方来源策略、逐条实测的 URL 访问状态、定位方式与调研限制 |
@@ -136,6 +146,30 @@ UI 不应假定引用一定非空，除非 schema 规定 `minItems: 1`。渲染�
 
 UI：可先渲染 `title`/`startDate`/`summary`/`placeIds`，再按 `article` 顺序渲染小节和证据。`battleId` 存在时显示“进入战役”入口。
 
+#### 早期扩张战役的五类分析 `earlyCampaignAnalysis`（D2）
+
+`coverage.earlyCampaign.eventIds` 列出的 8 个早期扩张事件（`event-hong-kong-1941`、`event-malaya-singapore-1942`、`event-philippines-bataan-corregidor-1942`、`event-dutch-east-indies-1942`、`event-wake-island-1941`、`event-guam-1941`、`event-darwin-air-raid-1942`、`event-indian-ocean-raid-1942`）**必须**额外提供 `earlyCampaignAnalysis`：
+
+| 键 | 标题（验证器强制） | 必须回答 |
+|---|---|---|
+| `background` | 背景 | 这场行动之前发生了什么？为什么会发生？ |
+| `course` | 经过 | 谁在什么时候做了什么？按时间解释行动与转折 |
+| `constraints` | 约束 | 双方受哪些情报、补给、距离、天气、指挥链限制？ |
+| `results` | 结果 | 结果、损失与影响如何？写明统计口径与来源 |
+| `impact` | 影响 | 对后续战役、战略与平民意味着什么？ |
+
+每节为 `{title, body, sourceIds, claimIds}`，正文 ≥80 汉字（`coverage.earlyCampaign.minHanCharsPerKey`），各自至少 1 个来源与 1 个 claim。这防止用两句话摘要冒充“充分解释了早期扩张”。
+
+“盟军为何连续失败”与“日本的补给与防御压力”不各自造假事件，而由 part 3 导读的**两个强制小节**承担（`coverage.earlyCampaign.overviewTopics`，标题逐字、每节 ≥120 汉字）。
+
+UI：早期战役页先渲染五类分析分栏，再渲染补充文章；不要把五类分析折叠成一段。
+
+#### 阶段归属与素材类型（D3）
+
+- `coverage.stageOwnership` 把 19 篇重点文章**精确**归属到 5 个阶段（strategy 1 / background 1 / pearl 7 / coral 5 / full 5），不重不漏。`keyArticles[].stage` 必须与之一致。
+- `coverage.requiredMediaTypes` 为每篇重点文章声明所需素材类型；战役必须含 `battle-map`、指挥官含 `portrait`、专题含 `diagram`、导读含 `map`，且不允许孤立 ID 或空数组。
+- 两者都由验证器的契约不变式与 `--check-contracts` 强制，不是文档约定。
+
 ### 4.2 Battle（战役）
 
 必填：
@@ -178,7 +212,7 @@ UI：可先渲染 `title`/`startDate`/`summary`/`placeIds`，再按 `article` �
 必填：
 
 - `id`, `sequence`, `title`
-- `time`: `{start, end?, display, uncertainty}`；`start` 为带时区的 ISO 时间，`display` 给读者看，`uncertainty` 解释时间差异
+- `time`: `{start, end?, display, uncertainty}`；`start` 必填，`end` 可选但**一旦出现就必须合法**；两者都是带时区 ISO 时间，`display` 给读者看，`uncertainty` 解释时间差异
 - `positions: {japan, allies}`，每方 `{label, description, placeIds, coordinates: {lat,lng}, schematic, uncertaintyRadiusKm, uncertaintyNote, sourceIds, claimIds}`
 - `knownEnemy: {japan, allies}`，双方当时已知的敌情
 - `unknownEnemy: {japan, allies}`，双方当时不知道/无法确认的敌情
@@ -196,6 +230,8 @@ UI：可先渲染 `title`/`startDate`/`summary`/`placeIds`，再按 `article` �
 - 每条 `route.schematic` 必须为 `true`，`path` 至少两个点；航线不代表真实航迹。
 - 三场重点战役每个阶段至少一条示意航线；每个重点阶段 `schematic=true`。
 - 阶段时间必须落在战役开始/结束日期内。
+- **阶段时间窗口（D1）**：`time.start` 与 `time.end` 都必须带时区且是合法 ISO 8601；`end` 的日期必须落在战役 `startDate`–`endDate` 内；`end >= start`。提供 `end` 却写成空字符串是错误（不确定就直接省略该字段）。
+- **阶段时间顺序（D1）**：按 `sequence` 排序后，后一阶段的 `start` 不得早于前一阶段的 `start`；若前一阶段声明了 `end`，其 `end` 不得晚于后一阶段的 `start`（区间不可逆序重叠）。这与地图播放/前后切换直接相关。
 - 每个阶段必须同时有双方 `knownEnemy`、`unknownEnemy`、`decision`、`consequence`；缺一即错误。
 - 双方 viewpoint 必须有来源和 claim 链接。只写“日军不知道美军位置”而不写双方各自知道什么，不合格。
 - `knownEnemy` 和 `unknownEnemy` 的区分是教学核心：不能把战后才知道的结论塞回阶段叙事。
@@ -383,12 +419,19 @@ UI：显示问题、完整答案、相关实体跳转和证据。答案不能只
 - 其中的历史句子用于触发结构与证据字段，不可当作已交付文章、数字或结论。
 - UI 测试可以使用其形状，但界面必须显示“测试样本”状态，不能把它渲染成正式教材页面。
 
+`contracts/fixtures/valid-early-campaign.json`：
+
+- 同样是 **测试样本**，`fixtureOnly=true`。
+- 演示 `earlyCampaignAnalysis` 五类分析结构的正确形状（D2），供 schema 与 UI 测试使用。
+- 只含一个 early-campaign 事件，因此 `background` 阶段的其他覆盖仍会缺失；它只能用来验证结构，不能当作交付。
+
 自测和 fixture 验证命令：
 
 ```bash
 node scripts/validate-content.mjs --self-test
 node scripts/validate-content.mjs --check-contracts
 node scripts/validate-content.mjs --file contracts/fixtures/valid-min.json --stage strategy
+node scripts/validate-content.mjs --file contracts/fixtures/valid-early-campaign.json --stage background
 ```
 
 ## 8. 验证器行为
@@ -411,13 +454,16 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 - 全局断链、来源缺失、claim/media 关联、person/commander 一致性
 - 战役十四类字段、标题、正文汉字深度、双方指挥官
 - 阶段数据：双方位置、已知/未知敌情、决策/后果、双方视角、时间、示意标记、航线目的地
-- 日期有效性与允许历史范围、阶段时间在战役范围内
+- 日期有效性与允许历史范围
+- **阶段时间完整性（D1）**：`time.start` 与 `time.end` 都必须是带时区的合法 ISO 8601；两者都落在战役 `startDate`–`endDate` 内；`end >= start`；阶段按 `sequence` 时间递增、显式区间不重叠
 - claim 的 locator 精度与每个来源的定位覆盖；数字/日期 claim 的定位
 - 阅读问题五部分覆盖、答案深度、实体/来源/claim 关联
 - coverage 的重点文章深度、必需事件、阶段问题门禁
+- **早期扩张战役结构（D2）**：每个 early-campaign 事件必须有 `earlyCampaignAnalysis` 的 background/course/constraints/results/impact 五节，标题固定、每节 ≥80 汉字、各自带来源与 claim；part 3 导读必须包含“盟军为何连续失败”“日本的补给与防御压力”
+- **阶段归属与素材类型不变式（D3）**：`stageOwnership` 不重不漏覆盖 19 篇、与 `keyArticles[].stage` 一致、无孤立 ID、每阶段都有 owner；`requiredMediaTypes` 每篇至少一种类型且与文章种类相符
 - `--media`：精确重点集合、所需媒体类型、许可、文件存在且非空
-- `--self-test`：独立于 `content/history.json` 的 38 项真实正例/负例/边界
-- `--check-contracts`：不需要内容文件，检查 `requirements.json` 与工单 canonical 清单逐字一致、`coverage.json` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读，以及 schema 的顶层数组/十四类键/阶段关键字段
+- `--self-test`：独立于 `content/history.json` 的 **71 项**真实正例/负例/边界；**只读可用**（无临时目录、无工作区写入）
+- `--check-contracts`：不需要内容文件，检查 `requirements.json` 与工单 canonical 清单逐字一致、`coverage.json` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读、earlyCampaign 结构、stageOwnership 不变式、素材类型契约，以及 schema 的顶层数组/十四类键/阶段关键字段/phaseTime/earlyCampaignAnalysis
 
 退出码：`0` PASS，`1` 验证失败，`2` 参数或运行错误。验证器没有 npm 依赖，Node 24 下运行。
 
@@ -449,4 +495,6 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 - `content/history.json` 不存在；没有任何文章、地图阶段、重点人物/专题或媒体已经交付。
 - 验证器只证明结构/覆盖/引用条件，不证明历史叙述真实、准确、适龄或可读。
 - `docs/research/sources.md` 逐条记录了本次实测结果：FRUS、NARA、NPS、JACAR、AWM、National WWII Museum 已读取正文；**NHHC 与 CMH 本次 DNS 解析失败**，NAA/IWM 返回 403，因此三场战役的官方战斗叙事尚未读到。后续内容不得据此声称“已全文核实”，也不得引用未实测的页码。
-- `contracts/fixtures/valid-min.json` 是测试样本，不是历史成果。
+- `contracts/fixtures/valid-min.json` 与 `contracts/fixtures/valid-early-campaign.json` 都是测试样本，不是历史成果。
+- `--self-test` 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（71/71、0 跳过）；它不能替代中央审查环境中的独立验证。
+- 阶段时间校验（D1）在语义上只能保证“格式合法、落在战役窗口内、先后一致”。它**无法**判断某个历史时刻本身是否准确——那需要 claim + locator + 人工评审。
