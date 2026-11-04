@@ -28,6 +28,8 @@ const SCHEMA_PATH = path.join(REPO_ROOT, 'contracts', 'content.schema.json');
 const COVERAGE_PATH = path.join(REPO_ROOT, 'contracts', 'coverage.json');
 const REQUIREMENTS_PATH = path.join(REPO_ROOT, 'contracts', 'requirements.json');
 const FIXTURE_PATH = path.join(REPO_ROOT, 'contracts', 'fixtures', 'valid-min.json');
+const COVERAGE_MD_PATH = path.join(REPO_ROOT, 'docs', 'research', 'coverage.md');
+const CONTRACTS_README_PATH = path.join(REPO_ROOT, 'contracts', 'README.md');
 
 const STAGE_IDS = ['strategy', 'background', 'pearl', 'coral', 'full'];
 const PART_IDS = [
@@ -88,6 +90,18 @@ const SECTION_KEYS = [
  * 早期扩张战役必需的 5 类分析（D2）。与 coverage.earlyCampaign.analysisKeys 必须一致。
  */
 const EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'];
+
+/**
+ * D6：从导读 ID 推断它代表的历史部分。
+ * 约定：event-overview-part-<N>-... 映射到 PART_IDS[<N>-1]。
+ * 返回 null 表示无法推断。
+ */
+function historicalPartFromArticleId(articleId) {
+  if (typeof articleId !== 'string') return null;
+  const match = /^event-overview-part-([1-5])-/.exec(articleId);
+  if (!match) return null;
+  return PART_IDS[Number(match[1]) - 1] || null;
+}
 const COLLECTIONS = [
   'events',
   'battles',
@@ -716,6 +730,28 @@ function validateCoverageContract(coverage) {
       } else if (entry.minimumDepth && entry.minimumDepth.articleSections < entry.requiredArticleHeadings.length) {
         addError(errors, `${entry.id}: articleSections 不能小于必需要求标题数`);
       }
+      // D6：导读必须显式绑定它所代表的五个历史部分之一，且必须与 ID 中编码的部分一致。
+      if (!PART_IDS.includes(entry.historicalPart)) {
+        addError(
+          errors,
+          `${entry.id}: part-overview 必须声明 historicalPart 且为五部分之一，实际 ${JSON.stringify(entry.historicalPart)}`,
+        );
+      } else {
+        const encodedPart = historicalPartFromArticleId(entry.id);
+        if (!encodedPart) {
+          addError(errors, `${entry.id}: 无法从 ID 推断历史部分（应为 event-overview-part-N-...）`);
+        } else if (encodedPart !== entry.historicalPart) {
+          addError(
+            errors,
+            `${entry.id}: historicalPart '${entry.historicalPart}' 与 ID 编码的 '${encodedPart}' 不一致`,
+          );
+        }
+      }
+      // D5：必须声明每个强制小节的最低汉字深度阈值。
+      const minDepth = isPlainObject(entry.minimumDepth) ? entry.minimumDepth : {};
+      if (typeof minDepth.requiredHeadingHanChars !== 'number' || minDepth.requiredHeadingHanChars < 40) {
+        addError(errors, `${entry.id}: minimumDepth.requiredHeadingHanChars 必须声明且 >=40`);
+      }
     }
     if (entry.kind === 'battle' && isPlainObject(entry.minimumDepth) && entry.minimumDepth.sectionCount !== SECTION_KEYS.length) {
       addError(errors, `${entry.id}: 重点战役 sectionCount 必须是 ${SECTION_KEYS.length}`);
@@ -1250,10 +1286,12 @@ function validateQuestion(question, index, errors, maps, coverage) {
 }
 
 function validateArticleSections(sections, pointer, errors, maps, minPerSectionHan = 30) {
-  if (!Array.isArray(sections)) return { sections: 0, han: 0, headings: [] };
+  if (!Array.isArray(sections)) return { sections: 0, han: 0, headings: [], hanByHeading: new Map() };
   let totalHan = 0;
   const headings = [];
   const seen = new Set();
+  // D5：记录每个小节标题对应的汉字数，供“必需标题的最低深度”断言使用。
+  const hanByHeading = new Map();
   sections.forEach((section, index) => {
     const sectionPointer = `${pointer}[${index}]`;
     if (!isPlainObject(section)) return;
@@ -1263,12 +1301,13 @@ function validateArticleSections(sections, pointer, errors, maps, minPerSectionH
     headings.push(heading);
     const sectionHan = hanCount(section.body);
     totalHan += sectionHan;
+    hanByHeading.set(heading, sectionHan);
     if (sectionHan < minPerSectionHan) {
       addError(errors, `${sectionPointer}.body: 只有 ${sectionHan} 个汉字，单节至少 ${minPerSectionHan} 个`);
     }
     checkEvidence(section, sectionPointer, maps, errors);
   });
-  return { sections: sections.length, han: totalHan, headings };
+  return { sections: sections.length, han: totalHan, headings, hanByHeading };
 }
 
 function validateEvent(event, index, errors, maps) {
@@ -1822,8 +1861,40 @@ function keyDepthErrors(entry, entity, coverage, maps, errors) {
     const stats = validateArticleSections(entity.article || [], `coverage:${entry.id}.article`, errors, maps, 40);
     if (stats.sections < min.articleSections) addError(errors, `${pointer}: 导读至少 ${min.articleSections} 节，实际 ${stats.sections}`);
     if (stats.han < min.hanChars) addError(errors, `${pointer}: 导读 ${stats.han} 汉字，至少 ${min.hanChars}`);
+
+    // D5：必需标题不仅要在场，其**正文本身**还要达到最低汉字深度。
+    // 否则一个 51 汉字的“盟军为何连续失败”可以靠其它小节的字数把总量撑过 1200 而蒙混过关。
+    //
+    // 深度标准分两档（见 docs/research/coverage.md §2.2）：
+    //   1) overviewTopics.requiredHeadings —— 由 earlyCampaign 专项锁定的分析主题，
+    //      使用 overviewTopics.minHanCharsPerHeading（当前 120）；
+    //   2) 其余 requiredArticleHeadings —— 使用 min.requiredHeadingHanChars（当前 100），
+    //      保证每个强制小节都不是标题+一句话。
+    const overviewBlock = coverage.earlyCampaign && coverage.earlyCampaign.overviewTopics;
+    const isOverviewArticle = Boolean(overviewBlock && overviewBlock.overviewArticleId === entry.id);
+    const overviewHeadings = new Set(isOverviewArticle ? overviewBlock.requiredHeadings || [] : []);
+    const overviewMin = isOverviewArticle ? overviewBlock.minHanCharsPerHeading : 0;
+    const genericMin = typeof min.requiredHeadingHanChars === 'number' ? min.requiredHeadingHanChars : 0;
+
     for (const requiredHeading of entry.requiredArticleHeadings || []) {
-      if (!stats.headings.includes(requiredHeading)) addError(errors, `${pointer}: 缺少必需小节标题 '${requiredHeading}'`);
+      if (!stats.headings.includes(requiredHeading)) {
+        addError(errors, `${pointer}: 缺少必需小节标题 '${requiredHeading}'`);
+        continue;
+      }
+      const headingHan = stats.hanByHeading.get(requiredHeading) || 0;
+      if (overviewHeadings.has(requiredHeading)) {
+        if (typeof overviewMin === 'number' && headingHan < overviewMin) {
+          addError(
+            errors,
+            `${pointer}.article['${requiredHeading}']: 该强制分析小节只有 ${headingHan} 个汉字，至少需要 ${overviewMin} 个（不能靠其它小节凑总字数）`,
+          );
+        }
+      } else if (genericMin > 0 && headingHan < genericMin) {
+        addError(
+          errors,
+          `${pointer}.article['${requiredHeading}']: 该强制小节只有 ${headingHan} 个汉字，至少需要 ${genericMin} 个`,
+        );
+      }
     }
     if (uniqueStrings(entity.placeIds).length < (min.placeIds || 0)) {
       addError(errors, `${pointer}: 至少关联 ${min.placeIds} 个地点`);
@@ -1886,6 +1957,15 @@ function validateCoverageGate(doc, maps, coverage, stage, errors) {
     if (!entity) {
       if (reached) addError(errors, `[coverage] 阶段 '${stage}' 缺少重点文章 ${entry.id}（应在 ${entry.stage} 交付）`);
       continue;
+    }
+    // D6：导读实体的 historicalPart 必须与 coverage 声明一致（不能把 part 3 内容挂到 part 1）。
+    if (entry.kind === 'part-overview' && PART_IDS.includes(entry.historicalPart)) {
+      if (entity.historicalPart !== entry.historicalPart) {
+        addError(
+          errors,
+          `[coverage] ${entry.id}: 实体 historicalPart '${entity.historicalPart}' 与 coverage 声明的 '${entry.historicalPart}' 不一致`,
+        );
+      }
     }
     keyDepthErrors(entry, entity, coverage, maps, errors);
   }
@@ -2047,6 +2127,100 @@ export function validateDocument(doc, options = {}) {
   return { errors: dedupeMessages(errors), warnings, stats };
 }
 
+/**
+ * D7：文档漂移防护。
+ *
+ * 两层断言：
+ *   1) **canonical 声明**：`docs/research/coverage.md` 必须包含 `SELFTEST_COUNT=<N>`
+ *      标记，且 N 必须等于运行时真实测试项数。缺失或不一致都报错。
+ *   2) **附带提及**：文档里所有其它“N 项自测 / N/N”形式的声明也必须等于真实值，
+ *      防止改了一处忘了另一处。
+ *
+ * 这样“文档写 71、实际 72”或任何后续漂移都会被 --self-test 与 --check-contracts 拦下。
+ */
+const SELF_TEST_COUNT_MARKER = 'SELFTEST_COUNT=';
+
+function readDocTexts(fileSystem = REAL_FILE_SYSTEM) {
+  const files = [COVERAGE_MD_PATH, CONTRACTS_README_PATH];
+  const docs = [];
+  for (const filePath of files) {
+    if (!fileSystem.exists(filePath)) continue;
+    try {
+      docs.push({ filePath, text: fileSystem.readText(filePath) });
+    } catch {
+      /* 读不到就当缺失，由调用方报错 */
+    }
+  }
+  return docs;
+}
+
+function documentedSelfTestCounts(fileSystem = REAL_FILE_SYSTEM) {
+  const found = [];
+  for (const { filePath, text } of readDocTexts(fileSystem)) {
+    const lines = text.split(/\r?\n/);
+    lines.forEach((line, index) => {
+      const canonical = new RegExp(`${SELF_TEST_COUNT_MARKER}(\\d{1,4})`, 'g');
+      let match;
+      while ((match = canonical.exec(line)) !== null) {
+        found.push({ file: filePath, count: Number(match[1]), line: index + 1, text: line.trim(), kind: 'canonical' });
+      }
+      // 附带的 “N 项自测 / N 项真实正例” 与 “N/N” 分数声明
+      const incidental = [
+        /\*\*(\d{1,4})\*\*\s*项(?:真实正例|自测)/g,
+        /(\d{1,4})\s*项(?:自测|真实正例)/g,
+        /(\d{1,4})\s*\/\s*(\d{1,4})/g,
+      ];
+      for (const pattern of incidental) {
+        let m;
+        while ((m = pattern.exec(line)) !== null) {
+          const count = Number(m[1]);
+          if (!Number.isFinite(count) || count < 10 || count > 1000) continue;
+          // 历史的失败记录（如 “EPERM，35/38”）不是当前自测项数，不应算作漂移。
+          if (/EPERM|曾经|此前|历史|上一轮|失败记录/.test(line)) continue;
+          found.push({ file: filePath, count, line: index + 1, text: line.trim(), kind: 'incidental' });
+        }
+      }
+    });
+  }
+  const seen = new Set();
+  return found.filter((item) => {
+    const key = `${item.file}:${item.line}:${item.count}:${item.kind}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * 把真实自测项数与文档声明比对。返回错误信息数组（空数组 = 一致）。
+ */
+function selfTestCountDriftErrors(actualCount, fileSystem = REAL_FILE_SYSTEM) {
+  const errors = [];
+  const docs = readDocTexts(fileSystem);
+  if (docs.length === 0) {
+    errors.push('无法读取契约文档，不能校验自测项数是否同步');
+    return errors;
+  }
+  const coverageDoc = docs.find((doc) => doc.filePath === COVERAGE_MD_PATH);
+  if (!coverageDoc) {
+    errors.push(`缺少 ${path.basename(COVERAGE_MD_PATH)}，无法校验自测项数声明`);
+  } else if (!new RegExp(`${SELF_TEST_COUNT_MARKER}\\d{1,4}`).test(coverageDoc.text)) {
+    errors.push(
+      `${path.basename(COVERAGE_MD_PATH)} 缺少 canonical 自测项数声明 '${SELF_TEST_COUNT_MARKER}<N>'；必须写明真实项数`,
+    );
+  }
+
+  const declarations = documentedSelfTestCounts(fileSystem);
+  for (const item of declarations) {
+    if (item.count !== actualCount) {
+      errors.push(
+        `${path.basename(item.file)}:${item.line}（${item.kind}）写的是 ${item.count}，实际自测为 ${actualCount} 项 —— 文档已漂移，请同步（原文：${item.text.slice(0, 90)}）`,
+      );
+    }
+  }
+  return errors;
+}
+
 function loadCoverageOrThrow() {
   const coverage = readJson(COVERAGE_PATH, 'coverage.json');
   const coverageErrors = validateCoverageContract(coverage);
@@ -2202,7 +2376,6 @@ function runContractChecks() {
   console.log(`coverage：${COVERAGE_PATH}`);
   console.log(`schema：${SCHEMA_PATH}`);
   console.log('');
-
   const requirementErrors = requirementsFileErrors();
   if (requirementErrors.length === 0) {
     console.log(`PASS  requirements.json 与工单 canonical 清单逐字一致（${CANONICAL_REQUIREMENTS.length} 条）`);
@@ -2210,6 +2383,22 @@ function runContractChecks() {
     failures.push('requirements.json');
     console.log(`FAIL  requirements.json（${requirementErrors.length} 个问题）`);
     for (const error of requirementErrors) console.log(`      - ${error}`);
+  }
+
+  // D5/D6/D7：导读深度阈值、historicalPart 绑定、文档自测项数同步。
+  try {
+    const selfTestTotal = getSelfTestCount();
+    const driftErrors = selfTestCountDriftErrors(selfTestTotal);
+    if (driftErrors.length === 0) {
+      console.log(`PASS  文档声明的自测项数与实际一致（${selfTestTotal} 项，coverage.md 与 README 已同步）`);
+    } else {
+      failures.push('self-test-count-drift');
+      console.log(`FAIL  文档自测项数漂移（${driftErrors.length} 处）`);
+      for (const error of driftErrors) console.log(`      - ${error}`);
+    }
+  } catch (error) {
+    failures.push('self-test-count');
+    console.log(`FAIL  无法校验自测项数同步：${error.message}`);
   }
 
   let coverage = null;
@@ -2247,10 +2436,49 @@ function runContractChecks() {
       console.log(
         `PASS  早期战役结构锁定（${block.eventIds.length} 个事件 × [${EARLY_CAMPAIGN_KEYS.join('/')}]，每类 >=${block.minHanCharsPerKey} 汉字；导读强制小节 ${block.overviewTopics.requiredHeadings.join('、')}）`,
       );
+      // D5：强制小节必须按小节自身深度达标
+      const overviewMin = block.overviewTopics.minHanCharsPerHeading;
+      const overviewEntry = coverage.keyArticles.find((item) => item.id === block.overviewTopics.overviewArticleId);
+      const genericMin = overviewEntry && overviewEntry.minimumDepth ? overviewEntry.minimumDepth.requiredHeadingHanChars : undefined;
+      if (typeof overviewMin === 'number' && overviewMin >= 40 && typeof genericMin === 'number' && genericMin >= 40) {
+        console.log(
+          `PASS  导读小节深度锁定（overviewTopics 小节 >=${overviewMin} 汉字；其余强制小节 >=${genericMin} 汉字；按小节计量而非总字数）`,
+        );
+      } else {
+        failures.push('overview-heading-depth');
+        console.log('FAIL  导读小节深度阈值缺失或过小（overviewTopics.minHanCharsPerHeading / minimumDepth.requiredHeadingHanChars）');
+      }
     } else {
       failures.push('early-campaign');
       console.log(`FAIL  早期战役结构（${earlyErrors.length} 个问题）`);
       for (const error of earlyErrors) console.log(`      - ${error}`);
+    }
+
+    // D6：导读 historicalPart 必须与 ID 编码的部分一致
+    const partBindingErrors = coverage.keyArticles
+      .filter((entry) => entry && entry.kind === 'part-overview')
+      .flatMap((entry) => {
+        const out = [];
+        if (!PART_IDS.includes(entry.historicalPart)) {
+          out.push(`${entry.id}: historicalPart 缺失或非法（${JSON.stringify(entry.historicalPart)}）`);
+          return out;
+        }
+        const encoded = historicalPartFromArticleId(entry.id);
+        if (encoded !== entry.historicalPart) {
+          out.push(`${entry.id}: 声明 '${entry.historicalPart}' 与 ID 编码 '${encoded}' 不一致`);
+        }
+        return out;
+      });
+    if (partBindingErrors.length === 0) {
+      const mapping = coverage.keyArticles
+        .filter((entry) => entry && entry.kind === 'part-overview')
+        .map((entry) => `${entry.id.replace('event-overview-', '')}→${entry.historicalPart}`)
+        .join(', ');
+      console.log(`PASS  导读历史部分绑定（${mapping}）`);
+    } else {
+      failures.push('part-overview-historicalPart');
+      console.log(`FAIL  导读历史部分绑定（${partBindingErrors.length} 个问题）`);
+      for (const error of partBindingErrors) console.log(`      - ${error}`);
     }
 
     // D3：阶段归属不变式
@@ -2378,6 +2606,64 @@ function loadSelfTestBase() {
   const coverage = loadCoverageOrThrow();
   const fixture = readJson(FIXTURE_PATH, 'contracts/fixtures/valid-min.json');
   return { coverage, fixture };
+}
+
+/**
+ * D5/D6 自测用的 part 3 导读构造器。
+ * 默认让所有强制小节都有充足汉字；`overrides` 可把指定标题的正文换成自定义长度，
+ * 用于验证“按小节深度”断言而不是“总字数”断言。
+ */
+const PART3_OVERVIEW_ID = 'event-overview-part-3-expansion';
+
+/**
+ * part 3 导读的强制小节标题（与 coverage.keyArticles[PART3_OVERVIEW_ID].requiredArticleHeadings 一致）。
+ * 自测构造器用它生成合成导读；若契约改变，下面的 D5 正向对照会失败并提示更新。
+ */
+const CONTRAST_PART_OVERVIEW_HEADINGS = [
+  '香港',
+  '马来亚与新加坡',
+  '菲律宾、巴丹与科雷希多尔',
+  '荷属东印度与石油',
+  '威克岛与关岛',
+  '达尔文与印度洋',
+  '盟军为何连续失败',
+  '日本的补给与防御压力',
+];
+
+function hanRepeat(count) {
+  // 全是汉字，hanCount 结果正好等于 count。
+  return '盟'.repeat(Math.max(0, count));
+}
+
+function makePartOverviewEvent(base, overrides = {}, defaultHan = 200) {
+  const entry = CONTRAST_PART_OVERVIEW_HEADINGS;
+  const sourceId = base.sources[0].id;
+  const claimId = base.claims[0].id;
+  const placeId = base.places[0].id;
+  const article = entry.map((heading) => ({
+    heading,
+    body: Object.prototype.hasOwnProperty.call(overrides, heading) ? overrides[heading] : hanRepeat(defaultHan),
+    sourceIds: [sourceId],
+    claimIds: [claimId],
+  }));
+  return {
+    id: PART3_OVERVIEW_ID,
+    title: '合成 part 3 导读（仅供结构自测）',
+    historicalPart: 'part-3-expansion',
+    eventType: 'analysis',
+    startDate: '1941-12-07',
+    endDate: '1942-03-31',
+    summary: '这是验证器自测使用的合成 part 3 导读，不对应真实历史内容，不得发布。',
+    article,
+    placeIds: [placeId],
+    personIds: [],
+    unitIds: [],
+    equipmentIds: [],
+    conceptIds: [],
+    relatedEventIds: [],
+    sourceIds: [sourceId],
+    claimIds: [claimId],
+  };
 }
 
 /**
@@ -2628,7 +2914,20 @@ function expectErrors(name, doc, coverage, pattern, options = {}) {
   return result;
 }
 
-function runSelfTests() {
+/**
+ * D7：自测项数的唯一真相来源。
+ * 自测列表构建过程是纯函数式的（只构造闭包，不执行断言），
+ * 因此 --check-contracts 也能在不运行整套测试的情况下得到真实项数。
+ */
+let selfTestCountCache = null;
+function getSelfTestCount() {
+  if (selfTestCountCache === null) {
+    selfTestCountCache = buildSelfTests().length;
+  }
+  return selfTestCountCache;
+}
+
+function buildSelfTests() {
   const tests = [];
   const { coverage, fixture } = loadSelfTestBase();
   const base = clone(fixture);
@@ -3156,13 +3455,196 @@ function runSelfTests() {
       }
     },
   ]);
+
+  // --- D5: 强制小节必须按小节自身深度达标，而不是靠其它小节凑总字数 ---
+  const overviewEntry = coverage.keyArticles.find((entry) => entry.kind === 'part-overview' && entry.id === PART3_OVERVIEW_ID);
+  const overviewMin = coverage.earlyCampaign.overviewTopics.minHanCharsPerHeading;
+  const overviewHeading = coverage.earlyCampaign.overviewTopics.requiredHeadings[0];
+  const overviewHeading2 = coverage.earlyCampaign.overviewTopics.requiredHeadings[1];
+
+  tests.push([
+    'D5 导读强制小节正文过短被拒绝（即使全篇总汉字数远超门槛）',
+    () => {
+      const doc = clone(base);
+      const overview = makePartOverviewEvent(base, { [overviewHeading]: hanRepeat(overviewMin - 69) });
+      doc.events.push(overview);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const headingSpecific = result.errors.filter((error) => error.includes(overviewHeading) && /不能靠其它小节凑总字数/.test(error));
+      if (headingSpecific.length === 0) {
+        throw new Error(`短小节没有被按小节深度拒绝；实际错误：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+      // 同时确认全篇总汉字数确实高于 minimumDepth.hanChars，证明不是被总字数拦住。
+      const totalHan = (overview.article || []).reduce((sum, section) => sum + hanCount(section.body), 0);
+      if (totalHan <= overviewEntry.minimumDepth.hanChars) {
+        throw new Error(`测试构造有误：全篇 ${totalHan} 汉字未超过门槛 ${overviewEntry.minimumDepth.hanChars}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D5 第二个强制小节（日本的补给与防御压力）过短同样被拒绝',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makePartOverviewEvent(base, { [overviewHeading2]: hanRepeat(overviewMin - 40) }));
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const headingSpecific = result.errors.filter((error) => error.includes(overviewHeading2) && /不能靠其它小节凑总字数/.test(error));
+      if (headingSpecific.length === 0) {
+        throw new Error(`第二个强制小节过短未被拒绝；实际：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D5 强制小节恰好达到阈值被接受（边界正例）',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makePartOverviewEvent(base, { [overviewHeading]: hanRepeat(overviewMin) }));
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const headingSpecific = result.errors.filter((error) => error.includes(overviewHeading) && /不能靠其它小节凑总字数/.test(error));
+      if (headingSpecific.length > 0) {
+        throw new Error(`恰好 ${overviewMin} 汉字的强制小节被误判为过短：${headingSpecific.join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D5 强制小节差一个汉字被拒绝（边界负例）',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makePartOverviewEvent(base, { [overviewHeading]: hanRepeat(overviewMin - 1) }));
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const headingSpecific = result.errors.filter((error) => error.includes(overviewHeading) && /不能靠其它小节凑总字数/.test(error));
+      if (headingSpecific.length === 0) throw new Error(`差一个汉字（${overviewMin - 1}）未被拒绝`);
+    },
+  ]);
+  tests.push([
+    'D5 非 overviewTopics 的强制小节受 requiredHeadingHanChars 约束',
+    () => {
+      const otherHeading = overviewEntry.requiredArticleHeadings.find(
+        (heading) => !coverage.earlyCampaign.overviewTopics.requiredHeadings.includes(heading),
+      );
+      const genericMin = overviewEntry.minimumDepth.requiredHeadingHanChars;
+      const doc = clone(base);
+      doc.events.push(makePartOverviewEvent(base, { [otherHeading]: hanRepeat(genericMin - 30) }));
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const headingSpecific = result.errors.filter((error) => error.includes(otherHeading) && /该强制小节只有/.test(error));
+      if (headingSpecific.length === 0) {
+        throw new Error(`普通强制小节 '${otherHeading}' 过短未被拒绝；实际：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D5 契约必须声明 requiredHeadingHanChars 与 overview 阈值',
+    () => {
+      if (typeof overviewMin !== 'number' || overviewMin < 40) throw new Error('overviewTopics.minHanCharsPerHeading 未声明或过小');
+      for (const entry of coverage.keyArticles.filter((item) => item.kind === 'part-overview')) {
+        if (typeof entry.minimumDepth.requiredHeadingHanChars !== 'number') {
+          throw new Error(`${entry.id}: 缺少 minimumDepth.requiredHeadingHanChars`);
+        }
+      }
+      const broken = clone(coverage);
+      const target = broken.keyArticles.find((item) => item.id === PART3_OVERVIEW_ID);
+      delete target.minimumDepth.requiredHeadingHanChars;
+      if (validateCoverageContract(broken).length === 0) {
+        throw new Error('缺少 requiredHeadingHanChars 没有被契约检查发现');
+      }
+    },
+  ]);
+
+  // --- D6: 导读 historicalPart 必须与 ID 编码的部分一致 ---
+  tests.push([
+    'D6 每个 part-overview 都声明了与 ID 一致的历史部分（正向对照）',
+    () => {
+      const overviews = coverage.keyArticles.filter((entry) => entry.kind === 'part-overview');
+      if (overviews.length !== PART_IDS.length) throw new Error(`导读数量应为 ${PART_IDS.length}，实际 ${overviews.length}`);
+      for (const entry of overviews) {
+        if (!PART_IDS.includes(entry.historicalPart)) throw new Error(`${entry.id}: historicalPart 缺失或非法`);
+        const encoded = historicalPartFromArticleId(entry.id);
+        if (encoded !== entry.historicalPart) {
+          throw new Error(`${entry.id}: 声明 '${entry.historicalPart}' 但 ID 编码为 '${encoded}'`);
+        }
+      }
+      if (validateCoverageContract(coverage).length > 0) {
+        throw new Error(`真实 coverage 的 D6 绑定未通过：${validateCoverageContract(coverage).join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D6 导读声明错误历史部分被拒绝（ID 与声明不一致）',
+    () => {
+      const broken = clone(coverage);
+      broken.keyArticles.find((item) => item.id === PART3_OVERVIEW_ID).historicalPart = 'part-1-why-war';
+      const errors = validateCoverageContract(broken);
+      if (errors.length === 0) throw new Error('声明错误历史部分没有被发现');
+      if (!errors.some((error) => error.includes(PART3_OVERVIEW_ID) && /不一致/.test(error))) {
+        throw new Error(`错误未点名 ${PART3_OVERVIEW_ID}：${errors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'D6 导读缺少 historicalPart 被拒绝',
+    () => {
+      const broken = clone(coverage);
+      delete broken.keyArticles.find((item) => item.id === PART3_OVERVIEW_ID).historicalPart;
+      const errors = validateCoverageContract(broken);
+      if (errors.length === 0) throw new Error('缺少 historicalPart 没有被发现');
+      if (!errors.some((error) => error.includes(PART3_OVERVIEW_ID))) throw new Error(errors.join('; '));
+    },
+  ]);
+  tests.push([
+    'D6 导读 historicalPart 不在五部分内被拒绝',
+    () => {
+      const broken = clone(coverage);
+      broken.keyArticles.find((item) => item.id === PART3_OVERVIEW_ID).historicalPart = 'part-9-nope';
+      if (validateCoverageContract(broken).length === 0) throw new Error('非法 historicalPart 没有被发现');
+    },
+  ]);
+  tests.push([
+    'D6 实体自身 historicalPart 与 coverage 声明不一致被拒绝',
+    () => {
+      const doc = clone(base);
+      const overview = makePartOverviewEvent(base, {});
+      overview.historicalPart = 'part-1-why-war'; // schema 合法，但与 coverage 声明的 part-3-expansion 冲突
+      doc.events.push(overview);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const conflict = result.errors.filter(
+        (error) => error.includes(PART3_OVERVIEW_ID) && /实体 historicalPart/.test(error),
+      );
+      if (conflict.length === 0) throw new Error(`实体/契约 historicalPart 冲突未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'D6 实体与契约 historicalPart 一致时通过（正向对照）',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makePartOverviewEvent(base, {}));
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const conflict = result.errors.filter((error) => /实体 historicalPart/.test(error));
+      if (conflict.length > 0) throw new Error(`一致的 historicalPart 被误判：${conflict.join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'D6 historicalPartFromArticleId 解析规则正确',
+    () => {
+      const cases = [
+        ['event-overview-part-1-why-war', 'part-1-why-war'],
+        ['event-overview-part-2-pearl-harbor', 'part-2-pearl-harbor'],
+        ['event-overview-part-3-expansion', 'part-3-expansion'],
+        ['event-overview-part-4-turning-point', 'part-4-turning-point'],
+        ['event-overview-part-5-midway', 'part-5-midway'],
+      ];
+      for (const [id, expected] of cases) {
+        const actual = historicalPartFromArticleId(id);
+        if (actual !== expected) throw new Error(`${id} 解析为 '${actual}'，应为 '${expected}'`);
+      }
+      for (const bad of ['battle-midway', 'event-overview-part-6-x', 'event-overview-x', '', null]) {
+        if (historicalPartFromArticleId(bad) !== null) throw new Error(`'${bad}' 不应解析出历史部分`);
+      }
+    },
+  ]);
   tests.push([
     'D2 coverage.earlyCampaign 缺键或漏登记事件会被契约检查发现（负例）',
     () => {
       const noBlock = clone(coverage);
       delete noBlock.earlyCampaign;
       if (validateEarlyCampaignContract(noBlock).length === 0) throw new Error('缺少 earlyCampaign 块没有被发现');
-
       const missingKey = clone(coverage);
       missingKey.earlyCampaign.analysisKeys = missingKey.earlyCampaign.analysisKeys.filter((entry) => entry.key !== 'impact');
       if (validateEarlyCampaignContract(missingKey).length === 0) throw new Error('缺少 impact 分析键没有被发现');
@@ -3693,6 +4175,38 @@ function runSelfTests() {
     },
   ]);
 
+  // --- D7: 文档里的自测项数必须等于真实项数（放在最后，因此 tests.length 已包含本项）---
+  const expectedTotal = tests.length + 1;
+  tests.push([
+    `D7 文档声明的自测项数与实际一致（应为 ${expectedTotal}）`,
+    () => {
+      const driftErrors = selfTestCountDriftErrors(expectedTotal);
+      if (driftErrors.length > 0) {
+        throw new Error(`文档与代码自测项数不一致：\n${driftErrors.join('\n')}`);
+      }
+      // 反向自证：把一个错误的数字喂进同一个检查，必须被识别出来。
+      const fakeDoc = `覆盖 **${expectedTotal + 1}** 项真实正例/负例/边界\n${SELF_TEST_COUNT_MARKER}${expectedTotal}\n`;
+      const memoryFs = createMemoryFileSystem();
+      memoryFs.set(COVERAGE_MD_PATH, fakeDoc);
+      memoryFs.set(CONTRACTS_README_PATH, '无声明');
+      const fakeErrors = selfTestCountDriftErrors(expectedTotal, memoryFs);
+      if (fakeErrors.length === 0) {
+        throw new Error('漂移检查对错误数字没有反应（检查本身失效）');
+      }
+      const missingMarkerFs = createMemoryFileSystem();
+      missingMarkerFs.set(COVERAGE_MD_PATH, '没有任何声明');
+      missingMarkerFs.set(CONTRACTS_README_PATH, '无声明');
+      if (selfTestCountDriftErrors(expectedTotal, missingMarkerFs).length === 0) {
+        throw new Error('缺少 canonical 声明没有被发现');
+      }
+    },
+  ]);
+
+  return tests;
+}
+
+function runSelfTests() {
+  const tests = buildSelfTests();
   let passed = 0;
   const failures = [];
   console.log('DSH 内容验证器自测');

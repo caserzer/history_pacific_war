@@ -1,15 +1,29 @@
-# 统一内容契约（v3）
+# 统一内容契约（v4）
 
 状态：契约与验证器已交付，来源 URL 已逐条实测复核。`content/history.json` **尚未创建**；本文件描述的是内容作者/UI 必须遵守的格式，不是已完成的教材内容，也不声称任何历史文章、地图阶段或素材已经通过验收。
 
-## 0. v3 修复的四个阻断缺陷（对应中央审查）
+## 0. 已修复的阻断缺陷（对应中央审查）
+
+### 0.1 v3：D1–D4（已验收）
 
 | 缺陷 | 问题 | 修复 |
 |---|---|---|
 | **D1** | `phase.time.end` 与 `end >= start` 完全没有校验；6/4–6/5 战役可以接受 6/10 的阶段结束时间 | 验证器现在校验 `time.end` 的格式（带时区 ISO 8601）、是否落在战役窗口内、是否 `>= time.start`；并新增阶段按 `sequence` 的时间单调性与区间不重叠检查。9 个负例（含审查者用的 6/10 案例）。 |
 | **D2** | 早期扩张战役的「背景/经过/约束/结果/影响」只在散文里，不是机器断言 | `coverage.json` 新增 `earlyCampaign` 块（8 个事件 × 5 类分析键，每类 ≥80 汉字，独立来源/claim）；schema 新增 `earlyCampaignAnalysis`；验证器逐事件强制。“盟军为何连续失败”“日本的补给与防御压力”正式锁定为 part 3 导读的强制小节。12 个负例。 |
 | **D3** | 素材类型与阶段归属没有契约锁定 | `coverage.json` 新增 `stageOwnership`（5 阶段精确归属 19 篇，不重不漏）；验证器新增不变式：每篇有且仅有一个 owner、owner 与 `keyArticles[].stage` 一致、无孤立 ID、每个阶段都拥有文章、每篇都有素材类型且与文章种类相符。11 个负例。 |
-| **D4** | `--self-test` 依赖 OS 临时目录，只读沙箱下 EPERM（35/38） | 引入可注入的文件系统层（`createRealFileSystem` / `createMemoryFileSystem`）；自测全部改为内存克隆与内存文件系统，零临时目录、零工作区写入。只读模拟下 71/71 通过、0 跳过。 |
+| **D4** | `--self-test` 依赖 OS 临时目录，只读沙箱下 EPERM（35/38） | 引入可注入的文件系统层（`createRealFileSystem` / `createMemoryFileSystem`）；自测全部改为内存克隆与内存文件系统，零临时目录、零工作区写入。只读模拟下 86/86 通过、0 跳过。 |
+
+### 0.2 v4：D5–D7（本轮）
+
+| 缺陷 | 问题 | 修复 |
+|---|---|---|
+| **D5** | `overviewTopics.minHanCharsPerHeading=120` 从未施加到 part 3 强制小节：一个 51 汉字的「盟军为何连续失败」只要全篇超过 1200 汉字就通过 | 验证器现在**逐小节测量正文汉字数**：`overviewTopics.requiredHeadings` 两节各 ≥120 汉字，其余强制小节各 ≥100 汉字（`minimumDepth.requiredHeadingHanChars`）。6 个负例/边界，含“全篇远超门槛但小节过短仍被拒绝”和“恰好 120 通过 / 119 拒绝”。 |
+| **D6** | 导读的 `historicalPart` 未与部分 ID 绑定 | 5 篇导读新增 `historicalPart` 字段；契约级断言“声明部分 == ID 编码部分且属于五部分枚举”，实体级断言“`entity.historicalPart` == `entry.historicalPart`”。7 个负例/正例。 |
+| **D7** | 文档声明的自测项数曾与实际不符（历史记录：文档写 71 而实际为 72） | `docs/research/coverage.md` 写入 canonical 标记 `SELFTEST_COUNT=<N>`；`--self-test` 与 `--check-contracts` 都读取文档、提取声明并与真实项数比对，任何不一致即失败。已用“真实注入漂移”验证过会失败。 |
+
+#### D5 的作用域决定
+
+`minHanCharsPerHeading` **只**用于 `earlyCampaign.overviewTopics.requiredHeadings`（盟军为何连续失败 / 日本的补给与防御压力，≥120 汉字）。其余 `requiredArticleHeadings` 用另一档 `minimumDepth.requiredHeadingHanChars`（≥100 汉字）。两档都是契约字段，`--check-contracts` 断言其存在且 ≥40；详见 `docs/research/coverage.md` §2.1.1。
 
 ## 1. 契约文件
 
@@ -20,7 +34,7 @@
 | `contracts/requirements.json` | 工单提供的 36 条 canonical requirements 原样副本，不得增删改；`--check-contracts` 与 `--self-test` 都会逐字比对 |
 | `contracts/fixtures/valid-min.json` | 仅用于 schema/UI/验证器测试的最小 `strategy` 阶段样本，`fixtureOnly=true`，不是教材内容 |
 | `contracts/fixtures/valid-early-campaign.json` | 仅用于测试的早期扩张战役样本，演示 `earlyCampaignAnalysis` 五类结构（D2），`fixtureOnly=true` |
-| `scripts/validate-content.mjs` | 无 npm 依赖的 Node 24 验证器，含 71 项自测与纯契约检查；只读可用 |
+| `scripts/validate-content.mjs` | 无 npm 依赖的 Node 24 验证器，含 86 项自测与纯契约检查；只读可用 |
 | `docs/research/coverage.md` | 覆盖矩阵、逐项需求映射、阶段与最终门禁说明 |
 | `docs/research/content-rubric.md` | 11 岁可读性、证据类型、侵略/平民苦难/战争罪行的适龄评审标准 |
 | `docs/research/sources.md` | 官方来源策略、逐条实测的 URL 访问状态、定位方式与调研限制 |
@@ -163,6 +177,31 @@ UI：可先渲染 `title`/`startDate`/`summary`/`placeIds`，再按 `article` �
 “盟军为何连续失败”与“日本的补给与防御压力”不各自造假事件，而由 part 3 导读的**两个强制小节**承担（`coverage.earlyCampaign.overviewTopics`，标题逐字、每节 ≥120 汉字）。
 
 UI：早期战役页先渲染五类分析分栏，再渲染补充文章；不要把五类分析折叠成一段。
+
+#### 导读强制小节的最低深度（D5）
+
+光有标题不算覆盖。验证器**逐小节测量正文汉字数**（`validateArticleSections` 返回 `hanByHeading`），两档阈值：
+
+| 小节类别 | 阈值字段 | 当前值 |
+|---|---|---:|
+| `overviewTopics` 分析主题小节（盟军为何连续失败 / 日本的补给与防御压力） | `coverage.earlyCampaign.overviewTopics.minHanCharsPerHeading` | **120 汉字** |
+| 其它所有 `requiredArticleHeadings` | `coverage.keyArticles[].minimumDepth.requiredHeadingHanChars` | **100 汉字** |
+
+要点：
+
+- 计量对象是**该标题那一节的 `body`**，不是全篇总字数——51 汉字的分析小节即使全篇 1451 汉字也会失败；
+- 恰好等于阈值通过，差一个汉字即失败；
+- 两档阈值是契约字段，`--check-contracts` 断言其存在且 ≥40。
+
+#### 导读的历史部分绑定（D6）
+
+每篇 `part-overview` 都必须声明 `historicalPart`，且必须同时满足：
+
+1. 属于五部分枚举（`part-1-why-war` … `part-5-midway`）；
+2. 等于它 ID 编码的部分（`event-overview-part-3-expansion` → `part-3-expansion`，由 `historicalPartFromArticleId` 解析）；
+3. 实体自身的 `historicalPart` 与 coverage 声明一致（覆盖率门禁逐实体检查）。
+
+这样把 part 3 的导读误挂到 part 1 会在契约检查与实体检查两处分别失败。
 
 #### 阶段归属与素材类型（D3）
 
@@ -462,8 +501,7 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 - **早期扩张战役结构（D2）**：每个 early-campaign 事件必须有 `earlyCampaignAnalysis` 的 background/course/constraints/results/impact 五节，标题固定、每节 ≥80 汉字、各自带来源与 claim；part 3 导读必须包含“盟军为何连续失败”“日本的补给与防御压力”
 - **阶段归属与素材类型不变式（D3）**：`stageOwnership` 不重不漏覆盖 19 篇、与 `keyArticles[].stage` 一致、无孤立 ID、每阶段都有 owner；`requiredMediaTypes` 每篇至少一种类型且与文章种类相符
 - `--media`：精确重点集合、所需媒体类型、许可、文件存在且非空
-- `--self-test`：独立于 `content/history.json` 的 **71 项**真实正例/负例/边界；**只读可用**（无临时目录、无工作区写入）
-- `--check-contracts`：不需要内容文件，检查 `requirements.json` 与工单 canonical 清单逐字一致、`coverage.json` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读、earlyCampaign 结构、stageOwnership 不变式、素材类型契约，以及 schema 的顶层数组/十四类键/阶段关键字段/phaseTime/earlyCampaignAnalysis
+- `--self-test`：独立于 `content/history.json` 的 **86 项**真实正例/负例/边界；**只读可用**（无临时目录、无工作区写入）- `--check-contracts`：不需要内容文件，检查 `requirements.json` 与工单 canonical 清单逐字一致、`coverage.json` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读、earlyCampaign 结构、**导读小节深度阈值（D5）**、**导读 historicalPart 绑定（D6）**、**文档自测项数同步（D7）**、stageOwnership 不变式、素材类型契约，以及 schema 的顶层数组/十四类键/阶段关键字段/phaseTime/earlyCampaignAnalysis
 
 退出码：`0` PASS，`1` 验证失败，`2` 参数或运行错误。验证器没有 npm 依赖，Node 24 下运行。
 
@@ -496,5 +534,5 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 - 验证器只证明结构/覆盖/引用条件，不证明历史叙述真实、准确、适龄或可读。
 - `docs/research/sources.md` 逐条记录了本次实测结果：FRUS、NARA、NPS、JACAR、AWM、National WWII Museum 已读取正文；**NHHC 与 CMH 本次 DNS 解析失败**，NAA/IWM 返回 403，因此三场战役的官方战斗叙事尚未读到。后续内容不得据此声称“已全文核实”，也不得引用未实测的页码。
 - `contracts/fixtures/valid-min.json` 与 `contracts/fixtures/valid-early-campaign.json` 都是测试样本，不是历史成果。
-- `--self-test` 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（71/71、0 跳过）；它不能替代中央审查环境中的独立验证。
+- `--self-test` 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（86/86、0 跳过）；它不能替代中央审查环境中的独立验证。
 - 阶段时间校验（D1）在语义上只能保证“格式合法、落在战役窗口内、先后一致”。它**无法**判断某个历史时刻本身是否准确——那需要 claim + locator + 人工评审。

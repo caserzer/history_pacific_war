@@ -4,16 +4,36 @@
 
 规范机器文件：`contracts/coverage.json`。本文解释其精确集合；两者冲突时以机器文件与 `contracts/content.schema.json` 为准，并须由架构审查修正。
 
-## 0. v3 修复的四个阻断缺陷
+## 0. 已修复的阻断缺陷
 
-中央审查（attempt 2，priorCommit 2a2ee599）给出四个阻断项；以下为当前状态，全部有机器断言与负例：
+中央审查在各轮次给出的阻断项，以下为当前状态，全部有机器断言与负例：
+
+### 0.1 attempt 2（priorCommit 2a2ee599）—— 已验收
 
 | 缺陷 | 修复位置 | 机器断言 | 负例数 |
 |---|---|---|---|
 | **D1** `phase.time.end` 与 `end>=start` 未校验（6/4–6/5 战役接受 6/10 结尾） | `scripts/validate-content.mjs` 阶段校验 | `time.end` 格式+战役窗口+`end>=start`；阶段按 `sequence` 时间递增、区间不重叠 | 9（含审查者原案例） |
 | **D2** 早期战役缺少 background/course/constraints/results/impact 结构 | `coverage.earlyCampaign` + schema `earlyCampaignAnalysis` + 验证器 | 8 事件 × 5 键，每键 ≥80 汉字，独立来源/claim；part 3 导读强制两个小节 | 12 |
 | **D3** 素材类型与阶段归属未契约锁定 | `coverage.stageOwnership` + `requiredMediaTypes` + 验证器不变式 | 19 篇不重不漏归属 5 阶段；每篇有素材类型且与文章种类相符；无孤立 ID | 11 |
-| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下 71/71、0 跳过、不写工作区 | 由只读实测证明 |
+| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下 86/86、0 跳过、不写工作区 | 由只读实测证明 |
+
+### 0.2 attempt 3（priorCommit a1b2dab）—— 本轮修复
+
+| 缺陷 | 修复位置 | 机器断言 | 负例/边界 |
+|---|---|---|---|
+| **D5** `overviewTopics.minHanCharsPerHeading=120` 从未施加到 part 3 强制小节：51 汉字的「盟军为何连续失败」只要全篇超过 1200 汉字就通过 | `keyDepthErrors` 的 part-overview 分支；`validateArticleSections` 现在返回 `hanByHeading` | 每个 `requiredArticleHeadings` 标题的**正文自身**必须达标：overviewTopics 两个分析小节 ≥120 汉字，其余强制小节 ≥100 汉字（`minimumDepth.requiredHeadingHanChars`）；不再能用其它小节凑总字数 | 6 |
+| **D6** 导读的 `historicalPart` 未与部分 ID 绑定 | `coverage.keyArticles[].historicalPart` + `historicalPartFromArticleId` + 覆盖率门禁 | 契约级：每个 part-overview 必须声明五部分之一，且等于 ID 编码的部分；实体级：`entity.historicalPart` 必须等于 `entry.historicalPart` | 7 |
+| **D7** 文档写 71 项、实际 72 项 | `docs/research/coverage.md` 的 canonical 标记 `SELFTEST_COUNT=<N>` + `selfTestCountDriftErrors` | `--self-test` 与 `--check-contracts` 都会读取文档、提取声明并与真实项数比对；任何一处不一致即失败 | 1（含反向自证：喂错误数字必须被识别） |
+
+#### D5 的作用域决定（代码与文档一致）
+
+`minHanCharsPerHeading` **只**适用于 `earlyCampaign.overviewTopics.requiredHeadings` 这两个分析主题小节（盟军为何连续失败 / 日本的补给与防御压力），阈值为 120 汉字。
+
+其余所有 `requiredArticleHeadings` 使用另一档 `minimumDepth.requiredHeadingHanChars`（当前 100 汉字）。理由：
+
+- 这两个 overviewTopics 小节是 HIST-EXPANSION 明确要求的“分析主题”，必须比普通主题小节更深；
+- 但“每个强制标题都必须有实质正文”同样重要，所以其它标题也有下限，只是阈值较低；
+- 两档阈值都是契约字段，改它们必须同时改代码与本文档，`--check-contracts` 会断言其存在且 ≥40。
 
 ## 1. 阶段与 HIST 任务
 
@@ -89,6 +109,22 @@
 - part 5：`日本的计划与内部假设`、`美国情报与密码分析`、`双方兵力、指挥官与盲区`、`搜索、侦察、攻击与整备的时间差`、`运气、情报、组织、指挥与战术`、`损失、失败原因与战略争议`、`中途岛是否真正改变战略主动权`、`长期影响`
 
 这防止“有文章但漏掉某一历史主题”的假覆盖。标题存在仍需正文解释，不能只放标题和空话。
+
+#### 2.1.1 强制小节的最低深度（D5）
+
+仅“标题在场”不够：验证器会**逐小节测量正文汉字数**，并按两档阈值判定。这样“某个关键小节只有 51 个汉字、靠其它小节把全篇凑过 1200”的写法不再能通过。
+
+| 小节类别 | 阈值来源 | 当前值 | 适用标题 |
+|---|---|---:|---|
+| 分析主题小节 | `coverage.earlyCampaign.overviewTopics.minHanCharsPerHeading` | **120 汉字** | 仅 part 3 的 `盟军为何连续失败`、`日本的补给与防御压力` |
+| 其余强制小节 | `coverage.keyArticles[].minimumDepth.requiredHeadingHanChars` | **100 汉字** | 上表所有其它强制标题 |
+
+规则要点：
+
+- 计量对象是**该标题那一节的 `body`**，不是全篇总字数；
+- 恰好等于阈值通过（边界包含），差一个汉字即失败；
+- 判定对累积阶段的每个阶段都生效：只要导读实体已存在，就必须满足；
+- 两档阈值都是契约字段，`--check-contracts` 会断言其已声明且 ≥40。
 
 ## 3. 三场必须完成十四类分析的战役
 
@@ -285,7 +321,7 @@ node scripts/validate-content.mjs --self-test
 node scripts/validate-content.mjs --check-contracts
 ```
 
-自测不读取 `content/history.json`，覆盖 **71** 项真实正例/负例/边界。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。
+自测不读取 `content/history.json`，覆盖 **86** 项真实正例/负例/边界（canonical 声明：`SELFTEST_COUNT=86`）。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。`--self-test` 会把上方的 canonical 声明与实际测试项数比对，不一致就直接失败（D7 防漂移）。
 
 **契约一致性（7 项）**
 - `requirements.json` 与工单 canonical 清单逐字一致（36 条，id/description/scope/顺序/条数）；
@@ -330,6 +366,26 @@ node scripts/validate-content.mjs --check-contracts
 
 **D4 只读可用性（1 项）**
 - 断言真实文件系统层不暴露任何写接口，内存文件系统完全在内存中。
+
+**D5 导读强制小节深度（6 项）**
+- 「盟军为何连续失败」正文过短被拒绝，**且构造保证全篇总汉字数远超 1200**（证明不是被总字数拦住）；
+- 第二个分析小节「日本的补给与防御压力」过短同样被拒绝；
+- 恰好达到 120 汉字通过（边界正例）；
+- 119 汉字（差一个）被拒绝（边界负例）；
+- 非 overviewTopics 的普通强制小节受 `requiredHeadingHanChars` 约束，过短被拒绝；
+- 契约必须声明 `requiredHeadingHanChars` 与 overview 阈值，删除后契约检查失败。
+
+**D6 导读历史部分绑定（7 项）**
+- 五个导读都声明了与 ID 编码一致的部分（正向对照）；
+- 声明错误部分（part 3 写成 part 1）被拒绝且错误点名该 ID；
+- 缺少 `historicalPart` 被拒绝；
+- `historicalPart` 不在五部分枚举内被拒绝；
+- 实体自身 `historicalPart` 与 coverage 声明冲突被拒绝；
+- 实体与契约一致时通过（正向对照）；
+- `historicalPartFromArticleId` 解析规则正确（含非法输入返回 null）。
+
+**D7 文档漂移防护（1 项）**
+- 文档声明的自测项数必须等于真实项数；并反向自证：喂入错误数字时检查必须报错、缺少 canonical 标记时也必须报错。
 
 **结构与引用（8 项）**
 - 重复 ID；未知实体引用；来源缺失；
@@ -409,14 +465,15 @@ node scripts/validate-content.mjs --check-contracts
 
 `node scripts/validate-content.mjs`（默认 full）必须 PASS，且满足：
 
-- [ ] `node scripts/validate-content.mjs --check-contracts` 先 PASS：requirements 逐字一致、重点集合精确、earlyCampaign 结构、stageOwnership 不变式、素材类型契约。
+- [ ] `node scripts/validate-content.mjs --check-contracts` 先 PASS：requirements 逐字一致、重点集合精确、earlyCampaign 结构、导读小节深度阈值、导读 historicalPart 绑定、stageOwnership 不变式、素材类型契约、文档自测项数同步。
 - [ ] `content/history.json` 存在，`schemaVersion=1.0.0`，`fixtureOnly=false`。
 - [ ] 19 篇重点文章全部存在，实体类型与 coverage 一致，且归属阶段与 `stageOwnership` 完全一致。
 - [ ] 三场重点战役各有完整 14 节，每节 ≥160 汉字，均有来源/claim；分别 ≥3/4/5 阶段。
 - [ ] 每个重点阶段有双方位置、known/unknown enemy、decision/consequence、双方 viewpoint、示意标记、至少一条示意航线、来源/claim。
 - [ ] **每个阶段 `time.start`/`time.end` 合法、落在战役窗口内、`end>=start`，阶段按 `sequence` 时间递增且区间不重叠（D1）。**
 - [ ] **8 个早期扩张事件各有 `earlyCampaignAnalysis` 的 background/course/constraints/results/impact 五节，标题固定、每节 ≥80 汉字、各自带来源与 claim（D2）。**
-- [ ] **part 3 导读包含 `盟军为何连续失败` 与 `日本的补给与防御压力` 两个强制小节，各 ≥120 汉字（D2）。**
+- [ ] **五篇导读的每个强制小节按小节自身深度达标：`盟军为何连续失败`、`日本的补给与防御压力` 各 ≥120 汉字，其余强制小节各 ≥100 汉字；不能用其它小节凑全篇总字数（D5）。**
+- [ ] **每篇导读的 `historicalPart` 与它 ID 编码的历史部分一致，且实体自身的 `historicalPart` 与 coverage 声明一致（D6）。**
 - [ ] 14 个必需事件全部存在，达到最低节数/汉字/来源/claim，历史部分正确。
 - [ ] 五个历史部分各至少一个 ≥160 汉字、≥2 实体、有来源/claim 的实质问题。
 - [ ] 五位人物、六篇专题达到最低档案/层次/关联/证据深度。
@@ -433,5 +490,7 @@ node scripts/validate-content.mjs --check-contracts
 - 验证器能阻止结构性和引用性绕过，但无法自动判断历史陈述是否准确、观点是否公允、答案是否真正适龄；必须有人工评审（`tests/evidence/pedagogy.md`）。
 - D1 的时间校验只能保证**格式合法、窗口一致、先后自洽**；它无法判断某个历史时刻本身是否准确。历史准确性仍取决于 claim + locator + 人工评审。
 - D2 的五类分析只能保证**结构齐全、深度达标、有证据链接**；它无法判断分析是否真的解释了因果。
-- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（71/71、0 跳过、工作区 mtime 不变），仍不能替代中央审查环境中的独立验证。
+- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（86/86、0 跳过、工作区 mtime 不变），仍不能替代中央审查环境中的独立验证。
+- D5 只能保证**每个强制小节达到字数下限**；它无法判断这 120 个汉字是否真的在回答“盟军为何连败”。字数达标是必要条件而非充分条件，仍需 rubric 人工评审。
+- D7 的漂移检查只比对**项目自己的契约文档**（`docs/research/coverage.md`、`contracts/README.md`）；如果任务板描述、工单或在其它文件里写了项数，验证器看不到。本轮的“实际 72 而非文档 71”之所以发生，正是因为当时没有这条断言——现在有了。
 - 本任务提交后仅进入中央审查；**没有任何内容或契约被中央 verified/done**。

@@ -159,6 +159,7 @@
       "id": "event-overview-part-1-why-war",
       "kind": "part-overview",
       "entityType": "event",
+      "historicalPart": "part-1-why-war",
       "stage": "strategy",
       "titleZh": "战争为什么爆发：导读",
       "minimumDepth": {
@@ -166,7 +167,8 @@
         "hanChars": 600,
         "sourceIds": 3,
         "claimIds": 3,
-        "placeIds": 2
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
       },
       "requiredArticleHeadings": [
         "日本扩张与资源依赖",
@@ -179,6 +181,7 @@
       "id": "event-overview-part-3-expansion",
       "kind": "part-overview",
       "entityType": "event",
+      "historicalPart": "part-3-expansion",
       "stage": "background",
       "titleZh": "日本的快速扩张：导读",
       "minimumDepth": {
@@ -186,7 +189,8 @@
         "hanChars": 1200,
         "sourceIds": 4,
         "claimIds": 6,
-        "placeIds": 5
+        "placeIds": 5,
+        "requiredHeadingHanChars": 100
       },
       "requiredArticleHeadings": [
         "香港",
@@ -203,6 +207,7 @@
       "id": "event-overview-part-2-pearl-harbor",
       "kind": "part-overview",
       "entityType": "event",
+      "historicalPart": "part-2-pearl-harbor",
       "stage": "pearl",
       "titleZh": "珍珠港与战争爆发：导读",
       "minimumDepth": {
@@ -210,7 +215,8 @@
         "hanChars": 900,
         "sourceIds": 4,
         "claimIds": 5,
-        "placeIds": 2
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
       },
       "requiredArticleHeadings": [
         "战略目标与准备",
@@ -308,6 +314,7 @@
       "id": "event-overview-part-4-turning-point",
       "kind": "part-overview",
       "entityType": "event",
+      "historicalPart": "part-4-turning-point",
       "stage": "coral",
       "titleZh": "战局开始变化：导读",
       "minimumDepth": {
@@ -315,7 +322,8 @@
         "hanChars": 850,
         "sourceIds": 4,
         "claimIds": 5,
-        "placeIds": 3
+        "placeIds": 3,
+        "requiredHeadingHanChars": 100
       },
       "requiredArticleHeadings": [
         "美国航母的早期行动",
@@ -386,6 +394,7 @@
       "id": "event-overview-part-5-midway",
       "kind": "part-overview",
       "entityType": "event",
+      "historicalPart": "part-5-midway",
       "stage": "full",
       "titleZh": "中途岛海战：导读",
       "minimumDepth": {
@@ -393,7 +402,8 @@
         "hanChars": 1200,
         "sourceIds": 5,
         "claimIds": 6,
-        "placeIds": 2
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
       },
       "requiredArticleHeadings": [
         "日本的计划与内部假设",
