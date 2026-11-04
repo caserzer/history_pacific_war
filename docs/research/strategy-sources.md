@@ -50,7 +50,31 @@
 | `source-nww2m-battle-midway` | The Battle of Midway | 同上 | 2026 | https://www.nationalww2museum.org/war/articles/battle-midway | `READ` |
 | `source-nww2m-operation-vengeance` | Operation Vengeance: The Killing of Isoroku Yamamoto（John Curatola, PhD） | 同上 | 2023 | https://www.nationalww2museum.org/war/articles/operation-vengeance-killing-isoroku-yamamoto | `READ` |
 
-### 1.3 只读到目录/索引的页面
+### 1.3 attempt 2 新增并实际读取的来源
+
+以下来源在第二次尝试中获取正文并用于内容，访问日期均为 **2026-11-04**。
+
+| ID | 标题 | 作者/发布机构 | 年份 | URL | 状态 |
+|---|---|---|---|---|---|
+| `source-oni-midway-combat-narrative` | ONI Combat Narratives: The Battle of Midway, June 3–6, 1942 | Office of Naval Intelligence, U.S. Navy | 1943 | https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/ | `READ` |
+| `source-oni-coral-sea-combat-narrative` | ONI Combat Narratives: The Battle of the Coral Sea, May 4–8, 1942 | 同上 | 1943 | https://www.ibiblio.org/hyperwar/USN/USN-CN-Coral/ | `READ` |
+| `source-dmn-king-nimitz` | Admirals Ernest J. King and Chester W. Nimitz: The S.O.B. and the quiet man | Dwight Jon Zimmerman / Defense Media Network | 2012 | https://www.defensemedianetwork.com/stories/admirals-ernest-j-king-chester-w-nimitz/ | `READ` |
+| `source-wikipedia-nagumo` | Chuichi Nagumo (Wikipedia, revision 1379810745) | Wikipedia contributors | 2026 | https://en.wikipedia.org/wiki/Ch%C5%ABichi_Nagumo | `READ`，**低权重**，见 1.3 |
+
+**ONI 战斗叙事的可用定位**（均为页面内实际存在的章节标题与印刷页号）：
+
+- 中途岛：`The Battle of Midway, background` p.1；`Preparations at Midway` p.5；`Preliminary air patrols` p.7；`First contact with the enemy, June 3` p.9；`The enemy attack on Midway, June 4` p.11；`Midway's attack on the enemy carriers, June 4` p.16；`Our carrier attack on the enemy carriers, June 4` p.19；`The attack on the Yorktown, June 4` p.27；`The fourth Japanese carrier, June 4` p.31；`Observations` p.55。
+- 珊瑚海：`The Battle of the Coral Sea` p.1；`Our forces joined` p.2；`The action at Tulagi on May 4th` p.5；`Events between Tulagi and Misima` p.9；`The action off Misima, May 7th` p.13；`The air groups` p.13；`Combat air patrol on the 7th` p.17；`Results of the 7th` p.20；`The action of May 8th` p.21；`Combat air patrol on the 8th` p.26；`Conclusions` p.46；`Appendix` p.47。
+
+这两份是**美国海军情报局 1943 年官方出版物**，前言署名海军作战部长金上将；编者自述「因资料仓促征集，个别细节可能不准确」，且部分信息当年仍属机密而未写入。它们的价值在于提供官方口径的行动序列、指挥官职务、搜索/雷达报告原文与当时总结出的经验教训，**足以替代原本需要的 NHHC 战斗叙事**——但不能替代 NHHC 的官方统计表，故本阶段未据其发布任何新的损失统计。
+
+**Defense Media Network 特写**用于尼米兹的到任经过与实地评估（1941-12-31 就任并同时晋升四星、保留基梅尔参谋班子、战列舰多可打捞、三艘航母可用、港口设施与燃油未损、因通信需要而必须岸上指挥）。属非官方特写，只取其可与 ONI 官方叙事相互印证的事实性内容，不采用其性格化评价。
+
+### 1.4 低权重来源的处置
+
+`source-wikipedia-nagumo` 在 `sources[]` 中登记为 `sourceType: reference`，`reliabilityNote` 明确写明**低权重（LOW WEIGHT）**，并注明该条目「Early life」一节自带「本段未引用任何来源」的警示。使用范围严格限定为一条履历性质的 claim（生卒年、海军兵学校毕业届次与名次、专长、晋升与任职年份），**不承担任何因果解释或性格评价**；南云的全部决策卡由 JM 97（其本人签署的作战命令）与 ONI 中途岛叙事支撑。
+
+### 1.5 只读到目录/索引的页面
 
 | 页面 | 状态 | 说明 |
 |---|---|---|
@@ -104,18 +128,58 @@
 
 1. **NHHC（`www.history.navy.mil`）与 CMH（`history.army.mil`）在本环境 DNS 解析失败**（`getaddrinfo EAI_AGAIN`，本次以 `node:dns` 独立复核）。因此美国海军与美国陆军的官方战斗叙事、官方统计表与官方页码**本轮全部未读到**。任何“已据官方战斗叙事核实”的说法都不成立。
 2. **`naa.gov.au` 与 `iwm.org.uk` 此前返回 403**（记录于 `docs/research/sources.md`），本轮未重新尝试；因此达尔文空袭与新加坡华人屠杀等议题的该两处馆藏正文仍不可用，**不得凭标题扩写细节**。
-3. **`ww2db.com` 本轮返回 403**（Cloudflare 挑战页）。该站原本是最直接的尼米兹、南云、斯普鲁恩斯、弗莱彻人物条目来源。缺失后果：**本轮没有为这四人取得足以支撑重点人物档案深度的传记来源**。处理方式见 §5。
+3. **`ww2db.com` 返回 403**（Cloudflare 挑战页）；**USNI（`www.usni.org`）同样返回 403**。这两站原本是最直接的人物传记来源。**应对方式**：改以 **ONI 官方战斗叙事（1943）** 作为四位指挥官（南云、尼米兹、斯普鲁恩斯、弗莱彻）的主要依据，按「决策型档案」而非「生平型传记」建档，并用 Defense Media Network 特写补充尼米兹的到任评估。南云另用 Wikipedia 条目补齐最基础的履历，该来源已在 `sources[]` 中显式标注为低权重，详见 §5.2 与 §1.3。
 4. **未取得任何中文语种档案来源**。本轮唯一的东亚一手来源是 JACAR（日本国立公文书馆）。中国方面的官方史料（如抗战档案、纪念馆出版物）本轮未获得正文，这是侵华章节的**实质性缺口**：教材可以依据 FRUS（美国国务院同时代文件）与博物馆综述描述日本侵华的事实与规模，但缺少中方视角的一手文本。
 5. **南京大屠杀死亡人数存在实质分歧**。本轮读到的 National WWII Museum 页面给的是 “between 100,000 and 200,000”；中文与部分学界研究常用的范围为 200,000–300,000 以上。教材必须将这一数字登记为 `disputed`，并列主要说法、注明各自口径，**不得取单一数字冒充定论**。
 6. **中途岛美军伤亡数字在同一来源内部冲突**：`docs/research/sources.md` 记录的博物馆 `/war/topics/battle-of-midway` 页面给出 307 人；本轮读到的 `/war/articles/battle-midway` 页面给出 **362** 人。两个都是博物馆汇总口径。后续 `battle-midway` 必须注明采用哪一页、为何，并以 `disputed` claim 记录另一说法。
 7. **日本专档（JM 97 / JM 147）是战后重建**，不是原件转录。JM 97 前言明言原始命令多已销毁、凭笔记与记忆重编。因此其日期与命令序列可用于叙事，但**不得当作逐字原文**；用词需写“据日方战后整理的专档记载”。
 8. **USSBS 第 2 章是战后访谈**，编者自述 “supplied from memory”。适合说明计划逻辑与日方自我理解，不适合逐分钟的行动时间线。
 9. **本教材没有可用的官方战斗叙事来核对分钟级时间**，所以任何“精确到分钟”的表述只能来自本轮实际读到的时间（如 NPS 的 07:02/07:06/07:45/07:50），其余一律不写分钟数。
-10. **本文件不代表可读性评审**。11 岁适龄与证据呈现的人工评审证据属于 `tests/evidence/pedagogy.md`，由后续任务提交；在该文件存在前，不得声称内容“已达到可读性标准”。
+10. **本文件不代表可读性评审**。11 岁适龄与证据呈现的人工评审证据属于 `tests/evidence/pedagogy.md`，由后续任务提交；在该文件存在前，不得声称内容“已达到可读性标准”。结构验证器 PASS **不等于**可读性通过。
+11. **没有取得任何专门的雷达史、密码分析技术史或舰载机性能手册。** `concept-radar` 与 `concept-codebreaking` 因此只写到原理层面与已读来源确有的实战记载，不得在任何后续阶段被扩写为技术细节；若要加深，必须先补读 NHHC/USNI 的相应专著或档案。
+12. **四位指挥官的档案是“决策型”而非“传记型”。** 尼米兹、斯普鲁恩斯、弗莱彻、南云都没有取得官方传记文本。他们的档案聚焦于珊瑚海与中途岛的具体约束与选项；若后续需要补写早年经历、晋升过程或战后评价，必须先取得可定位的传记来源，不得从现有材料外推。
+13. **USNI（`www.usni.org`）在本环境返回 403**，其 Proceedings 与 Naval History 文章本轮全部未读到。
 
-## 5. 因来源不足而做出的取舍
+## 5. 实际交付状态（attempt 2）
 
-- **只由实际读到的来源支撑的内容才写入 `content/history.json`。** 凡是无法定位到本轮读到的正文的判断，一律不写。
-- **五位指挥官中，本轮只写入山本五十六一人。** 理由：只有山本在本次读到的来源中有足够的、带定位的实质材料（USSBS 的计划归属、JM 97 的命令署名链、National WWII Museum 关于其经历与判断的段落）。南云忠一在 JM 97 中只以“命令署名者”出现，尼米兹、斯普鲁恩斯、弗莱彻本轮**没有取得任何传记来源**。为凑字数而编写他们的生平将违反内容政策，故**本轮省略这四人的人物档案**，留待后续阶段在取得 NHHC/传记来源后再建。这意味着 `PEOPLE-DEPTH` 在本阶段**未完成**，且这是有意为之的诚实状态，而非遗漏。
-- **六篇核心专题同样受此约束**：只有在能对三层结构（是什么—怎么运作—为什么影响决策）各给出有来源的实质解释时才建立。无法达到 `coverage.json` 名目要求的最低深度者不建立，避免留下“半成品重点文章”导致后续阶段验证失败。
-- 上述取舍不影响 `--stage strategy` 的门禁：该阶段只要求 part 1 导读、三个战略基础事件与至少一个 part 1 实质问题。
+本节记录 `content/history.json` 中**实际已交付**的内容与支撑它的来源。上一轮（attempt 1）曾在此处声明四位指挥官与三篇专题未交付；那一状态**已经不成立**。
+
+### 5.1 六篇核心专题：全部交付
+
+| keyArticleId | 三层 | 汉字数（summary + whyItMatters + 三层正文） | 来源 | claim |
+|---|---|---:|---|---|
+| `concept-aircraft-carrier` | 3 | 856 | USSBS Ch.2、JM 97、NWW2M Pacific Strategy | 4 |
+| `concept-carrier-aircraft` | 3 | 848 | JM 97、USSBS Ch.2 | 4 |
+| `concept-logistics` | 3 | 894 | USSBS Ch.2、JM 97、FRUS d602 | 4 |
+| `concept-radar` | 3 | 969 | ONI Midway、ONI Coral Sea、NPS Opana | 5 |
+| `concept-codebreaking` | 3 | 926 | NWW2M Battle of Midway、NWW2M Operation Vengeance | 5 |
+| `concept-naval-aviation` | 3 | 1125 | ONI Midway、ONI Coral Sea | 6 |
+
+**`concept-radar` 与 `concept-codebreaking` 的技术深度限制**：本轮**没有取得任何专门的雷达史或密码分析技术史**（NHHC、USNI 均不可达）。这两篇的技术叙述严格限定在已读来源实际写到的范围之内——雷达篇只写「发射电波、接收回声、测距与测向」的原理层面，以及 ONI 叙事中确有的实战记载（中途岛雷达在约 93 英里处发现来袭编队；中途中岛逐时记录中的雷达通报；珊瑚海战斗机无雷达识别手段导致反复空跑；战后结论要求「所有航母应配备两部远程雷达」）。密码篇只写「加密／破译」「解密后仍需人工研判」「AF 需用假情报验证」「日期只到六月四日或五日」这些博物馆页面确有的内容，**不涉及** JN-25 的具体技术结构、轮转规律或任何机器细节。两篇的正文都在相应位置明确说明「这不是全知」。
+
+### 5.2 五位指挥官档案：全部交付
+
+| keyArticleId | 档案汉字数 | 决策卡 | 来源 | claim |
+|---|---:|---:|---|---|
+| `person-yamamoto-isoroku` | 583 | 3 | NWW2M Operation Vengeance、USSBS Ch.2、JM 97、JM 147 App.3 | 9 |
+| `person-nagumo-chuichi` | 666 | 3 | JM 97、ONI Midway、USSBS | 9（另有一条低权重履历 claim） |
+| `person-nimitz-chester` | 525 | 3 | Defense Media Network、ONI Midway、ONI Coral Sea | 6 |
+| `person-spruance-raymond` | 606 | 3 | ONI Midway、Defense Media Network、USSBS | 7 |
+| `person-fletcher-frank-jack` | 609 | 3 | ONI Coral Sea、ONI Midway、Defense Media Network | 10 |
+
+**支撑方式与诚实边界**：四位（南云、尼米兹、斯普鲁恩斯、弗莱彻）**都没有取得官方传记文本**。他们的档案因此按「决策型」而非「生平型」建：核心内容是他们在珊瑚海与中途岛面对的情报、约束、选项与后果，主要依据是 **ONI 官方战斗叙事（1943）** 与 **日方专档 JM 97**；尼米兹另用 Defense Media Network 特写补充其到任时的实地评估与岸上指挥的约束。**南云**的档案另有 Wikipedia 条目，已在 `sources[]` 中标注为 `sourceType: reference` 并在 `reliabilityNote` 中写明「低权重（LOW WEIGHT）」、该条目「Early life」一节自带「未引用任何来源」警示；它只支撑一条履历性质的基础 claim（生卒年、毕业届次与名次、专长、晋升与任职年份），**不承担任何因果解释或性格评价**，南云的三张决策卡全部由 JM 97 与 ONI 叙事支撑。
+
+### 5.3 涉及证据保真度的三次修正（attempt 2）
+
+1. **时间间隔更正**：第 1 部分导读与珍珠港问题原先写「离攻击开始只剩不到一小时」。NPS 页面实际给出的是报告时刻 7:06、攻击开始 7:50，即 **44 分钟**。现已全文改为「大约四十四分钟」／「只有大约四十四分钟」，`content/history.json` 中不再出现「不到一小时」的表述。
+2. **定位更正（重要）**：National WWII Museum 的 **Operation Vengeance 页面没有任何小节标题**——实际结构只有一个大标题、作者与日期、若干引用块、图注与编号脚注，**不存在 `section-paragraph` 所假定的「小节 + 段序」**。因此本轮不再对该页面使用 `section-paragraph` 定位。原引用该页的三条 claim 处理如下：
+   - 「日本只能打十八个月」的引语**整段删除**。该引语本身只是博物馆对其转引 Agawa 传记的二次转述，本轮无法给出可结构定位的出处，故不再使用，改为引用日方专档中可定位的原文段落（JM 147 App.3，pp. A3-i to A3-ii）来说明「日方自己承认对手可能把战争拖长」。
+   - 「对马海战负伤、失去两指」的细节**删除**。本轮已读来源中没有带可定位段落的一手或官方记述，按「宁可不写、不可编造」的原则不写。
+   - 「清楚美国工业潜力」的判断**收窄**为 USSBS 明确记载的事实（袭击计划由山本提出），不再转述无法定位的评价性段落。
+3. **补给处置更正**：`claim-us-fleet-trains-refuel` 原先写作「若加油失败则护卫部队返回」，与 USSBS 原文不符。USSBS 写的是加油失败时计划**不带驱逐舰继续前进**（continue without the destroyers）。该 claim 已按原文更正，并在 `note` 中记录原错误。
+
+### 5.4 仍然成立的取舍原则
+
+- **只由实际读到的来源支撑的内容才写入 `content/history.json`。** 凡是无法定位到已读正文的判断，一律不写；无法定位的既有内容按 §5.3 的方式删除或收窄，而不是改挂一个看起来像样的定位。
+- **不为了达到字数下限而填充。** 四位指挥官的档案长度来自真实的决策分析内容，而非生平罗列；两篇技术专题的篇幅来自三层递进解释，而非术语堆砌。
+- **`--stage strategy` 的门禁**（part 1 导读、三个战略基础事件、至少一个 part 1 实质问题）已满足；本阶段额外交付六篇专题与五份档案，属于超前于 `stageOwnership` 的额外完成量，而非本阶段门禁要求的全部。
