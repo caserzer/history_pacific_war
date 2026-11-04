@@ -22,8 +22,43 @@ export type HistoricalPartId = (typeof HISTORICAL_PART_IDS)[number];
 export const CLAIM_TYPES = ['fact', 'interpretation', 'disputed', 'schematic'] as const;
 export type ClaimType = (typeof CLAIM_TYPES)[number];
 
-/** 地图与阶段重建的证据把握等级（与 claimType 同集合，但语义用于位置/航线）。 */
-export type Certainty = ClaimType;
+/**
+ * 证据把握等级（used by phase / route / decision / battle outcome）。
+ *
+ * 注意：这是**另一个枚举**，与 claimType 不同。
+ *   contracts/content.schema.json: certainty enum = documented | estimated | disputed | schematic
+ *   contracts/content.schema.json: claimType enum = fact | interpretation | disputed | schematic
+ * 早期版本错误地把 Certainty 别名成 ClaimType，导致 documented/estimated 两个合法值
+ * 在类型层面不可表达（MAP-00 修正）。
+ *
+ * ── BUGFIX 记录（MAP-00，供后续任务与中央审查追溯） ──────────────────────────
+ * 缺陷：WEB-01 中写的是 `export type Certainty = ClaimType;`（git 历史可见），
+ *   把两个**不同的**契约枚举错误地合并成一个。后果有两层：
+ *   1. 类型层：`documented` / `estimated` 不是 ClaimType 的成员，因此阶段、航线、
+ *      决策卡、战役 outcome 上这些**契约合法**的 certainty 值无法被类型系统正确表达。
+ *   2. 渲染层（真正的用户可见缺陷）：`BattlesView` 的战役 outcome 把握程度、
+ *      `BattlesView` 的阶段标签、`PeopleView` 的决策卡把握程度都把 `certainty`
+ *      直接传给 `<ClaimTag type=...>`。ClaimTag 内部有
+ *      `if (!isClaimType(type)) return null;` 的防御性判断，于是：
+ *        - `documented` → **静默不渲染**，界面上完全没有把握程度标签；
+ *        - `estimated`  → 同样**静默不渲染**；
+ *        - `disputed` / `schematic` → 恰好同名，正常渲染。
+ *      也就是说：**最需要向读者说明「这是有记录的」或「这是估计」的地方，
+ *      标签反而消失了**，直接违背 CONTENT-UNCERTAINTY（事实、解释、争议、
+ *      教学简化必须明确区分）。静默缺失比显示错误更难被发现，故附实测说明。
+ *   修复：
+ *   - 本文件恢复独立的 `CERTAINTIES` / `Certainty` 类型，与 schema 一一对应；
+ *   - `src/components/ClaimTag.tsx` 新增 `CertaintyTag`（与 ClaimTag 共享视觉编码，
+ *     但使用 `data-certainty` 属性与正确中文标签：有记录 / 估计 / 有争议 / 示意）；
+ *   - 上述三个调用点改用 `CertaintyTag`；`src/atlas/controls.tsx` 的图例同样使用它。
+ *   回归测试：`scripts/validate-site.mjs` 的 `M9-certainty-*`（四值分别渲染，
+ *   并注明「不再把 documented 误标为事实」）与 `M9-8`（契约外值不渲染）。
+ *   ⚠ 后续若新增使用 certainty 的组件，请使用 `CertaintyTag`，不要用 `ClaimTag`；
+ *     `ClaimTag` 只接受 claimType。
+ * ──────────────────────────────────────────────────────────────────────────
+ */
+export const CERTAINTIES = ['documented', 'estimated', 'disputed', 'schematic'] as const;
+export type Certainty = (typeof CERTAINTIES)[number];
 
 export const LOCATOR_TYPES = [
   'page',

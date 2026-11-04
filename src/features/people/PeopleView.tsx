@@ -11,7 +11,7 @@ import { useMemo, useState } from 'react';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
 import { CitationList } from '../../components/CitationList';
-import { ClaimTag } from '../../components/ClaimTag';
+import { CertaintyTag } from '../../components/ClaimTag';
 import { ClaimTypeFilter, ContextBar, EmptyState, MetaRow, PageHead, Prose, RelatedLinks } from '../../components/primitives';
 import type { ClaimType, PersonEntity } from '../../data/types';
 import { collectEntityEvidence, groupBySide } from '../../data/index';
@@ -155,7 +155,7 @@ function PersonDetail({ person }: { person: PersonEntity }) {
                   决策 {String(i + 1).padStart(2, '0')}
                 </span>
                 <h3 style={{ margin: 0, fontSize: 'var(--pw-size-lg)' }}>{decision.title}</h3>
-                <ClaimTag type={decision.certainty} />
+                <CertaintyTag type={decision.certainty} />
               </div>
               <div className="pw-decision__grid">
                 <div>

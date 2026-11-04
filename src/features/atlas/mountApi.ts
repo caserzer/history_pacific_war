@@ -2,7 +2,10 @@
  * Atlas 挂载 API（供 MAP-01 使用）
  * =================================
  *
- * WEB-01 只交付外壳与契约消费，**不实现**交互地图；地图由 MAP-01 在后续任务中实现。
+ * 实现状态（MAP-00 更新）：交互地图**已实现** —— `src/Atlas.tsx` + `src/atlas/`
+ *   （mapEngine 渲染 SVG、stateMachines 承载缩放/平移/图层/播放迁移）。
+ * 本文件仍定义挂载契约与硬性规则，后续任务（MAP-01 起）在此基础上扩展真实战役推演，
+ * 但**不得**破坏下列字段语义。
  * 为了让后续工作不必重写路由与数据层，本文件固定了挂载契约。
  *
  * ## 契约（MAP-01 必须遵守）
@@ -43,8 +46,9 @@
  *
  * ## 代码位置
  *
- * MAP-01 实现时新增 `src/features/atlas/MapCanvas.tsx` 之类组件，
- * 在 `src/features/atlas/AtlasView.tsx` 的 `AtlasMount` 插槽内渲染即可，
+ * 现有实现：`src/Atlas.tsx`（入口组件）+ `src/atlas/`（projection / mapEngine /
+ * stateMachines / controls），由 `AtlasView.tsx` 渲染。
+ * 后续任务如需替换渲染层，新增组件并保持上面的字段语义即可，
  * 不需要修改路由、数据索引或证据组件。
  */
 
@@ -63,7 +67,7 @@ export interface AtlasMountProps {
   selectedPlaceId: string | null;
   /** 选中地点回调；实现方应写回 hash 以保持深链与后退可用。 */
   onSelectPlace: (placeId: string) => void;
-  /** 阶段播放/选择需要的配置；具体形状由 MAP-01 定义，但不得改变上述字段语义。 */
+  /** 阶段播放/选择需要的配置；具体形状可由后续任务扩展，但不得改变上述字段语义。 */
   phaseOptions?: {
     battleId?: string;
     autoplay?: boolean;

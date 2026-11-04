@@ -1059,6 +1059,333 @@ img {
   margin-top: var(--pw-space-2);
 }
 
+/* ---------------------------------------------------------------- SVG Atlas 引擎（MAP-00） */
+
+.pw-atlasengine {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pw-space-3);
+}
+
+.pw-atlasengine__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: var(--pw-space-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .pw-atlasengine__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pw-atlasengine__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pw-space-3);
+  min-width: 0;
+}
+
+.pw-map {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pw-space-2);
+  min-width: 0;
+}
+
+.pw-maptoolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pw-space-2);
+}
+
+.pw-map__zoom {
+  font-family: var(--pw-font-mono);
+  font-size: var(--pw-size-xs);
+  color: var(--pw-ink-muted);
+  padding: 0 0.4em;
+}
+
+.pw-map__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 640 / 400;
+  background: #eef0e2;
+  border: 1px solid var(--pw-map-green);
+  border-radius: var(--pw-radius-sm);
+  touch-action: none; /* 允许单指拖动平移、双指捏合缩放 */
+  cursor: grab;
+  user-select: none;
+}
+
+.pw-map__canvas.is-dragging {
+  cursor: grabbing;
+}
+
+.pw-map__canvas:focus-visible {
+  outline: var(--pw-focus-ring);
+  outline-offset: var(--pw-focus-offset);
+}
+
+.pw-map__place circle[role='button'] {
+  cursor: pointer;
+}
+
+.pw-map__place:focus-within rect {
+  stroke: var(--pw-map-green);
+  stroke-width: 3;
+}
+
+.pw-map__layers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pw-space-2) var(--pw-space-4);
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-sm);
+}
+
+.pw-map__layer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.pw-map__layer input {
+  width: 1.05em;
+  height: 1.05em;
+  accent-color: var(--pw-map-green);
+}
+
+/* 阶段与时间轴控件 */
+
+.pw-phasecontrol {
+  background: var(--pw-paper-card);
+  border: var(--pw-border-hairline);
+  border-radius: var(--pw-radius-md);
+  padding: var(--pw-space-3);
+}
+
+.pw-phasecontrol__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pw-space-2);
+}
+
+.pw-phasecontrol__count {
+  font-family: var(--pw-font-mono);
+  font-size: var(--pw-size-xs);
+  color: var(--pw-ink-muted);
+}
+
+.pw-phasecontrol__note {
+  flex-basis: 100%;
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-xs);
+  color: var(--pw-brass-text);
+  line-height: 1.7;
+}
+
+.pw-dateselect {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pw-space-2);
+  background: var(--pw-paper-2);
+  border: var(--pw-border-hairline);
+  border-radius: var(--pw-radius-md);
+  padding: var(--pw-space-3);
+}
+
+.pw-dateselect__label {
+  font-family: var(--pw-font-mono);
+  font-size: var(--pw-size-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pw-brass-text);
+}
+
+.pw-dateselect input[type='range'] {
+  width: 100%;
+  min-height: 32px;
+  accent-color: var(--pw-map-green);
+}
+
+.pw-dateselect__readout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-sm);
+  color: var(--pw-ink);
+}
+
+.pw-dateselect__uncertainty {
+  font-size: var(--pw-size-xs);
+  color: var(--pw-ink-muted);
+  line-height: 1.7;
+}
+
+/* 阶段情报面板 */
+
+.pw-phaseinfo {
+  background: var(--pw-paper-card);
+  border: var(--pw-border-hairline);
+  border-left: 4px solid var(--pw-map-green);
+  border-radius: var(--pw-radius-md);
+  padding: var(--pw-space-3) var(--pw-space-4);
+}
+
+.pw-phaseinfo__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--pw-space-2);
+  margin-bottom: var(--pw-space-2);
+}
+
+.pw-phaseinfo__time {
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-sm);
+  color: var(--pw-ink);
+  margin: 0 0 var(--pw-space-3);
+  line-height: 1.8;
+}
+
+.pw-phaseinfo__key {
+  font-family: var(--pw-font-mono);
+  font-size: var(--pw-size-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pw-brass-text);
+  margin-right: 0.5em;
+}
+
+.pw-phaseinfo__sub,
+.pw-phaseinfo__desc {
+  display: block;
+  font-size: var(--pw-size-xs);
+  color: var(--pw-ink-muted);
+  line-height: 1.7;
+}
+
+.pw-phaseinfo__grid {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--pw-border-hairline);
+}
+
+.pw-phaseinfo__row {
+  display: grid;
+  grid-template-columns: 5.2em minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--pw-space-2) var(--pw-space-3);
+  padding: var(--pw-space-2) 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--pw-ink) 18%, transparent);
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-sm);
+  line-height: 1.75;
+}
+
+.pw-phaseinfo__row--head {
+  font-weight: 700;
+  color: var(--pw-navy-950);
+  border-bottom-style: solid;
+  font-size: var(--pw-size-xs);
+}
+
+.pw-phaseinfo__label,
+.pw-phaseinfo__cell,
+.pw-phaseinfo__row > span:first-child {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.pw-phaseinfo__cell {
+  border-left: 1px solid color-mix(in srgb, var(--pw-ink) 12%, transparent);
+  padding-left: var(--pw-space-2);
+}
+
+.pw-phaseinfo__encoding {
+  display: block;
+  font-family: var(--pw-font-mono);
+  font-size: var(--pw-size-xs);
+  color: var(--pw-brass-text);
+  font-weight: 400;
+}
+
+.pw-phaseinfo__flag {
+  display: block;
+  font-family: var(--pw-font-mono);
+  font-size: var(--pw-size-xs);
+  color: var(--pw-alert);
+  line-height: 1.7;
+}
+
+.pw-phaseinfo__routes {
+  margin-top: var(--pw-space-3);
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-sm);
+}
+
+.pw-phaseinfo__routes ul {
+  margin: var(--pw-space-1) 0 0;
+  padding-left: 1.2em;
+  line-height: 1.8;
+}
+
+@media (max-width: 620px) {
+  .pw-phaseinfo__row {
+    grid-template-columns: 1fr;
+    gap: 0.15em;
+  }
+  .pw-phaseinfo__cell {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+.pw-maplegend {
+  background: var(--pw-paper-2);
+  border: var(--pw-border-hairline);
+  border-radius: var(--pw-radius-sm);
+  padding: var(--pw-space-2) var(--pw-space-3);
+  font-family: var(--pw-font-sans);
+  font-size: var(--pw-size-xs);
+  line-height: 1.9;
+}
+
+.pw-maplegend__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--pw-space-2);
+  margin: 0;
+}
+
+.pw-maplegend__key {
+  font-family: var(--pw-font-mono);
+  letter-spacing: 0.1em;
+  color: var(--pw-brass-text);
+  min-width: 4.5em;
+}
+
+.pw-maplegend__value {
+  color: var(--pw-ink-soft);
+}
+
+/* “估计”把握程度：与 fact 区分开，避免误读成「事实」 */
+.pw-tag--certainty-estimated {
+  color: #ffffff;
+  background: var(--pw-brass);
+  border-color: var(--pw-brass);
+  border-radius: var(--pw-radius-pill);
+  padding: 0.15em 0.65em;
+}
+
 /* ---------------------------------------------------------------- 表格（军力/损失等数据展示） */
 
 .pw-table {
