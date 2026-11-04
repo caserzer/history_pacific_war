@@ -15,7 +15,7 @@
 | **D1** `phase.time.end` 与 `end>=start` 未校验（6/4–6/5 战役接受 6/10 结尾） | `scripts/validate-content.mjs` 阶段校验 | `time.end` 格式+战役窗口+`end>=start`；阶段按 `sequence` 时间递增、区间不重叠 | 9（含审查者原案例） |
 | **D2** 早期战役缺少具名分析结构 | `coverage.earlyCampaign` + 验证器 | **ARCH-02 起目标结构是 `analysisProfiles` 十键**（每键 ≥80 汉字 + 必含要素命中正文 + 独立来源/claim）；旧五键 `earlyCampaignAnalysis` 在门禁中一律被拒绝 | 12+（旧五键负例保留在自测中） |
 | **D3** 素材类型与阶段归属未契约锁定 | `coverage.stageOwnership` + `requiredMediaTypes` + 验证器不变式 | 19 篇不重不漏归属 5 阶段；每篇有素材类型且与文章种类相符；无孤立 ID | 11 |
-| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下自测全部通过、0 跳过、不写工作区（当前 151/151） | 由只读实测证明 |
+| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下自测全部通过、0 跳过、不写工作区（当前 153/153） | 由只读实测证明 |
 
 ### 0.2 attempt 3（priorCommit a1b2dab）—— 已落地
 
@@ -199,7 +199,7 @@
 | `event-darwin-air-raid-1942` | 1942-02-19 达尔文空袭 | 220 |
 | `event-indian-ocean-raid-1942` | 印度洋空袭、英国东方舰队与日本补给压力 | 260 |
 
-> **ARCH-02 R1**：`event-doolittle-raid-1942`（最低 240 汉字）的阶段归属是 **background**（`stageOwnership.background.events` 是唯一来源），属 HIST-01 交付范围；它的 `historicalPart` 允许落在 `part-3-expansion` 或 `part-4-turning-point`（由 `stageOwnership.eventPartPolicy` 派生，不再硬编码 background→part-3）。
+> **ARCH-02 R1**：`event-doolittle-raid-1942`（最低 240 汉字）的阶段归属是 **background**（`stageOwnership.background.events` 是唯一来源），属 HIST-01 交付范围；它的 `historicalPart` 允许落在 `part-3-expansion` 或 `part-4-turning-point`，允许集合只从机器可读字段 `stageOwnership.eventPartPolicy.crossStageArticles.background` 派生（验证器代码中没有第二份跨阶段表；删除该契约声明后 part-4 立即不再被允许，有具名负例）。
 
 #### 4.2.1 十键具名分析结构（`coverage.earlyCampaign.analysisProfiles`，机器强制）
 
@@ -329,121 +329,214 @@ node scripts/validate-content.mjs --self-test
 node scripts/validate-content.mjs --check-contracts
 ```
 
-自测**不读取** `content/history.json`、`public/media`、`docs/` 或系统临时目录；全部结果只由 `contracts/fixtures/*`、`contracts/coverage.json`、`contracts/requirements.json`、验证器代码（含其 schema 契约）与**构造的内存文档**决定，因此不随 `content/` 是否存在或变化而改变。当前覆盖 **151** 项真实正例/负例/边界（canonical 声明：`SELFTEST_COUNT=151`）。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。真实文档的项数同步检查在 `--check-contracts` 中执行（D7 防漂移）——`--self-test` 只对注入的内存文件系统验证该检查函数本身，以保持不读 `docs/` 的纯度。
+自测**不读取** `content/history.json`、`public/media`、`docs/` 或系统临时目录；全部结果只由 `contracts/fixtures/*`、`contracts/coverage.json`、`contracts/requirements.json`、验证器代码（含其 schema 契约）与**构造的内存文档**决定，因此不随 `content/` 是否存在或变化而改变。当前覆盖 **153** 项（canonical 声明：`SELFTEST_COUNT=153`），实跑 `153/153`、exit 0。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。真实文档的项数同步检查在 `--check-contracts` 中执行（D7 防漂移）——`--self-test` 只对注入的内存文件系统验证该检查函数本身，以保持不读 `docs/` 的纯度。
 
 #### 计数口径（三种自测，不要互相套用）
 
-`SELFTEST_COUNT` 只对应**现有自测**。另外两种自测的计数口径不同，不得用同一个数字；**真实内容测试不计入任何自测项数**（本任务也不再提供真实内容自测入口，原 `--real-content` 已删除）。
+`SELFTEST_COUNT` 只对应**现有自测**。另外两种自测的计数口径不同，不得用同一个数字；**真实内容测试不计入任何自测项数**（本任务不提供真实内容自测入口，原 `--real-content` 已删除）。
 
 | 口径 | 命令 | 计的是什么 | 当前值 |
 |---|---|---|---|
-| **现有自测**（canonical，`SELFTEST_COUNT`） | `node scripts/validate-content.mjs --self-test` | 不需要 `content/history.json` 即可运行的全部正例/负例/边界 | **151** |
+| **现有自测**（canonical，`SELFTEST_COUNT`） | `node scripts/validate-content.mjs --self-test` | 不需要 `content/history.json` 即可运行的全部正例/负例/边界 | **153** |
 | **导读自测** | `node scripts/validate-content.mjs --stage full`（需真实 content/history.json） | 5 篇历史部分导读 + 19 篇重点文章的深度门禁；依赖真实内容，**不计入 --self-test** | 随内容交付进度变化 |
-| **契约夹具自测** | `--self-test` 中对 `contracts/fixtures/*.json` 的断言 | 只覆盖夹具结构（valid-min、valid-early-campaign、map-phases） | 含在 151 内，不单独计数 |
+| **契约夹具自测** | `--self-test` 中对 `contracts/fixtures/*.json` 的断言 | 只覆盖夹具结构（valid-min、valid-early-campaign、map-phases） | 含在 153 内，不单独计数 |
 
-`--self-test` **不使用跳过模式**：所有项都真实执行，没有 skip 计入通过。导读文章的深度由 `--stage`/`--media` 门禁在真实内容上检查，而不是在自测里模拟。下面的分组是**覆盖方向摘要**，不是逐项清单；完整 151 项的名称与结果以 `--self-test` 的实际输出为准（D7 由 `--check-contracts` 保证 `SELFTEST_COUNT` 与实际项数一致）。
+**计数语义（运行时项数，不是源码出现次数）**：源码中 `tests.push([` 出现 **149** 次；其中 1 处位于 5 次循环里（`D2 早期战役缺 '<key>' 分析被拒绝` 旧五键逐键负例），运行时展开为 5 项，所以实跑 = 149 − 1 + 5 = **153** 项。下面的清单逐项列出全部 153 个运行时项，各组合计 = 153；`--check-contracts` 的 D7 检查保证 `SELFTEST_COUNT` 与运行时项数一致。
+
+#### 逐项清单（153 项，按领域分组；每组项数之和 = 153）
+
+**基础结构与引用（12 项）**
+- fixture 结构在 strategy 阶段通过
+- 重复 ID 被拒绝
+- 未知实体引用被拒绝
+- 来源缺失被拒绝
+- 战役缺十四类字段被拒绝
+- 航线未标示意被拒绝
+- 数字 claim 无来源定位被拒绝
+- 无效媒体许可被拒绝
+- 空泛 Questions 被拒绝
+- 地点缺现代名被拒绝
+- 事件日期越界被拒绝
+- 泛化来源定位被拒绝
+
+**阶段字段基础负例（9 项）**
+- 阶段缺 knownEnemy 被拒绝
+- 阶段缺 consequence 被拒绝
+- 阶段缺 unknownEnemy 被拒绝
+- 阶段缺 decision 被拒绝
+- 重点战役阶段缺双方位置被拒绝
+- 阶段缺 viewpoints 被拒绝
+- 阶段缺 certainty 被拒绝
+- 阶段缺 schematic 标记被拒绝
+- 阶段缺 time 被拒绝
 
 **契约一致性（6 项）**
-- `requirements.json` 与工单 canonical 清单逐字一致（36 条，id/description/scope/顺序/条数）；
-- 偏离 canonical 清单会被发现（多出条目、改写 description、缺少条目、改写 scope、顺序颠倒、额外字段六种负例，**全部在内存数组中构造**）；
-- `coverage` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读 = 19；
-- 少一篇重点文章（去掉 `battle-midway`）会被发现且错误信息点名；
-- `coverage` 契约自身一致。
-- TEAM-PILOT 组织证据存档（`docs/research/team-pilot-evidence.json`）是工单上下文，**不再作为自测项**（自测不读 `docs/`）；需要审计时直接读该存档。
+- coverage 契约自身一致
+- requirements.json 与工单 canonical 清单完全一致
+- requirements.json 偏离 canonical 清单会被发现（负例）
+- coverage 重点集合 = 3 战役 + 5 指挥官 + 6 专题 + 5 导读
+- coverage 少一篇重点文章会被发现（负例）
+- D2 coverage.earlyCampaign 缺键或漏登记事件会被契约检查发现（负例）
 
-**D1 阶段时间（9 项）**
-- `time.end` 超出战役窗口被拒绝（**审查者原案例：6/4–6/5 战役 + 6/10 结束**）；
-- `time.end` 早于 `time.start` 被拒绝；
-- `time.end` 格式非法、缺时区被拒绝；
-- `time.start` 缺失被拒绝；
-- `time.end` 显式空字符串被拒绝（应直接省略）；
-- 阶段 `sequence` 与时间顺序矛盾被拒绝；
-- 前一阶段 `end` 越过下一阶段 `start` 被拒绝；
-- 合法 `time.end` 通过（正向对照）。
+**D1 阶段时间（10 项）**
+- D1 阶段 time.end 超出战役窗口被拒绝（6/10 结尾于 6/4–6/5 战役）
+- D1 阶段 time.end 早于 time.start 被拒绝
+- D1 阶段 time.end 格式非法被拒绝
+- D1 阶段 time.end 无时区被拒绝
+- D1 阶段缺 time.start 被拒绝
+- D1 阶段 time.end 显式空值被拒绝（必须省略而不是留空）
+- D1 阶段序号与时间顺序矛盾被拒绝
+- D1 前一阶段 end 越过下一阶段 start 被拒绝
+- D1 合法 time.end 通过（正向对照）
+- D1 时区不造成假阳性：战役末日 -11:00 晚间不越界
 
-**D2 早期战役结构（12 项，ARCH-02 起以 analysisProfiles 为准）**
-- 缺整块分析结构被拒绝（报 analysisProfiles 十键缺失）；
-- 旧五键逐键诊断保留：分别缺 background / course / constraints / results / impact 各一个负例（共 5）；
-- 旧五键某类分析正文过浅被拒绝；分析小节标题错误/缺来源被拒绝；
-- **旧五键在五个阶段都具名拒绝（无过渡豁免）**；
-- `analysisProfiles` 合规十键在 background 阶段通过（正向对照）；
-- `analysisProfiles` 必含要素缺失被拒绝（逐键不连带）；
-- `contracts/fixtures/valid-early-campaign.json` 通过结构检查（正向）。
+**D2 早期战役结构（11 项）**
+- D2 早期战役缺整块分析结构被拒绝
+- D2 早期战役缺 'background' 分析被拒绝
+- D2 早期战役缺 'course' 分析被拒绝
+- D2 早期战役缺 'constraints' 分析被拒绝
+- D2 早期战役缺 'results' 分析被拒绝
+- D2 早期战役缺 'impact' 分析被拒绝
+- D2 早期战役某类分析正文过浅被拒绝
+- D2 早期战役分析小节标题错误被拒绝
+- D2 早期战役分析小节缺来源被拒绝
+- D2 合规的早期战役分析（analysisProfiles 十键）在 background 阶段通过（正向对照）
+- D2 早期战役 fixture 通过结构检查（analysisProfiles 十键 + researchStatus）
 
 **D3 阶段归属与素材类型（11 项）**
-- 真实契约的不变式成立（正向对照：19 篇不重不漏）；
-- 阶段缺 owner（空归属）被拒绝；
-- 重点文章缺 `stageOwnership` 归属被拒绝；
-- 同一文章被两个阶段重复拥有被拒绝；
-- 文章被归属到比自身 `stage` 更早的阶段被拒绝；
-- 归属含孤立 ID 被拒绝；
-- 归属含未知阶段名被拒绝；
-- 重点文章缺 `requiredMediaTypes` 条目被拒绝；
-- 文章种类与素材类型不符（战役缺 `battle-map`）被拒绝；
-- `requiredMediaTypes` 含孤立 ID 被拒绝；
-- 素材类型为空数组被拒绝。
+- D3 真实契约的阶段归属与素材类型不变式成立（正向对照）
+- D3 阶段缺 owner（没有阶段拥有任何文章）被拒绝
+- D3 重点文章缺少 stageOwnership 归属被拒绝
+- D3 同一文章被两个阶段重复拥有被拒绝
+- D3 文章被归属到一个比它自身 stage 更早的阶段被拒绝
+- D3 阶段归属含孤立 ID 被拒绝
+- D3 阶段归属含未知阶段名被拒绝
+- D3 重点文章缺 requiredMediaTypes 条目被拒绝
+- D3 文章种类与素材类型不符被拒绝（战役缺 battle-map）
+- D3 requiredMediaTypes 出现孤立 ID 被拒绝
+- D3 素材类型为空数组被拒绝
 
-**D4 只读可用性（1 项）**
-- 断言真实文件系统层不暴露任何写接口，内存文件系统完全在内存中。
+**D5 导读深度（6 项）**
+- D5 导读强制小节正文过短被拒绝（即使全篇总汉字数远超门槛）
+- D5 第二个强制小节（日本的补给与防御压力）过短同样被拒绝
+- D5 强制小节恰好达到阈值被接受（边界正例）
+- D5 强制小节差一个汉字被拒绝（边界负例）
+- D5 非 overviewTopics 的强制小节受 requiredHeadingHanChars 约束
+- D5 契约必须声明 requiredHeadingHanChars 与 overview 阈值
 
-**D5 导读强制小节深度（6 项）**
-- 「盟军为何连续失败」正文过短被拒绝，**且构造保证全篇总汉字数远超 1200**（证明不是被总字数拦住）；
-- 第二个分析小节「日本的补给与防御压力」过短同样被拒绝；
-- 恰好达到 120 汉字通过（边界正例）；
-- 119 汉字（差一个）被拒绝（边界负例）；
-- 非 overviewTopics 的普通强制小节受 `requiredHeadingHanChars` 约束，过短被拒绝；
-- 契约必须声明 `requiredHeadingHanChars` 与 overview 阈值，删除后契约检查失败。
+**D6 historicalPart（7 项）**
+- D6 每个 part-overview 都声明了与 ID 一致的历史部分（正向对照）
+- D6 导读声明错误历史部分被拒绝（ID 与声明不一致）
+- D6 导读缺少 historicalPart 被拒绝
+- D6 导读 historicalPart 不在五部分内被拒绝
+- D6 实体自身 historicalPart 与 coverage 声明不一致被拒绝
+- D6 实体与契约 historicalPart 一致时通过（正向对照）
+- D6 historicalPartFromArticleId 解析规则正确
 
-**D6 导读历史部分绑定（7 项）**
-- 五个导读都声明了与 ID 编码一致的部分（正向对照）；
-- 声明错误部分（part 3 写成 part 1）被拒绝且错误点名该 ID；
-- 缺少 `historicalPart` 被拒绝；
-- `historicalPart` 不在五部分枚举内被拒绝；
-- 实体自身 `historicalPart` 与 coverage 声明冲突被拒绝；
-- 实体与契约一致时通过（正向对照）；
-- `historicalPartFromArticleId` 解析规则正确（含非法输入返回 null）。
+**R1 单一阶段归属与 eventPartPolicy（11 项）**
+- ARCH-02 R1 杜立特空袭位于 stageOwnership.background.events（正向）
+- ARCH-02 R1 requiredEvents 与 stageOwnership 交叉不一致被拒绝（具名负例）
+- ARCH-02 R1 必需事件未登记到 stageOwnership.events 被拒绝（具名负例）
+- ARCH-02 R1 stageOwnership.events 引用未登记事件被拒绝（具名负例）
+- ARCH-02 R1 同一事件被两个阶段重复归属被拒绝（具名负例）
+- ARCH-02 R1 验证器不再硬编码 background→part-3-expansion（background 事件可落 part-4）
+- ARCH-02 R1 事件允许集合只来自 coverage.eventPartPolicy 数据（无代码侧第二份表）
+- ARCH-02 R1 eventPartPolicy 缺失或畸形被契约检查拒绝（具名负例）
+- ARCH-02 R1 事件落在不允许的历史部分会被拒绝（按 stageOwnership 派生）
+- ARCH-02 R1 backgroundGate 只引用 stageOwnership.background.events
+- ARCH-02 R1 --stage background 缺杜立特时只由该事件缺失触发（具名负例）
 
-**D7 文档漂移防护（1 项，纯内存）**
-- `selfTestCountDriftErrors` 纯函数在注入的内存文件系统上：一致声明通过、错误数字被识别、缺少 canonical 标记被识别。真实文档 `SELFTEST_COUNT` 同步由 `--check-contracts` 执行。
+**R2 analysisProfiles 与旧五键（14 项）**
+- ARCH-02 R2 analysisProfiles 契约与代码十键一致（正向）
+- ARCH-02 R2 合规 analysisProfiles 十键通过（正向对照）
+- ARCH-02 R2 缺任意一个具名键被拒绝（逐键负例）
+- ARCH-02 R2 某个键篇幅不足被拒绝（具名负例）
+- ARCH-02 R2 options 缺少真实选项被拒绝（具名负例）
+- ARCH-02 R2 options 缺少排除它的约束被拒绝（具名负例）
+- ARCH-02 R2 uncertainty 缺少争议/无法确定被拒绝（具名负例）
+- ARCH-02 R2 uncertainty 缺少有证据支持的部分被拒绝（具名负例）
+- ARCH-02 R2 旧五键在门禁中被具名拒绝（无过渡豁免，逐阶段负例）
+- ARCH-02 R2 旧五键的逐键迁移诊断仍保留（便于 HIST-01 定位）
+- ARCH-02 R2 契约必须声明 analysisProfiles、旧五键开关与 researchStatus 严格规则
+- ARCH-02 R2 旧五键在门禁中始终被具名拒绝（无过渡豁免，构造事件）
+- ARCH-02 R2/F4 契约禁止过渡豁免：enforcement/legacyDisabledBy/elementMarkers 不合规被拒绝（具名负例）
+- ARCH-02 R2 analysisProfiles 必含要素缺失被拒绝（逐键不连带，具名负例）
 
-**ARCH-02 attempt 5 新增严格规则（8 项）**
-- 阶段无关性：构造的早期战役文档在五个 `--stage` 下 analysisProfiles/researchStatus/跨章节矛盾命中数一致且非 0；
-- `researchStatus` 缺失时早期战役事件被具名拒绝（F2）；
-- 研究过程措辞正向探针：构造合规文档注入措辞后被具名拒绝（构造内存文档）；
-- 旧五键在门禁中始终被具名拒绝（无过渡豁免）；
-- 契约禁止过渡豁免：enforcement/legacyDisabledBy/elementMarkers 不合规被拒绝；
-- `analysisProfiles` 必含要素缺失被拒绝（逐键不连带）；
-- 跨章节矛盾在门禁中为错误（无过渡豁免），由构造事件触发；
-- 契约声明跨章节矛盾为严格规则，且参考案例仅用于构造式负例（不得声称矛盾真实存在）。
+**R3 researchStatus 与研究过程措辞（8 项）**
+- ARCH-02 R3 合法 researchStatus 枚举被接受（正向）
+- ARCH-02 R3 非法 researchStatus 枚举值被拒绝（具名负例）
+- ARCH-02 R3 正文出现研究过程措辞被拒绝（具名负例，自 HIST-01 起生效）
+- ARCH-02 R3 事件 summary 出现研究过程措辞被拒绝（具名负例）
+- ARCH-02 R3 claim 文本出现研究过程措辞被拒绝（具名负例）
+- ARCH-02 R3 研究过程措辞识别器不误伤正常历史叙述
+- ARCH-02 R3 researchStatus 在早期战役事件上被强制要求（F2 具名负例）
+- ARCH-02 R3 研究过程措辞正向探针：构造合规文档注入措辞后被具名拒绝（构造内存文档）
 
-**结构与引用（8 项）**
-- 重复 ID；未知实体引用；来源缺失；
-- 战役缺少十四类字段；
-- 地点缺现代名；
-- 泛化 locator；数字 claim 无 locator；
-- 事件日期越界。
+**R4 媒体注册表（16 项）**
+- ARCH-02 R4 合法媒体注册表 {version:1, media:[...]} 通过（正向）
+- ARCH-02 R4 注册表 version 不是 1 被拒绝（具名负例）
+- ARCH-02 R4 注册表缺 media 数组被拒绝（具名负例）
+- ARCH-02 R4 注册表含未定义顶层字段被拒绝（具名负例）
+- ARCH-02 R4 history 顶层 media 含条目被拒绝并给出迁移映射（具名负例）
+- ARCH-02 R4 history 空 legacy media 在过渡期只警告不失败
+- ARCH-02 R4 关闭过渡窗口后空 legacy media 也被拒绝（负例）
+- ARCH-02 R4 --media 素材来自注册表而非 history.json（正向对照）
+- ARCH-02 R4 --media 在注册表缺条目时报素材门禁错误
+- ARCH-02 R4 --stage 门禁不因 media.json 缺失而失败（契约声明）
+- ARCH-02 R4 契约声明注册表消费方与版本
+- ARCH-02 a2 注册表条目缺必需字段被 media schema 拒绝（具名负例）
+- ARCH-02 a2 注册表条目非法许可被 media schema 拒绝（具名负例）
+- ARCH-02 a2 合规注册表条目通过 media schema（正向对照）
+- ARCH-02 a2 history 顶层 media 废弃占位（deprecated stub）不被 schema 当作合法数组
+- ARCH-02 a2 --media 两份文件缺失分别精确报错（分支覆盖）
 
-**其他阶段字段（12 项）**
-- 缺 `knownEnemy`、缺 `unknownEnemy`、缺 `decision`、缺 `consequence`、缺 `certainty`、缺 `schematic`、缺 `time`、缺 `viewpoints`；
-- 重点战役阶段缺双方位置（`positions.allies`）；
-- 航线未标 `schematic`；
-- 阶段字段为空值时仍能检出（语义空值负例）。
+**R5 早期战役夹具（1 项）**
+- ARCH-02 R5 早期战役夹具含香港（合规）与达尔文（迁移目标）且十键齐全
 
-**阶段累积语义（5 项）**
-- `strategy` 阶段允许未来覆盖缺失，但已存在实体的断链仍然报错；
-- 部分阶段不能降低已有实体的深度要求（把 part 1 导读压成 2 节必须失败）；
-- 后续阶段的重点文章一旦存在就必须满足完整深度（半成品 `battle-pearl-harbor` 必须失败）；
-- 阶段顺序单调（后一阶段必须包含前一阶段的全部问题部分，且每个阶段都确有重点文章交付）；
-- 默认阶段是 `full`，且未运行 `--media` 时不会被标记为已通过素材门禁。
+**R6/阶段引擎地图夹具（10 项）**
+- ARCH-02 R6 地图阶段夹具存在、fixtureOnly、三战役各 >=2 阶段（正向）
+- ARCH-02 R6 地图阶段夹具无结构性错误（不含 coverage 缺失）
+- ARCH-02 D3 阶段缺 positions.allies 被专用校验拒绝（具名负例）
+- ARCH-02 D3 阶段缺 positions.japan 被专用校验拒绝（具名负例）
+- ARCH-02 D3 阶段整个 positions 对象缺失被专用校验拒绝（具名负例）
+- ARCH-02 D3 专用校验对合规夹具全部 6 个阶段通过（正向对照）
+- ARCH-02 R6 地图阶段夹具缺 knownEnemy 被拒绝（具名负例）
+- ARCH-02 R6 地图阶段夹具缺 consequence 被拒绝（具名负例）
+- ARCH-02 R6 地图阶段夹具缺 unknownEnemy 被拒绝（具名负例）
+- ARCH-02 R6 地图阶段夹具阶段未标示意被拒绝（具名负例）
 
-**素材与绕过（7 项）**
-- 无效媒体许可（`all-rights-reserved`）；
-- 空泛 Questions；
-- full 覆盖绕过（`fixtureOnly=true` + 缺失重点文章/问题）；
-- 关闭 `fixtureOnly` 后仍缺覆盖；
-- `--media` 隐含 `full`；
-- 媒体路径穿越/越界/缺失（内存文件系统）；
-- 媒体精确集合正例通过、缺项被拒绝（内存文件系统）。
+**跨章节矛盾与数字解析（6 项）**
+- ARCH-02 跨章节矛盾识别器能识别达尔文 18 架飞机的类别冲突（参考案例）
+- ARCH-02 D1 数字解析支持全角数字与超过 18 的中文数字
+- ARCH-02 跨章节矛盾检查精确指出事件与章节（具名负例）
+- ARCH-02 数字抽取：无数量文本不误报，多机种各自归类
+- ARCH-02 跨章节矛盾错误真的输出 eventId（具名断言）
+- ARCH-02 跨章节矛盾在门禁中为错误（无过渡豁免，构造事件）
+
+**阶段无关性与构造严格规则（2 项）**
+- ARCH-02 阶段无关性：构造的早期战役文档在五个阶段命中数一致（构造内存文档）
+- ARCH-02 契约声明跨章节矛盾为严格规则且参考案例仅用于构造式负例
+
+**D4 只读与不写工作区（1 项）**
+- 自测全程不依赖可写临时目录（D4）
+
+**D7 文档项数漂移（纯内存）（1 项）**
+- D7 文档项数漂移检查在内存文件系统上生效（真实文档同步由 --check-contracts 校验）
+
+**阶段累积语义（6 项）**
+- full 阶段不能用 fixtureOnly 与部分覆盖绕过
+- 部分阶段允许未来覆盖缺失但拒绝已存在的断链
+- 部分阶段不能降低已有实体的深度要求
+- 后续阶段的重点文章一旦存在就必须满足完整深度
+- 阶段顺序单调：每提升一级都包含上一级的全部要求
+- 关闭 fixtureOnly 也不能绕过 full 覆盖
+
+**--media CLI 与绕过（5 项）**
+- "暂时不做 --media" 不能被当成通过，CLI 会明确提示
+- --media 隐含 full
+- 媒体路径缺失被拒绝
+- 重点战役阶段缺情报/决策/后果的负例仍可解析
+- 媒体精确集合正例通过，缺项被拒绝
 
 若自测失败，内容验证不得被引用为通过。`--check-contracts` 是同一批契约断言的独立入口，不需要内容文件，可直接进 CI；它同样只读。
 
@@ -519,7 +612,7 @@ node scripts/validate-content.mjs --check-contracts
 - 验证器能阻止结构性和引用性绕过，但无法自动判断历史陈述是否准确、观点是否公允、答案是否真正适龄；必须有人工评审（`tests/evidence/pedagogy.md`）。
 - D1 的时间校验只能保证**格式合法、窗口一致、先后自洽**；它无法判断某个历史时刻本身是否准确。历史准确性仍取决于 claim + locator + 人工评审。
 - `analysisProfiles` 十键只能保证**结构齐全、深度达标、必含要素命中、有证据链接**；它无法判断分析是否真的解释了因果。
-- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（当前 151/151、0 跳过、工作区 mtime 不变）；`--self-test` 不读 `content/`、`docs/`，仍不能替代中央审查环境中的独立验证。
+- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（当前 153/153、0 跳过、工作区 mtime 不变）；`--self-test` 不读 `content/`、`docs/`，仍不能替代中央审查环境中的独立验证。
 - D5 只能保证**每个强制小节达到字数下限**；它无法判断这 120 个汉字是否真的在回答“盟军为何连败”。字数达标是必要条件而非充分条件，仍需 rubric 人工评审。
 - D7 的漂移检查只比对**项目自己的契约文档**（`docs/research/coverage.md`、`contracts/README.md`）；如果任务板描述、工单或在其它文件里写了项数，验证器看不到。历史上那次「文档与代码项数不一致」之所以发生，正是因为当时没有这条断言——现在有了。
 - 本任务提交后仅进入中央审查；**没有任何内容或契约被中央 verified/done**。

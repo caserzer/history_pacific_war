@@ -1478,13 +1478,14 @@ function backgroundGateEventIds(coverage) {
 }
 
 /**
- * ARCH-02：事件允许的历史部分集合，按 stageOwnership 派生。
+ * ARCH-02：事件允许的历史部分集合，按 **coverage 数据**派生（不存在代码侧第二份表）。
  *
  * 取代旧的硬编码 background→part-3-expansion。规则：
  *   · 事件所属阶段的**所有导读重点文章**的 historicalPart 都算合法；
- *   · 额外允许 `stageOwnership.eventPartPolicy` 中显式声明的跨阶段部分
- *     （background 事件可落在 part-3 或 part-4）。
- * 这样杜立特空袭（background 阶段、part-4 导读）合法，而错配仍然会被拒绝。
+ *   · 额外允许 `stageOwnership.eventPartPolicy.crossStageArticles[stage]` 中显式声明的
+ *     跨阶段导读（机器可读字段；background 事件可落在 part-4）。
+ * 这样杜立特空袭（background 阶段、part-4 导读）合法，而错配仍然会被拒绝；
+ * 修改允许集合必须改 coverage.json，而不是改验证器代码。
  */
 function allowedPartsForStage(coverage, stage) {
   const parts = new Set();
@@ -1499,23 +1500,13 @@ function allowedPartsForStage(coverage, stage) {
   if (isPlainObject(value) && Array.isArray(value.keyArticles)) {
     for (const articleId of value.keyArticles) pushArticlePart(articleId);
   }
-  // 2) 事件可合法落在的其它导读（例如 background 事件也写进 part-4）
-  const crossStage = DECLARED_EVENT_PART_CROSSINGS[stage];
-  if (Array.isArray(crossStage)) {
-    for (const articleId of crossStage) pushArticlePart(articleId);
-  }
+  // 2) 契约数据声明的跨阶段导读（例如 background 事件也写进 part-4）
+  const policy = ownership.eventPartPolicy;
+  const crossStageArticles = isPlainObject(policy) && isPlainObject(policy.crossStageArticles) ? policy.crossStageArticles : null;
+  const crossStage = crossStageArticles && Array.isArray(crossStageArticles[stage]) ? crossStageArticles[stage] : [];
+  for (const articleId of crossStage) pushArticlePart(articleId);
   return parts;
 }
-
-/**
- * 事件可跨导读写入的显式声明（ARCH-02 eventPartPolicy 的代码侧镜像）。
- * 与 coverage.stageOwnership.eventPartPolicy 文本一致：
- * background 阶段的事件可以合法落在 part-3-expansion 或 part-4-turning-point。
- * 这是“允许集合”，不是归属表——归属仍只来自 stageOwnership.events。
- */
-const DECLARED_EVENT_PART_CROSSINGS = {
-  background: ['event-overview-part-4-turning-point'],
-};
 
 function validateStageOwnershipContract(coverage) {
   const errors = [];
@@ -1531,6 +1522,40 @@ function validateStageOwnershipContract(coverage) {
   for (const stage of ownershipStages) {
     if (!STAGE_IDS.includes(stage)) errors.push(`coverage.stageOwnership 含未知阶段 '${stage}'`);
   }
+
+  // --- ARCH-02 attempt 6 修复 F4：eventPartPolicy 必须是机器可读契约数据 ---
+  // 事件允许的 historicalPart 集合只从本字段派生；验证器代码中不存在第二份跨阶段表。
+  const policy = ownership.eventPartPolicy;
+  if (!isPlainObject(policy)) {
+    errors.push(
+      'coverage.stageOwnership.eventPartPolicy 缺失或不是对象：跨阶段导读允许集合必须由机器可读契约数据声明（不能硬编码在验证器里）',
+    );
+  } else {
+    const crossStage = policy.crossStageArticles;
+    if (!isPlainObject(crossStage)) {
+      errors.push('coverage.stageOwnership.eventPartPolicy.crossStageArticles 必须是对象 { <stage>: [keyArticleId, ...] }');
+    } else {
+      for (const key of Object.keys(crossStage)) {
+        if (!STAGE_IDS.includes(key)) {
+          errors.push(`coverage.stageOwnership.eventPartPolicy.crossStageArticles 含未知阶段 '${key}'`);
+          continue;
+        }
+        const list = crossStage[key];
+        if (!Array.isArray(list)) {
+          errors.push(`coverage.stageOwnership.eventPartPolicy.crossStageArticles.${key} 必须是数组`);
+          continue;
+        }
+        for (const articleId of list) {
+          if (!keySet.has(articleId)) {
+            errors.push(
+              `coverage.stageOwnership.eventPartPolicy.crossStageArticles.${key}: '${articleId}' 不是 keyArticleIds 中的重点文章（孤立 ID）`,
+            );
+          }
+        }
+      }
+    }
+  }
+
   for (const stage of STAGE_IDS) {
     if (!hasOwn(ownership, stage)) {
       errors.push(`coverage.stageOwnership 缺少阶段 '${stage}'`);
@@ -3345,6 +3370,12 @@ function runContractChecks() {
       );
       const gateIds = backgroundGateEventIds(coverage);
       console.log(`      backgroundGate 只引用 stageOwnership.background.events（${gateIds.length} 个）：${gateIds.join(', ')}`);
+      const policy = coverage.stageOwnership.eventPartPolicy;
+      const crossStage = isPlainObject(policy) && isPlainObject(policy.crossStageArticles) ? policy.crossStageArticles : {};
+      const policyText = Object.keys(crossStage)
+        .map((stage) => `${stage}→[${crossStage[stage].join(', ')}]`)
+        .join('；');
+      console.log(`      eventPartPolicy（机器可读、唯一来源）：${policyText || '（无跨阶段声明）'}；验证器不再有代码侧跨阶段表`);
     } else {
       failures.push('stage-ownership');
       console.log(`FAIL  阶段归属（${ownershipErrors.length} 个问题）`);
@@ -4906,6 +4937,70 @@ function buildSelfTests() {
     },
   ]);
   tests.push([
+    'ARCH-02 R1 事件允许集合只来自 coverage.eventPartPolicy 数据（无代码侧第二份表）',
+    () => {
+      // 正向：真实契约数据派生出 background → part-3 + part-4
+      const allowed = allowedPartsForStage(coverage, 'background');
+      if (!allowed.has('part-3-expansion') || !allowed.has('part-4-turning-point')) {
+        throw new Error(`真实契约的 background 允许集合不符：${[...allowed]}`);
+      }
+      // 负例：从 coverage 数据中删除 part-4 跨阶段声明后，允许集合必须随之收窄。
+      // 若验证器里还有第二份硬编码表，这里就会失败。
+      const narrowedCoverage = clone(coverage);
+      narrowedCoverage.stageOwnership.eventPartPolicy.crossStageArticles.background = [];
+      const narrowed = allowedPartsForStage(narrowedCoverage, 'background');
+      if (narrowed.has('part-4-turning-point')) {
+        throw new Error('删除契约声明后 part-4 仍被允许（说明验证器存在代码侧硬编码表）');
+      }
+      if (!narrowed.has('part-3-expansion')) {
+        throw new Error(`删除跨阶段声明不应影响本阶段导读 part-3：${[...narrowed]}`);
+      }
+      // 实体级：同一个 background 事件写到 part-4，在声明被删除后必须被拒绝。
+      const doc = clone(base);
+      const ev = makeEarlyCampaignEvent(doc, { id: coverage.earlyCampaign.eventIds[0] });
+      ev.historicalPart = 'part-4-turning-point';
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage: narrowedCoverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter(
+        (error) => error.includes(ev.id) && /不在阶段 'background' 允许的集合/.test(error),
+      );
+      if (hit.length === 0) {
+        throw new Error(`part-4 声明被删除后，background 事件仍被放行：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 eventPartPolicy 缺失或畸形被契约检查拒绝（具名负例）',
+    () => {
+      const missing = clone(coverage);
+      delete missing.stageOwnership.eventPartPolicy;
+      const missingErrors = validateStageOwnershipContract(missing);
+      if (!missingErrors.some((error) => /eventPartPolicy 缺失或不是对象/.test(error))) {
+        throw new Error(`缺少 eventPartPolicy 没有被拒绝：${missingErrors.join('; ')}`);
+      }
+      // 旧的“散文声明”形态（string）不再被接受
+      const stringy = clone(coverage);
+      stringy.stageOwnership.eventPartPolicy = 'background 阶段的必需事件可以落在 part-4';
+      if (!validateStageOwnershipContract(stringy).some((error) => /eventPartPolicy 缺失或不是对象/.test(error))) {
+        throw new Error('eventPartPolicy 为字符串时没有被拒绝（机器不可读）');
+      }
+      // 未登记的重点文章 ID
+      const badArticle = clone(coverage);
+      badArticle.stageOwnership.eventPartPolicy.crossStageArticles.background.push('event-overview-does-not-exist');
+      const badArticleErrors = validateStageOwnershipContract(badArticle);
+      if (!badArticleErrors.some((error) => /event-overview-does-not-exist/.test(error))) {
+        throw new Error(`跨阶段声明引用未登记重点文章没有被拒绝：${badArticleErrors.join('; ')}`);
+      }
+      // 未知阶段名
+      const badStage = clone(coverage);
+      badStage.stageOwnership.eventPartPolicy.crossStageArticles.midway = [];
+      const badStageErrors = validateStageOwnershipContract(badStage);
+      if (!badStageErrors.some((error) => /未知阶段 'midway'/.test(error))) {
+        throw new Error(`跨阶段声明含未知阶段没有被拒绝：${badStageErrors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
     'ARCH-02 R1 事件落在不允许的历史部分会被拒绝（按 stageOwnership 派生）',
     () => {
       const doc = clone(base);
@@ -6376,25 +6471,40 @@ function buildSelfTests() {
         }
         if (!isNonEmptyString(event.researchStatus)) throw new Error(`${event.id}: 缺少 researchStatus`);
       }
-      const result = validateDocument(earlyDoc, { coverage, stage: 'background', rootDir: REPO_ROOT });
-      const owned = result.errors.filter(
-        (error) =>
-          /analysisProfiles/.test(error) ||
-          /researchStatus/.test(error) ||
-          /不允许的字段/.test(error) ||
-          /缺少必填字段/.test(error),
+      // F1/R5 修复：不再用 allowlist 过滤错误 —— 过滤会让“夹具缺多少覆盖”决定测试结果。
+      // 构造一个只要求夹具自身的 coverage 视图：不要求任何重点文章 / 必需事件 / 问题，
+      // 只保留 earlyCampaign 事件清单与结构规则。这样夹具的任何结构错误都会成为非零错误，
+      // 测试通过当且仅当夹具本身结构完全合规（与夹具的 coverage 完整度、markdown 文本无关）。
+      const fixtureCoverage = clone(coverage);
+      fixtureCoverage.keyArticleIds = [];
+      fixtureCoverage.keyArticles = [];
+      fixtureCoverage.requiredMediaTypes = {};
+      fixtureCoverage.requiredEvents = [];
+      fixtureCoverage.earlyCampaign.eventIds = ids.filter((id) => typeof id === 'string');
+      fixtureCoverage.stages = fixtureCoverage.stages.map((stage) => ({ ...stage, requiredQuestionParts: [] }));
+      const result = validateDocument(earlyDoc, { coverage: fixtureCoverage, stage: 'background', rootDir: REPO_ROOT });
+      if (result.errors.length > 0) {
+        throw new Error(
+          `早期战役夹具结构不完全合规（${result.errors.length} 个错误）：${result.errors.slice(0, 8).join(' | ')}`,
+        );
+      }
+      // 警告只应是“fixtureOnly 测试样本”与“空 legacy media 迁移提示”，不得有其它警告。
+      const unexpectedWarnings = result.warnings.filter(
+        (warning) => !/fixtureOnly=true/.test(warning) && !/\$\.media:.*legacy media/.test(warning),
       );
-      if (owned.length > 0) throw new Error(`早期战役夹具有结构错误：${owned.slice(0, 6).join(' | ')}`);
+      if (unexpectedWarnings.length > 0) {
+        throw new Error(`早期战役夹具出现非预期警告：${unexpectedWarnings.join(' | ')}`);
+      }
     },
   ]);
 
   // --- D7: 自测项数漂移检查（纯内存；真实文档同步由 --check-contracts 负责）---
-  // F1 修复：--self-test 不再读取 docs/。这里只验证 selfTestCountDriftErrors 这个
-  // **纯函数**在注入的内存文件系统上的行为；真实 coverage.md/README 的同步检查
-  // 放在 --check-contracts（它本来就需要读取文档）。
+  // F1 修复（attempt 6）：测试名称固定，不再嵌入运行期项数；也不读取真实 docs/。
+  // 这里只验证 selfTestCountDriftErrors 这个**纯函数**在注入的内存文件系统上的行为；
+  // 真实 coverage.md/README 的同步检查放在 --check-contracts（它本来就需要读取文档）。
   const expectedTotal = tests.length + 1;
   tests.push([
-    `D7 文档项数漂移检查在内存文件系统上生效（应为 ${expectedTotal} 项，真实文档同步由 --check-contracts 校验）`,
+    'D7 文档项数漂移检查在内存文件系统上生效（真实文档同步由 --check-contracts 校验）',
     () => {
       const cleanFs = createMemoryFileSystem();
       cleanFs.set(COVERAGE_MD_PATH, `覆盖 **${expectedTotal}** 项真实正例/负例/边界\n${SELF_TEST_COUNT_MARKER}${expectedTotal}\n`);

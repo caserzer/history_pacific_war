@@ -1,4 +1,4 @@
-# 统一内容契约（v7 / ARCH-02 attempt 5）
+# 统一内容契约（v8 / ARCH-02 attempt 6）
 
 状态：契约与验证器已交付，来源 URL 已逐条实测复核。本文件描述格式与门禁，**不声称任何历史文章已达到验收**。
 
@@ -15,7 +15,7 @@ node scripts/validate-content.mjs --stage background # HIST-01 未交付 → 预
 
 ARCH-02 的完整修正记录见 **`docs/research/contract-correction.md`**（删除的自测项、迁移映射、消费方、每个新负例的首次生效任务、实测输出与退出码）。
 
-**自测纯度（F1 修复）**：`--self-test` 的全部结果只由 `contracts/fixtures/*`、`contracts/coverage.json`、`contracts/requirements.json`、验证器代码（含其 schema 契约）与构造的内存文档决定；**不读取** `content/history.json`、`public/media`、`docs/` 或系统临时目录，也不按 `content/` 是否存在而改变结果。`content/history.json` 缺失时，`--self-test` 仍应 151/151、exit 0。
+**自测纯度（F1 修复）**：`--self-test` 的全部结果只由 `contracts/fixtures/*`、`contracts/coverage.json`、`contracts/requirements.json`、验证器代码（含其 schema 契约）与构造的内存文档决定；**不读取** `content/history.json`、`public/media`、`docs/` 或系统临时目录，也不按 `content/` 是否存在而改变结果。`content/history.json` 缺失时，`--self-test` 仍应 153/153、exit 0。
 
 **自测计数口径（两处声明：本文件与 `docs/research/coverage.md`）**：`SELFTEST_COUNT` 只计“现有自测”；另有“导读自测”（`--stage full` 对真实内容检查五篇导读深度，**依赖真实内容，不计入**）与“契约夹具自测”（对 `contracts/fixtures/*` 的断言，已含在现有自测内）。**真实内容测试不计入 `--self-test`**，本任务也不再提供真实内容自测入口（原 `--real-content` 已删除）。
 
@@ -25,11 +25,11 @@ ARCH-02 的完整修正记录见 **`docs/research/contract-correction.md`**（�
 
 | # | 修正 | 一句话 | 当前候选上的状态（实测） |
 |---|---|---|---|
-| R1 | 阶段归属单一来源 | `stageOwnership.<stage>.{keyArticles,events}` 是唯一来源；杜立特登记在 `background.events`；删除硬编码 `background→part-3`，事件可落 part-3 或 part-4 | 契约与具名负例已落地；本候选**没有** background 事件内容，`--stage background` 如实报 11 个缺失覆盖（exit 1） |
+| R1 | 阶段归属单一来源 | `stageOwnership.<stage>.{keyArticles,events}` 是唯一来源；杜立特登记在 `background.events`；事件允许的 `historicalPart` 集合只从 `stageOwnership.eventPartPolicy.crossStageArticles`（机器可读契约数据）派生，代码中没有第二份跨阶段表；事件可落 part-3 或 part-4 | 契约与具名负例已落地；本候选**没有** background 事件内容，`--stage background` 如实报 11 个缺失覆盖（exit 1） |
 | R2 | 早期战役十键具名分析 | `analysisProfiles`（背景/地理环境/参与方与指挥/双方目标与军力/约束条件/阶段经过/可选方案与被排除它的约束/结果与损失口径/后续影响/不确定性）；10 键 + 每键必含要素逐条检查正文；**旧五键在门禁中一律被拒绝**（legacyDisabledBy=HIST-01，无过渡豁免） | 本候选真实内容里早期战役事件数 = **0**（HIST-01 未交付）；规则由 `--self-test` 的构造文档证明会失败与通过 |
 | R3 | 研究过程状态 | 只能写 `researchStatus`（枚举）；**早期战役事件必须声明 researchStatus**；正文/summary/claim 出现研究过程措辞即具名错误，**自 HIST-01 起生效** | 本候选没有早期战役事件可触发；构造文档负例与正向探针均在自测中真实执行 |
 | R4 | 媒体注册表迁移 | `content/media.json` = `{version:1, media:[...]}`；history 顶层 `media` 含条目被拒绝并给迁移映射；`--media` 读两份文件，缺失分别报错 | `content/media.json` 尚未创建（由 MEDIA-02 负责）；history 仍含空 legacy `media`（仅迁移提示，不作为素材门禁证据） |
-| R5 | 自测计数与夹具 | `--self-test` 项数 = `SELFTEST_COUNT`；计数口径分别声明；`valid-early-campaign.json` 含香港+达尔文，十键与 researchStatus 齐全 | 自测 151/151、exit 0；**不读** content/、docs/、临时目录 |
+| R5 | 自测计数与夹具 | `--self-test` 项数 = `SELFTEST_COUNT`；计数口径分别声明；`valid-early-campaign.json` 含香港+达尔文，十键与 researchStatus 齐全 | 自测 153/153、exit 0；**不读** content/、docs/、临时目录 |
 | R6 | 地图阶段夹具 | `contracts/fixtures/map-phases.json`：三战役 × 2 阶段，纯示意，供 MAP-00 复验；本任务**不新建/不改写**它 | 该文件为已存在输入；`--check-contracts` 与自测只读校验其结构 |
 
 ## 0.1 严格规则（没有门禁过渡豁免）
@@ -78,7 +78,7 @@ ARCH-02 attempt 5 起，新严格规则**没有任何可在 `--stage` 门禁中�
 | `contracts/requirements.json` | 工单提供的 36 条 canonical requirements 原样副本，不得增删改；`--check-contracts` 与 `--self-test` 都会逐字比对 |
 | `contracts/fixtures/valid-min.json` | 仅用于 schema/UI/验证器测试的最小 `strategy` 阶段样本，`fixtureOnly=true`，不是教材内容 |
 | `contracts/fixtures/valid-early-campaign.json` | 仅用于测试的早期扩张战役样本，演示 `earlyCampaignAnalysis` 五类结构（D2），`fixtureOnly=true` |
-| `scripts/validate-content.mjs` | 无 npm 依赖的 Node 24 验证器，含 151 项自测与纯契约检查；只读可用 |
+| `scripts/validate-content.mjs` | 无 npm 依赖的 Node 24 验证器，含 153 项自测与纯契约检查；只读可用 |
 | `docs/research/coverage.md` | 覆盖矩阵、逐项需求映射、阶段与最终门禁说明 |
 | `docs/research/content-rubric.md` | 11 岁可读性、证据类型、侵略/平民苦难/战争罪行的适龄评审标准 |
 | `docs/research/sources.md` | 官方来源策略、逐条实测的 URL 访问状态、定位方式与调研限制 |
@@ -548,7 +548,7 @@ UI：显示问题、完整答案、相关实体跳转和证据。答案不能只
 - 条目形状与 ARCH-01 的 `$defs.media` **完全一致**；`articleIds` 仍是文章关联。
 - schema：`content.schema.json#/$defs/mediaRegistry`。
 - `history.json` 顶层 `media` **含条目**即被拒绝，错误信息给出迁移映射。
-- **迁移提示（不是严格规则豁免）**：`history.json` 里**空的** `media` 数组（HIST-01 现状）只产生警告；由 MEDIA-02 迁移后收紧为错误。该提示不影响任何分析/研究/矛盾严格规则。
+- **迁移提示（不是严格规则豁免）**：`history.json` 里**空的** `media` 数组（HIST-01 现状）只产生警告；MEDIA-02 迁移 `content/media.json` 并删除 history 顶层 `media` 字段后，该提示随字段一起消失（不需要额外的后置契约任务）。含条目的顶层 media 始终是错误。该提示不影响任何分析/研究/矛盾严格规则。
 - `--media` **同时读取两份文件**：`content/history.json`（正文与来源）与 `content/media.json`（素材）。两份缺失**分别精确报错**。
 - **`--stage` 门禁不因 `content/media.json` 缺失而失败。**
 
@@ -567,7 +567,7 @@ UI：显示问题、完整答案、相关实体跳转和证据。答案不能只
 
 - 同样是 **测试样本**，`fixtureOnly=true`。
 - 演示 `analysisProfiles` 十键分析结构与 `researchStatus` 的正确形状，供 schema 与 UI 测试使用；**不是**历史内容。
-- 只含一个 early-campaign 事件，因此 `background` 阶段的其他覆盖仍会缺失；它只能用来验证结构，不能当作交付。
+- **含两个** early-campaign 事件：`event-hong-kong-1941`（合规样本）与 `event-darwin-air-raid-1942`（迁移目标样本）；两个事件都带十键 `analysisProfiles` 与 `researchStatus`。`background` 阶段的其他覆盖仍会缺失，因此它只能用来验证结构，不能当作交付。
 
 自测和 fixture 验证命令：
 
@@ -606,7 +606,7 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 - **早期扩张战役结构（ARCH-02）**：每个 early-campaign 事件必须有 `analysisProfiles` 十键（标题固定、每键 ≥80 汉字、必含要素命中正文、各自带来源与 claim），并声明 `researchStatus`；旧五键 `earlyCampaignAnalysis` 始终被拒绝；part 3 导读必须包含“盟军为何连续失败”“日本的补给与防御压力”
 - **阶段归属与素材类型不变式（D3）**：`stageOwnership` 不重不漏覆盖 19 篇、与 `keyArticles[].stage` 一致、无孤立 ID、每阶段都有 owner；`requiredMediaTypes` 每篇至少一种类型且与文章种类相符
 - `--media`：精确重点集合、所需媒体类型、许可、文件存在且非空
-- `--self-test`：独立于 `content/history.json` 的 **151 项**真实正例/负例/边界；**只读可用**（无临时目录、无工作区写入）
+- `--self-test`：独立于 `content/history.json` 的 **153 项**真实正例/负例/边界；**只读可用**（无临时目录、无工作区写入）
 - `--check-contracts`：不需要内容文件，检查 `requirements.json` 与工单 canonical 清单逐字一致、`coverage.json` 重点集合精确为 3 战役 + 5 指挥官 + 6 专题 + 5 导读、earlyCampaign 结构、**导读小节深度阈值（D5）**、**导读 historicalPart 绑定（D6）**、**文档自测项数同步（D7）**、stageOwnership 不变式、素材类型契约，以及 schema 的顶层数组/十四类键/阶段关键字段/phaseTime/analysisProfiles/researchStatus/mediaRegistry
 
 退出码：`0` PASS，`1` 验证失败，`2` 参数或运行错误。验证器没有 npm 依赖，Node 24 下运行。
@@ -635,7 +635,7 @@ node scripts/validate-content.mjs --file path/to/history.json --stage coral
 
 ```bash
 node scripts/validate-content.mjs --check-contracts   # 契约一致性 + 文档自测项数同步（不需内容）
-node scripts/validate-content.mjs --self-test         # 151 项，只读，exit 0
+node scripts/validate-content.mjs --self-test         # 153 项，只读，exit 0
 node scripts/validate-content.mjs --stage <本阶段>     # 预跑本阶段门禁，记录真实退出码
 ```
 
@@ -650,12 +650,12 @@ node scripts/validate-content.mjs --stage <本阶段>     # 预跑本阶段门�
 | **MEDIA-02** | 写 `content/media.json`（`{version:1, media:[...]}`），迁移 `history.json` 的 `media` 并删除该字段 | 不改历史正文 | `--media` 通过 |
 | **QA-01** | 运行 `--media` 校验两份文件、素材文件与素材类型覆盖 | — | `--media` 通过 |
 
-**本任务（ARCH-02 attempt 5）在本候选基座上的实测状态**（真实输出；本报告同时记录在 `docs/research/contract-correction.md`）：
+**本任务（ARCH-02 attempt 6）在本候选基座上的实测状态**（真实输出；本报告同时记录在 `docs/research/contract-correction.md`）：
 
 | 命令 | 本候选（`df6ae36` + 本任务 delta）真实退出码 | 说明 |
 |---|---:|---|
-| `--self-test` | **0**（151/151） | 只读合同夹具/契约/验证器代码；不读 content/、docs/、临时目录 |
-| `--check-contracts` | **0** | 契约一致 + 文档 `SELFTEST_COUNT=151` 同步 |
+| `--self-test` | **0**（153/153） | 只读合同夹具/契约/验证器代码；不读 content/、docs/、临时目录 |
+| `--check-contracts` | **0** | 契约一致 + 文档 `SELFTEST_COUNT=153` 同步 |
 | `--stage strategy` | **0** | HIST-00 内容已交付 |
 | `--stage background` | **1** | 预期：HIST-01 未交付（缺 9 个 background 事件与 part-3 导读），**不是**契约缺陷 |
 | `--media` | **1** | 预期：`content/media.json` 缺失，由 MEDIA-02 首次交付 |
@@ -679,5 +679,5 @@ node scripts/validate-content.mjs --stage <本阶段>     # 预跑本阶段门�
 - 验证器只证明结构/覆盖/引用条件，不证明历史叙述真实、准确、适龄或可读。
 - `docs/research/sources.md` 逐条记录了本次实测结果：FRUS、NARA、NPS、JACAR、AWM、National WWII Museum 已读取正文；**NHHC 与 CMH 本次 DNS 解析失败**，NAA/IWM 返回 403，因此三场战役的官方战斗叙事尚未读到。后续内容不得据此声称“已全文核实”，也不得引用未实测的页码。
 - `contracts/fixtures/valid-min.json` 与 `contracts/fixtures/valid-early-campaign.json` 都是测试样本，不是历史成果。
-- `--self-test` 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（151/151、0 跳过）；它不能替代中央审查环境中的独立验证。
+- `--self-test` 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（153/153、0 跳过）；它不能替代中央审查环境中的独立验证。
 - 阶段时间校验（D1）在语义上只能保证“格式合法、落在战役窗口内、先后一致”。它**无法**判断某个历史时刻本身是否准确——那需要 claim + locator + 人工评审。

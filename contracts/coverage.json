@@ -107,7 +107,12 @@
   ],
   "stageOwnership": {
     "description": "ARCH-02 单一阶段归属来源：每个阶段同时拥有 keyArticles（重点文章）与 events（必需事件）。验证器只从这里派生交付阶段，不再有第二套归属表或硬编码映射。requiredEvents[].stage 必须与 events 列表一致（交叉一致性负例）。",
-    "eventPartPolicy": "background 阶段的必需事件可以合法落在 part-3-expansion 或 part-4-turning-point 两个导读里（杜立特空袭即属后者），验证器按本表派生的允许集合判定，不再硬编码 background→part-3-expansion。",
+    "eventPartPolicy": {
+      "description": "事件可跨导读写入的显式声明（机器可读）。这是允许集合，不是归属表：归属仍只来自 stageOwnership.<stage>.events；验证器从本字段派生事件 historicalPart 的允许集合，代码中不再有第二份跨阶段表。",
+      "crossStageArticles": {
+        "background": ["event-overview-part-4-turning-point"]
+      }
+    },
     "strategy": {
       "keyArticles": ["event-overview-part-1-why-war"],
       "events": ["event-japan-expansion-china", "event-us-oil-embargo-1941", "event-japan-war-decision-1941"]
@@ -810,7 +815,7 @@
       "MAP-01": "只读消费 content/media.json"
     },
     "legacyHistoryMediaEnforcement": "transition",
-    "legacyDisabledBy": "MEDIA-02 完成迁移并从 history.json 删除 media 字段；之后 ARCH-02-flip 把 transition 改为 off",
+    "legacyDisabledBy": "MEDIA-02（迁移并删除 history.json 顶层 media 字段；该字段消失后空数组提示自然不再出现，不需要额外的后置契约任务）",
     "stageGateUnaffectedWhenMissing": true
   },
   "finalGate": {
