@@ -1,0 +1,1530 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixtureOnly": true,
+  "battles": [
+    {
+      "id": "battle-pearl-harbor",
+      "title": "珍珠港袭击（地图阶段夹具）",
+      "historicalPart": "part-2-pearl-harbor",
+      "battleType": "air-raid",
+      "theater": "pacific",
+      "startDate": "1941-12-07",
+      "endDate": "1941-12-07",
+      "summary": "地图阶段契约夹具：仅用于验证阶段引擎结构，位置与时间为示意，不代表真实作战细节。",
+      "belligerents": {
+        "japan": "日本",
+        "allies": "美国"
+      },
+      "outcome": {
+        "summary": "夹具结果字段仅用于结构检查，不构成历史判断。",
+        "winner": "inconclusive",
+        "certainty": "schematic"
+      },
+      "placeIds": [
+        "place-pearl-harbor"
+      ],
+      "personIds": [
+        "person-fixture-commander-japan",
+        "person-fixture-commander-allies"
+      ],
+      "commanderIds": {
+        "japan": [
+          "person-fixture-commander-japan"
+        ],
+        "allies": [
+          "person-fixture-commander-allies"
+        ]
+      },
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ],
+      "sections": {
+        "background": {
+          "title": "背景",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "participants": {
+          "title": "主要参与方",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "commanders": {
+          "title": "主要指挥官",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "forces": {
+          "title": "双方军力对比",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "objectives": {
+          "title": "各自战略目标",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "constraints": {
+          "title": "决策约束",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "plan": {
+          "title": "作战计划",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "course": {
+          "title": "战斗经过",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "decisions": {
+          "title": "关键决策",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "results": {
+          "title": "结果与损失",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "aftermath": {
+          "title": "后续影响",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "controversies": {
+          "title": "历史争议",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "furtherReading": {
+          "title": "延伸阅读",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      },
+      "phases": [
+        {
+          "id": "phase-pearl-fixture-1",
+          "sequence": 1,
+          "title": "夹具阶段一：接近（示意）",
+          "time": {
+            "start": "1941-12-07T06:00:00-10:00",
+            "end": "1941-12-07T07:30:00-10:00",
+            "display": "夹具示意时间：约 06:00–07:30（不代表真实时刻）",
+            "uncertainty": "夹具时间仅为结构示意，不对应真实历史时刻。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-pearl-harbor"
+              ],
+              "coordinates": {
+                "lat": 21.6,
+                "lng": -158.2
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 200,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "label": "盟方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-pearl-harbor"
+              ],
+              "coordinates": {
+                "lat": 21.35,
+                "lng": -157.95
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 20,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "unknownEnemy": {
+            "japan": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "decision": {
+            "japan": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "consequence": {
+            "japan": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-pearl-fixture-1",
+              "side": "japan",
+              "label": "夹具示意航线",
+              "fromPlaceId": "place-pearl-harbor",
+              "toPlaceId": "place-coral-sea",
+              "path": [
+                {
+                  "lat": 21.6,
+                  "lng": -158.2
+                },
+                {
+                  "lat": 21.4,
+                  "lng": -158
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "夹具示意航线，不代表真实航迹。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "夹具阶段：全部位置、时间与航线均为示意。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        {
+          "id": "phase-pearl-fixture-2",
+          "sequence": 2,
+          "title": "夹具阶段二：攻击（示意）",
+          "time": {
+            "start": "1941-12-07T07:45:00-10:00",
+            "end": "1941-12-07T09:00:00-10:00",
+            "display": "夹具示意时间：约 07:45–09:00（不代表真实时刻）",
+            "uncertainty": "夹具时间仅为结构示意，不对应真实历史时刻。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-pearl-harbor"
+              ],
+              "coordinates": {
+                "lat": 21.4,
+                "lng": -158
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 10,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "label": "盟方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-pearl-harbor"
+              ],
+              "coordinates": {
+                "lat": 21.35,
+                "lng": -157.95
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 5,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "unknownEnemy": {
+            "japan": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "decision": {
+            "japan": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "consequence": {
+            "japan": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-pearl-fixture-2",
+              "side": "japan",
+              "label": "夹具示意航线",
+              "fromPlaceId": "place-pearl-harbor",
+              "toPlaceId": "place-coral-sea",
+              "path": [
+                {
+                  "lat": 21.4,
+                  "lng": -158
+                },
+                {
+                  "lat": 21.36,
+                  "lng": -157.96
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "夹具示意航线，不代表真实航迹。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "夹具阶段：全部位置、时间与航线均为示意。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "battle-coral-sea",
+      "title": "珊瑚海海战（地图阶段夹具）",
+      "historicalPart": "part-4-turning-point",
+      "battleType": "carrier-battle",
+      "theater": "pacific",
+      "startDate": "1942-05-04",
+      "endDate": "1942-05-08",
+      "summary": "地图阶段契约夹具：仅用于验证阶段引擎结构，位置与时间为示意，不代表真实作战细节。",
+      "belligerents": {
+        "japan": "日本",
+        "allies": "美国/澳大利亚"
+      },
+      "outcome": {
+        "summary": "夹具结果字段仅用于结构检查，不构成历史判断。",
+        "winner": "inconclusive",
+        "certainty": "schematic"
+      },
+      "placeIds": [
+        "place-coral-sea"
+      ],
+      "personIds": [
+        "person-fixture-commander-japan",
+        "person-fixture-commander-allies"
+      ],
+      "commanderIds": {
+        "japan": [
+          "person-fixture-commander-japan"
+        ],
+        "allies": [
+          "person-fixture-commander-allies"
+        ]
+      },
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ],
+      "sections": {
+        "background": {
+          "title": "背景",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "participants": {
+          "title": "主要参与方",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "commanders": {
+          "title": "主要指挥官",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "forces": {
+          "title": "双方军力对比",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "objectives": {
+          "title": "各自战略目标",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "constraints": {
+          "title": "决策约束",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "plan": {
+          "title": "作战计划",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "course": {
+          "title": "战斗经过",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "decisions": {
+          "title": "关键决策",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "results": {
+          "title": "结果与损失",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "aftermath": {
+          "title": "后续影响",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "controversies": {
+          "title": "历史争议",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "furtherReading": {
+          "title": "延伸阅读",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      },
+      "phases": [
+        {
+          "id": "phase-coral-fixture-1",
+          "sequence": 1,
+          "title": "夹具阶段一：搜索（示意）",
+          "time": {
+            "start": "1942-05-07T06:00:00+10:00",
+            "end": "1942-05-07T12:00:00+10:00",
+            "display": "夹具示意时间：5 月 7 日上午（不代表真实时刻）",
+            "uncertainty": "夹具时间仅为结构示意，不对应真实历史时刻。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -15,
+                "lng": 155
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 300,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "label": "盟方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -16,
+                "lng": 152
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 300,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "unknownEnemy": {
+            "japan": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "decision": {
+            "japan": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "consequence": {
+            "japan": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-coral-fixture-1",
+              "side": "japan",
+              "label": "夹具示意航线",
+              "fromPlaceId": "place-coral-sea",
+              "toPlaceId": "place-pearl-harbor",
+              "path": [
+                {
+                  "lat": -15,
+                  "lng": 155
+                },
+                {
+                  "lat": -15.5,
+                  "lng": 153.5
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "夹具示意航线，不代表真实航迹。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "夹具阶段：全部位置、时间与航线均为示意。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        {
+          "id": "phase-coral-fixture-2",
+          "sequence": 2,
+          "title": "夹具阶段二：交战（示意）",
+          "time": {
+            "start": "1942-05-08T06:30:00+10:00",
+            "end": "1942-05-08T14:00:00+10:00",
+            "display": "夹具示意时间：5 月 8 日上午至下午（不代表真实时刻）",
+            "uncertainty": "夹具时间仅为结构示意，不对应真实历史时刻。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -15.5,
+                "lng": 153.5
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 200,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "label": "盟方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -16.2,
+                "lng": 152.5
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 200,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "unknownEnemy": {
+            "japan": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "decision": {
+            "japan": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "consequence": {
+            "japan": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-coral-fixture-2",
+              "side": "allies",
+              "label": "夹具示意航线",
+              "fromPlaceId": "place-coral-sea",
+              "toPlaceId": "place-pearl-harbor",
+              "path": [
+                {
+                  "lat": -16.2,
+                  "lng": 152.5
+                },
+                {
+                  "lat": -15.7,
+                  "lng": 153.2
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "夹具示意航线，不代表真实航迹。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "夹具阶段：全部位置、时间与航线均为示意。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "battle-midway",
+      "title": "中途岛海战（地图阶段夹具）",
+      "historicalPart": "part-5-midway",
+      "battleType": "carrier-battle",
+      "theater": "pacific",
+      "startDate": "1942-06-03",
+      "endDate": "1942-06-07",
+      "summary": "地图阶段契约夹具：仅用于验证阶段引擎结构，位置与时间为示意，不代表真实作战细节。",
+      "belligerents": {
+        "japan": "日本",
+        "allies": "美国"
+      },
+      "outcome": {
+        "summary": "夹具结果字段仅用于结构检查，不构成历史判断。",
+        "winner": "inconclusive",
+        "certainty": "schematic"
+      },
+      "placeIds": [
+        "place-midway"
+      ],
+      "personIds": [
+        "person-fixture-commander-japan",
+        "person-fixture-commander-allies"
+      ],
+      "commanderIds": {
+        "japan": [
+          "person-fixture-commander-japan"
+        ],
+        "allies": [
+          "person-fixture-commander-allies"
+        ]
+      },
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ],
+      "sections": {
+        "background": {
+          "title": "背景",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "participants": {
+          "title": "主要参与方",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "commanders": {
+          "title": "主要指挥官",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "forces": {
+          "title": "双方军力对比",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "objectives": {
+          "title": "各自战略目标",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "constraints": {
+          "title": "决策约束",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "plan": {
+          "title": "作战计划",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "course": {
+          "title": "战斗经过",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "decisions": {
+          "title": "关键决策",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "results": {
+          "title": "结果与损失",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "aftermath": {
+          "title": "后续影响",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "controversies": {
+          "title": "历史争议",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        "furtherReading": {
+          "title": "延伸阅读",
+          "body": "夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。夹具段落：此处仅用于补齐十四类结构的最低篇幅要求，不对应真实历史，也不得作为任何史实依据发布或引用；本段存在的唯一目的是让结构检查有内容可测。为了达到最低汉字数，这里重复若干次同样的说明性文字。",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      },
+      "phases": [
+        {
+          "id": "phase-midway-fixture-1",
+          "sequence": 1,
+          "title": "夹具阶段一：侦察（示意）",
+          "time": {
+            "start": "1942-06-03T09:00:00-11:00",
+            "end": "1942-06-03T18:00:00-11:00",
+            "display": "夹具示意时间：6 月 3 日白天（不代表真实时刻）",
+            "uncertainty": "夹具时间仅为结构示意，不对应真实历史时刻。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 30,
+                "lng": -178
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 400,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "label": "盟方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 28.2,
+                "lng": -177.4
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 300,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "unknownEnemy": {
+            "japan": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "decision": {
+            "japan": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "consequence": {
+            "japan": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-fixture-1",
+              "side": "japan",
+              "label": "夹具示意航线",
+              "fromPlaceId": "place-midway",
+              "toPlaceId": "place-pearl-harbor",
+              "path": [
+                {
+                  "lat": 30,
+                  "lng": -178
+                },
+                {
+                  "lat": 29,
+                  "lng": -177.8
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "夹具示意航线，不代表真实航迹。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "夹具阶段：全部位置、时间与航线均为示意。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        },
+        {
+          "id": "phase-midway-fixture-2",
+          "sequence": 2,
+          "title": "夹具阶段二：攻击（示意）",
+          "time": {
+            "start": "1942-06-04T04:30:00-11:00",
+            "end": "1942-06-04T12:00:00-11:00",
+            "display": "夹具示意时间：6 月 4 日上午（不代表真实时刻）",
+            "uncertainty": "夹具时间仅为结构示意，不对应真实历史时刻。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 29,
+                "lng": -177.8
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "label": "盟方示意位置",
+              "description": "夹具示意位置，不对应真实舰队位置。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 28.4,
+                "lng": -177
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "夹具坐标纯示意，不代表真实位置精度。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方已知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "unknownEnemy": {
+            "japan": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。",
+            "allies": "夹具：日方未知敌情占位文本，用于满足最低篇幅要求，不是史实。"
+          },
+          "decision": {
+            "japan": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方决策占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "consequence": {
+            "japan": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。",
+            "allies": "夹具：日方后果占位文本，用于满足结构字段的最低篇幅要求，不是史实判断。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            },
+            "allies": {
+              "perspective": "夹具视角占位文本，仅用于验证字段形状与篇幅要求，不代表真实历史人物的想法、判断或情感。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-fixture-2",
+              "side": "allies",
+              "label": "夹具示意航线",
+              "fromPlaceId": "place-midway",
+              "toPlaceId": "place-pearl-harbor",
+              "path": [
+                {
+                  "lat": 28.4,
+                  "lng": -177
+                },
+                {
+                  "lat": 28.9,
+                  "lng": -177.7
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "夹具示意航线，不代表真实航迹。",
+              "sourceIds": [
+                "source-fixture-map"
+              ],
+              "claimIds": [
+                "claim-fixture-map-schematic"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "夹具阶段：全部位置、时间与航线均为示意。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "people": [
+    {
+      "id": "person-fixture-commander-japan",
+      "name": "夹具日方指挥官",
+      "side": "japan",
+      "role": "地图阶段夹具用的占位指挥官，不对应任何真实人物",
+      "service": "navy",
+      "summary": "这是地图阶段契约夹具使用的占位人物，不对应任何真实历史人物，不得作为内容引用。",
+      "profile": "这是地图阶段契约夹具使用的合成人物档案，仅用于满足 commanderIds 的引用完整性检查，不对应任何真实历史人物，也不包含任何真实事迹或评价。这是地图阶段契约夹具使用的合成人物档案，仅用于满足 commanderIds 的引用完整性检查，不对应任何真实历史人物，也不包含任何真实事迹或评价。这是地图阶段契约夹具使用的合成人物档案，仅用于满足 commanderIds 的引用完整性检查，不对应任何真实历史人物，也不包含任何真实事迹或评价。",
+      "decisions": [
+        {
+          "id": "decision-fixture-map-japan",
+          "title": "夹具决策占位",
+          "context": "这是地图阶段夹具使用的合成决策背景，不对应任何真实战斗或真实历史人物。",
+          "options": [
+            "夹具选项甲：保持航向",
+            "夹具选项乙：改变航向"
+          ],
+          "choice": "夹具选择占位，不代表任何真实决策。",
+          "constraints": [
+            "夹具约束甲：燃油有限",
+            "夹具约束乙：敌情不明"
+          ],
+          "consequence": "夹具后果占位，用于补齐结构字段，不代表真实历史。",
+          "certainty": "schematic",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      ],
+      "relatedPersonIds": [],
+      "placeIds": [
+        "place-pearl-harbor"
+      ],
+      "eventIds": [],
+      "battleIds": [],
+      "conceptIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ]
+    },
+    {
+      "id": "person-fixture-commander-allies",
+      "name": "夹具盟方指挥官",
+      "side": "allies",
+      "role": "地图阶段夹具用的占位指挥官，不对应任何真实人物",
+      "service": "navy",
+      "summary": "这是地图阶段契约夹具使用的占位人物，不对应任何真实历史人物，不得作为内容引用。",
+      "profile": "这是地图阶段契约夹具使用的合成人物档案，仅用于满足 commanderIds 的引用完整性检查，不对应任何真实历史人物，也不包含任何真实事迹或评价。这是地图阶段契约夹具使用的合成人物档案，仅用于满足 commanderIds 的引用完整性检查，不对应任何真实历史人物，也不包含任何真实事迹或评价。这是地图阶段契约夹具使用的合成人物档案，仅用于满足 commanderIds 的引用完整性检查，不对应任何真实历史人物，也不包含任何真实事迹或评价。",
+      "decisions": [
+        {
+          "id": "decision-fixture-map-allies",
+          "title": "夹具决策占位",
+          "context": "这是地图阶段夹具使用的合成决策背景，不对应任何真实战斗或真实历史人物。",
+          "options": [
+            "夹具选项甲：等待侦察",
+            "夹具选项乙：立即出击"
+          ],
+          "choice": "夹具选择占位，不代表任何真实决策。",
+          "constraints": [
+            "夹具约束甲：情报不足",
+            "夹具约束乙：距离过远"
+          ],
+          "consequence": "夹具后果占位，用于补齐结构字段，不代表真实历史。",
+          "certainty": "schematic",
+          "sourceIds": [
+            "source-fixture-map"
+          ],
+          "claimIds": [
+            "claim-fixture-map-schematic"
+          ]
+        }
+      ],
+      "relatedPersonIds": [],
+      "placeIds": [
+        "place-pearl-harbor"
+      ],
+      "eventIds": [],
+      "battleIds": [],
+      "conceptIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ]
+    }
+  ],
+  "places": [
+    {
+      "id": "place-pearl-harbor",
+      "historicalName": "珍珠港（Pearl Harbor）",
+      "modernName": "珍珠港",
+      "modernCountry": "美国",
+      "placeType": "naval-base",
+      "summary": "地图阶段夹具使用的地理节点：夏威夷瓦胡岛南岸的海军基地。",
+      "coordinates": {
+        "lat": 21.3527,
+        "lng": -157.95
+      },
+      "coordinateAccuracyKm": 2,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ]
+    },
+    {
+      "id": "place-coral-sea",
+      "historicalName": "珊瑚海（Coral Sea）",
+      "modernName": "珊瑚海",
+      "modernCountry": "澳大利亚/巴布亚新几内亚以东海域",
+      "placeType": "sea",
+      "summary": "地图阶段夹具使用的地理节点：澳大利亚东北方的海域。",
+      "coordinates": {
+        "lat": -15.5,
+        "lng": 154
+      },
+      "coordinateAccuracyKm": 200,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ]
+    },
+    {
+      "id": "place-midway",
+      "historicalName": "中途岛（Midway Atoll）",
+      "modernName": "中途岛环礁",
+      "modernCountry": "美国",
+      "placeType": "atoll",
+      "summary": "地图阶段夹具使用的地理节点：北太平洋的中途岛环礁。",
+      "coordinates": {
+        "lat": 28.2,
+        "lng": -177.37
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "claimIds": [
+        "claim-fixture-map-schematic"
+      ]
+    }
+  ],
+  "units": [],
+  "equipment": [],
+  "concepts": [],
+  "sources": [
+    {
+      "id": "source-fixture-map",
+      "title": "地图阶段契约夹具占位来源（非真实史料）",
+      "creator": "验证器自测",
+      "publisher": "DSH 契约夹具",
+      "year": 2026,
+      "sourceType": "other",
+      "url": "https://example.invalid/fixture/map-phases",
+      "accessedDate": "2026-11-04",
+      "citation": "地图阶段契约夹具占位来源，不是真实史料，不得作为任何历史陈述的依据。",
+      "reliabilityNote": "这是测试夹具的占位来源，仅用于满足来源引用完整性检查；它不对应任何真实文献或档案。",
+      "language": "zh"
+    }
+  ],
+  "questions": [],
+  "claims": [
+    {
+      "id": "claim-fixture-map-schematic",
+      "text": "夹具声明：地图阶段夹具中的全部位置、时间与航线均为教学示意。",
+      "claimType": "schematic",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "battle-coral-sea",
+        "battle-midway"
+      ],
+      "sourceIds": [
+        "source-fixture-map"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-fixture-map",
+          "locatorType": "section-paragraph",
+          "locator": "夹具说明, 第 1 段"
+        }
+      ]
+    }
+  ]
+}
