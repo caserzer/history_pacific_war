@@ -1,0 +1,19 @@
+# 依赖与构建产物
+node_modules/
+dist/
+
+# 本机缓存（npm / 浏览器缓存被配置在工作区内）
+.cache/
+
+# 测试与报告产物
+test-results/
+playwright-report/
+reports/
+coverage/
+
+# 编辑器 / 系统文件
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
