@@ -16,7 +16,6 @@
     "equipment",
     "concepts",
     "sources",
-    "media",
     "questions",
     "claims"
   ],
@@ -70,9 +69,9 @@
       "description": "可追溯的来源记录。"
     },
     "media": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/media" },
-      "description": "public/media 下的素材及其授权。"
+      "$comment": "ARCH-02 迁移：history.json 顶层 media 字段已废弃并被拒绝。素材注册表迁移到 content/media.json（见 $defs.mediaRegistry）；此声明保留是为了给出明确的迁移提示而不是笼统的 additionalProperties 错误。",
+      "deprecated": true,
+      "description": "已废弃：请迁移到 content/media.json（schema: $defs.mediaRegistry，形如 {version:1, media:[...]}），history.json 不得再含顶层 media。"
     },
     "questions": {
       "type": "array",
@@ -257,10 +256,57 @@
         "battleId": { "$ref": "#/$defs/battleId" },
         "relatedEventIds": { "$ref": "#/$defs/eventRefs" },
         "earlyCampaignAnalysis": { "$ref": "#/$defs/earlyCampaignAnalysis" },
+        "analysisProfiles": { "$ref": "#/$defs/analysisProfiles" },
+        "researchStatus": { "$ref": "#/$defs/researchStatus" },
         "sourceIds": { "$ref": "#/$defs/sourceRefs" },
         "claimIds": { "$ref": "#/$defs/claimRefs" }
       },
-      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。earlyCampaignAnalysis 是早期扩张战役必须提供的五类分析（背景/经过/约束/结果/影响），由 coverage.earlyCampaign 强制。"
+      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。ARCH-02 起早期战役的目标结构是 analysisProfiles（十键具名分析）；旧的 earlyCampaignAnalysis（五键）在过渡窗口内仍被 schema 接受。researchStatus 是唯一允许表达研究/检索过程状态的位置。"
+    },
+    "researchStatus": {
+      "type": "string",
+      "enum": ["not-started", "sources-identified", "sources-retrieved", "cross-checked", "final"],
+      "description": "研究/检索过程状态的唯一合法位置（ARCH-02）。正文、summary、claim 文本中不得出现研究过程措辞。"
+    },
+    "analysisProfileSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "body", "sourceIds", "claimIds"],
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 20 },
+        "body": { "type": "string", "minLength": 1, "description": "中文分析段落；必须回答该键的分析问题并包含其必含要素。" },
+        "sourceIds": { "$ref": "#/$defs/sourceRefs" },
+        "claimIds": { "$ref": "#/$defs/claimRefs" }
+      }
+    },
+    "analysisProfiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "background",
+        "geography",
+        "participants",
+        "objectivesAndForces",
+        "constraints",
+        "course",
+        "options",
+        "resultsAndLosses",
+        "impact",
+        "uncertainty"
+      ],
+      "properties": {
+        "background": { "$ref": "#/$defs/analysisProfileSection" },
+        "geography": { "$ref": "#/$defs/analysisProfileSection" },
+        "participants": { "$ref": "#/$defs/analysisProfileSection" },
+        "objectivesAndForces": { "$ref": "#/$defs/analysisProfileSection" },
+        "constraints": { "$ref": "#/$defs/analysisProfileSection" },
+        "course": { "$ref": "#/$defs/analysisProfileSection" },
+        "options": { "$ref": "#/$defs/analysisProfileSection" },
+        "resultsAndLosses": { "$ref": "#/$defs/analysisProfileSection" },
+        "impact": { "$ref": "#/$defs/analysisProfileSection" },
+        "uncertainty": { "$ref": "#/$defs/analysisProfileSection" }
+      },
+      "description": "ARCH-02 早期战役的十键具名分析结构。键名必须与 coverage.earlyCampaign.analysisProfiles.keys 及 contracts/README.md 完全一致；options 必须写明真实选项与排除它的约束，uncertainty 必须区分有证据支持/争议/无法确定。"
     },
     "earlyCampaignSection": {
       "type": "object",
@@ -970,6 +1016,23 @@
         },
         "locator": { "type": "string", "minLength": 4, "maxLength": 300 }
       }
+    },
+    "mediaRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "media"],
+      "properties": {
+        "version": {
+          "const": 1,
+          "description": "注册表版本。破坏性结构变更必须递增并同步 --media 与消费方。"
+        },
+        "media": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/media" },
+          "description": "素材条目数组；复用 content.schema.json 既有的 media 条目形状（author/license/rightsStatement/sourceId/creditLine/alt/caption/path），articleIds 表示与重点文章的关联。"
+        }
+      },
+      "description": "content/media.json 的根结构（ARCH-02 迁移目标）。素材注册表从 history.json 顶层 media 迁移到独立文件，避免历史正文与媒体元数据同文件耦合。由 MEDIA-02 写入；HIST-04 不写；QA-01 运行 --media 校验；WEB-01/MAP-01 只读。"
     },
     "claim": {
       "type": "object",

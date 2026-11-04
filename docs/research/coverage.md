@@ -15,7 +15,7 @@
 | **D1** `phase.time.end` 与 `end>=start` 未校验（6/4–6/5 战役接受 6/10 结尾） | `scripts/validate-content.mjs` 阶段校验 | `time.end` 格式+战役窗口+`end>=start`；阶段按 `sequence` 时间递增、区间不重叠 | 9（含审查者原案例） |
 | **D2** 早期战役缺少 background/course/constraints/results/impact 结构 | `coverage.earlyCampaign` + schema `earlyCampaignAnalysis` + 验证器 | 8 事件 × 5 键，每键 ≥80 汉字，独立来源/claim；part 3 导读强制两个小节 | 12 |
 | **D3** 素材类型与阶段归属未契约锁定 | `coverage.stageOwnership` + `requiredMediaTypes` + 验证器不变式 | 19 篇不重不漏归属 5 阶段；每篇有素材类型且与文章种类相符；无孤立 ID | 11 |
-| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下 86/86、0 跳过、不写工作区 | 由只读实测证明 |
+| **D4** `--self-test` 依赖 OS 临时目录（只读 EPERM，35/38） | 可注入文件系统层；自测改用内存克隆 | 只读（TMP/TEMP 不可用）下 150/150、0 跳过、不写工作区 | 由只读实测证明 |
 
 ### 0.2 attempt 3（priorCommit a1b2dab）—— 本轮修复
 
@@ -23,7 +23,7 @@
 |---|---|---|---|
 | **D5** `overviewTopics.minHanCharsPerHeading=120` 从未施加到 part 3 强制小节：51 汉字的「盟军为何连续失败」只要全篇超过 1200 汉字就通过 | `keyDepthErrors` 的 part-overview 分支；`validateArticleSections` 现在返回 `hanByHeading` | 每个 `requiredArticleHeadings` 标题的**正文自身**必须达标：overviewTopics 两个分析小节 ≥120 汉字，其余强制小节 ≥100 汉字（`minimumDepth.requiredHeadingHanChars`）；不再能用其它小节凑总字数 | 6 |
 | **D6** 导读的 `historicalPart` 未与部分 ID 绑定 | `coverage.keyArticles[].historicalPart` + `historicalPartFromArticleId` + 覆盖率门禁 | 契约级：每个 part-overview 必须声明五部分之一，且等于 ID 编码的部分；实体级：`entity.historicalPart` 必须等于 `entry.historicalPart` | 7 |
-| **D7** 文档写 71 项、实际 72 项 | `docs/research/coverage.md` 的 canonical 标记 `SELFTEST_COUNT=<N>` + `selfTestCountDriftErrors` | `--self-test` 与 `--check-contracts` 都会读取文档、提取声明并与真实项数比对；任何一处不一致即失败 | 1（含反向自证：喂错误数字必须被识别） |
+| **D7** 文档自测项数与实际不一致（历史记录：文档曾写 71 而实际为 72） | `docs/research/coverage.md` 的 canonical 标记 `SELFTEST_COUNT=<N>` + `selfTestCountDriftErrors` | `--self-test` 与 `--check-contracts` 都会读取文档、提取声明并与真实项数比对；任何一处不一致即失败 | 1（含反向自证：喂错误数字必须被识别） |
 
 #### D5 的作用域决定（代码与文档一致）
 
@@ -321,7 +321,19 @@ node scripts/validate-content.mjs --self-test
 node scripts/validate-content.mjs --check-contracts
 ```
 
-自测不读取 `content/history.json`，覆盖 **86** 项真实正例/负例/边界（canonical 声明：`SELFTEST_COUNT=86`）。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。`--self-test` 会把上方的 canonical 声明与实际测试项数比对，不一致就直接失败（D7 防漂移）。
+自测不读取 `content/history.json`，覆盖 **150** 项真实正例/负例/边界（canonical 声明：`SELFTEST_COUNT=150`）。**自测全程不依赖可写 OS 临时目录，也不写工作区**（D4）：所有纯验证负例用内存克隆，媒体文件存在性检查用注入的内存文件系统。`--self-test` 会把上方的 canonical 声明与实际测试项数比对，不一致就直接失败（D7 防漂移）。
+
+#### 计数口径（三种自测，不要互相套用）
+
+`SELFTEST_COUNT` 只对应**现有自测**。另外两种自测的计数口径不同，不得用同一个数字：
+
+| 口径 | 命令 | 计的是什么 | 当前值 |
+|---|---|---|---|
+| **现有自测**（canonical，`SELFTEST_COUNT`） | `node scripts/validate-content.mjs --self-test` | 不需要 `content/history.json` 即可运行的全部正例/负例/边界 | **150** |
+| **含导读的完整内容自测** | `node scripts/validate-content.mjs --stage full`（需真实 content/history.json） | 5 篇历史部分导读 + 19 篇重点文章的深度门禁；依赖真实内容，**不计入 --self-test** | 随内容交付进度变化 |
+| **契约夹具自测** | `--self-test` 中对 `contracts/fixtures/*.json` 的断言 | 只覆盖夹具结构（valid-min、valid-early-campaign、map-phases） | 含在 150 内，不单独计数 |
+
+`--self-test` **不使用跳过模式**：所有项都真实执行，没有 skip 计入通过。导读文章的深度由 `--stage`/`--media` 门禁在真实内容上检查，而不是在自测里模拟。
 
 **契约一致性（7 项）**
 - `requirements.json` 与工单 canonical 清单逐字一致（36 条，id/description/scope/顺序/条数）；
@@ -490,7 +502,7 @@ node scripts/validate-content.mjs --check-contracts
 - 验证器能阻止结构性和引用性绕过，但无法自动判断历史陈述是否准确、观点是否公允、答案是否真正适龄；必须有人工评审（`tests/evidence/pedagogy.md`）。
 - D1 的时间校验只能保证**格式合法、窗口一致、先后自洽**；它无法判断某个历史时刻本身是否准确。历史准确性仍取决于 claim + locator + 人工评审。
 - D2 的五类分析只能保证**结构齐全、深度达标、有证据链接**；它无法判断分析是否真的解释了因果。
-- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（86/86、0 跳过、工作区 mtime 不变），仍不能替代中央审查环境中的独立验证。
+- D4 的只读可用性是**在把 TMP/TEMP 指向不可用路径的条件下实测**的（150/150、0 跳过、工作区 mtime 不变），仍不能替代中央审查环境中的独立验证。
 - D5 只能保证**每个强制小节达到字数下限**；它无法判断这 120 个汉字是否真的在回答“盟军为何连败”。字数达标是必要条件而非充分条件，仍需 rubric 人工评审。
-- D7 的漂移检查只比对**项目自己的契约文档**（`docs/research/coverage.md`、`contracts/README.md`）；如果任务板描述、工单或在其它文件里写了项数，验证器看不到。本轮的“实际 72 而非文档 71”之所以发生，正是因为当时没有这条断言——现在有了。
+- D7 的漂移检查只比对**项目自己的契约文档**（`docs/research/coverage.md`、`contracts/README.md`）；如果任务板描述、工单或在其它文件里写了项数，验证器看不到。历史上那次「文档与代码项数不一致」之所以发生，正是因为当时没有这条断言——现在有了。
 - 本任务提交后仅进入中央审查；**没有任何内容或契约被中央 verified/done**。

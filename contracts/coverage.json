@@ -106,32 +106,58 @@
     "concept-logistics"
   ],
   "stageOwnership": {
-    "description": "D3：每篇重点文章的交付阶段归属，是契约锁定而不是从 keyArticles[].stage 临时推断。key 必须是阶段 id，值是该阶段必须交付的 keyArticleIds；四个集合互不重叠、并集恰好等于 keyArticleIds。",
-    "strategy": ["event-overview-part-1-why-war"],
-    "background": ["event-overview-part-3-expansion"],
-    "pearl": [
-      "event-overview-part-2-pearl-harbor",
-      "battle-pearl-harbor",
-      "person-yamamoto-isoroku",
-      "person-nagumo-chuichi",
-      "concept-aircraft-carrier",
-      "concept-carrier-aircraft",
-      "concept-naval-aviation"
-    ],
-    "coral": [
-      "event-overview-part-4-turning-point",
-      "battle-coral-sea",
-      "person-fletcher-frank-jack",
-      "concept-radar",
-      "concept-codebreaking"
-    ],
-    "full": [
-      "event-overview-part-5-midway",
-      "battle-midway",
-      "person-nimitz-chester",
-      "person-spruance-raymond",
-      "concept-logistics"
-    ]
+    "description": "ARCH-02 单一阶段归属来源：每个阶段同时拥有 keyArticles（重点文章）与 events（必需事件）。验证器只从这里派生交付阶段，不再有第二套归属表或硬编码映射。requiredEvents[].stage 必须与 events 列表一致（交叉一致性负例）。",
+    "eventPartPolicy": "background 阶段的必需事件可以合法落在 part-3-expansion 或 part-4-turning-point 两个导读里（杜立特空袭即属后者），验证器按本表派生的允许集合判定，不再硬编码 background→part-3-expansion。",
+    "strategy": {
+      "keyArticles": ["event-overview-part-1-why-war"],
+      "events": ["event-japan-expansion-china", "event-us-oil-embargo-1941", "event-japan-war-decision-1941"]
+    },
+    "background": {
+      "keyArticles": ["event-overview-part-3-expansion"],
+      "events": [
+        "event-hong-kong-1941",
+        "event-malaya-singapore-1942",
+        "event-philippines-bataan-corregidor-1942",
+        "event-dutch-east-indies-1942",
+        "event-wake-island-1941",
+        "event-guam-1941",
+        "event-darwin-air-raid-1942",
+        "event-indian-ocean-raid-1942",
+        "event-doolittle-raid-1942"
+      ]
+    },
+    "pearl": {
+      "keyArticles": [
+        "event-overview-part-2-pearl-harbor",
+        "battle-pearl-harbor",
+        "person-yamamoto-isoroku",
+        "person-nagumo-chuichi",
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-naval-aviation"
+      ],
+      "events": ["event-us-declares-war-1941"]
+    },
+    "coral": {
+      "keyArticles": [
+        "event-overview-part-4-turning-point",
+        "battle-coral-sea",
+        "person-fletcher-frank-jack",
+        "concept-radar",
+        "concept-codebreaking"
+      ],
+      "events": ["event-us-carrier-raids-early-1942"]
+    },
+    "full": {
+      "keyArticles": [
+        "event-overview-part-5-midway",
+        "battle-midway",
+        "person-nimitz-chester",
+        "person-spruance-raymond",
+        "concept-logistics"
+      ],
+      "events": []
+    }
   },
   "requiredMediaTypes": {
     "event-overview-part-1-why-war": ["map"],
@@ -596,7 +622,7 @@
     },
     {
       "id": "event-doolittle-raid-1942",
-      "stage": "coral",
+      "stage": "background",
       "minimumDepth": {
         "articleSections": 2,
         "hanChars": 240,
@@ -616,7 +642,7 @@
     }
   ],
   "earlyCampaign": {
-    "description": "早期战役结构契约（D2）。每一个 early-campaign 事件都必须以早期战役小节的形式，完整回答 背景/经过/约束/结果/影响 五类分析问题；这不是散文建议，而是机器校验的分析结构。",
+    "description": "早期战役结构契约。ARCH-02 起，早期战役必须提供逐战役具名的 analysisProfiles 十键结构（见下），取代旧的固定五键 earlyCampaignAnalysis。旧五键在过渡期内仍被接受（见 legacyAnalysis 与 contracts/README.md 的过渡规则），但 HIST-01 之后新写的早期战役必须用 analysisProfiles。",
     "analysisKeys": [
       { "key": "background", "title": "背景", "question": "这场行动之前发生了什么？为什么会发生？" },
       { "key": "course", "title": "经过", "question": "谁在什么时候做了什么？按时间解释行动与转折。" },
@@ -624,6 +650,82 @@
       { "key": "results", "title": "结果", "question": "结果、损失与影响如何？写明统计口径与来源。" },
       { "key": "impact", "title": "影响", "question": "对后续战役、战略与平民意味着什么？" }
     ],
+    "legacyAnalysis": {
+      "description": "ARCH-02 过渡窗口：HIST-01 已交付内容仍携带旧五键 earlyCampaignAnalysis。本任务不编辑 content/history.json，因此验证器在过渡期内同时接受两种形状；analysisProfiles 才是目标结构。",
+      "acceptedShape": "earlyCampaignAnalysis",
+      "acceptedKeys": ["background", "course", "constraints", "results", "impact"],
+      "targetShape": "analysisProfiles",
+      "enforcement": "transition",
+      "legacyDisabledBy": "ARCH-02-flip（后续契约任务，届时只接受 analysisProfiles，旧五键报具名错误）"
+    },
+    "analysisProfiles": {
+      "description": "ARCH-02：逐战役具名分析键。键名在 contracts/README.md 与本节必须完全一致；每个键都有最小汉字数与必含要素，验证器逐事件强制。",
+      "minHanCharsPerKey": 80,
+      "minSourceIds": 1,
+      "minClaimIds": 1,
+      "keys": [
+        {
+          "key": "background",
+          "title": "背景",
+          "question": "这场行动之前发生了什么？为什么会发生？",
+          "requiredElements": ["此前局势", "起因"]
+        },
+        {
+          "key": "geography",
+          "title": "地理环境",
+          "question": "战场在哪里？距离、地形或海域条件如何？对作战意味着什么？",
+          "requiredElements": ["地点", "距离或地形", "战略意义"]
+        },
+        {
+          "key": "participants",
+          "title": "参与方与指挥",
+          "question": "双方哪些国家、军种、部队参与？指挥体系如何？",
+          "requiredElements": ["双方阵营", "参战部队或军种", "指挥关系"]
+        },
+        {
+          "key": "objectivesAndForces",
+          "title": "双方目标与军力",
+          "question": "双方各自想达到什么目标？投入了哪些兵力与装备？",
+          "requiredElements": ["日方目标", "盟方目标", "兵力或装备对比"]
+        },
+        {
+          "key": "constraints",
+          "title": "约束条件",
+          "question": "双方受到哪些情报、补给、距离、天气、时间或指挥链限制？",
+          "requiredElements": ["具体限制", "限制如何影响行动"]
+        },
+        {
+          "key": "course",
+          "title": "阶段经过",
+          "question": "按时间解释重要行动、转折点及其原因。",
+          "requiredElements": ["时间顺序", "转折点及原因"]
+        },
+        {
+          "key": "options",
+          "title": "可选方案与被排除它的约束",
+          "question": "当时有哪些真实可选方案？每个方案被什么约束排除？",
+          "requiredElements": ["真实选项", "排除它的约束"]
+        },
+        {
+          "key": "resultsAndLosses",
+          "title": "结果与损失口径",
+          "question": "结果与损失如何？采用的统计口径与来源是什么？",
+          "requiredElements": ["结果", "损失数字的口径"]
+        },
+        {
+          "key": "impact",
+          "title": "后续影响",
+          "question": "对后续战役、战略与当地平民意味着什么？",
+          "requiredElements": ["对后续战局的影响"]
+        },
+        {
+          "key": "uncertainty",
+          "title": "不确定性",
+          "question": "哪些有证据支持？哪些仍有争议？哪些无法确定？",
+          "requiredElements": ["有证据支持的内容", "争议或无法确定的内容"]
+        }
+      ]
+    },
     "minHanCharsPerKey": 80,
     "minSourceIds": 1,
     "minClaimIds": 1,
@@ -635,7 +737,8 @@
       "event-wake-island-1941",
       "event-guam-1941",
       "event-darwin-air-raid-1942",
-      "event-indian-ocean-raid-1942"
+      "event-indian-ocean-raid-1942",
+      "event-doolittle-raid-1942"
     ],
     "overviewTopics": {
       "description": "HIST-EXPANSION 要求同时解释“盟军为何连败”与“日本扩张中的补给/防御压力”。这两项不依赖单一事件，而由 part 3 导读的两个强制小节承担；这里把它们正式锁定为机器断言。",
@@ -643,6 +746,29 @@
       "requiredHeadings": ["盟军为何连续失败", "日本的补给与防御压力"],
       "minHanCharsPerHeading": 120
     }
+  },
+  "contentTransition": {
+    "description": "ARCH-02 过渡窗口：本任务不编辑 content/history.json，而已交付的 HIST-01 内容与新增严格检查存在冲突。这些字段决定新检查在过渡期内是报错还是仅警告，以及由哪个任务把 enforcement 收紧。",
+    "crossChapterContradictionEnforcement": "warn",
+    "crossChapterContradictionDisabledBy": "HIST-01 修订（修正达尔文 18 架飞机的类别矛盾）后由 ARCH-02-flip 改为 off",
+    "crossChapterContradictionReferenceCase": "event-darwin-air-raid-1942: 正文『十八架重型轰炸机』 vs claim『18 架俯冲轰炸机』",
+    "researchStatusEnforcedFrom": "HIST-01",
+    "note": "过渡期一律使用 warn 而不是跳过：违规仍然会被报告（--stage 输出警告），只是不作为门禁失败，避免本任务追溯破坏已接受集成。"
+  },
+  "mediaRegistry": {
+    "description": "ARCH-02：素材注册表迁移契约。素材条目从 history.json 顶层 media 迁移到 content/media.json（{version:1, media:[...]}），条目形状不变，articleIds 仍是文章关联。",
+    "file": "content/media.json",
+    "version": 1,
+    "consumers": {
+      "MEDIA-02": "写入 content/media.json（唯一的写入方）",
+      "HIST-04": "不写 content/media.json（内容任务只写 history.json）",
+      "QA-01": "运行 node scripts/validate-content.mjs --media 校验注册表与文件存在性",
+      "WEB-01": "只读消费 content/media.json",
+      "MAP-01": "只读消费 content/media.json"
+    },
+    "legacyHistoryMediaEnforcement": "transition",
+    "legacyDisabledBy": "MEDIA-02 完成迁移并从 history.json 删除 media 字段；之后 ARCH-02-flip 把 transition 改为 off",
+    "stageGateUnaffectedWhenMissing": true
   },
   "finalGate": {
     "stage": "full",

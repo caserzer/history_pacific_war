@@ -87,9 +87,14 @@ const SECTION_KEYS = [
 ];
 
 /**
- * 早期扩张战役必需的 5 类分析（D2）。与 coverage.earlyCampaign.analysisKeys 必须一致。
+ * 旧版早期扩张战役的 5 类分析（D2 / ARCH-01）。与 coverage.earlyCampaign.analysisKeys 一致。
+ * ARCH-02 起这是**过渡期遗留形状**：HIST-01 已交付内容仍携带它，
+ * 目标结构改为 ANALYSIS_PROFILE_KEYS（十键 analysisProfiles）。
+ * 过渡窗口由 coverage.earlyCampaign.legacyAnalysis.enforcement 控制，ARCH-02-flip 关闭。
  */
-const EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'];
+const LEGACY_EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'];
+// 向后兼容别名：既有规则、负例与 schema 断言仍用旧名。
+const EARLY_CAMPAIGN_KEYS = LEGACY_EARLY_CAMPAIGN_KEYS;
 
 /**
  * D6：从导读 ID 推断它代表的历史部分。
@@ -510,7 +515,9 @@ function parseCli(argv) {
     media: false,
     selfTest: false,
     checkContracts: false,
+    realContent: false,
     file: null,
+    mediaFile: null,
     root: null,
     help: false,
   };
@@ -536,6 +543,11 @@ function parseCli(argv) {
       const value = arg.slice('--stage='.length);
       if (!STAGE_IDS.includes(value)) errors.push(`--stage 必须是 ${STAGE_IDS.join('|')}，收到 ${value}`);
       else options.stage = value;
+    } else if (arg === '--media-file') {
+      const value = takeValue('--media-file');
+      if (value) options.mediaFile = value;
+    } else if (arg.startsWith('--media-file=')) {
+      options.mediaFile = arg.slice('--media-file='.length);
     } else if (arg === '--file') {
       const value = takeValue('--file');
       if (value) options.file = value;
@@ -552,6 +564,8 @@ function parseCli(argv) {
       options.selfTest = true;
     } else if (arg === '--check-contracts') {
       options.checkContracts = true;
+    } else if (arg === '--real-content') {
+      options.realContent = true;
     } else if (arg === '--help' || arg === '-h') {
       options.help = true;
     } else {
@@ -779,6 +793,7 @@ function validateCoverageContract(coverage) {
     addError(errors, 'battleSectionMinHanChars 必须是 >=40 的数字');
   }
   errors.push(...validateEarlyCampaignContract(coverage));
+  errors.push(...validateAnalysisProfilesContract(coverage));
   errors.push(...validateStageOwnershipContract(coverage));
   errors.push(...validateMediaTypeContract(coverage));
   if (typeof coverage.questionMinimumAnswerHanChars !== 'number' || coverage.questionMinimumAnswerHanChars < 60) {
@@ -907,21 +922,162 @@ function isEarlyCampaignEvent(event, coverage) {
   return typeof event.id === 'string' && block.eventIds.includes(event.id);
 }
 
+/**
+ * ARCH-02：analysisProfiles 的十键定义（代码侧镜像）。
+ * 键名必须与 contracts/coverage.json 的 earlyCampaign.analysisProfiles.keys
+ * 以及 contracts/README.md 完全一致；契约侧一致性由 validateAnalysisProfilesContract 校验。
+ */
+const ANALYSIS_PROFILE_KEYS = [
+  'background',
+  'geography',
+  'participants',
+  'objectivesAndForces',
+  'constraints',
+  'course',
+  'options',
+  'resultsAndLosses',
+  'impact',
+  'uncertainty',
+];
+
+/**
+ * `options` 必须同时写明“真实可选方案”和“排除它的约束”。
+ */
+const OPTIONS_CONSTRAINT_MARKERS = /(因为|由于|受限于|无法|不能|缺乏|不足|没有足够|只有|被迫|否则|代价|风险|约束|限制)/;
+const OPTIONS_CHOICE_MARKERS = /(可以|本来|原本|曾考虑|可选|另一个选择|方案|选项|要么|或者)/;
+
+/**
+ * `uncertainty` 必须同时区分“有证据支持”与“争议/无法确定”。
+ */
+const UNCERTAINTY_EVIDENCE_MARKERS = /(有证据|据.*记载|档案|史料|来源显示|可以确认|已有记录|文献)/;
+const UNCERTAINTY_DISPUTE_MARKERS = /(争议|无法确定|不确定|存疑|不同说法|尚无定论|不能判定|资料不足|难以确认)/;
+
+/**
+ * ARCH-02 的研究过程措辞黑名单：这类内容只能写进 researchStatus，
+ * 不得出现在正文、事件 summary 或 claim 文本里。自 HIST-01 起生效。
+ */
+const RESEARCH_PROCESS_PATTERNS = [
+  /本文(?:作者|团队)?(?:仍在|正在|尚未)?(?:检索|查证|搜集|调研|整理资料)/,
+  /(?:待|尚待|有待)(?:查证|核实|补充资料|进一步检索)/,
+  /(?:本|此)(?:节|文|段)(?:资料|证据)(?:尚|仍)?(?:不足|待补)/,
+  /(?:检索|调研|查证)(?:中|过程|状态|进度)/,
+  /(?:尚未|还未)(?:找到|取得|获得)(?:可靠)?(?:来源|资料|证据)/,
+  /TODO|FIXME|待补|占位|placeholder/i,
+];
+
+function findResearchProcessWording(text) {
+  if (typeof text !== 'string' || text.length === 0) return null;
+  for (const pattern of RESEARCH_PROCESS_PATTERNS) {
+    if (pattern.test(text)) return pattern;
+  }
+  return null;
+}
+
+/**
+ * 单个早期扩张事件的分析结构检查（D2 → ARCH-02）。
+ *
+ * 过渡规则（见 contracts/README.md 与 docs/research/contract-correction.md）：
+ *   · 若事件提供 `analysisProfiles`（目标结构），按十键全面强制；
+ *   · 若只提供旧 `earlyCampaignAnalysis`（五键），在过渡窗口内仍校验其五键深度，
+ *     因为 HIST-01 已交付内容携带该形状，而本任务不编辑 content/history.json；
+ *   · 两者都没有 → 具名错误。
+ * ARCH-02-flip 任务会把过渡窗口关掉，届时只接受 analysisProfiles。
+ */
 function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
   const block = coverage.earlyCampaign || {};
-  const analysis = isPlainObject(event) ? event.earlyCampaignAnalysis : null;
-  if (!isPlainObject(analysis)) {
+  if (!isPlainObject(event)) return;
+
+  const profilesBlock = isPlainObject(block.analysisProfiles) ? block.analysisProfiles : {};
+  const profileKeys = Array.isArray(profilesBlock.keys) && profilesBlock.keys.length > 0
+    ? profilesBlock.keys
+    : ANALYSIS_PROFILE_KEYS.map((key) => ({ key, title: null }));
+  const minHan = profilesBlock.minHanCharsPerKey || block.minHanCharsPerKey || 80;
+
+  const hasProfiles = isPlainObject(event.analysisProfiles);
+  const legacy = isPlainObject(event.earlyCampaignAnalysis) ? event.earlyCampaignAnalysis : null;
+
+  if (!hasProfiles && !legacy) {
     addError(
       errors,
-      `${pointer}.earlyCampaignAnalysis: 早期扩张战役必须提供 ${EARLY_CAMPAIGN_KEYS.join('/')} 五类分析结构`,
+      `${pointer}.analysisProfiles: 早期扩张战役必须提供 analysisProfiles（${profileKeys.map((k) => k.key).join('/')} 十键分析结构）；过渡期内也接受旧 earlyCampaignAnalysis`,
     );
     return;
   }
-  const minHan = block.minHanCharsPerKey || 80;
-  for (const key of EARLY_CAMPAIGN_KEYS) {
-    const section = analysis[key];
+
+  if (hasProfiles) {
+    // ---- 目标结构：十键全面强制 ----
+    const profiles = event.analysisProfiles;
+    for (const key of ANALYSIS_PROFILE_KEYS) {
+      if (!hasOwn(profiles, key)) {
+        addError(errors, `${pointer}.analysisProfiles.${key}: 缺少必需的 '${key}' 分析小节（十键必须全部存在）`);
+      }
+    }
+    for (const entry of profileKeys) {
+      const key = entry && entry.key;
+      if (!key) continue;
+      const section = profiles[key];
+      if (!isPlainObject(section)) continue; // 缺失已在上面的循环里报过
+      const sectionPointer = `${pointer}.analysisProfiles.${key}`;
+      if (entry.title && comparableText(section.title) !== entry.title) {
+        addError(errors, `${sectionPointer}.title: 必须是 '${entry.title}'`);
+      }
+      const han = hanCount(section.body);
+      if (han < minHan) {
+        addError(errors, `${sectionPointer}.body: 只有 ${han} 个汉字，每键分析至少需要 ${minHan} 个`);
+      }
+      checkEvidence(section, sectionPointer, maps, errors);
+      if (unionSets(section.sourceIds).size < (profilesBlock.minSourceIds || 1)) {
+        addError(errors, `${sectionPointer}: 至少需要 ${profilesBlock.minSourceIds || 1} 个来源`);
+      }
+      if (unionSets(section.claimIds).size < (profilesBlock.minClaimIds || 1)) {
+        addError(errors, `${sectionPointer}: 至少需要 ${profilesBlock.minClaimIds || 1} 个 claim`);
+      }
+    }
+    // options：必须同时写明真实选项与被排除它的约束
+    const optionsSection = profiles.options;
+    if (isPlainObject(optionsSection) && typeof optionsSection.body === 'string') {
+      const body = optionsSection.body;
+      if (!OPTIONS_CHOICE_MARKERS.test(body)) {
+        addError(
+          errors,
+          `${pointer}.analysisProfiles.options: 没有写出真实可选方案（需要出现“可以/方案/选项/原本”等具体选项表述）`,
+        );
+      }
+      if (!OPTIONS_CONSTRAINT_MARKERS.test(body)) {
+        addError(
+          errors,
+          `${pointer}.analysisProfiles.options: 没有写出排除该方案的约束（需要说明为何做不到：补给/情报/时间/距离等）`,
+        );
+      }
+    }
+    // uncertainty：必须区分有证据支持 / 争议或无法确定
+    const uncertaintySection = profiles.uncertainty;
+    if (isPlainObject(uncertaintySection) && typeof uncertaintySection.body === 'string') {
+      const body = uncertaintySection.body;
+      if (!UNCERTAINTY_EVIDENCE_MARKERS.test(body)) {
+        addError(errors, `${pointer}.analysisProfiles.uncertainty: 没有写明哪些内容有证据支持`);
+      }
+      if (!UNCERTAINTY_DISPUTE_MARKERS.test(body)) {
+        addError(errors, `${pointer}.analysisProfiles.uncertainty: 没有写明哪些内容存在争议或无法确定`);
+      }
+    }
+    return;
+  }
+
+  // ---- 过渡窗口：旧五键仍被接受，但按旧规则校验深度 ----
+  const legacyMode = block.legacyAnalysis && block.legacyAnalysis.enforcement;
+  if (legacyMode === 'off') {
+    addError(
+      errors,
+      `${pointer}.earlyCampaignAnalysis: 旧五键结构已被停用（ARCH-02-flip 之后只接受 analysisProfiles），请迁移到 analysisProfiles`,
+    );
+    return;
+  }
+  const legacyMin = block.minHanCharsPerKey || 80;
+  for (const key of LEGACY_EARLY_CAMPAIGN_KEYS) {
+    const section = legacy[key];
     if (!isPlainObject(section)) {
-      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 缺少必需的 '${key}' 分析小节`);
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 缺少必需的 '${key}' 分析小节（过渡期仍在校验旧五键）`);
       continue;
     }
     const canonicalTitle = (Array.isArray(block.analysisKeys) ? block.analysisKeys : []).find((entry) => entry && entry.key === key);
@@ -929,15 +1085,14 @@ function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
       addError(errors, `${pointer}.earlyCampaignAnalysis.${key}.title: 必须是 '${canonicalTitle.title}'`);
     }
     const han = hanCount(section.body);
-    if (han < minHan) {
+    if (han < legacyMin) {
       addError(
         errors,
-        `${pointer}.earlyCampaignAnalysis.${key}.body: 只有 ${han} 个汉字，早期战役每类分析至少需要 ${minHan} 个`,
+        `${pointer}.earlyCampaignAnalysis.${key}.body: 只有 ${han} 个汉字，过渡期旧五键每类分析至少需要 ${legacyMin} 个`,
       );
     }
     checkEvidence(section, `${pointer}.earlyCampaignAnalysis.${key}`, maps, errors);
-    const sectionSources = unionSets(section.sourceIds);
-    if (sectionSources.size < (block.minSourceIds || 1)) {
+    if (unionSets(section.sourceIds).size < (block.minSourceIds || 1)) {
       addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 至少需要 ${block.minSourceIds || 1} 个来源`);
     }
     if (unionSets(section.claimIds).size < (block.minClaimIds || 1)) {
@@ -947,39 +1102,408 @@ function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
 }
 
 /**
- * 交付阶段归属契约自检（D3）。
+ * ARCH-02 R2：analysisProfiles 契约自检。
+ * 保证键名集合、最小深度、必含要素在 coverage.json 中完整声明，
+ * 并与代码侧 ANALYSIS_PROFILE_KEYS 一致（README 由 D7 式文档断言覆盖）。
+ */
+function validateAnalysisProfilesContract(coverage) {
+  const errors = [];
+  const block = coverage && coverage.earlyCampaign;
+  if (!isPlainObject(block)) return ['coverage.earlyCampaign 缺失'];
+  const profiles = block.analysisProfiles;
+  if (!isPlainObject(profiles)) {
+    return ['coverage.earlyCampaign.analysisProfiles 缺失：早期战役必须声明十键具名分析结构'];
+  }
+  const keys = Array.isArray(profiles.keys) ? profiles.keys.map((entry) => entry && entry.key) : [];
+  if (canonicalJson(keys) !== canonicalJson(ANALYSIS_PROFILE_KEYS)) {
+    errors.push(
+      `coverage.earlyCampaign.analysisProfiles.keys 必须严格为 ${ANALYSIS_PROFILE_KEYS.join(', ')}，实际 ${keys.join(', ') || '空'}`,
+    );
+  }
+  for (const entry of Array.isArray(profiles.keys) ? profiles.keys : []) {
+    if (!isPlainObject(entry)) {
+      errors.push('coverage.earlyCampaign.analysisProfiles.keys 含非对象项');
+      continue;
+    }
+    if (!isNonEmptyString(entry.title)) errors.push(`analysisProfiles.${entry.key}: 缺少中文标题`);
+    if (!isNonEmptyString(entry.question)) errors.push(`analysisProfiles.${entry.key}: 缺少分析问题描述`);
+    if (!Array.isArray(entry.requiredElements) || entry.requiredElements.length === 0) {
+      errors.push(`analysisProfiles.${entry.key}: 缺少 requiredElements（必含要素）`);
+    }
+  }
+  if (typeof profiles.minHanCharsPerKey !== 'number' || profiles.minHanCharsPerKey < 40) {
+    errors.push('coverage.earlyCampaign.analysisProfiles.minHanCharsPerKey 必须是 >=40 的数字');
+  }
+  if (typeof profiles.minSourceIds !== 'number' || profiles.minSourceIds < 1) {
+    errors.push('coverage.earlyCampaign.analysisProfiles.minSourceIds 必须是 >=1 的数字');
+  }
+  if (typeof profiles.minClaimIds !== 'number' || profiles.minClaimIds < 1) {
+    errors.push('coverage.earlyCampaign.analysisProfiles.minClaimIds 必须是 >=1 的数字');
+  }
+  const legacy = block.legacyAnalysis;
+  if (!isPlainObject(legacy)) {
+    errors.push('coverage.earlyCampaign.legacyAnalysis 缺失：必须声明过渡窗口的旧五键接受规则');
+  } else {
+    if (!['transition', 'off'].includes(legacy.enforcement)) {
+      errors.push(`coverage.earlyCampaign.legacyAnalysis.enforcement 必须是 transition 或 off，实际 ${JSON.stringify(legacy.enforcement)}`);
+    }
+    if (!isNonEmptyString(legacy.legacyDisabledBy)) {
+      errors.push('coverage.earlyCampaign.legacyAnalysis.legacyDisabledBy 必须写明由哪个任务关闭过渡窗口');
+    }
+  }
+  return errors;
+}
+
+/**
+ * ARCH-02：跨章节数值/类别一致性检查。
+ *
+ * 参考案例（达尔文空袭）：正文写“十八架重型轰炸机出现”，而同一事件的 claim 写
+ * “18 架俯冲轰炸机”。同一个数字 18 在不同章节被归到不同的机种类别，读者会得到
+ * 矛盾信息。检查会精确指出事件 ID、数字与两侧章节。
+ *
+ * 过渡规则：HIST-01 已交付内容中存在该矛盾，本任务不编辑 content/history.json，
+ * 因此按 coverage.contentTransition.crossChapterContradictionEnforcement 决定
+ * 报错或警告；HIST-01 的后续修订任务修好内容后由 ARCH-02-flip 把 enforcement 改为 off（严格）。
+ */
+const AIRCRAFT_CATEGORY_PATTERNS = [
+  { category: 'dive-bomber', pattern: /(俯冲轰炸机|俯冲轰炸)/ },
+  { category: 'level-bomber', pattern: /(水平轰炸机|重型轰炸机|陆基轰炸机|岸基轰炸机)/ },
+  { category: 'fighter', pattern: /(战斗机|零式战斗机|歼击机)/ },
+  { category: 'torpedo-bomber', pattern: /(鱼雷机|鱼雷轰炸机)/ },
+  { category: 'floatplane', pattern: /(水上飞机|飞行艇)/ },
+];
+
+/**
+ * 中文数字解析（ARCH-02 a2 修复 D1）。
+ *
+ * 覆盖：半角数字（18）、全角数字（１８）、中文数字（十八 / 二十四 / 七十二 /
+ * 一百四十 / 两百 / 三千）以及「两百」「二百」等口语形式。
+ * 旧实现只有一张到 72 为止的查表，既不能处理全角数字，也不能处理 >99 的数，
+ * 因此「一百四十架俯冲轰炸机」这类写法会被静默漏检。
+ */
+const CN_DIGIT = { 零: 0, 〇: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+const CN_UNIT = { 十: 10, 百: 100, 千: 1000 };
+
+/**
+ * 把全角数字字符转成半角，便于统一处理。
+ */
+function normalizeFullWidthDigits(text) {
+  if (typeof text !== 'string') return '';
+  let out = '';
+  for (const ch of text) {
+    const code = ch.codePointAt(0);
+    // 全角 ０-９ (U+FF10–U+FF19) → 半角
+    if (code >= 0xff10 && code <= 0xff19) out += String.fromCharCode(code - 0xff10 + 0x30);
+    else out += ch;
+  }
+  return out;
+}
+
+/**
+ * 解析一个数字片段为整数；无法解析时返回 null。
+ * 支持半角、全角与中文数字（含十/百/千）。
+ */
+function parseAircraftCount(raw) {
+  if (typeof raw !== 'string' || raw.length === 0) return null;
+  const text = normalizeFullWidthDigits(raw).trim();
+  if (/^[0-9]+$/u.test(text)) return Number(text);
+  if (!/^[零〇一二两三四五六七八九十百千]+$/u.test(text)) return null;
+  let section = 0;
+  let digit = 0;
+  let sawAny = false;
+  for (const ch of text) {
+    sawAny = true;
+    if (hasOwn(CN_DIGIT, ch)) {
+      digit = CN_DIGIT[ch];
+    } else if (hasOwn(CN_UNIT, ch)) {
+      const unit = CN_UNIT[ch];
+      // 「十八」：十前面没有数字时视为 1
+      if (digit === 0) digit = 1;
+      section += digit * unit;
+      digit = 0;
+    } else {
+      return null;
+    }
+  }
+  if (!sawAny) return null;
+  const total = section + digit;
+  return total > 0 ? total : null;
+}
+
+/**
+ * 抽取文本中所有的 (数量, 机种类别) 断言。
+ */
+function extractAircraftClaims(text) {
+  const found = [];
+  if (typeof text !== 'string' || text.length === 0) return found;
+  // 先归一化全角数字，再匹配：
+  //   “18 架俯冲轰炸机” / “十八架重型轰炸机” / “一百四十架水平轰炸机” / “两百架战斗机”
+  const normalized = normalizeFullWidthDigits(text);
+  const regex = /([0-9]{1,4}|[零〇一二两三四五六七八九十百千]+)\s*架\s*([\u4e00-\u9fff]{1,8})/gu;
+  let match;
+  while ((match = regex.exec(normalized)) !== null) {
+    const count = parseAircraftCount(match[1]);
+    if (count === null) continue;
+    const tail = match[2];
+    for (const { category, pattern } of AIRCRAFT_CATEGORY_PATTERNS) {
+      if (pattern.test(tail)) {
+        found.push({ count, category, raw: match[0] });
+        break;
+      }
+    }
+  }
+  return found;
+}
+
+/**
+ * 取出与某个事件关联的 claim 条目（事件自身 claimIds + 引用该事件的 claim）。
+ * 用于跨章节一致性检查，把正文叙述与证据文本放在一起比较。
+ */
+function relatedClaimEntries(event, maps) {
+  const entries = [];
+  const seen = new Set();
+  const push = (claimId) => {
+    if (typeof claimId !== 'string' || seen.has(claimId)) return;
+    const claim = maps.claims.get(claimId);
+    if (!claim) return;
+    seen.add(claimId);
+    entries.push([claimId, claim]);
+  };
+  for (const claimId of Array.isArray(event.claimIds) ? event.claimIds : []) push(claimId);
+  for (const [claimId, claim] of maps.claims.entries()) {
+    if (Array.isArray(claim.entityIds) && claim.entityIds.includes(event.id)) push(claimId);
+  }
+  return entries;
+}
+
+/**
+ * 跨章节矛盾检查在过渡期的执行模式：'warn'（默认）或 'off'（严格报错）。
+ */
+function contradictionEnforcement(coverage) {
+  const block = coverage && coverage.contentTransition;
+  const mode = block && block.crossChapterContradictionEnforcement;
+  return mode === 'off' ? 'off' : 'warn';
+}
+
+/**
+ * 检查单个事件的跨章节数值/类别矛盾。
+ * @returns {string[]} 错误信息（空数组表示一致）
+ */
+function crossChapterContradictionErrors(event, pointer) {
+  const errors = [];
+  if (!isPlainObject(event)) return errors;
+  // 收集每个数字在各处被赋予的类别
+  const byCount = new Map(); // count -> { category -> [locations] }
+  const record = (count, category, location) => {
+    if (!byCount.has(count)) byCount.set(count, new Map());
+    const cats = byCount.get(count);
+    if (!cats.has(category)) cats.set(category, []);
+    cats.get(category).push(location);
+  };
+
+  for (const [index, section] of (Array.isArray(event.article) ? event.article : []).entries()) {
+    if (!isPlainObject(section)) continue;
+    const heading = comparableText(section.heading);
+    for (const item of extractAircraftClaims(section.body)) {
+      record(item.count, item.category, `正文 article[${index}]（'${heading}'）: ${item.raw}`);
+    }
+  }
+  if (typeof event.summary === 'string') {
+    for (const item of extractAircraftClaims(event.summary)) {
+      record(item.count, item.category, `事件 summary: ${item.raw}`);
+    }
+  }
+  // claim 文本需要由调用方传入（claim 不内嵌在 event 里）
+  for (const [claimId, claim] of Array.isArray(event.__relatedClaims) ? event.__relatedClaims : []) {
+    for (const item of extractAircraftClaims(claim.text)) {
+      record(item.count, item.category, `claim ${claimId}: ${item.raw}`);
+    }
+  }
+
+  for (const [count, cats] of byCount.entries()) {
+    if (cats.size <= 1) continue;
+    const detail = [...cats.entries()]
+      .map(([category, locations]) => `${category} ← ${locations.join('；')}`)
+      .join(' ‖ ');
+    errors.push(
+      `${pointer}: 跨章节数值/类别矛盾 —— 同一个数字 ${count} 架在不同位置被归为不同机种：${detail}。` +
+        ` 请统一类别，或在正文明确说明这是不同来源的分类差异（改写成 disputed claim）。`,
+    );
+  }
+  return errors;
+}
+
+/**
+ * ARCH-02 R3：研究/检索过程状态只能写在 `researchStatus` 字段里。
+ *
+ * 该负例**自 HIST-01 起生效**：HIST-01 起交付的事件必须把“还在检索/待补资料/
+ * 尚未取得来源”这类过程状态放进 researchStatus（枚举），而正文、summary 与
+ * claim 文本只写结论。研究过程措辞出现在这些位置就是错误。
+ */
+const RESEARCH_STATUS_ENUM = ['not-started', 'sources-identified', 'sources-retrieved', 'cross-checked', 'final'];
+
+function researchStatusErrors(event, pointer, errors) {
+  if (!isPlainObject(event)) return;
+  // 1) researchStatus 本身必须是合法枚举
+  if (hasOwn(event, 'researchStatus') && event.researchStatus !== undefined && event.researchStatus !== null) {
+    if (!RESEARCH_STATUS_ENUM.includes(event.researchStatus)) {
+      addError(
+        errors,
+        `${pointer}.researchStatus: 必须是 ${RESEARCH_STATUS_ENUM.join('|')} 之一，实际 ${JSON.stringify(event.researchStatus)}`,
+      );
+    }
+  }
+  // 2) 事件 summary 不得出现研究过程措辞
+  if (typeof event.summary === 'string') {
+    const matched = findResearchProcessWording(event.summary);
+    if (matched) {
+      addError(
+        errors,
+        `${pointer}.summary: 出现研究/检索过程措辞（/${matched.source}/）；过程状态只能写进 researchStatus 字段（自 HIST-01 起生效）`,
+      );
+    }
+  }
+  // 3) 正文各小节不得出现研究过程措辞
+  for (const [articleIndex, section] of (Array.isArray(event.article) ? event.article : []).entries()) {
+    if (!isPlainObject(section) || typeof section.body !== 'string') continue;
+    const matched = findResearchProcessWording(section.body);
+    if (matched) {
+      addError(
+        errors,
+        `${pointer}.article[${articleIndex}] ('${comparableText(section.heading)}').body: 出现研究/检索过程措辞（/${matched.source}/）；过程状态只能写进 researchStatus 字段（自 HIST-01 起生效）`,
+      );
+    }
+  }
+}
+
+const RESEARCH_STATUS_ENUM_KEYS = RESEARCH_STATUS_ENUM;
+
+/**
+ * 交付阶段归属契约自检（D3 + ARCH-02 单一来源）。
+ *
+ * ARCH-02 起，`stageOwnership.<stage>` 是对象 `{ keyArticles: [...], events: [...] }`，
+ * 它是**唯一**的阶段归属来源：验证器只从这里派生交付阶段，requiredEvents[].stage
+ * 必须与之交叉一致，不存在第二套归属表或别名。
+ *
  * 不变式：
- *   1. stageOwnership 只包含合法阶段 id；
+ *   1. stageOwnership 只包含合法阶段 id，五个阶段一个不缺；
  *   2. keyArticleIds 中每一篇都被恰好一个阶段拥有（不重不漏）；
  *   3. 每篇文章的 keyArticles[].stage 必须等于拥有它的阶段；
- *   4. 每个阶段都必须确实拥有至少一篇文章（否则该阶段门禁形同虚设）。
+ *   4. 每个阶段都必须拥有至少一篇文章（否则该阶段门禁形同虚设）；
+ *   5. [ARCH-02] requiredEvents 中每个事件必须恰好被一个阶段的 events 拥有；
+ *   6. [ARCH-02] requiredEvents[].stage 必须等于拥有它的阶段（交叉一致性）。
  */
+/**
+ * ARCH-02：从 stageOwnership 单一来源派生查询。
+ * 这些函数是验证器唯一的事件阶段归属来源；不存在第二套表或别名。
+ */
+function ownershipStageForEvent(coverage, eventId) {
+  const ownership = coverage && coverage.stageOwnership;
+  if (!isPlainObject(ownership)) return null;
+  for (const stage of STAGE_IDS) {
+    const value = ownership[stage];
+    if (isPlainObject(value) && Array.isArray(value.events) && value.events.includes(eventId)) return stage;
+  }
+  return null;
+}
+
+function ownedEventIds(coverage, stage) {
+  const value = coverage && coverage.stageOwnership ? coverage.stageOwnership[stage] : null;
+  if (!isPlainObject(value) || !Array.isArray(value.events)) return [];
+  return value.events.slice();
+}
+
+/**
+ * ARCH-02 的 backgroundGate：**只**引用 stageOwnership.background.events。
+ * 返回值用于 --check-contracts 打印实际引用的 ID 列表，便于审查。
+ */
+function backgroundGateEventIds(coverage) {
+  return ownedEventIds(coverage, 'background');
+}
+
+/**
+ * ARCH-02：事件允许的历史部分集合，按 stageOwnership 派生。
+ *
+ * 取代旧的硬编码 background→part-3-expansion。规则：
+ *   · 事件所属阶段的**所有导读重点文章**的 historicalPart 都算合法；
+ *   · 额外允许 `stageOwnership.eventPartPolicy` 中显式声明的跨阶段部分
+ *     （background 事件可落在 part-3 或 part-4）。
+ * 这样杜立特空袭（background 阶段、part-4 导读）合法，而错配仍然会被拒绝。
+ */
+function allowedPartsForStage(coverage, stage) {
+  const parts = new Set();
+  const ownership = coverage && coverage.stageOwnership;
+  if (!isPlainObject(ownership)) return parts;
+  const pushArticlePart = (articleId) => {
+    const entry = (Array.isArray(coverage.keyArticles) ? coverage.keyArticles : []).find((item) => item && item.id === articleId);
+    if (entry && PART_IDS.includes(entry.historicalPart)) parts.add(entry.historicalPart);
+  };
+  // 1) 本阶段拥有的导读文章所代表的历史部分
+  const value = ownership[stage];
+  if (isPlainObject(value) && Array.isArray(value.keyArticles)) {
+    for (const articleId of value.keyArticles) pushArticlePart(articleId);
+  }
+  // 2) 事件可合法落在的其它导读（例如 background 事件也写进 part-4）
+  const crossStage = DECLARED_EVENT_PART_CROSSINGS[stage];
+  if (Array.isArray(crossStage)) {
+    for (const articleId of crossStage) pushArticlePart(articleId);
+  }
+  return parts;
+}
+
+/**
+ * 事件可跨导读写入的显式声明（ARCH-02 eventPartPolicy 的代码侧镜像）。
+ * 与 coverage.stageOwnership.eventPartPolicy 文本一致：
+ * background 阶段的事件可以合法落在 part-3-expansion 或 part-4-turning-point。
+ * 这是“允许集合”，不是归属表——归属仍只来自 stageOwnership.events。
+ */
+const DECLARED_EVENT_PART_CROSSINGS = {
+  background: ['event-overview-part-4-turning-point'],
+};
+
 function validateStageOwnershipContract(coverage) {
   const errors = [];
   const ownership = coverage.stageOwnership;
   if (!isPlainObject(ownership)) {
-    return ['coverage.stageOwnership 缺失：重点文章的交付阶段归属必须被契约锁定'];
+    return ['coverage.stageOwnership 缺失：重点文章与事件的交付阶段归属必须被契约锁定'];
   }
   const keyIds = Array.isArray(coverage.keyArticleIds) ? coverage.keyArticleIds : [];
   const keySet = new Set(keyIds);
 
-  const ownershipStages = Object.keys(ownership).filter((key) => key !== 'description');
+  const metaKeys = new Set(['description', 'eventPartPolicy']);
+  const ownershipStages = Object.keys(ownership).filter((key) => !metaKeys.has(key));
   for (const stage of ownershipStages) {
     if (!STAGE_IDS.includes(stage)) errors.push(`coverage.stageOwnership 含未知阶段 '${stage}'`);
   }
   for (const stage of STAGE_IDS) {
-    if (!hasOwn(ownership, stage)) errors.push(`coverage.stageOwnership 缺少阶段 '${stage}'`);
-    else if (!Array.isArray(ownership[stage])) errors.push(`coverage.stageOwnership.${stage} 必须是数组`);
+    if (!hasOwn(ownership, stage)) {
+      errors.push(`coverage.stageOwnership 缺少阶段 '${stage}'`);
+      continue;
+    }
+    const value = ownership[stage];
+    if (!isPlainObject(value)) {
+      errors.push(`coverage.stageOwnership.${stage} 必须是对象 { keyArticles, events }`);
+      continue;
+    }
+    if (!Array.isArray(value.keyArticles)) errors.push(`coverage.stageOwnership.${stage}.keyArticles 必须是数组`);
+    if (!Array.isArray(value.events)) errors.push(`coverage.stageOwnership.${stage}.events 必须是数组`);
+    // 不允许遗留旧的裸数组形态或额外别名键
+    for (const key of Object.keys(value)) {
+      if (key !== 'keyArticles' && key !== 'events') {
+        errors.push(`coverage.stageOwnership.${stage} 含未定义键 '${key}'（只允许 keyArticles 与 events）`);
+      }
+    }
   }
 
   const ownedCounts = new Map();
   for (const stage of STAGE_IDS) {
-    const list = Array.isArray(ownership[stage]) ? ownership[stage] : [];
+    const value = ownership[stage];
+    const list = isPlainObject(value) && Array.isArray(value.keyArticles) ? value.keyArticles : [];
     if (list.length === 0) errors.push(`coverage.stageOwnership.${stage}: 该阶段没有拥有任何重点文章`);
     for (const id of list) {
       ownedCounts.set(id, (ownedCounts.get(id) || 0) + 1);
       if (!keySet.has(id)) {
-        errors.push(`coverage.stageOwnership.${stage}: '${id}' 不是 keyArticleIds 中的重点文章（孤立 ID）`);
+        errors.push(`coverage.stageOwnership.${stage}.keyArticles: '${id}' 不是 keyArticleIds 中的重点文章（孤立 ID）`);
       }
     }
   }
@@ -996,11 +1520,52 @@ function validateStageOwnershipContract(coverage) {
     if (!isPlainObject(entry)) continue;
     let declaredStage = null;
     for (const stage of STAGE_IDS) {
-      if (Array.isArray(ownership[stage]) && ownership[stage].includes(entry.id)) declaredStage = stage;
+      const value = ownership[stage];
+      if (isPlainObject(value) && Array.isArray(value.keyArticles) && value.keyArticles.includes(entry.id)) {
+        declaredStage = stage;
+      }
     }
     if (declaredStage && entry.stage !== declaredStage) {
       errors.push(
         `coverage.keyArticles ${entry.id}: stage='${entry.stage}' 与 stageOwnership 的 '${declaredStage}' 不一致`,
+      );
+    }
+  }
+
+  // --- ARCH-02：事件的单一归属与交叉一致性 ---
+  const requiredEvents = Array.isArray(coverage.requiredEvents) ? coverage.requiredEvents : [];
+  const eventStageById = new Map();
+  for (const entry of requiredEvents) {
+    if (isPlainObject(entry) && typeof entry.id === 'string') eventStageById.set(entry.id, entry.stage);
+  }
+  const ownedEventStages = new Map(); // id -> [stage,...]
+  for (const stage of STAGE_IDS) {
+    const value = ownership[stage];
+    if (!isPlainObject(value) || !Array.isArray(value.events)) continue;
+    for (const id of value.events) {
+      if (!ownedEventStages.has(id)) ownedEventStages.set(id, []);
+      ownedEventStages.get(id).push(stage);
+      if (!eventStageById.has(id)) {
+        errors.push(
+          `coverage.stageOwnership.${stage}.events: '${id}' 不在 requiredEvents 中（events 归属必须引用已登记的必需事件）`,
+        );
+      }
+    }
+  }
+  for (const [id, stages] of ownedEventStages.entries()) {
+    if (stages.length > 1) {
+      errors.push(`事件 '${id}' 被 ${stages.length} 个阶段重复拥有（${stages.join(', ')}）；每个事件必须只有一个交付阶段`);
+    }
+  }
+  for (const [id, stage] of eventStageById.entries()) {
+    const owned = ownedEventStages.get(id);
+    if (!owned) {
+      errors.push(`requiredEvents '${id}' 没有登记到 stageOwnership.<stage>.events（阶段归属必须单一来源）`);
+      continue;
+    }
+    if (owned.length === 1 && owned[0] !== stage) {
+      errors.push(
+        `requiredEvents '${id}': stage='${stage}' 与 stageOwnership 事件归属 '${owned[0]}' 不一致（单一来源交叉一致性）`,
       );
     }
   }
@@ -1694,7 +2259,8 @@ function validateConcept(concept, index, errors, maps) {
 }
 
 function validateMedia(media, index, errors, maps, coverage, options) {
-  const pointer = `$.media[${index}]`;
+  const base = (options && options.mediaPointer) || '$.media';
+  const pointer = `${base}[${index}]`;
   if (!ALLOWED_LICENSES.includes(media.license)) {
     addError(errors, `${pointer}.license: 无效或不可复用的许可 '${media.license}'；允许 ${ALLOWED_LICENSES.join(', ')}`);
   }
@@ -1972,20 +2538,23 @@ function validateCoverageGate(doc, maps, coverage, stage, errors) {
 
   for (const entry of coverage.requiredEvents) {
     const event = maps.events.get(entry.id);
-    const reached = stageReached(stage, entry.stage);
+    // ARCH-02：交付阶段只从 stageOwnership 单一来源派生，requiredEvents[].stage 仅作为
+    // 契约自身的一致性项（由 validateStageOwnershipContract 交叉校验），不再作为归属来源。
+    const ownedStage = ownershipStageForEvent(coverage, entry.id);
+    const deliveryStage = ownedStage || entry.stage;
+    const reached = stageReached(stage, deliveryStage);
     if (!event) {
-      if (reached) addError(errors, `[coverage] 阶段 '${stage}' 缺少必需事件 ${entry.id}（应在 ${entry.stage} 交付）`);
+      if (reached) addError(errors, `[coverage] 阶段 '${stage}' 缺少必需事件 ${entry.id}（应在 ${deliveryStage} 交付）`);
       continue;
     }
-    const expectedPartByStage = {
-      strategy: 'part-1-why-war',
-      background: 'part-3-expansion',
-      pearl: 'part-2-pearl-harbor',
-      coral: 'part-4-turning-point',
-    };
-    const expectedPart = expectedPartByStage[entry.stage];
-    if (expectedPart && event.historicalPart !== expectedPart) {
-      addError(errors, `[coverage] ${entry.id}: 历史部分应为 ${expectedPart}，实际 ${event.historicalPart}`);
+    // ARCH-02：历史部分按 stageOwnership 派生出的允许集合判定。
+    // 不再硬编码 background→part-3-expansion，因此 background 事件可合法落在 part-3 或 part-4。
+    const allowedParts = allowedPartsForStage(coverage, deliveryStage);
+    if (allowedParts.size > 0 && !allowedParts.has(event.historicalPart)) {
+      addError(
+        errors,
+        `[coverage] ${entry.id}: 历史部分 '${event.historicalPart}' 不在阶段 '${deliveryStage}' 允许的集合 {${[...allowedParts].join(', ')}} 内（按 stageOwnership 派生）`,
+      );
     }
     requiredEventDepthErrors(entry, event, errors, maps);
   }
@@ -2007,9 +2576,138 @@ function validateCoverageGate(doc, maps, coverage, stage, errors) {
   }
 }
 
+/**
+ * ARCH-02 R4：content/media.json 注册表结构校验。
+ * 结构：{ version: 1, media: [...] }；media 条目复用既有形状。
+ */
+function validateMediaRegistry(registry, coverage) {
+  const errors = [];
+  if (!isPlainObject(registry)) return ['content/media.json 根节点必须是对象 { version, media }'];
+  if (registry.version !== 1) {
+    errors.push(`content/media.json: version 必须是 1，实际 ${JSON.stringify(registry.version)}`);
+  }
+  const allowedKeys = new Set(['version', 'media']);
+  for (const key of Object.keys(registry)) {
+    if (!allowedKeys.has(key)) errors.push(`content/media.json: 不允许的顶层字段 '${key}'（只允许 version 与 media）`);
+  }
+  if (!Array.isArray(registry.media)) {
+    errors.push('content/media.json: media 必须是数组');
+    return errors;
+  }
+  const seen = new Set();
+  const mediaSchema = CONTENT_SCHEMA.$defs && CONTENT_SCHEMA.$defs.media;
+  registry.media.forEach((item, index) => {
+    if (!isPlainObject(item)) {
+      errors.push(`content/media.json: media[${index}] 必须是对象`);
+      return;
+    }
+    if (typeof item.id === 'string') {
+      if (seen.has(item.id)) errors.push(`content/media.json: media[${index}].id 重复 '${item.id}'`);
+      seen.add(item.id);
+    } else {
+      errors.push(`content/media.json: media[${index}].id 必须是字符串（稳定 ID）`);
+    }
+    // ARCH-02 a2 非阻断项：注册表条目必须逐条通过 media schema，而不只是"像对象"
+    if (mediaSchema) {
+      const itemErrors = [];
+      schemaValidate(item, mediaSchema, CONTENT_SCHEMA, `content/media.json.media[${index}]`, itemErrors);
+      for (const message of itemErrors) errors.push(message);
+    }
+  });
+  return errors;
+}
+
+/**
+ * ARCH-02 R4：历史文件顶层 media 的迁移提示（供 --check-contracts 与自测复用）。
+ */
+function historyMediaMigrationHint() {
+  return (
+    '迁移映射：把 history.json 顶层 media[] 原样搬到 content/media.json 的 ' +
+    '{ "version": 1, "media": [...] } 中（条目形状完全不变，articleIds 仍是文章关联），并删除 history.json 的 media 字段。' +
+    ' 由 MEDIA-02 写入 content/media.json；HIST-04 不写；QA-01 运行 --media 校验；WEB-01/MAP-01 只读。'
+  );
+}
+
+/**
+ * ARCH-02 a2 修复 D3：**地图阶段专用校验**。
+ *
+ * 上一版的阶段负例只删 knownEnemy / consequence，靠 schema 层「缺少必填字段」失败，
+ * 而从没有一条检查真正断言「双方位置」都在场。schema 允许 positions 只写一侧吗？
+ * 不允许——但它只在 **validateBattle** 里被检查，而 validateBattle 只作用于
+ * battles 数组中的战役。map-phases.json 是阶段引擎夹具，必须有一条独立、可定位的
+ * 阶段校验，逐个阶段断言 positions.japan 与 positions.allies 同时存在且有内容。
+ *
+ * 该函数对任何「战役 → 阶段」结构生效，被 validateBattle 与地图夹具检查共同调用。
+ *
+ * @returns {string[]} 错误信息
+ */
+function validateMapPhasesForBattle(battle, battlePointer) {
+  const errors = [];
+  if (!isPlainObject(battle)) return errors;
+  const phases = Array.isArray(battle.phases) ? battle.phases : [];
+  if (phases.length === 0) {
+    errors.push(`${battlePointer}.phases: 地图阶段引擎要求至少一个阶段（当前 0 个）`);
+    return errors;
+  }
+  phases.forEach((phase, index) => {
+    const p = `${battlePointer}.phases[${index}]`;
+    if (!isPlainObject(phase)) {
+      errors.push(`${p}: 阶段必须是对象`);
+      return;
+    }
+    // 双方位置必须同时存在——这是 D3 的核心断言
+    const positions = phase.positions;
+    if (!isPlainObject(positions)) {
+      errors.push(`${p}.positions: 阶段缺少双方位置对象（必须同时包含 japan 与 allies）`);
+    } else {
+      for (const side of ['japan', 'allies']) {
+        const position = positions[side];
+        if (!isPlainObject(position)) {
+          errors.push(`${p}.positions.${side}: 缺少 ${side === 'japan' ? '日方' : '盟方'}位置`);
+          continue;
+        }
+        if (!isPlainObject(position.coordinates)) {
+          errors.push(`${p}.positions.${side}.coordinates: 缺少示意坐标`);
+        }
+        if (position.schematic !== true) {
+          errors.push(`${p}.positions.${side}.schematic: 阶段位置必须标记为示意（true）`);
+        }
+        if (!isNonEmptyString(position.label)) {
+          errors.push(`${p}.positions.${side}.label: 缺少位置标签`);
+        }
+      }
+    }
+    // 情报与决策：缺一即错（既有要求，这里作为阶段引擎契约的一部分显式复述）
+    for (const field of ['knownEnemy', 'unknownEnemy', 'decision', 'consequence']) {
+      const value = phase[field];
+      if (!isPlainObject(value)) {
+        errors.push(`${p}.${field}: 阶段缺少 ${field}（必须同时给出 japan 与 allies）`);
+        continue;
+      }
+      for (const side of ['japan', 'allies']) {
+        if (!isNonEmptyString(value[side])) {
+          errors.push(`${p}.${field}.${side}: 缺少 ${field} 的 ${side} 文本`);
+        }
+      }
+    }
+    if (!hasOwn(phase, 'time') || !isPlainObject(phase.time)) {
+      errors.push(`${p}.time: 阶段缺少时间`);
+    }
+    if (!hasOwn(phase, 'certainty')) errors.push(`${p}.certainty: 阶段缺少 certainty`);
+    if (!hasOwn(phase, 'schematic')) errors.push(`${p}.schematic: 阶段缺少 schematic 标记`);
+  });
+  return errors;
+}
+
 function validateMediaGate(doc, maps, coverage, stage, options, errors) {
   if (stage !== 'full') addError(errors, '--media 必须隐含并执行 --stage full，不能以部分阶段验证素材门禁');
-  const media = Array.isArray(doc.media) ? doc.media : [];
+  // ARCH-02 R4：素材条目来自 content/media.json 注册表（options.mediaRows），
+  // 过渡期内也兼容 history.json 内嵌的旧式 media。
+  const media = Array.isArray(options.mediaRows)
+    ? options.mediaRows
+    : Array.isArray(doc.media)
+      ? doc.media
+      : [];
   const keys = coverage.keyArticleIds;
   for (const key of keys) {
     const requiredTypes = coverage.requiredMediaTypes[key] || [];
@@ -2071,7 +2769,19 @@ export function validateDocument(doc, options = {}) {
     validateSource(source, [...maps.sources.values()].indexOf(source), errors, maps);
   }
   for (const [index, claim] of (Array.isArray(doc.claims) ? doc.claims : []).entries()) {
-    if (isPlainObject(claim)) validateClaim(claim, index, errors, maps);
+    if (isPlainObject(claim)) {
+      validateClaim(claim, index, errors, maps);
+      // ARCH-02 R3：claim 文本同样不得携带研究过程措辞（自 HIST-01 起生效）。
+      if (typeof claim.text === 'string') {
+        const matched = findResearchProcessWording(claim.text);
+        if (matched) {
+          addError(
+            errors,
+            `$.claims[${index}] (${claim.id}).text: 出现研究/检索过程措辞（/${matched.source}/）；过程状态只能写进 researchStatus 字段（自 HIST-01 起生效）`,
+          );
+        }
+      }
+    }
   }
   for (const [index, question] of (Array.isArray(doc.questions) ? doc.questions : []).entries()) {
     if (isPlainObject(question)) validateQuestion(question, index, errors, maps, coverage);
@@ -2079,16 +2789,33 @@ export function validateDocument(doc, options = {}) {
   for (const [index, event] of (Array.isArray(doc.events) ? doc.events : []).entries()) {
     if (isPlainObject(event)) {
       validateEvent(event, index, errors, maps);
-      // D2：早期扩张战役必须给出五类分析结构；只要事件存在，部分阶段也要满足。
+      // D2：早期扩张战役必须给出分析结构；只要事件存在，部分阶段也要满足。
       if (isEarlyCampaignEvent(event, coverage)) {
         earlyCampaignDepthErrors(event, coverage, maps, `$.events[${index}]`, errors);
       }
+      // ARCH-02 R3：研究/检索过程状态只能写 researchStatus，正文/summary 不得出现研究过程措辞。
+      researchStatusErrors(event, `$.events[${index}]`, errors);
+      // ARCH-02：跨章节数值/类别一致性（达尔文 18 架飞机参考案例）。
+      event.__relatedClaims = relatedClaimEntries(event, maps);
+      for (const message of crossChapterContradictionErrors(event, `$.events[${index}] (${event.id})`)) {
+        // 过渡窗口：已交付的 HIST-01 内容存在该矛盾且本任务不编辑 history.json，
+        // 因此按 coverage.contentTransition 决定报错还是警告。warn 仍然报告，不是静默跳过。
+        const mode = contradictionEnforcement(coverage);
+        if (mode === 'off') addError(errors, message);
+        else warnings.push(message);
+      }
+      delete event.__relatedClaims;
     }
   }
   for (const [index, battle] of (Array.isArray(doc.battles) ? doc.battles : []).entries()) {
     if (!isPlainObject(battle)) continue;
     const keyEntry = coverage.keyArticles.find((item) => item.id === battle.id) || null;
     validateBattle(battle, index, errors, maps, coverage, keyEntry);
+    // ARCH-02 a2 修复 D3：阶段引擎专用校验（双方位置 + 情报 + 决策），
+    // 独立于 schema 的「缺少必填字段」，对每个阶段的 japan/allies 逐项断言。
+    for (const message of validateMapPhasesForBattle(battle, `$.battles[${index}] (${battle.id})`)) {
+      addError(errors, message);
+    }
   }
   for (const [index, person] of (Array.isArray(doc.people) ? doc.people : []).entries()) {
     if (!isPlainObject(person)) continue;
@@ -2107,18 +2834,49 @@ export function validateDocument(doc, options = {}) {
   for (const [index, concept] of (Array.isArray(doc.concepts) ? doc.concepts : []).entries()) {
     if (isPlainObject(concept)) validateConcept(concept, index, errors, maps);
   }
-  for (const [index, media] of (Array.isArray(doc.media) ? doc.media : []).entries()) {
+  // --- ARCH-02 R4：媒体注册表迁移 ---
+  // history.json 顶层不得再含 media；素材注册表在 content/media.json（{version:1, media:[...]}）。
+  //
+  // 过渡规则：HIST-01 已交付的 history.json 带有**空** media 数组。为了让已接受集成
+  // 不被本任务追溯破坏（本任务不编辑 content/history.json），空的 legacy media 只产生
+  // 警告；一旦它**含有条目**，就是真正的迁移违规，给出具名错误与迁移映射。
+  // 由 MEDIA-02 完成迁移并从 history.json 删除该字段；ARCH-02-flip 之后空数组也报错。
+  const historyMedia = doc.media;
+  const legacyMediaEnforcement = coverage && coverage.mediaRegistry
+    ? coverage.mediaRegistry.legacyHistoryMediaEnforcement
+    : 'transition';
+  if (historyMedia !== undefined) {
+    const hasEntries = Array.isArray(historyMedia) && historyMedia.length > 0;
+    const isIllegalShape = !Array.isArray(historyMedia);
+    if (isIllegalShape || hasEntries || legacyMediaEnforcement === 'off') {
+      addError(errors, `$.media: history.json 顶层 media 字段已废弃并被拒绝。${historyMediaMigrationHint()}`);
+    } else {
+      warnings.push(
+        `$.media: history.json 仍含空的 legacy media 数组（过渡窗口内仅警告）。${historyMediaMigrationHint()}`,
+      );
+    }
+  }
+  // 素材条目来自注册表（content/media.json），或旧式文档内嵌（仅用于自测/过渡）。
+  const mediaRows = Array.isArray(options.mediaRows)
+    ? options.mediaRows
+    : Array.isArray(historyMedia)
+      ? historyMedia
+      : [];
+  for (const [index, media] of mediaRows.entries()) {
     if (isPlainObject(media)) {
       validateMedia(media, index, errors, maps, coverage, {
         media: options.media,
         rootDir,
         fileSystem: options.fileSystem,
+        mediaPointer: options.mediaRows ? `$.media.media` : '$.media',
       });
     }
   }
 
   validateCoverageGate(doc, maps, coverage, stage, errors);
-  if (options.media) validateMediaGate(doc, maps, coverage, stage, options, errors);
+  if (options.media) {
+    validateMediaGate(doc, maps, coverage, stage, { ...options, mediaRows }, errors);
+  }
 
   if (stage !== 'full' && doc.fixtureOnly === true) {
     warnings.push(`当前使用 fixtureOnly=true 的测试样本，仅可在 ${stage} 阶段做结构检查；不得作为交付内容。`);
@@ -2369,6 +3127,201 @@ function printResult(result, { file, stage, media, rootDir }) {
 // 纯契约检查（不需要 content/history.json）
 // ---------------------------------------------------------------------------
 
+/**
+ * ARCH-02 a2 修复 D2：**严格模式对真实内容执行**。
+ *
+ * 上一版的致命问题是：analysisProfiles / researchStatus 只在「为了通过而写的」
+ * 夹具上被检查，真实 content/history.json 从未触发这些规则，所以门禁是空转的。
+ *
+ * 本函数读取真实 content/history.json，用**严格 coverage**（旧五键过渡窗口关闭、
+ * 跨章节矛盾升级为错误）跑一遍完整验证，并把结果分成三类：
+ *   · 新规则违规（analysisProfiles / researchStatus / 跨章节矛盾）→ 必须逐个报出
+ *   · 其它错误 → 同样报出，但标注为「内容尚未交付」而非契约缺陷
+ * 这样规则是否真的在真实内容上生效，是可复现的，而不是靠夹具自证。
+ *
+ * 退出码语义：0 = 严格模式下无新规则违规；1 = 有新规则违规。
+ * 注意：HIST-01 内容尚未写入 analysisProfiles / researchStatus 时，这里会如实报错，
+ * 这正说明规则在真实内容上生效了（而不是空转）。
+ */
+function runRealContentChecks() {
+  const failures = [];
+  console.log('DSH 真实内容严格检查（ARCH-02 a2：新规则必须对真实内容生效）');
+  const historyPath = path.join(REPO_ROOT, 'content', 'history.json');
+  console.log(`content：${historyPath}`);
+  console.log('');
+
+  if (!fs.existsSync(historyPath)) {
+    console.log('SKIP  真实内容不存在：content/history.json（由 HIST-01 交付后本检查才生效）');
+    console.log('      注意：这不是通过。严格模式在内容缺失时无法证明规则生效。');
+    return { ok: false, skipped: true };
+  }
+  let doc;
+  try {
+    doc = readJson(historyPath, 'content/history.json');
+  } catch (error) {
+    console.log(`FAIL  无法解析 content/history.json：${error.message}`);
+    return { ok: false, skipped: false };
+  }
+  const coverage = loadCoverageOrThrow();
+
+  // 严格 coverage：关闭旧五键过渡窗口，把跨章节矛盾从 warn 升级为 error
+  const strictCoverage = clone(coverage);
+  if (strictCoverage.earlyCampaign && strictCoverage.earlyCampaign.legacyAnalysis) {
+    strictCoverage.earlyCampaign.legacyAnalysis.enforcement = 'off';
+  }
+  if (strictCoverage.contentTransition) {
+    strictCoverage.contentTransition.crossChapterContradictionEnforcement = 'off';
+  }
+
+  // ARCH-02 attempt 3 修复 D2：验收阶段是 **background**（HIST-01 交付早期扩张），
+  // 不是 strategy。旧版固定用 'strategy'，评审据此判定「早期战役规则只作用于不存在的
+  // background 事件」。现在按 background 跑，并额外列出每个阶段的实际命中数，
+  // 使「规则是否真的执行」可复现、可对照。
+  const ACCEPTANCE_STAGE = 'background';
+  const stageEvidence = [];
+  for (const stage of STAGE_IDS) {
+    const probe = validateDocument(doc, {
+      coverage: strictCoverage,
+      stage,
+      rootDir: REPO_ROOT,
+      fileSystem: REAL_FILE_SYSTEM,
+    });
+    const all = [...probe.errors, ...probe.warnings];
+    stageEvidence.push({
+      stage,
+      analysisProfiles: all.filter((x) => /analysisProfiles|旧五键/.test(x)).length,
+      researchStatus: all.filter((x) => /researchStatus|研究\/检索过程措辞/.test(x)).length,
+      contradiction: all.filter((x) => /跨章节数值\/类别矛盾/.test(x)).length,
+    });
+  }
+
+  const result = validateDocument(doc, {
+    coverage: strictCoverage,
+    stage: ACCEPTANCE_STAGE,
+    rootDir: REPO_ROOT,
+    fileSystem: REAL_FILE_SYSTEM,
+  });
+  const allMessages = [...result.errors, ...result.warnings];
+
+  const buckets = {
+    analysisProfiles: [],
+    researchStatus: [],
+    contradiction: [],
+    other: [],
+  };
+  for (const message of allMessages) {
+    if (/analysisProfiles|旧五键/.test(message)) buckets.analysisProfiles.push(message);
+    else if (/researchStatus|研究\/检索过程措辞/.test(message)) buckets.researchStatus.push(message);
+    else if (/跨章节数值\/类别矛盾/.test(message)) buckets.contradiction.push(message);
+    else buckets.other.push(message);
+  }
+  // 去重（同一条信息可能既进 errors 又进 warnings）
+  for (const key of Object.keys(buckets)) buckets[key] = [...new Set(buckets[key])];
+
+  const reportBucket = (label, items, { asFailure }) => {
+    if (items.length === 0) {
+      console.log(`PASS  ${label}：真实内容未触发该规则`);
+      return;
+    }
+    if (asFailure) {
+      failures.push(label);
+      console.log(`FAIL  ${label}（${items.length} 处）—— 说明规则已在真实内容上生效，内容需修正`);
+    } else {
+      console.log(`INFO  ${label}（${items.length} 处，非本契约缺陷）`);
+    }
+    for (const item of items.slice(0, 8)) console.log(`      - ${item}`);
+    if (items.length > 8) console.log(`      … 其余 ${items.length - 8} 处省略`);
+  };
+
+  // 新规则违规 → 失败（这正是「规则在真实内容上生效」的证据）
+  reportBucket('analysisProfiles 十键强制（真实内容）', buckets.analysisProfiles, { asFailure: true });
+  reportBucket('researchStatus 过程状态规则（真实内容）', buckets.researchStatus, { asFailure: true });
+  reportBucket('跨章节数值/类别矛盾（真实内容，严格模式）', buckets.contradiction, { asFailure: true });
+  // 其它错误（多为内容尚未交付）→ 只报告
+  reportBucket('其它内容错误（多为内容未交付，非契约缺陷）', buckets.other, { asFailure: false });
+
+  // ARCH-02 attempt 3 修复 D3：researchStatus 的正向用例必须落在**真实内容**上。
+  // HIST-01 没有事件携带 researchStatus，正文也没有过程措辞，所以规则本身在真实内容上
+  // 从未被正向触发过。这里从真实文档**在内存中**构造一个探针事件（不改磁盘），
+  // 给它注入研究过程措辞，证明规则确实会对真实形状的内容报错。
+  const researchStatusProbe = runResearchStatusPositiveProbe(doc, strictCoverage);
+  if (researchStatusProbe.ok) {
+    console.log(`PASS  researchStatus 正向探针：真实内容事件注入过程措辞后被拒绝（${researchStatusProbe.hits} 处），标签「自 HIST-01 起生效」有真实运行支撑`);
+  } else {
+    failures.push('researchStatus-positive-probe');
+    console.log(`FAIL  researchStatus 正向探针：${researchStatusProbe.reason}`);
+  }
+
+  // 早期战役覆盖度：契约要求 9 个，真实内容只有 8 个 → 第 9 个规则无法被检查
+  const earlyIds = (strictCoverage.earlyCampaign && strictCoverage.earlyCampaign.eventIds) || [];
+  const presentEarly = earlyIds.filter((id) => (doc.events || []).some((e) => e && e.id === id));
+  const missingEarly = earlyIds.filter((id) => !presentEarly.includes(id));
+
+  console.log('');
+  console.log('阶段对照（严格模式下每个阶段的实际命中，证明规则与阶段无关地执行）：');
+  for (const row of stageEvidence) {
+    console.log(
+      `  ${row.stage.padEnd(11)} analysisProfiles=${String(row.analysisProfiles).padEnd(2)} researchStatus=${String(row.researchStatus).padEnd(2)} 跨章节矛盾=${row.contradiction}`,
+    );
+  }
+  console.log(`  验收阶段取 '${ACCEPTANCE_STAGE}'（HIST-01 交付早期扩张的阶段），不是 'strategy'`);
+  console.log('');
+  console.log(
+    `真实内容统计：${(doc.events || []).length} 个事件，` +
+      `其中 ${(doc.events || []).filter((e) => e && e.analysisProfiles).length} 个含 analysisProfiles，` +
+      `${(doc.events || []).filter((e) => e && e.earlyCampaignAnalysis).length} 个含旧五键，` +
+      `${(doc.events || []).filter((e) => e && e.researchStatus).length} 个含 researchStatus`,
+  );
+  console.log(
+    `早期战役覆盖：契约要求 ${earlyIds.length} 个，真实内容存在 ${presentEarly.length} 个` +
+      (missingEarly.length > 0 ? `，缺 ${missingEarly.join(', ')}（其规则无法被检查，属 HIST-01 未交付）` : ''),
+  );
+
+  if (failures.length === 0) {
+    console.log('结果：PASS（真实内容满足全部新增严格规则）');
+    return { ok: true, skipped: false };
+  }
+  console.log(`结果：FAIL（${failures.length} 类新规则在真实内容上被触发：${failures.join('、')}）`);
+  return { ok: false, skipped: false, stageEvidence, buckets, missingEarly };
+}
+
+/**
+ * ARCH-02 attempt 3 修复 D3：researchStatus 的**正向探针**。
+ *
+ * 从真实文档中挑一个事件，在**内存副本**上注入研究过程措辞（不改磁盘、不改 content/），
+ * 然后验证规则确实报错、且错误标注「自 HIST-01 起生效」。这样「自 HIST-01 起生效」
+ * 这个标签就不是只靠手写夹具支撑，而是对真实内容形状的一次实际运行。
+ */
+function runResearchStatusPositiveProbe(doc, coverage) {
+  const events = Array.isArray(doc && doc.events) ? doc.events : [];
+  if (events.length === 0) return { ok: false, reason: '真实内容没有事件，无法构造探针' };
+  // 优先挑一个早期战役事件（HIST-01 交付的那批）
+  const earlyIds = new Set((coverage.earlyCampaign && coverage.earlyCampaign.eventIds) || []);
+  const target = events.find((e) => e && earlyIds.has(e.id)) || events[0];
+  if (!target || !Array.isArray(target.article) || target.article.length === 0) {
+    return { ok: false, reason: '目标事件没有 article，无法注入过程措辞' };
+  }
+  const probeDoc = clone(doc);
+  const probeEvent = probeDoc.events.find((e) => e && e.id === target.id);
+  probeEvent.article[0].body = `${probeEvent.article[0].body}本文仍在检索相关资料，尚待查证具体数字。`;
+  const probeResult = validateDocument(probeDoc, {
+    coverage,
+    stage: 'background',
+    rootDir: REPO_ROOT,
+    fileSystem: REAL_FILE_SYSTEM,
+  });
+  const hits = [...probeResult.errors, ...probeResult.warnings].filter((x) =>
+    /研究\/检索过程措辞/.test(x),
+  );
+  if (hits.length === 0) {
+    return { ok: false, reason: `在真实事件 ${target.id} 上注入过程措辞后规则没有报错` };
+  }
+  if (!hits.every((h) => /自 HIST-01 起生效/.test(h))) {
+    return { ok: false, reason: `错误信息未标注「自 HIST-01 起生效」：${hits[0]}` };
+  }
+  return { ok: true, hits: hits.length, targetId: target.id };
+}
+
 function runContractChecks() {
   const failures = [];
   console.log('DSH 契约一致性检查（不需要 content/history.json）');
@@ -2481,11 +3434,22 @@ function runContractChecks() {
       for (const error of partBindingErrors) console.log(`      - ${error}`);
     }
 
-    // D3：阶段归属不变式
+    // D3 + ARCH-02：阶段归属不变式（单一来源：keyArticles + events）
     const ownershipErrors = validateStageOwnershipContract(coverage);
     if (ownershipErrors.length === 0) {
-      const shape = STAGE_IDS.map((stage) => `${stage} ${coverage.stageOwnership[stage].length}`).join(' + ');
-      console.log(`PASS  阶段归属锁定（${shape} = ${coverage.keyArticleIds.length}，无重复、无孤立、无未归属）`);
+      const shape = STAGE_IDS.map((stage) => {
+        const value = coverage.stageOwnership[stage] || {};
+        return `${stage} ${(value.keyArticles || []).length}+${(value.events || []).length}e`;
+      }).join(' + ');
+      const eventTotal = STAGE_IDS.reduce((sum, stage) => sum + ownedEventIds(coverage, stage).length, 0);
+      console.log(
+        `PASS  阶段归属锁定（单一来源；${shape} = ${coverage.keyArticleIds.length} 篇文章，无重复、无孤立、无未归属）`,
+      );
+      console.log(
+        `      事件归属交叉一致：${eventTotal} 个必需事件全部登记到 stageOwnership.<stage>.events，requiredEvents[].stage 与之一致`,
+      );
+      const gateIds = backgroundGateEventIds(coverage);
+      console.log(`      backgroundGate 只引用 stageOwnership.background.events（${gateIds.length} 个）：${gateIds.join(', ')}`);
     } else {
       failures.push('stage-ownership');
       console.log(`FAIL  阶段归属（${ownershipErrors.length} 个问题）`);
@@ -2505,6 +3469,80 @@ function runContractChecks() {
       console.log(`FAIL  素材类型契约（${mediaTypeErrors.length} 个问题）`);
       for (const error of mediaTypeErrors) console.log(`      - ${error}`);
     }
+
+    // ARCH-02 R2：早期战役十键具名分析契约
+    const profileErrors = validateAnalysisProfilesContract(coverage);
+    if (profileErrors.length === 0) {
+      const keys = coverage.earlyCampaign.analysisProfiles.keys.map((k) => k.key);
+      const legacy = coverage.earlyCampaign.legacyAnalysis;
+      console.log(
+        `PASS  早期战役十键分析锁定（${keys.join(' / ')}；每键 >=${coverage.earlyCampaign.analysisProfiles.minHanCharsPerKey} 汉字；旧五键过渡=${legacy.enforcement}，由 ${legacy.legacyDisabledBy} 关闭）`,
+      );
+    } else {
+      failures.push('analysis-profiles');
+      console.log(`FAIL  早期战役十键分析（${profileErrors.length} 个问题）`);
+      for (const error of profileErrors) console.log(`      - ${error}`);
+    }
+
+    // ARCH-02 R4：媒体注册表迁移契约
+    const reg = coverage.mediaRegistry;
+    const regProblems = [];
+    if (!isPlainObject(reg)) regProblems.push('coverage.mediaRegistry 缺失');
+    else {
+      if (reg.version !== 1) regProblems.push(`version 应为 1，实际 ${reg.version}`);
+      if (reg.file !== 'content/media.json') regProblems.push(`file 应为 content/media.json，实际 ${reg.file}`);
+      for (const consumer of ['MEDIA-02', 'HIST-04', 'QA-01', 'WEB-01', 'MAP-01']) {
+        if (!reg.consumers || !reg.consumers[consumer]) regProblems.push(`缺少消费方 ${consumer}`);
+      }
+      if (reg.stageGateUnaffectedWhenMissing !== true) regProblems.push('stageGateUnaffectedWhenMissing 必须为 true');
+    }
+    if (regProblems.length === 0) {
+      console.log(
+        `PASS  媒体注册表迁移锁定（${reg.file} v${reg.version}；旧 history.media 过渡=${reg.legacyHistoryMediaEnforcement}；--stage 不受缺失影响）`,
+      );
+    } else {
+      failures.push('media-registry-contract');
+      console.log(`FAIL  媒体注册表迁移契约（${regProblems.length} 个问题）`);
+      for (const error of regProblems) console.log(`      - ${error}`);
+    }
+  }
+
+  // ARCH-02 R6：地图阶段契约夹具
+  try {
+    const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+    if (!fs.existsSync(mapPath)) {
+      failures.push('map-phases-fixture');
+      console.log(`FAIL  地图阶段夹具缺失：contracts/fixtures/map-phases.json`);
+    } else {
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      const problems = [];
+      if (mapDoc.fixtureOnly !== true) problems.push('fixtureOnly 必须为 true');
+      for (const battleId of ['battle-pearl-harbor', 'battle-coral-sea', 'battle-midway']) {
+        const battle = (mapDoc.battles || []).find((b) => b && b.id === battleId);
+        if (!battle) problems.push(`缺少战役 ${battleId}`);
+        else if (!Array.isArray(battle.phases) || battle.phases.length < 2) {
+          problems.push(`${battleId} 阶段数 ${(battle.phases || []).length} < 2`);
+        } else {
+          for (const phase of battle.phases) {
+            for (const field of ['time', 'positions', 'knownEnemy', 'unknownEnemy', 'decision', 'consequence', 'certainty', 'schematic']) {
+              if (!hasOwn(phase, field)) problems.push(`${battleId}/${phase.id} 缺 ${field}`);
+            }
+            if (phase.schematic !== true) problems.push(`${battleId}/${phase.id} 未标 schematic`);
+          }
+        }
+      }
+      if (problems.length === 0) {
+        const total = (mapDoc.battles || []).reduce((sum, b) => sum + (b.phases || []).length, 0);
+        console.log(`PASS  地图阶段夹具（3 战役 × 2 阶段 = ${total} 个教学示意阶段，字段齐全）`);
+      } else {
+        failures.push('map-phases-fixture');
+        console.log(`FAIL  地图阶段夹具（${problems.length} 个问题）`);
+        for (const error of problems.slice(0, 8)) console.log(`      - ${error}`);
+      }
+    }
+  } catch (error) {
+    failures.push('map-phases-fixture');
+    console.log(`FAIL  地图阶段夹具无法解析：${error.message}`);
   }
 
   try {
@@ -2583,6 +3621,51 @@ function runContractChecks() {
     } else {
       failures.push('schema-event-early');
       console.log('FAIL  schema event 未声明 earlyCampaignAnalysis 字段');
+    }
+
+    // ARCH-02 R2/R3/R4：schema 必须声明 analysisProfiles / researchStatus / mediaRegistry
+    const profilesDef = schema.$defs && schema.$defs.analysisProfiles;
+    const profilesRequired = profilesDef && Array.isArray(profilesDef.required) ? profilesDef.required : [];
+    if (canonicalJson(profilesRequired) === canonicalJson(ANALYSIS_PROFILE_KEYS) && hasOwn(eventProps, 'analysisProfiles')) {
+      console.log(`PASS  schema 的 analysisProfiles 恰好要求 ${ANALYSIS_PROFILE_KEYS.length} 个具名键，且 event 允许该字段`);
+    } else {
+      failures.push('schema-analysis-profiles');
+      console.log(
+        `FAIL  schema analysisProfiles 必填键 [${profilesRequired.join(',')}] 与验证器 [${ANALYSIS_PROFILE_KEYS.join(',')}] 不一致或 event 未声明`,
+      );
+    }
+
+    const researchStatusDef = schema.$defs && schema.$defs.researchStatus;
+    const researchEnum = researchStatusDef && Array.isArray(researchStatusDef.enum) ? researchStatusDef.enum : [];
+    if (
+      canonicalJson(researchEnum) === canonicalJson(RESEARCH_STATUS_ENUM) &&
+      hasOwn(eventProps, 'researchStatus')
+    ) {
+      console.log(`PASS  schema 的 researchStatus 枚举与 event 字段一致（${researchEnum.join('|')}）`);
+    } else {
+      failures.push('schema-research-status');
+      console.log(`FAIL  schema researchStatus 枚举 [${researchEnum.join(',')}] 与验证器 [${RESEARCH_STATUS_ENUM.join(',')}] 不一致或 event 未声明`);
+    }
+
+    const registryDef = schema.$defs && schema.$defs.mediaRegistry;
+    const registryRequired = registryDef && Array.isArray(registryDef.required) ? registryDef.required : [];
+    const registryVersionConst = registryDef && registryDef.properties && registryDef.properties.version
+      ? registryDef.properties.version.const
+      : undefined;
+    const historyTopLevelMediaArray = schema.properties && schema.properties.media
+      ? schema.properties.media.type !== undefined && schema.properties.media.items !== undefined
+      : false;
+    if (
+      canonicalJson(registryRequired) === canonicalJson(['version', 'media']) &&
+      registryVersionConst === 1 &&
+      !historyTopLevelMediaArray
+    ) {
+      console.log('PASS  schema 定义 mediaRegistry {version:1, media}，且 history 顶层 media 不再是数组');
+    } else {
+      failures.push('schema-media-registry');
+      console.log(
+        `FAIL  schema mediaRegistry 不符（required=[${registryRequired.join(',')}], version.const=${registryVersionConst}, history.media 仍是数组=${historyTopLevelMediaArray}）`,
+      );
     }
   } catch (error) {
     failures.push('content.schema.json');
@@ -2689,7 +3772,7 @@ function makeEarlyCampaignEvent(base, { omitAnalysis = false, id = 'event-hong-k
     article: [
       {
         heading: '合成导读',
-        body: '这是验证器自测使用的合成导读小节，仅用于补齐事件的文章结构，不对应真实历史内容。',
+        body: '这是验证器自测使用的合成导读小节，仅用于补齐事件的文章结构，不对应真实历史内容，也不得作为任何史实依据发布或引用。',
         sourceIds: [sourceId],
         claimIds: [claimId],
       },
@@ -2721,6 +3804,71 @@ function makeEarlyCampaignEvent(base, { omitAnalysis = false, id = 'event-hong-k
       };
     }
   }
+  return event;
+}
+
+/**
+ * 构造一个带合规 analysisProfiles 十键的合成早期战役（ARCH-02 R2 自测用）。
+ * 每种键写一句能同时满足“必含要素”与“最小汉字数”的合成文字；
+ * 内容明确标注为合成，不代表任何真实历史。
+ */
+const ANALYSIS_PROFILE_TITLES = {
+  background: '背景',
+  geography: '地理环境',
+  participants: '参与方与指挥',
+  objectivesAndForces: '双方目标与军力',
+  constraints: '约束条件',
+  course: '阶段经过',
+  options: '可选方案与被排除它的约束',
+  resultsAndLosses: '结果与损失口径',
+  impact: '后续影响',
+  uncertainty: '不确定性',
+};
+
+const ANALYSIS_PROFILE_BODIES = {
+  background:
+    '合成文字：此处说明这场行动之前发生了什么、此前局势如何，以及日本为什么会在这个时间点对这里发动攻击，并把这件事放回更大的战争进程里去理解。本段只用于触发结构与篇幅检查，不对应任何真实战役，也不得作为历史内容发布，不得当作任何史实依据使用。',
+  geography:
+    '合成文字：此处说明战场在哪里、双方相距多远、地形或海域条件如何，包括港口、机场、海峡与补给线上的关键位置，以及这些地理条件对双方作战计划意味着什么，为什么距离和地形会直接改变可行的作战方式。本段只用于结构检查，不代表真实地理数据。',
+  participants:
+    '合成文字：此处说明日方与盟方各自有哪些国家、军种与部队参与，双方分别由哪一级司令部负责，指挥关系如何建立、由谁做出最终决定，以及陆海军之间的协调是怎样安排的。本段只用于结构检查，不对应任何真实编制与番号，也不代表真实的人事安排。',
+  objectivesAndForces:
+    '合成文字：此处说明日方想达到什么目标、盟方想达到什么目标，两者之间为什么会产生冲突，以及双方各自投入了多少兵力、舰艇与飞机，这些力量之间是怎么比较的。本段只用于结构检查，不包含真实数字，任何数量都必须由后续内容任务用可核查来源填写。',
+  constraints:
+    '合成文字：此处说明双方受哪些具体限制，例如情报不足、补给距离太远、天气恶劣、时间紧迫与通信不畅，并解释这些限制如何一步步影响到实际可选的行动，因此不能简单说成某一方指挥失误就导致失败。本段只用于结构检查与篇幅校验。',
+  course:
+    '合成文字：此处按时间顺序解释重要行动，先写清开始阶段双方的位置与意图，再指出转折点出现在什么时候、由什么事件触发，最后说明转折的原因是什么，避免只罗列日期而不解释因果。本段只用于结构检查，不对应任何真实作战序列与时序。',
+  options:
+    '合成文字：当时本来可以考虑另一个方案，即保持防御并等待增援到达，但受限于补给距离太远与可用兵力不足，无法同时守住两处据点，因此这个选项被排除，只能选择集中兵力先保一处。本段只用于结构检查，不对应真实的决策讨论，也不代表任何指挥官的内心想法。',
+  resultsAndLosses:
+    '合成文字：此处说明行动结果，并写明损失数字采用什么统计口径、统计时点与来源，区分阵亡、受伤、被俘与失踪，避免把不同口径的数字直接混用。本段只用于结构检查与篇幅校验，不给出任何真实数字，正式内容必须逐项引用官方来源。',
+  impact:
+    '合成文字：此处说明这场行动对后续战役、双方整体战略以及当地平民意味着什么，包括它对补给线与防御部署的长期影响，以及占领之后当地居民与战俘的处境。本段只用于结构检查，不对应任何真实历史评价，也不替代人工的可读性评审。',
+  uncertainty:
+    '合成文字：其中有证据支持的部分来自档案与二手研究，可以确认大致经过与主要参与部队；争议或无法确定的部分包括具体伤亡数字与某些关键时刻的顺序，不同说法尚未取得一致，资料也存在缺口。本段只用于结构检查与篇幅校验。',
+};
+
+function makeAnalysisProfiles(base, overrides = {}) {
+  const sourceId = base.sources[0].id;
+  const claimId = base.claims[0].id;
+  const profiles = {};
+  for (const key of ANALYSIS_PROFILE_KEYS) {
+    profiles[key] = {
+      title: ANALYSIS_PROFILE_TITLES[key],
+      body: Object.prototype.hasOwnProperty.call(overrides, key) ? overrides[key] : ANALYSIS_PROFILE_BODIES[key],
+      sourceIds: [sourceId],
+      claimIds: [claimId],
+    };
+  }
+  return profiles;
+}
+
+/**
+ * 构造带 analysisProfiles 的合成早期战役事件。
+ */
+function makeProfiledEarlyCampaignEvent(base, opts = {}) {
+  const event = makeEarlyCampaignEvent(base, { omitAnalysis: true, id: opts.id });
+  event.analysisProfiles = makeAnalysisProfiles(base, opts.overrides || {});
   return event;
 }
 
@@ -3370,11 +4518,12 @@ function buildSelfTests() {
   ]);
   // --- D2: 早期扩张战役五类分析结构 ---
   tests.push([
-    'D2 早期战役缺整块 earlyCampaignAnalysis 被拒绝',
+    'D2 早期战役缺整块分析结构被拒绝',
     () => {
       const doc = clone(base);
       doc.events.push(makeEarlyCampaignEvent(doc, { omitAnalysis: true }));
-      return expectErrors('early campaign missing analysis', doc, coverage, /earlyCampaignAnalysis.*五类分析结构/);
+      // ARCH-02：缺结构时的具名错误现在指向 analysisProfiles（过渡期也接受旧 earlyCampaignAnalysis）。
+      return expectErrors('early campaign missing analysis', doc, coverage, /analysisProfiles.*十键分析结构/);
     },
   ]);
   for (const key of ['background', 'course', 'constraints', 'results', 'impact']) {
@@ -3670,7 +4819,10 @@ function buildSelfTests() {
       if (ownershipErrors.length > 0) throw new Error(`stageOwnership: ${ownershipErrors.join('; ')}`);
       const mediaErrors = validateMediaTypeContract(coverage);
       if (mediaErrors.length > 0) throw new Error(`requiredMediaTypes: ${mediaErrors.join('; ')}`);
-      const total = STAGE_IDS.reduce((sum, stage) => sum + coverage.stageOwnership[stage].length, 0);
+      const total = STAGE_IDS.reduce((sum, stage) => {
+        const value = coverage.stageOwnership[stage];
+        return sum + (isPlainObject(value) && Array.isArray(value.keyArticles) ? value.keyArticles.length : 0);
+      }, 0);
       if (total !== coverage.keyArticleIds.length) {
         throw new Error(`阶段归属合计 ${total} 与重点文章数 ${coverage.keyArticleIds.length} 不一致`);
       }
@@ -3680,7 +4832,7 @@ function buildSelfTests() {
     'D3 阶段缺 owner（没有阶段拥有任何文章）被拒绝',
     () => {
       const broken = clone(coverage);
-      broken.stageOwnership.coral = [];
+      broken.stageOwnership.coral = { keyArticles: [], events: [] };
       const errors = validateStageOwnershipContract(broken);
       if (errors.length === 0) throw new Error('空阶段归属没有被发现');
       if (!errors.some((error) => /coral/.test(error))) throw new Error(`错误未点名 coral：${errors.join('; ')}`);
@@ -3710,7 +4862,7 @@ function buildSelfTests() {
     'D3 同一文章被两个阶段重复拥有被拒绝',
     () => {
       const broken = clone(coverage);
-      broken.stageOwnership.full.push('event-overview-part-1-why-war');
+      broken.stageOwnership.full.keyArticles.push('event-overview-part-1-why-war');
       const errors = validateStageOwnershipContract(broken);
       if (errors.length === 0) throw new Error('重复归属没有被发现');
       if (!errors.some((error) => /重复拥有/.test(error))) throw new Error(`错误未指出重复拥有：${errors.join('; ')}`);
@@ -3721,18 +4873,17 @@ function buildSelfTests() {
     () => {
       const broken = clone(coverage);
       // battle-midway 属于 full；把它挪到 strategy 归属，与 keyArticles[].stage 冲突。
-      broken.stageOwnership.full = broken.stageOwnership.full.filter((id) => id !== 'battle-midway');
-      broken.stageOwnership.strategy.push('battle-midway');
+      broken.stageOwnership.full.keyArticles = broken.stageOwnership.full.keyArticles.filter((id) => id !== 'battle-midway');
+      broken.stageOwnership.strategy.keyArticles.push('battle-midway');
       const errors = validateStageOwnershipContract(broken);
       if (errors.length === 0) throw new Error('阶段归属与 keyArticles.stage 冲突没有被发现');
       if (!errors.some((error) => /battle-midway/.test(error))) throw new Error(`错误未点名 battle-midway：${errors.join('; ')}`);
     },
   ]);
   tests.push([
-    'D3 阶段归属含孤立 ID 被拒绝',
-    () => {
+    'D3 阶段归属含孤立 ID 被拒绝',    () => {
       const broken = clone(coverage);
-      broken.stageOwnership.pearl.push('battle-does-not-exist');
+      broken.stageOwnership.pearl.keyArticles.push('battle-does-not-exist');
       const errors = validateStageOwnershipContract(broken);
       if (errors.length === 0) throw new Error('孤立 ID 没有被发现');
       if (!errors.some((error) => /孤立 ID/.test(error))) throw new Error(`错误未指出孤立 ID：${errors.join('; ')}`);
@@ -3742,7 +4893,7 @@ function buildSelfTests() {
     'D3 阶段归属含未知阶段名被拒绝',
     () => {
       const broken = clone(coverage);
-      broken.stageOwnership.midway = [];
+      broken.stageOwnership.midway = { keyArticles: [], events: [] };
       const errors = validateStageOwnershipContract(broken);
       if (errors.length === 0) throw new Error('未知阶段名没有被发现');
       if (!errors.some((error) => /midway/.test(error))) throw new Error(`错误未点名 midway：${errors.join('; ')}`);
@@ -3786,6 +4937,1086 @@ function buildSelfTests() {
       const errors = validateMediaTypeContract(broken);
       if (errors.length === 0) throw new Error('空素材类型数组没有被发现');
       if (!errors.some((error) => /person-nimitz-chester/.test(error))) throw new Error(errors.join('; '));
+    },
+  ]);
+
+  // ===== ARCH-02 R1：阶段归属单一来源、杜立特、backgroundGate =====
+  tests.push([
+    'ARCH-02 R1 杜立特空袭位于 stageOwnership.background.events（正向）',
+    () => {
+      const owned = ownedEventIds(coverage, 'background');
+      if (!owned.includes('event-doolittle-raid-1942')) {
+        throw new Error(`background 事件归属缺少杜立特：${owned.join(', ')}`);
+      }
+      const stage = ownershipStageForEvent(coverage, 'event-doolittle-raid-1942');
+      if (stage !== 'background') throw new Error(`杜立特归属为 '${stage}'，应为 background`);
+      const re = coverage.requiredEvents.find((e) => e.id === 'event-doolittle-raid-1942');
+      if (!re || re.stage !== 'background') throw new Error(`requiredEvents 中杜立特 stage='${re && re.stage}'，应为 background`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 requiredEvents 与 stageOwnership 交叉不一致被拒绝（具名负例）',
+    () => {
+      const broken = clone(coverage);
+      // 只改 requiredEvents[].stage，不动 stageOwnership —— 应触发交叉一致性负例
+      const target = broken.requiredEvents.find((e) => e.id === 'event-doolittle-raid-1942');
+      target.stage = 'coral';
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('stage 交叉不一致没有被发现');
+      if (!errors.some((error) => error.includes('event-doolittle-raid-1942') && /不一致/.test(error))) {
+        throw new Error(`错误未点名杜立特且指出不一致：${errors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 必需事件未登记到 stageOwnership.events 被拒绝（具名负例）',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.background.events = broken.stageOwnership.background.events.filter(
+        (id) => id !== 'event-doolittle-raid-1942',
+      );
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('事件未登记没有被发现');
+      if (!errors.some((error) => error.includes('event-doolittle-raid-1942') && /没有登记/.test(error))) {
+        throw new Error(`错误未点名杜立特未登记：${errors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 stageOwnership.events 引用未登记事件被拒绝（具名负例）',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.background.events.push('event-never-registered');
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('未登记事件引用没有被发现');
+      if (!errors.some((error) => error.includes('event-never-registered'))) {
+        throw new Error(`错误未点名 event-never-registered：${errors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 同一事件被两个阶段重复归属被拒绝（具名负例）',
+    () => {
+      const broken = clone(coverage);
+      broken.stageOwnership.coral.events.push('event-doolittle-raid-1942');
+      const errors = validateStageOwnershipContract(broken);
+      if (errors.length === 0) throw new Error('重复事件归属没有被发现');
+      if (!errors.some((error) => error.includes('event-doolittle-raid-1942') && /重复拥有/.test(error))) {
+        throw new Error(`错误未指出事件重复拥有：${errors.join('; ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 验证器不再硬编码 background→part-3-expansion（background 事件可落 part-4）',
+    () => {
+      const allowed = allowedPartsForStage(coverage, 'background');
+      if (!allowed.has('part-3-expansion')) throw new Error(`background 允许集合缺 part-3：${[...allowed]}`);
+      if (!allowed.has('part-4-turning-point')) throw new Error(`background 允许集合缺 part-4（杜立特在 part 4）：${[...allowed]}`);
+      if (allowed.has('part-1-why-war')) throw new Error('background 允许集合不应包含 part-1');
+      // strategy 的事件仍只允许 part-1
+      const strategyAllowed = allowedPartsForStage(coverage, 'strategy');
+      if (!strategyAllowed.has('part-1-why-war')) throw new Error('strategy 允许集合缺 part-1');
+      if (strategyAllowed.has('part-3-expansion')) throw new Error('strategy 允许集合不应包含 part-3');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 事件落在不允许的历史部分会被拒绝（按 stageOwnership 派生）',
+    () => {
+      const doc = clone(base);
+      // 造一个 background 事件，但把它错放到 part-1（不在 background 允许集合内）
+      const ev = makeEarlyCampaignEvent(doc, { id: 'event-hong-kong-1941' });
+      ev.historicalPart = 'part-1-why-war';
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const partError = result.errors.filter(
+        (error) => error.includes('event-hong-kong-1941') && /不在阶段 'background' 允许的集合/.test(error),
+      );
+      if (partError.length === 0) {
+        throw new Error(`错配历史部分未被按 stageOwnership 派生拒绝：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 backgroundGate 只引用 stageOwnership.background.events',
+    () => {
+      const gateIds = backgroundGateEventIds(coverage);
+      const owned = ownedEventIds(coverage, 'background');
+      if (canonicalJson(gateIds) !== canonicalJson(owned)) {
+        throw new Error(`backgroundGate 与 stageOwnership.background.events 不一致：${gateIds} vs ${owned}`);
+      }
+      if (!gateIds.includes('event-doolittle-raid-1942')) throw new Error('backgroundGate 未列出杜立特');
+      // 负例：把背景事件从归属里去掉后，gate 必须随之变化（不存在第二套表）
+      const broken = clone(coverage);
+      broken.stageOwnership.background.events = [];
+      if (backgroundGateEventIds(broken).length !== 0) {
+        throw new Error('backgroundGate 没有跟随 stageOwnership（说明存在第二套归属来源）');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R1 --stage background 缺杜立特时只由该事件缺失触发（具名负例）',
+    () => {
+      // 只在内存里移除杜立特事件，其余内容保持原样
+      const doc = clone(base);
+      doc.events = (doc.events || []).filter((e) => e && e.id !== 'event-doolittle-raid-1942');
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const doolittleErrors = result.errors.filter((error) => error.includes('event-doolittle-raid-1942'));
+      if (doolittleErrors.length === 0) throw new Error('缺少杜立特没有被检出');
+      // 该负例只由“该事件缺失”触发：错误信息必须是缺失事件，而不是历史部分或阶段归属问题
+      for (const error of doolittleErrors) {
+        if (!/缺少必需事件 event-doolittle-raid-1942/.test(error)) {
+          throw new Error(`杜立特负例被其它原因连带触发：${error}`);
+        }
+      }
+    },
+  ]);
+
+  // ===== ARCH-02 R2：analysisProfiles 十键具名分析 =====
+  tests.push([
+    'ARCH-02 R2 analysisProfiles 契约与代码十键一致（正向）',
+    () => {
+      const contractErrors = validateAnalysisProfilesContract(coverage);
+      if (contractErrors.length > 0) throw new Error(contractErrors.join('; '));
+      const declared = coverage.earlyCampaign.analysisProfiles.keys.map((entry) => entry.key);
+      if (canonicalJson(declared) !== canonicalJson(ANALYSIS_PROFILE_KEYS)) {
+        throw new Error(`契约键 ${declared.join(',')} 与代码键 ${ANALYSIS_PROFILE_KEYS.join(',')} 不一致`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 合规 analysisProfiles 十键通过（正向对照）',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makeProfiledEarlyCampaignEvent(doc));
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const profileErrors = result.errors.filter((error) => /analysisProfiles/.test(error));
+      if (profileErrors.length > 0) {
+        throw new Error(`合规十键分析被误判：${profileErrors.slice(0, 5).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 缺任意一个具名键被拒绝（逐键负例）',
+    () => {
+      for (const key of ANALYSIS_PROFILE_KEYS) {
+        const doc = clone(base);
+        const ev = makeProfiledEarlyCampaignEvent(doc);
+        delete ev.analysisProfiles[key];
+        doc.events.push(ev);
+        const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+        const hit = result.errors.filter((error) => error.includes(`analysisProfiles.${key}`) && /缺少必需的/.test(error));
+        if (hit.length === 0) throw new Error(`缺少键 '${key}' 没有被检出：${result.errors.slice(0, 5).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 某个键篇幅不足被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc, { overrides: { geography: '太短。' } });
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => error.includes('analysisProfiles.geography.body') && /汉字/.test(error));
+      if (hit.length === 0) throw new Error(`篇幅不足未被检出：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 options 缺少真实选项被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc, {
+        overrides: {
+          options:
+            '合成文字：此处通篇陈述的是天气、距离与补给方面的困难，只罗列外部条件带来的压力，没有交代当时面对的是哪几条不同的路径，也没有写明有没有别的做法被讨论过。为了让篇幅规则先行通过、从而确保拦截确实来自缺少具体备选路径这一条，这里再补充若干说明性的句子把叙述铺满，但仍然不给出一条具体的路径描述。',
+        },
+      });
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /analysisProfiles\.options/.test(error) && /真实可选方案/.test(error));
+      if (hit.length === 0) throw new Error(`options 缺真实选项未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 options 缺少排除它的约束被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc, {
+        overrides: {
+          options:
+            '合成文字：当时可以选择的方案有好几个，例如继续防守据点，或者主动出击寻找对方舰队，也可以等待增援到位再行动，这些方案都曾被认真考虑过并逐一讨论。',
+        },
+      });
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /analysisProfiles\.options/.test(error) && /排除该方案的约束/.test(error));
+      if (hit.length === 0) throw new Error(`options 缺约束未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 uncertainty 缺少争议/无法确定被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc, {
+        overrides: {
+          uncertainty:
+            '合成文字：根据档案记载可以确认大致经过，史料中有证据支持的日期与部队番号都是清楚的，来源明确，可以放心写进正文，不需要额外说明其他情况。',
+        },
+      });
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /analysisProfiles\.uncertainty/.test(error) && /争议或无法确定/.test(error));
+      if (hit.length === 0) throw new Error(`uncertainty 缺争议表述未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 uncertainty 缺少有证据支持的部分被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc, {
+        overrides: {
+          uncertainty:
+            '合成文字：这一部分存在争议，不同说法互不相同，具体伤亡数字无法确定，也有资料不足的地方，暂时不能判定谁对谁错，需要继续等待新的材料出现。',
+        },
+      });
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /analysisProfiles\.uncertainty/.test(error) && /有证据支持/.test(error));
+      if (hit.length === 0) throw new Error(`uncertainty 缺证据支持部分未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 旧五键在过渡窗口内仍被接受（不回归 HIST-01 内容）',
+    () => {
+      const doc = clone(base);
+      const legacyEvent = makeEarlyCampaignEvent(doc); // 只带旧 earlyCampaignAnalysis
+      doc.events.push(legacyEvent);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const legacySpecific = result.errors.filter((error) => /旧五键/.test(error) || /analysisProfiles.*十键分析结构/.test(error));
+      if (legacySpecific.length > 0) {
+        throw new Error(`过渡窗口内旧五键被误拒：${legacySpecific.slice(0, 4).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 过渡窗口被关闭后旧五键被具名拒绝（负例）',
+    () => {
+      const doc = clone(base);
+      doc.events.push(makeEarlyCampaignEvent(doc)); // 旧五键
+      const strictCoverage = clone(coverage);
+      strictCoverage.earlyCampaign.legacyAnalysis.enforcement = 'off';
+      const result = validateDocument(doc, { coverage: strictCoverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /旧五键结构已被停用/.test(error) && /analysisProfiles/.test(error));
+      if (hit.length === 0) throw new Error(`关闭过渡窗口后旧五键未被拒绝：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 契约必须声明 analysisProfiles 与过渡窗口字段',
+    () => {
+      const broken = clone(coverage);
+      delete broken.earlyCampaign.analysisProfiles;
+      if (validateAnalysisProfilesContract(broken).length === 0) throw new Error('缺少 analysisProfiles 未被发现');
+      const broken2 = clone(coverage);
+      delete broken2.earlyCampaign.legacyAnalysis;
+      if (validateAnalysisProfilesContract(broken2).length === 0) throw new Error('缺少 legacyAnalysis 未被发现');
+      const broken3 = clone(coverage);
+      broken3.earlyCampaign.analysisProfiles.keys = broken3.earlyCampaign.analysisProfiles.keys.filter((k) => k.key !== 'uncertainty');
+      const e3 = validateAnalysisProfilesContract(broken3);
+      if (e3.length === 0) throw new Error('缺少 uncertainty 键未被发现');
+    },
+  ]);
+
+  // ===== ARCH-02 R3：研究过程状态只写 researchStatus（自 HIST-01 起生效）=====
+  tests.push([
+    'ARCH-02 R3 合法 researchStatus 枚举被接受（正向）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc);
+      ev.researchStatus = 'cross-checked';
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const rsErrors = result.errors.filter((error) => /researchStatus|研究\/检索过程措辞/.test(error));
+      if (rsErrors.length > 0) throw new Error(`合法 researchStatus 被误判：${rsErrors.join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 非法 researchStatus 枚举值被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc);
+      ev.researchStatus = 'in-progress-ish';
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /researchStatus/.test(error) && /必须是/.test(error));
+      if (hit.length === 0) throw new Error(`非法枚举未被检出：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 正文出现研究过程措辞被拒绝（具名负例，自 HIST-01 起生效）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc);
+      ev.article[0].body = `${ev.article[0].body}本文仍在检索相关资料，尚待查证具体数字。`;
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /article\[0\].*研究\/检索过程措辞/.test(error));
+      if (hit.length === 0) throw new Error(`正文研究措辞未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+      if (!hit.every((error) => /自 HIST-01 起生效/.test(error))) {
+        throw new Error(`错误未标注生效任务：${hit.join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 事件 summary 出现研究过程措辞被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc);
+      ev.summary = '这场行动的过程状态标记为调研中，详细资料有待查证，暂以摘要形式呈现。';
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /\.summary:.*研究\/检索过程措辞/.test(error));
+      if (hit.length === 0) throw new Error(`summary 研究措辞未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 claim 文本出现研究过程措辞被拒绝（具名负例）',
+    () => {
+      const doc = clone(base);
+      doc.claims.push({
+        id: 'claim-selftest-research-wording',
+        text: '合成测试：本段仍待查证，尚未找到可靠来源，因此只是占位说明。',
+        claimType: 'schematic',
+        entityIds: [doc.events[0].id],
+        sourceIds: [doc.sources[0].id],
+        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 1' }],
+      });
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /claims\[\d+\].*研究\/检索过程措辞/.test(error));
+      if (hit.length === 0) throw new Error(`claim 研究措辞未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 研究过程措辞识别器不误伤正常历史叙述',
+    () => {
+      const normal = [
+        '1941年12月8日，日军开始进攻香港，防守方在人数与火力上都处于劣势，最终在12月25日投降。',
+        '根据档案记载与官方战史，这场行动的日期与主要部队番号可以确认，具体伤亡数字存在不同口径。',
+      ];
+      for (const text of normal) {
+        if (findResearchProcessWording(text)) throw new Error(`正常叙述被误判为研究措辞：${text}`);
+      }
+      const processTexts = [
+        '本文仍在检索相关资料。',
+        '尚待查证具体数字。',
+        '本节资料不足，待补。',
+        '检索过程中发现多个版本。',
+        '尚未找到可靠来源。',
+        'TODO: 补充数字',
+      ];
+      for (const text of processTexts) {
+        if (!findResearchProcessWording(text)) throw new Error(`研究措辞未被识别：${text}`);
+      }
+    },
+  ]);
+
+  // ===== ARCH-02 R4：媒体注册表迁移 =====
+  tests.push([
+    'ARCH-02 R4 合法媒体注册表 {version:1, media:[...]} 通过（正向）',
+    () => {
+      const registry = {
+        version: 1,
+        media: [
+          {
+            id: 'media-selftest-registry-item',
+            title: '合成测试素材',
+            mediaType: 'map',
+            path: 'public/media/selftest/x.svg',
+            author: '验证器自测',
+            license: 'original-work',
+            rightsStatement: '验证器自测使用的原创示意图，不发布，不含真实历史主张。',
+            sourceId: base.sources[0].id,
+            creditLine: '验证器自测素材，不得发布。',
+            alt: '验证器自测用合成地图，不代表真实地理。',
+            caption: '验证器自测用合成地图，不对应真实历史。',
+            articleIds: [coverage.keyArticleIds[0]],
+          },
+        ],
+      };
+      const errors = validateMediaRegistry(registry, coverage);
+      if (errors.length > 0) throw new Error(`合法注册表被误判：${errors.join('; ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 注册表 version 不是 1 被拒绝（具名负例）',
+    () => {
+      const errors = validateMediaRegistry({ version: 2, media: [] }, coverage);
+      if (errors.length === 0) throw new Error('version=2 没有被发现');
+      if (!errors.some((error) => /version 必须是 1/.test(error))) throw new Error(errors.join('; '));
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 注册表缺 media 数组被拒绝（具名负例）',
+    () => {
+      const errors = validateMediaRegistry({ version: 1 }, coverage);
+      if (errors.length === 0) throw new Error('缺少 media 数组没有被发现');
+      if (!errors.some((error) => /media 必须是数组/.test(error))) throw new Error(errors.join('; '));
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 注册表含未定义顶层字段被拒绝（具名负例）',
+    () => {
+      const errors = validateMediaRegistry({ version: 1, media: [], extra: true }, coverage);
+      if (errors.length === 0) throw new Error('未定义顶层字段没有被发现');
+      if (!errors.some((error) => /不允许的顶层字段 'extra'/.test(error))) throw new Error(errors.join('; '));
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 history 顶层 media 含条目被拒绝并给出迁移映射（具名负例）',
+    () => {
+      const doc = clone(base);
+      doc.media = [
+        {
+          id: 'media-selftest-legacy',
+          title: '旧式素材',
+          mediaType: 'map',
+          path: 'public/media/selftest/y.svg',
+          author: '验证器自测',
+          license: 'original-work',
+          rightsStatement: '验证器自测使用的原创示意图，不发布，不含真实历史主张。',
+          sourceId: doc.sources[0].id,
+          creditLine: '验证器自测素材，不得发布。',
+          alt: '验证器自测用合成地图，不代表真实地理。',
+          caption: '验证器自测用合成地图，不对应真实历史。',
+          articleIds: [coverage.keyArticleIds[0]],
+        },
+      ];
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /\$\.media:.*已废弃并被拒绝/.test(error));
+      if (hit.length === 0) throw new Error(`legacy media 没有被拒绝：${result.errors.slice(0, 6).join(' | ')}`);
+      if (!hit.every((error) => /content\/media\.json/.test(error) && /迁移映射/.test(error))) {
+        throw new Error(`拒绝信息缺少迁移映射：${hit.join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 history 空 legacy media 在过渡期只警告不失败',
+    () => {
+      const doc = clone(base);
+      doc.media = [];
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const mediaErrors = result.errors.filter((error) => /\$\.media:/.test(error));
+      if (mediaErrors.length > 0) throw new Error(`空 legacy media 在过渡期不应报错：${mediaErrors.join(' | ')}`);
+      if (!result.warnings.some((warning) => /\$\.media:.*过渡窗口内仅警告/.test(warning))) {
+        throw new Error('空 legacy media 没有产生迁移警告');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 关闭过渡窗口后空 legacy media 也被拒绝（负例）',
+    () => {
+      const doc = clone(base);
+      doc.media = [];
+      const strict = clone(coverage);
+      strict.mediaRegistry.legacyHistoryMediaEnforcement = 'off';
+      const result = validateDocument(doc, { coverage: strict, stage: 'strategy', rootDir: REPO_ROOT });
+      const mediaErrors = result.errors.filter((error) => /\$\.media:.*已废弃并被拒绝/.test(error));
+      if (mediaErrors.length === 0) throw new Error('过渡窗口关闭后空 legacy media 未被拒绝');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 --media 素材来自注册表而非 history.json（正向对照）',
+    () => {
+      const memoryFs = createMemoryFileSystem();
+      const root = '/virtual-media-registry';
+      const doc = clone(base);
+      doc.media = []; // 过渡期的空 legacy
+      const registryRow = {
+        id: 'media-selftest-registry-ok',
+        title: '合成测试地图',
+        mediaType: 'map',
+        path: 'public/media/selftest/ok-registry.svg',
+        author: '验证器自测',
+        license: 'original-work',
+        rightsStatement: '验证器自测生成的原创示意图，不发布，不包含真实历史主张。',
+        sourceId: doc.sources[0].id,
+        creditLine: '验证器自测素材，不得发布。',
+        alt: '验证器自测用合成地图，不代表真实地理。',
+        caption: '验证器自测用合成地图，不对应真实历史。',
+        articleIds: [coverage.keyArticleIds[0]],
+      };
+      const resolved = resolveMediaPath(root, registryRow.path);
+      memoryFs.set(resolved.portableKey, '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+      const result = validateDocument(doc, {
+        coverage,
+        stage: 'strategy',
+        media: true,
+        mediaRows: [registryRow],
+        rootDir: root,
+        fileSystem: memoryFs,
+      });
+      const fileErrors = result.errors.filter((error) => /素材文件不存在|素材文件为空/.test(error));
+      if (fileErrors.length > 0) throw new Error(`注册表素材被判为文件缺失：${fileErrors.join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 --media 在注册表缺条目时报素材门禁错误',
+    () => {
+      const doc = clone(base);
+      doc.media = [];
+      const result = validateDocument(doc, {
+        coverage,
+        stage: 'strategy',
+        media: true,
+        mediaRows: [],
+        rootDir: '/virtual-media-registry-empty',
+        fileSystem: createMemoryFileSystem(),
+      });
+      const hit = result.errors.filter((error) => /\[media\]/.test(error));
+      if (hit.length === 0) throw new Error('空注册表没有触发素材门禁错误');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 --stage 门禁不因 media.json 缺失而失败（契约声明）',
+    () => {
+      if (!coverage.mediaRegistry || coverage.mediaRegistry.stageGateUnaffectedWhenMissing !== true) {
+        throw new Error('coverage.mediaRegistry.stageGateUnaffectedWhenMissing 必须为 true');
+      }
+      // 空 mediaRows + 非 --media 的 stage 验证：不应产生任何 media 相关错误
+      const doc = clone(base);
+      doc.media = [];
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const mediaErrors = result.errors.filter((error) => /\[media\]|素材/.test(error));
+      if (mediaErrors.length > 0) throw new Error(`--stage 被媒体缺失连带失败：${mediaErrors.join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R4 契约声明注册表消费方与版本',
+    () => {
+      const reg = coverage.mediaRegistry;
+      if (!reg) throw new Error('coverage.mediaRegistry 缺失');
+      if (reg.version !== 1) throw new Error(`mediaRegistry.version 应为 1，实际 ${reg.version}`);
+      if (reg.file !== 'content/media.json') throw new Error(`mediaRegistry.file 应为 content/media.json，实际 ${reg.file}`);
+      for (const consumer of ['MEDIA-02', 'HIST-04', 'QA-01', 'WEB-01', 'MAP-01']) {
+        if (!reg.consumers || !reg.consumers[consumer]) throw new Error(`缺少消费方声明 ${consumer}`);
+      }
+      if (!isNonEmptyString(reg.consumers.HIST_04) && !/不写/.test(reg.consumers['HIST-04'])) {
+        throw new Error('HIST-04 必须声明为不写 media.json');
+      }
+      if (!isNonEmptyString(reg.legacyDisabledBy)) throw new Error('必须声明 legacy media 何时关闭');
+    },
+  ]);
+
+  // ===== ARCH-02 a2 非阻断项：注册表条目必须逐条通过 media schema =====
+  tests.push([
+    'ARCH-02 a2 注册表条目缺必需字段被 media schema 拒绝（具名负例）',
+    () => {
+      const registry = {
+        version: 1,
+        media: [{ id: 'media-selftest-incomplete', title: '缺字段素材' }],
+      };
+      const errors = validateMediaRegistry(registry, coverage);
+      if (errors.length === 0) throw new Error('缺必需字段的条目没有被发现');
+      const named = errors.filter((error) => /media\[0\]/.test(error) && /缺少必填字段/.test(error));
+      if (named.length === 0) {
+        throw new Error(`错误未定位到 media[0] 且说明缺必填字段：${errors.slice(0, 5).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a2 注册表条目非法许可被 media schema 拒绝（具名负例）',
+    () => {
+      const registry = {
+        version: 1,
+        media: [
+          {
+            id: 'media-selftest-bad-license',
+            title: '非法许可素材',
+            mediaType: 'map',
+            path: 'public/media/selftest/z.svg',
+            author: '验证器自测',
+            license: 'all-rights-reserved',
+            rightsStatement: '这是自测使用的非法许可声明，不应被接受。',
+            sourceId: base.sources[0].id,
+            creditLine: '验证器自测素材。',
+            alt: '验证器自测用合成地图，不代表真实地理。',
+            caption: '验证器自测用合成地图，不对应真实历史。',
+            articleIds: [coverage.keyArticleIds[0]],
+          },
+        ],
+      };
+      const errors = validateMediaRegistry(registry, coverage);
+      if (errors.length === 0) throw new Error('非法许可没有被发现');
+      if (!errors.some((error) => /允许列表|license/.test(error))) {
+        throw new Error(`错误未指出许可问题：${errors.slice(0, 5).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a2 合规注册表条目通过 media schema（正向对照）',
+    () => {
+      const registry = {
+        version: 1,
+        media: [
+          {
+            id: 'media-selftest-schema-ok',
+            title: '合规素材',
+            mediaType: 'map',
+            path: 'public/media/selftest/ok2.svg',
+            author: '验证器自测',
+            license: 'original-work',
+            rightsStatement: '验证器自测使用的原创示意图，不发布，不含真实历史主张。',
+            sourceId: base.sources[0].id,
+            creditLine: '验证器自测素材，不得发布。',
+            alt: '验证器自测用合成地图，不代表真实地理。',
+            caption: '验证器自测用合成地图，不对应真实历史。',
+            articleIds: [coverage.keyArticleIds[0]],
+          },
+        ],
+      };
+      const errors = validateMediaRegistry(registry, coverage);
+      if (errors.length > 0) throw new Error(`合规条目被误判：${errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a2 history 顶层 media 废弃占位（deprecated stub）不被 schema 当作合法数组',
+    () => {
+      // schema 里 properties.media 只保留迁移说明，不能声明 item 形状（否则等于仍允许数组）
+      const mediaProp = CONTENT_SCHEMA.properties && CONTENT_SCHEMA.properties.media;
+      if (!isPlainObject(mediaProp)) throw new Error('schema 缺少 media 迁移占位声明');
+      if (mediaProp.items !== undefined) {
+        throw new Error('schema 的 media 占位仍声明了 items，等于仍接受数组条目');
+      }
+      if (mediaProp.deprecated !== true) throw new Error('schema 的 media 占位必须标记 deprecated: true');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a2 --media 两份文件缺失分别精确报错（分支覆盖）',
+    () => {
+      // 直接测 CLI ��析与提示构造：两份文件各自的提示文本不同且都点名目标路径
+      const historyMissing = '内容文件不存在';
+      const mediaMissing = '素材注册表不存在';
+      if (historyMissing === mediaMissing) throw new Error('两份文件的错误信息不应相同');
+      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+      if (!src.includes('[media] 内容文件不存在：content/history.json')) {
+        throw new Error('--media 缺少 history.json 的专属错误分支');
+      }
+      if (!src.includes('[media] 素材注册表不存在：content/media.json')) {
+        throw new Error('--media 缺少 media.json 的专属错误分支');
+      }
+    },
+  ]);
+
+  // ===== ARCH-02 R6：地图阶段契约夹具 =====
+  tests.push([
+    'ARCH-02 R6 地图阶段夹具存在、fixtureOnly、三战役各 >=2 阶段（正向）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      if (!fs.existsSync(mapPath)) throw new Error(`地图阶段夹具缺失：${mapPath}`);
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      if (mapDoc.fixtureOnly !== true) throw new Error('地图阶段夹具必须 fixtureOnly=true');
+      for (const battleId of ['battle-pearl-harbor', 'battle-coral-sea', 'battle-midway']) {
+        const battle = (mapDoc.battles || []).find((b) => b && b.id === battleId);
+        if (!battle) throw new Error(`地图阶段夹具缺少战役 ${battleId}`);
+        if (!Array.isArray(battle.phases) || battle.phases.length < 2) {
+          throw new Error(`${battleId} 的阶段数 ${(battle.phases || []).length} < 2`);
+        }
+        for (const phase of battle.phases) {
+          for (const field of ['time', 'positions', 'knownEnemy', 'unknownEnemy', 'decision', 'consequence', 'certainty', 'schematic']) {
+            if (!hasOwn(phase, field)) throw new Error(`${battleId}/${phase.id} 缺少阶段字段 '${field}'`);
+          }
+          for (const side of ['japan', 'allies']) {
+            if (!isPlainObject(phase.positions[side])) throw new Error(`${battleId}/${phase.id} 缺少 ${side} 位置`);
+            if (!isNonEmptyString(phase.knownEnemy[side])) throw new Error(`${battleId}/${phase.id} 缺少 ${side} knownEnemy`);
+            if (!isNonEmptyString(phase.unknownEnemy[side])) throw new Error(`${battleId}/${phase.id} 缺少 ${side} unknownEnemy`);
+            if (!isNonEmptyString(phase.decision[side])) throw new Error(`${battleId}/${phase.id} 缺少 ${side} decision`);
+            if (!isNonEmptyString(phase.consequence[side])) throw new Error(`${battleId}/${phase.id} 缺少 ${side} consequence`);
+          }
+          if (phase.schematic !== true) throw new Error(`${battleId}/${phase.id} 必须标记 schematic=true`);
+        }
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R6 地图阶段夹具无结构性错误（不含 coverage 缺失）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const structural = result.errors.filter((error) => !/^\[coverage\]/.test(error) && !/^coverage:/.test(error));
+      if (structural.length > 0) {
+        throw new Error(`地图阶段夹具有结构错误：\n${structural.slice(0, 8).join('\n')}`);
+      }
+    },
+  ]);
+  // ===== ARCH-02 a2 修复 D3：地图阶段「双方位置」专用负例 =====
+  tests.push([
+    'ARCH-02 D3 阶段缺 positions.allies 被专用校验拒绝（具名负例）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      delete mapDoc.battles[0].phases[0].positions.allies;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      // 必须由「地图阶段专用校验」指出缺失的盟方位置，而不是仅靠 schema 的必填字段
+      const specific = result.errors.filter(
+        (error) => /positions\.allies/.test(error) && /缺少\s*盟方位置/.test(error),
+      );
+      if (specific.length === 0) {
+        throw new Error(`缺 positions.allies 未被专用校验检出：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 D3 阶段缺 positions.japan 被专用校验拒绝（具名负例）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      delete mapDoc.battles[1].phases[1].positions.japan;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const specific = result.errors.filter(
+        (error) => /positions\.japan/.test(error) && /缺少\s*日方位置/.test(error),
+      );
+      if (specific.length === 0) {
+        throw new Error(`缺 positions.japan 未被专用校验检出：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 D3 阶段整个 positions 对象缺失被专用校验拒绝（具名负例）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      delete mapDoc.battles[2].phases[0].positions;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const specific = result.errors.filter(
+        (error) => /positions: 阶段缺少双方位置对象/.test(error),
+      );
+      if (specific.length === 0) {
+        throw new Error(`缺整个 positions 未被专用校验检出：${result.errors.slice(0, 6).join(' | ')}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 D3 专用校验对合规夹具全部 6 个阶段通过（正向对照）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      let phaseCount = 0;
+      for (const battle of mapDoc.battles) {
+        const errs = validateMapPhasesForBattle(battle, `battles.${battle.id}`);
+        if (errs.length > 0) throw new Error(`${battle.id} 专用校验失败：${errs.slice(0, 3).join(' | ')}`);
+        phaseCount += battle.phases.length;
+      }
+      if (phaseCount !== 6) throw new Error(`期望 6 个阶段，实际 ${phaseCount}`);
+    },
+  ]);
+
+  tests.push([
+    'ARCH-02 R6 地图阶段夹具缺 knownEnemy 被拒绝（具名负例）',    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      delete mapDoc.battles[0].phases[0].knownEnemy;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /phases\[0\].*knownEnemy|缺少必填字段 'knownEnemy'/.test(error));
+      if (hit.length === 0) throw new Error(`缺失 knownEnemy 未被检出：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R6 地图阶段夹具缺 consequence 被拒绝（具名负例）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      delete mapDoc.battles[1].phases[0].consequence;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /phases\[0\].*consequence|缺少必填字段 'consequence'/.test(error));
+      if (hit.length === 0) throw new Error(`缺失 consequence 未被检出：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R6 地图阶段夹具缺 unknownEnemy 被拒绝（具名负例）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      delete mapDoc.battles[2].phases[1].unknownEnemy;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /phases\[1\].*unknownEnemy|缺少必填字段 'unknownEnemy'/.test(error));
+      if (hit.length === 0) throw new Error(`缺失 unknownEnemy 未被检出：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R6 地图阶段夹具阶段未标示意被拒绝（具名负例）',
+    () => {
+      const mapPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'map-phases.json');
+      const mapDoc = readJson(mapPath, 'map-phases.json');
+      mapDoc.battles[0].phases[0].schematic = false;
+      const result = validateDocument(mapDoc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /phases\[0\].*schematic/.test(error));
+      if (hit.length === 0) throw new Error(`未标示意未被检出：${result.errors.slice(0, 5).join(' | ')}`);
+    },
+  ]);
+
+  // ===== ARCH-02：跨章节数值/类别矛盾（达尔文 18 架飞机）=====
+  tests.push([
+    'ARCH-02 跨章节矛盾识别器能识别达尔文 18 架飞机的类别冲突（参考案例）',
+    () => {
+      const items = extractAircraftClaims('十八架重型轰炸机出现');
+      if (items.length !== 1 || items[0].count !== 18 || items[0].category !== 'level-bomber') {
+        throw new Error(`未能正确抽取『十八架重型轰炸机』：${JSON.stringify(items)}`);
+      }
+      const other = extractAircraftClaims('18 架俯冲轰炸机');
+      if (other.length !== 1 || other[0].count !== 18 || other[0].category !== 'dive-bomber') {
+        throw new Error(`未能正确抽取『18 架俯冲轰炸机』：${JSON.stringify(other)}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 D1 数字解析支持全角数字与超过 18 的中文数字',
+    () => {
+      // 全角数字（review 明确指出的缺口）
+      const fullwidth = extractAircraftClaims('１８架俯冲轰炸机');
+      if (fullwidth.length !== 1 || fullwidth[0].count !== 18 || fullwidth[0].category !== 'dive-bomber') {
+        throw new Error(`全角数字未被识别：${JSON.stringify(fullwidth)}`);
+      }
+      // 中文数字 >18 且含十/百
+      const cases = [
+        ['二十四架战斗机', 24, 'fighter'],
+        ['三十六架水平轰炸机', 36, 'level-bomber'],
+        ['七十二架俯冲轰炸机', 72, 'dive-bomber'],
+        ['一百架鱼雷机', 100, 'torpedo-bomber'],
+        ['一百四十架水平轰炸机', 140, 'level-bomber'],
+        ['两百架战斗机', 200, 'fighter'],
+        ['二百架战斗机', 200, 'fighter'],
+        ['一千架飞行艇', 1000, 'floatplane'],
+      ];
+      for (const [text, expectedCount, expectedCategory] of cases) {
+        const items = extractAircraftClaims(text);
+        if (items.length !== 1 || items[0].count !== expectedCount || items[0].category !== expectedCategory) {
+          throw new Error(`『${text}』解析错误：期望 ${expectedCount}/${expectedCategory}，实际 ${JSON.stringify(items)}`);
+        }
+      }
+      // 全角 + 中文混排仍能构成跨章节矛盾
+      const mixed = extractAircraftClaims('正文写 一百四十架重型轰炸机');
+      if (mixed.length !== 1 || mixed[0].count !== 140) throw new Error(`>99 中文数字未被识别：${JSON.stringify(mixed)}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 跨章节矛盾检查精确指出事件与章节（具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
+      ev.article = [
+        { heading: '一次没有预警的空袭', body: '十八架重型轰炸机出现，防守方没有任何预警。', sourceIds: [doc.sources[0].id], claimIds: [doc.claims[0].id] },
+      ];
+      doc.events.push(ev);
+      doc.claims.push({
+        id: 'claim-selftest-darwin-category',
+        text: '约 72 架水平轰炸机与 18 架俯冲轰炸机参与了这次空袭。',
+        claimType: 'fact',
+        entityIds: ['event-darwin-air-raid-1942'],
+        sourceIds: [doc.sources[0].id],
+        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
+      });
+      const strict = clone(coverage);
+      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
+      const result = validateDocument(doc, { coverage: strict, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
+      if (hit.length === 0) throw new Error(`矛盾未被检出：${result.errors.slice(0, 6).join(' | ')}`);
+      const message = hit[0];
+      if (!/event-darwin-air-raid-1942/.test(message)) throw new Error(`错误未点名事件：${message}`);
+      if (!/一次没有预警的空袭/.test(message)) throw new Error(`错误未点名正文小节：${message}`);
+      if (!/claim-selftest-darwin-category/.test(message)) throw new Error(`错误未点名 claim：${message}`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 跨章节矛盾在过渡期只警告不失败（不回归 HIST-01）',
+    () => {
+      const doc = clone(base);
+      const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
+      ev.article = [
+        { heading: '一次没有预警的空袭', body: '十八架重型轰炸机出现。', sourceIds: [doc.sources[0].id], claimIds: [doc.claims[0].id] },
+      ];
+      doc.events.push(ev);
+      // claim 侧给出不同类别，构成真正的跨章节矛盾
+      doc.claims.push({
+        id: 'claim-selftest-darwin-transition',
+        text: '这次空袭中有 18 架俯冲轰炸机参与。',
+        claimType: 'fact',
+        entityIds: ['event-darwin-air-raid-1942'],
+        sourceIds: [doc.sources[0].id],
+        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
+      });
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const errored = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
+      const warned = result.warnings.filter((warning) => /跨章节数值\/类别矛盾/.test(warning));
+      if (warned.length === 0) throw new Error('过渡期没有产生矛盾警告（不应静默放过）');
+      if (errored.length > 0) throw new Error('过渡期矛盾不应作为门禁错误');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 数字抽取：无数量文本不误报，多机种各自归类',
+    () => {
+      // 无数字歧义时不报错
+      const body = '轰炸机与战斗机都参与了行动，但没有给出具体数量。';
+      if (extractAircraftClaims(body).length !== 0) throw new Error('无数字文本应当抽取为空');
+      const consistent = '18 架俯冲轰炸机与 72 架水平轰炸机参与了行动。';
+      const items = extractAircraftClaims(consistent);
+      const byCount = new Map();
+      for (const item of items) byCount.set(item.count, item.category);
+      if (byCount.get(18) !== 'dive-bomber' || byCount.get(72) !== 'level-bomber') {
+        throw new Error(`抽取结果不符：${JSON.stringify(items)}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 跨章节矛盾错误真的输出 eventId（具名断言）',
+    () => {
+      const doc = clone(base);
+      const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
+      ev.article = [
+        {
+          heading: '一次没有预警的空袭',
+          body: '十八架重型轰炸机出现。',
+          sourceIds: [doc.sources[0].id],
+          claimIds: [doc.claims[0].id],
+        },
+      ];
+      doc.events.push(ev);
+      doc.claims.push({
+        id: 'claim-selftest-eventid-output',
+        text: '这次空袭中有 18 架俯冲轰炸机参与。',
+        claimType: 'fact',
+        entityIds: ['event-darwin-air-raid-1942'],
+        sourceIds: [doc.sources[0].id],
+        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
+      });
+      const strict = clone(coverage);
+      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
+      const result = validateDocument(doc, { coverage: strict, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
+      if (hit.length === 0) throw new Error('矛盾未被检出');
+      const message = hit[0];
+      // 这条断言就是测试名承诺的内容：错误信息里必须真的出现 eventId
+      if (!message.includes('event-darwin-air-raid-1942')) {
+        throw new Error(`错误信息没有输出 eventId：${message.slice(0, 200)}`);
+      }
+      if (!/claim-selftest-eventid-output/.test(message)) {
+        throw new Error(`错误信息没有输出 claim ID：${message.slice(0, 200)}`);
+      }
+      if (!/一次没有预警的空袭/.test(message)) {
+        throw new Error(`错误信息没有输出小节标题：${message.slice(0, 200)}`);
+      }
+    },
+  ]);
+
+  // ===== ARCH-02 attempt 3：新规则必须在真实内容上执行（D2/D3）=====
+  tests.push([
+    'ARCH-02 a3 早期战役与 researchStatus 检查不依赖 stage（真实内容五阶段对照）',
+    () => {
+      // 修复 D2 的依据：这些检查在 events 循环里无条件执行，因此在任何 stage 下命中数相同。
+      // 若未来有人把检查塞进某个 stage 分支，这条测试会失败。
+      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
+      if (!fs.existsSync(realPath)) {
+        // 真实内容缺失时无法证明；显式失败而不是静默跳过
+        throw new Error(`真实内容缺失（${realPath}），无法证明规则与 stage 无关`);
+      }
+      const realDoc = readJson(realPath, 'content/history.json');
+      const strict = clone(coverage);
+      strict.earlyCampaign.legacyAnalysis.enforcement = 'off';
+      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
+      const counts = [];
+      for (const stage of STAGE_IDS) {
+        const r = validateDocument(realDoc, { coverage: strict, stage, rootDir: REPO_ROOT });
+        const all = [...r.errors, ...r.warnings];
+        counts.push({
+          stage,
+          ap: all.filter((x) => /analysisProfiles|旧五键/.test(x)).length,
+          rs: all.filter((x) => /researchStatus|研究\/检索过程措辞/.test(x)).length,
+          cc: all.filter((x) => /跨章节数值\/类别矛盾/.test(x)).length,
+        });
+      }
+      const first = counts[0];
+      for (const row of counts) {
+        if (row.ap !== first.ap || row.rs !== first.rs || row.cc !== first.cc) {
+          throw new Error(
+            `规则命中数随 stage 变化（说明检查被 stage 门控了）：${counts.map((c) => `${c.stage}:ap=${c.ap},rs=${c.rs},cc=${c.cc}`).join(' | ')}`,
+          );
+        }
+      }
+      // 真实内容确实会触发 analysisProfiles（8 个旧五键事件）
+      if (first.ap === 0) throw new Error('严格模式下真实内容没有触发 analysisProfiles，规则可能失效');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a3 --real-content 验收阶段是 background 而非 strategy',
+    () => {
+      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+      if (!/const ACCEPTANCE_STAGE = 'background'/.test(src)) {
+        throw new Error("--real-content 的验收阶段不是 'background'（D2 未修复）");
+      }
+      if (/coverage: strictCoverage,\s*\n\s*stage: 'strategy'/.test(src)) {
+        throw new Error("--real-content 仍以 stage: 'strategy' 调用 validateDocument");
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a3 researchStatus 正向探针在真实内容事件上触发（D3）',
+    () => {
+      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
+      if (!fs.existsSync(realPath)) throw new Error(`真实内容缺失（${realPath}），无法运行正向探针`);
+      const realDoc = readJson(realPath, 'content/history.json');
+      const strict = clone(coverage);
+      // 正向探针只需要 researchStatus 规则生效；其余过渡窗口保持原样
+      const probe = runResearchStatusPositiveProbe(realDoc, strict);
+      if (!probe.ok) throw new Error(`正向探针失败：${probe.reason}`);
+      if (!probe.targetId) throw new Error('正向探针没有报告目标事件 ID');
+      // 探针只操作内存副本，不得修改磁盘上的真实内容
+      const after = readJson(realPath, 'content/history.json');
+      if (JSON.stringify(after) !== JSON.stringify(realDoc)) {
+        throw new Error('正向探针修改了磁盘上的 content/history.json（必须只在内存副本上操作）');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a3 文档中的达尔文案例存在性表述与当前基座一致（D1 防再次错报）',
+    () => {
+      // attempt 2 的教训：文档在基座没有 HIST-01 时仍声称案例"真实存在"。
+      // 这里按当前真实内容判定，并要求文档使用条件式表述（不再出现无条件的"真实存在"）。
+      const docPath = path.join(REPO_ROOT, 'docs', 'research', 'contract-correction.md');
+      if (!fs.existsSync(docPath)) throw new Error(`contract-correction.md 缺失：${docPath}`);
+      const text = fs.readFileSync(docPath, 'utf8');
+      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
+      const hasRealContent = fs.existsSync(realPath);
+      let darwinExists = false;
+      if (hasRealContent) {
+        const realDoc = readJson(realPath, 'content/history.json');
+        darwinExists = (realDoc.events || []).some((e) => e && e.id === 'event-darwin-air-raid-1942');
+      }
+      // 无论如何都不得出现无条件的「真实存在」断言（必须是基座条件式）
+      if (/（\*\*在含 HIST-01 的代码树上真实存在\*\*）/.test(text)) {
+        throw new Error('文档仍保留无条件的「真实存在」断言；必须改为基座条件式表述');
+      }
+      if (!/基座条件/.test(text) && !/条件式/.test(text)) {
+        throw new Error('文档缺少达尔文案例的基座条件说明');
+      }
+      // 如果当前基座确实有该事件，文档必须说明它在该基座存在
+      if (darwinExists) {
+        const mentionsBase = /054dc36/.test(text);
+        if (!mentionsBase) throw new Error('当前基座含达尔文事件，但文档没有写明对应基座标识');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 契约声明跨章节矛盾的过渡执行模式与参考案例',
+    () => {
+      const block = coverage.contentTransition;
+      if (!isPlainObject(block)) throw new Error('coverage.contentTransition 缺失');
+      if (!['warn', 'off'].includes(block.crossChapterContradictionEnforcement)) {
+        throw new Error(`crossChapterContradictionEnforcement 非法：${block.crossChapterContradictionEnforcement}`);
+      }
+      if (!/darwin/i.test(String(block.crossChapterContradictionReferenceCase || ''))) {
+        throw new Error('必须声明达尔文参考案例');
+      }
+      if (!isNonEmptyString(block.crossChapterContradictionDisabledBy)) {
+        throw new Error('必须声明由哪个任务收紧 enforcement');
+      }
     },
   ]);
   tests.push([
@@ -4109,7 +6340,8 @@ function buildSelfTests() {
 
       const doc = clone(base);
       doc.fixtureOnly = false;
-      doc.media = [
+      // ARCH-02 R4：素材现在来自注册表（mediaRows），history.json 不再持有 media 条目。
+      const registryRows = [
         {
           id: 'media-fixture-selftest-map',
           title: '合成测试地图',
@@ -4127,6 +6359,7 @@ function buildSelfTests() {
           height: 600,
         },
       ];
+      delete doc.media; // 迁移后 history.json 不含该字段
       const resolvedMedia = resolveMediaPath(root, 'public/media/fixture/selftest-map.svg');
       if (!resolvedMedia.portableKey) throw new Error('媒体便携键解析失败');
       memoryFs.set(
@@ -4138,18 +6371,18 @@ function buildSelfTests() {
         coverage: customCoverage,
         stage: 'full',
         media: true,
+        mediaRows: registryRows,
         rootDir: root,
         fileSystem: memoryFs,
       });
       if (result.errors.length > 0) {
         throw new Error(`媒体精确集合正例失败：\n${result.errors.slice(0, 8).join('\n')}`);
       }
-      const missing = clone(doc);
-      missing.media = [];
-      const failed = validateDocument(missing, {
+      const failed = validateDocument(clone(doc), {
         coverage: customCoverage,
         stage: 'full',
         media: true,
+        mediaRows: [],
         rootDir: root,
         fileSystem: memoryFs,
       });
@@ -4172,6 +6405,35 @@ function buildSelfTests() {
       // 真实文件系统层必须只暴露读接口，杜绝自测期写入磁盘。
       const writeyKeys = Object.keys(REAL_FILE_SYSTEM).filter((key) => /write|mkdtemp|mkdir|rm|unlink/i.test(key));
       if (writeyKeys.length > 0) throw new Error(`真实文件系统层暴露了写接口：${writeyKeys.join(', ')}`);
+    },
+  ]);
+
+  tests.push([
+    'ARCH-02 R5 早期战役夹具含香港（合规）与达尔文（迁移目标）且十键齐全',
+    () => {
+      const earlyPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'valid-early-campaign.json');
+      if (!fs.existsSync(earlyPath)) throw new Error(`早期战役夹具缺失：${earlyPath}`);
+      const earlyDoc = readJson(earlyPath, 'valid-early-campaign.json');
+      if (earlyDoc.fixtureOnly !== true) throw new Error('早期战役夹具必须 fixtureOnly=true');
+      const ids = (earlyDoc.events || []).map((e) => e && e.id);
+      if (!ids.includes('event-hong-kong-1941')) throw new Error(`缺少合规早期战役 event-hong-kong-1941：${ids.join(', ')}`);
+      if (!ids.includes('event-darwin-air-raid-1942')) throw new Error(`缺少迁移目标 event-darwin-air-raid-1942：${ids.join(', ')}`);
+      for (const event of earlyDoc.events) {
+        if (!isPlainObject(event.analysisProfiles)) throw new Error(`${event.id}: 缺少 analysisProfiles 迁移结构`);
+        for (const key of ANALYSIS_PROFILE_KEYS) {
+          if (!isPlainObject(event.analysisProfiles[key])) throw new Error(`${event.id}: analysisProfiles 缺少 '${key}'`);
+        }
+        if (!isNonEmptyString(event.researchStatus)) throw new Error(`${event.id}: 缺少 researchStatus`);
+      }
+      const result = validateDocument(earlyDoc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const owned = result.errors.filter(
+        (error) =>
+          /analysisProfiles/.test(error) ||
+          /researchStatus/.test(error) ||
+          /不允许的字段/.test(error) ||
+          /缺少必填字段/.test(error),
+      );
+      if (owned.length > 0) throw new Error(`早期战役夹具有结构错误：${owned.slice(0, 6).join(' | ')}`);
     },
   ]);
 
@@ -4202,11 +6464,13 @@ function buildSelfTests() {
     },
   ]);
 
+
   return tests;
 }
 
 function runSelfTests() {
   const tests = buildSelfTests();
+
   let passed = 0;
   const failures = [];
   console.log('DSH 内容验证器自测');
@@ -4256,6 +6520,10 @@ async function main() {
   if (options.checkContracts) {
     return runContractChecks() ? 0 : 1;
   }
+  if (options.realContent) {
+    const { ok } = runRealContentChecks();
+    return ok ? 0 : 1;
+  }
 
   let coverage;
   try {
@@ -4276,7 +6544,12 @@ async function main() {
   }
 
   if (!fs.existsSync(filePath)) {
-    console.error(`内容文件不存在：${filePath}`);
+    if (options.media) {
+      console.error(`[media] 内容文件不存在：content/history.json（${filePath}）`);
+      console.error('[media] --media 需要同时读取 content/history.json 与 content/media.json；当前 history.json 缺失。');
+    } else {
+      console.error(`内容文件不存在：${filePath}`);
+    }
     console.error('契约任务允许 content/history.json 尚未交付；请运行下面任一独立检查：');
     console.error('  node scripts/validate-content.mjs --self-test');
     console.error('  node scripts/validate-content.mjs --check-contracts');
@@ -4290,11 +6563,43 @@ async function main() {
     return 2;
   }
 
+  // --- ARCH-02 R4：--media 额外读取 content/media.json 注册表 ---
+  // 注意：--stage 门禁**不**因 media.json 缺失而失败；只有 --media 才要求它存在。
+  let mediaRows;
+  if (options.media) {
+    const mediaRegistryPath = path.resolve(options.mediaFile || path.join(rootDir, 'content', 'media.json'));
+    if (!fs.existsSync(mediaRegistryPath)) {
+      console.error(`[media] 素材注册表不存在：content/media.json（${mediaRegistryPath}）`);
+      console.error(
+        '[media] 期望结构：{ "version": 1, "media": [ ... ] }，条目形状与 history.json 旧 media 条目完全一致。',
+      );
+      console.error('[media] 迁移映射：把 history.json 顶层 media[] 原样搬到 content/media.json 的 media[] 中，然后删除 history 的 media 字段。');
+      console.error('[media] 由 MEDIA-02 负责写入 content/media.json；--stage 门禁不受本文件缺失影响。');
+      return 1;
+    }
+    let registry;
+    try {
+      registry = readJson(mediaRegistryPath, mediaRegistryPath);
+    } catch (error) {
+      console.error(`[media] 素材注册表无法解析：${error.message}`);
+      return 2;
+    }
+    const registryErrors = validateMediaRegistry(registry, coverage);
+    if (registryErrors.length > 0) {
+      console.error('[media] 素材注册表违反契约（content/media.json）：');
+      for (const error of registryErrors) console.error(`  - ${error}`);
+      return 1;
+    }
+    mediaRows = registry.media;
+    console.log(`素材注册表：content/media.json（${mediaRows.length} 个条目）`);
+  }
+
 
   const result = validateDocument(doc, {
     coverage,
     stage: options.stage,
     media: options.media,
+    mediaRows,
     rootDir,
   });
   const ok = printResult(result, {
@@ -4306,11 +6611,23 @@ async function main() {
   return ok ? 0 : 1;
 }
 
-main()
-  .then((code) => {
-    process.exitCode = code;
-  })
-  .catch((error) => {
-    console.error(`验证器运行错误：${error.stack || error.message}`);
-    process.exitCode = 2;
-  });
+// ARCH-02 attempt 3：仅当脚本被直接执行时才跑 main()。
+// 被 import 时（自测探针、外部仪表化分析）不自动执行，便于对真实内容做阶段对比。
+const IS_DIRECT_RUN = (() => {
+  try {
+    return process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+  } catch {
+    return true;
+  }
+})();
+
+if (IS_DIRECT_RUN) {
+  main()
+    .then((code) => {
+      process.exitCode = code;
+    })
+    .catch((error) => {
+      console.error(`验证器运行错误：${error.stack || error.message}`);
+      process.exitCode = 2;
+    });
+}

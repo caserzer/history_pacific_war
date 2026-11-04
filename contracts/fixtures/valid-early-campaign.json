@@ -4,65 +4,286 @@
   "events": [
     {
       "id": "event-hong-kong-1941",
-      "title": "测试样本：香港战役",
+      "title": "香港战役（合规早期战役样本）",
       "historicalPart": "part-3-expansion",
       "eventType": "campaign",
       "startDate": "1941-12-08",
       "endDate": "1941-12-25",
-      "summary": "测试样本：演示早期扩张战役必须具备的五类分析结构，不代替正式历史文章。",
+      "summary": "测试样本：香港战役（合规早期战役样本） 的结构演示条目，不是已交付历史内容。",
       "article": [
         {
           "heading": "测试样本导读",
-          "body": "本小节只用于补齐事件的通用文章结构，让 UI 测试能同时渲染导读与五类分析。它不是正式历史叙述，也不声称任何具体数字。",
-          "sourceIds": ["source-frus-1941-v04", "source-awm-fall-singapore"],
-          "claimIds": ["claim-early-background", "claim-early-course"]
+          "body": "本小节只用于补齐事件的通用文章结构，让 UI 与验证器测试能同时渲染导读与分析键。它不是正式历史叙述，也不声称任何具体数字。",
+          "sourceIds": [
+            "source-frus-1941-v04",
+            "source-awm-fall-singapore"
+          ],
+          "claimIds": [
+            "claim-early-background",
+            "claim-early-course"
+          ]
         }
       ],
-      "earlyCampaignAnalysis": {
+      "analysisProfiles": {
         "background": {
           "title": "背景",
-          "body": "测试样本：香港是英国在东亚的重要据点，1941年12月太平洋战争爆发时，日本的作战计划把香港列入第一批目标。解释背景需要说明此前的局势、殖民体系以及日本对东南亚资源与战略位置的整体安排，而不是只说“因为香港重要”。本段只演示结构，具体史实与数字必须由正式内容任务用可核查来源填写。",
-          "sourceIds": ["source-frus-1941-v04"],
-          "claimIds": ["claim-early-background"]
+          "body": "测试样本：这是用于演示 background 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 background 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
         },
-        "course": {
-          "title": "经过",
-          "body": "测试样本：分析“经过”时必须按时间顺序说明谁在什么时候做了什么，指出关键转折及其原因。这里只演示结构：正文应给出可核查的时间点与行动序列，并让读者理解防守方与进攻方各自的处境。本段不含真实作战细节，不得作为历史内容引用。",
-          "sourceIds": ["source-awm-fall-singapore"],
-          "claimIds": ["claim-early-course"]
+        "geography": {
+          "title": "地理环境",
+          "body": "测试样本：这是用于演示 geography 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 geography 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "participants": {
+          "title": "参与方与指挥",
+          "body": "测试样本：这是用于演示 participants 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 participants 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "objectivesAndForces": {
+          "title": "双方目标与军力",
+          "body": "测试样本：这是用于演示 objectivesAndForces 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 objectivesAndForces 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
         },
         "constraints": {
-          "title": "约束",
-          "body": "测试样本：分析“约束”要说明双方受到哪些限制，例如可用兵力、补给距离、情报判断、天气与指挥链。约束是解释成败的关键，不能用“指挥失误”一句概括。本段只演示写法结构，不构成对任何真实指挥官的判断。",
-          "sourceIds": ["source-frus-1941-v04", "source-awm-fall-singapore"],
-          "claimIds": ["claim-early-constraints"]
+          "title": "约束条件",
+          "body": "测试样本：这是用于演示 constraints 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 constraints 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
         },
-        "results": {
-          "title": "结果",
-          "body": "测试样本：分析“结果”必须写明统计口径与来源，区分阵亡、受伤、被俘与平民伤亡，并说明统计时点。数字不得只出现在正文而没有 claim 定位。本段不给出真实数字，正式内容必须逐项引用官方来源，并把冲突数字写成争议 claim。",
-          "sourceIds": ["source-awm-fall-singapore"],
-          "claimIds": ["claim-early-results"]
+        "course": {
+          "title": "阶段经过",
+          "body": "测试样本：这是用于演示 course 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 course 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "options": {
+          "title": "可选方案与被排除它的约束",
+          "body": "测试样本：当时本来可以考虑另一条方案，即保持防御并等待增援，但受限于补给距离与可用兵力不足，无法同时守住两处据点，因此该方案被排除，只能集中兵力先保一处。本段只演示写法，不对应任何真实决策讨论。测试样本：当时本来可以考虑另一条方案，即保持防御并等待增援，但受限于补给距离与可用兵力不足，无法同时守住两处据点，因此该方案被排除，只能集中兵力先保一处。本段只演示写法，不对应任何真实决策讨论。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "resultsAndLosses": {
+          "title": "结果与损失口径",
+          "body": "测试样本：这是用于演示 resultsAndLosses 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 resultsAndLosses 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
         },
         "impact": {
-          "title": "影响",
-          "body": "测试样本：分析“影响”要说明这场行动对后续战役、整体战略以及当地平民意味着什么。占领带来的平民苦难与战俘处境必须点到，但使用非血腥、可核查的语言。本段只演示结构，具体事实由后续内容任务与人工评审确认。",
-          "sourceIds": ["source-awm-fall-singapore", "source-frus-1941-v04"],
-          "claimIds": ["claim-early-impact"]
+          "title": "后续影响",
+          "body": "测试样本：这是用于演示 impact 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 impact 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "uncertainty": {
+          "title": "不确定性",
+          "body": "测试样本：其中有证据支持的部分来自官方来源与二手研究，可以确认大致经过；争议或无法确定的部分包括具体伤亡数字与若干时间顺序，不同说法尚未取得一致，资料也存在缺口。本段只演示写法。测试样本：其中有证据支持的部分来自官方来源与二手研究，可以确认大致经过；争议或无法确定的部分包括具体伤亡数字与若干时间顺序，不同说法尚未取得一致，资料也存在缺口。本段只演示写法。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
         }
       },
-      "placeIds": ["place-hong-kong"],
+      "researchStatus": "sources-retrieved",
+      "placeIds": [
+        "place-hong-kong"
+      ],
       "personIds": [],
       "unitIds": [],
       "equipmentIds": [],
       "conceptIds": [],
       "relatedEventIds": [],
-      "sourceIds": ["source-frus-1941-v04", "source-awm-fall-singapore"],
+      "sourceIds": [
+        "source-frus-1941-v04",
+        "source-awm-fall-singapore"
+      ],
       "claimIds": [
         "claim-early-background",
-        "claim-early-course",
-        "claim-early-constraints",
-        "claim-early-results",
-        "claim-early-impact"
+        "claim-early-course"
+      ]
+    },
+    {
+      "id": "event-darwin-air-raid-1942",
+      "title": "达尔文空袭（迁移目标样本）",
+      "historicalPart": "part-3-expansion",
+      "eventType": "campaign",
+      "startDate": "1942-02-19",
+      "endDate": "1942-02-19",
+      "summary": "测试样本：达尔文空袭（迁移目标样本） 的结构演示条目，不是已交付历史内容。",
+      "article": [
+        {
+          "heading": "测试样本导读",
+          "body": "本小节只用于补齐事件的通用文章结构，让 UI 与验证器测试能同时渲染导读与分析键。它不是正式历史叙述，也不声称任何具体数字。",
+          "sourceIds": [
+            "source-frus-1941-v04",
+            "source-awm-fall-singapore"
+          ],
+          "claimIds": [
+            "claim-early-background",
+            "claim-early-course"
+          ]
+        }
+      ],
+      "analysisProfiles": {
+        "background": {
+          "title": "背景",
+          "body": "测试样本：这是用于演示 background 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 background 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "测试样本：这是用于演示 geography 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 geography 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "participants": {
+          "title": "参与方与指挥",
+          "body": "测试样本：这是用于演示 participants 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 participants 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "objectivesAndForces": {
+          "title": "双方目标与军力",
+          "body": "测试样本：这是用于演示 objectivesAndForces 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 objectivesAndForces 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "constraints": {
+          "title": "约束条件",
+          "body": "测试样本：这是用于演示 constraints 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 constraints 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "course": {
+          "title": "阶段经过",
+          "body": "测试样本：这是用于演示 course 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 course 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "options": {
+          "title": "可选方案与被排除它的约束",
+          "body": "测试样本：当时本来可以考虑另一条方案，即保持防御并等待增援，但受限于补给距离与可用兵力不足，无法同时守住两处据点，因此该方案被排除，只能集中兵力先保一处。本段只演示写法，不对应任何真实决策讨论。测试样本：当时本来可以考虑另一条方案，即保持防御并等待增援，但受限于补给距离与可用兵力不足，无法同时守住两处据点，因此该方案被排除，只能集中兵力先保一处。本段只演示写法，不对应任何真实决策讨论。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "resultsAndLosses": {
+          "title": "结果与损失口径",
+          "body": "测试样本：这是用于演示 resultsAndLosses 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 resultsAndLosses 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "impact": {
+          "title": "后续影响",
+          "body": "测试样本：这是用于演示 impact 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。测试样本：这是用于演示 impact 分析键的合成文字，只用于验证结构与篇幅，不代表真实历史结论，也不给出未经核实的数字。为了让最小篇幅规则通过，本段重复若干说明性句子；正式内容必须由 HIST-01/HIST-02 任务用可核查来源逐条填写。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        },
+        "uncertainty": {
+          "title": "不确定性",
+          "body": "测试样本：其中有证据支持的部分来自官方来源与二手研究，可以确认大致经过；争议或无法确定的部分包括具体伤亡数字与若干时间顺序，不同说法尚未取得一致，资料也存在缺口。本段只演示写法。测试样本：其中有证据支持的部分来自官方来源与二手研究，可以确认大致经过；争议或无法确定的部分包括具体伤亡数字与若干时间顺序，不同说法尚未取得一致，资料也存在缺口。本段只演示写法。",
+          "sourceIds": [
+            "source-frus-1941-v04"
+          ],
+          "claimIds": [
+            "claim-early-background"
+          ]
+        }
+      },
+      "researchStatus": "sources-retrieved",
+      "placeIds": [
+        "place-darwin"
+      ],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "relatedEventIds": [],
+      "sourceIds": [
+        "source-frus-1941-v04",
+        "source-awm-fall-singapore"
+      ],
+      "claimIds": [
+        "claim-early-background",
+        "claim-early-course"
       ]
     }
   ],
@@ -76,12 +297,40 @@
       "modernCountry": "中国",
       "placeType": "port",
       "summary": "测试样本地理节点：中国华南沿海港口与岛屿群，1941年12月为英国殖民地。",
-      "coordinates": { "lat": 22.3193, "lng": 114.1694 },
+      "coordinates": {
+        "lat": 22.3193,
+        "lng": 114.1694
+      },
       "coordinateAccuracyKm": 5,
       "schematic": false,
       "relatedPlaceIds": [],
-      "sourceIds": ["source-frus-1941-v04"],
-      "claimIds": ["claim-early-background"]
+      "sourceIds": [
+        "source-frus-1941-v04"
+      ],
+      "claimIds": [
+        "claim-early-background"
+      ]
+    },
+    {
+      "id": "place-darwin",
+      "historicalName": "达尔文（Darwin）",
+      "modernName": "达尔文",
+      "modernCountry": "澳大利亚",
+      "placeType": "port",
+      "summary": "测试样本地理节点：澳大利亚北领地首府与港口，1942 年 2 月 19 日遭空袭。",
+      "coordinates": {
+        "lat": -12.4634,
+        "lng": 130.8456
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [],
+      "sourceIds": [
+        "source-frus-1941-v04"
+      ],
+      "claimIds": [
+        "claim-early-background"
+      ]
     }
   ],
   "units": [],
@@ -123,18 +372,31 @@
       "id": "claim-early-background",
       "text": "测试样本：美国国务院1941年文件记录，日本仍在继续征服中国，并被判断在考虑向南扩张。",
       "claimType": "fact",
-      "entityIds": ["event-hong-kong-1941", "place-hong-kong"],
-      "sourceIds": ["source-frus-1941-v04"],
+      "entityIds": [
+        "event-hong-kong-1941",
+        "place-hong-kong"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04"
+      ],
       "locators": [
-        { "sourceId": "source-frus-1941-v04", "locatorType": "page-range", "locator": "Document 602, pp. 778–779" }
+        {
+          "sourceId": "source-frus-1941-v04",
+          "locatorType": "page-range",
+          "locator": "Document 602, pp. 778–779"
+        }
       ]
     },
     {
       "id": "claim-early-course",
       "text": "测试样本：澳大利亚战争纪念馆的文章按日期记录了日军在马来亚登陆与后续推进的序列。",
       "claimType": "fact",
-      "entityIds": ["event-hong-kong-1941"],
-      "sourceIds": ["source-awm-fall-singapore"],
+      "entityIds": [
+        "event-hong-kong-1941"
+      ],
+      "sourceIds": [
+        "source-awm-fall-singapore"
+      ],
       "locators": [
         {
           "sourceId": "source-awm-fall-singapore",
@@ -147,8 +409,12 @@
       "id": "claim-early-constraints",
       "text": "测试样本：澳大利亚战争纪念馆指出，马来亚的防守方在装甲与飞机方面装备不足。",
       "claimType": "fact",
-      "entityIds": ["event-hong-kong-1941"],
-      "sourceIds": ["source-awm-fall-singapore"],
+      "entityIds": [
+        "event-hong-kong-1941"
+      ],
+      "sourceIds": [
+        "source-awm-fall-singapore"
+      ],
       "locators": [
         {
           "sourceId": "source-awm-fall-singapore",
@@ -161,8 +427,12 @@
       "id": "claim-early-results",
       "text": "测试样本：澳大利亚战争纪念馆给出澳军在该战役的阵亡与受伤人数，并说明统计口径限于澳大利亚。",
       "claimType": "fact",
-      "entityIds": ["event-hong-kong-1941"],
-      "sourceIds": ["source-awm-fall-singapore"],
+      "entityIds": [
+        "event-hong-kong-1941"
+      ],
+      "sourceIds": [
+        "source-awm-fall-singapore"
+      ],
       "locators": [
         {
           "sourceId": "source-awm-fall-singapore",
@@ -175,8 +445,12 @@
       "id": "claim-early-impact",
       "text": "测试样本：澳大利亚战争纪念馆记录，新加坡投降后大量英帝国部队成为战俘，被俘者处境艰难。",
       "claimType": "fact",
-      "entityIds": ["event-hong-kong-1941"],
-      "sourceIds": ["source-awm-fall-singapore"],
+      "entityIds": [
+        "event-hong-kong-1941"
+      ],
+      "sourceIds": [
+        "source-awm-fall-singapore"
+      ],
       "locators": [
         {
           "sourceId": "source-awm-fall-singapore",
