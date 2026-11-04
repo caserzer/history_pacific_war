@@ -1,0 +1,4385 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixtureOnly": false,
+  "events": [
+    {
+      "id": "event-japan-expansion-china",
+      "title": "日本扩大侵华战争：从满洲到全面战争",
+      "historicalPart": "part-1-why-war",
+      "eventType": "background",
+      "startDate": "1931-09-18",
+      "endDate": "1941-12-07",
+      "summary": "1931 年侵占中国东北、1937 年扩大为全面战争，到 1941 年日本仍深陷中国战场；长期的战争消耗与资源需求，成为它后来把目光转向东南亚的背景。",
+      "article": [
+        {
+          "heading": "从满洲到全面侵华",
+          "body": "1931 年，日本出兵侵占中国东北，随后扶植傀儡政权，把它改称满洲国。中国政府向国际社会控诉，美国则表示不承认任何以武力强加于中国的政权，这一立场后来被称为史汀生主义。可是，这项声明只有原则，没有实际后果：它既不援助中国，也不惩罚日本。1937 年，日本对华战争升级为全面战争，战火从华北蔓延到华东与华中。就在同一时期，美国企业仍在向日本出售它作战所需的钢铁和石油。1937 年 12 月，日军攻占南京，此后发生了被后世称为南京大屠杀的大规模暴行，大量中国战俘与平民被杀害，大批中国妇女遭受暴力。对这些伤亡的具体数字，不同来源的口径差别很大，本教材不取单一数字作定论。",
+          "sourceIds": [
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-manchuria-1931",
+            "claim-full-scale-war-1937",
+            "claim-nanking-casualties-disputed"
+          ]
+        },
+        {
+          "heading": "1941 年：停不下来的战争",
+          "body": "到 1941 年初，这场战争已经打了将近十年。美国国务院在 1941 年 1 月的内部文件里，用一句话描述当时的日本：仍在继续征服中国的努力，并已经在印度支那建立基地。这说明，在太平洋战争爆发之前，日本已经在同时做两件事——在中国大陆维持一场看不到终点的战争，并把势力伸向东南亚。战争需要石油、钢铁、运输船和大量兵力。占领区越大，需要守的地方就越多，补给线也越长。因此，日本面对的第一层困难，不是“想不想打更大的仗”，而是“已经打着的仗怎么维持下去”。",
+          "sourceIds": [
+            "source-frus-1941-v04-d602"
+          ],
+          "claimIds": [
+            "claim-japan-continues-china-war",
+            "claim-japan-southward-resources"
+          ]
+        },
+        {
+          "heading": "对华战争写进了对美英的作战方针",
+          "body": "这一点在日方档案里看得很清楚。日本 1941 年的海军作战方针，第一句就是“继续控制中国沿海与长江”，然后才是摧毁东亚的敌方舰队与航空力量。同一份文件要求南进时尽快占领英属婆罗洲、荷属婆罗洲、西里伯斯与苏门答腊南部，在那里修建航空基地，再以此进攻爪哇，并“切断对中国的补给路线”。换句话说，对美英荷开战并不是与侵华战争无关的另一场战争：夺取东南亚的资源、切断援华通道，本来就是这场长期战争的延续。理解这一层，才能明白为什么日本把“从中国撤军”看成无法接受的条件。",
+          "sourceIds": [
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-japan-control-china-coast",
+            "claim-japan-southward-resources"
+          ]
+        },
+        {
+          "heading": "平民承受了什么",
+          "body": "这场战争最主要的承受者，是中国和东南亚的普通人。占领区的人民失去土地、家园与选择的权利，大量平民在战火与暴行中丧生。本教材对这类内容坚持两件事：一是明确写出侵略的事实，不说成“进入”或“事件”；二是用克制的方式叙述，不渲染痛苦细节，也不把责任推给整个日本民族。责任主体是日本帝国政府与军部，以及具体执行命令的部队，而不是所有日本人。同时也要看到，盟国一方同样做过严重伤害平民的事：1942 年 2 月，美国总统签署第 9066 号行政命令，约十二万二千名日裔被强制迁离家园，其中近七万人是美国公民，政府未对他们提出任何指控。1988 年美国正式承认这一做法的不正义并道歉。这两件事指向同一个道理：侵略的责任必须明确，而任何国家都可能在自己的恐惧中做出伤害无辜者的决定。",
+          "sourceIds": [
+            "source-nara-eo9066",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-eo9066-incarceration",
+            "claim-eo9066-1988-apology",
+            "claim-nanking-casualties-disputed"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-manchuria",
+        "place-beijing",
+        "place-nanking",
+        "place-china-coast"
+      ],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "relatedEventIds": [
+        "event-us-oil-embargo-1941",
+        "event-japan-war-decision-1941",
+        "event-overview-part-1-why-war"
+      ],
+      "sourceIds": [
+        "source-nww2m-path-pearl-harbor",
+        "source-frus-1941-v04-d602",
+        "source-jm-097",
+        "source-nara-eo9066"
+      ],
+      "claimIds": [
+        "claim-manchuria-1931",
+        "claim-full-scale-war-1937",
+        "claim-nanking-casualties-disputed",
+        "claim-japan-continues-china-war",
+        "claim-japan-southward-resources",
+        "claim-japan-control-china-coast",
+        "claim-eo9066-incarceration",
+        "claim-eo9066-1988-apology"
+      ]
+    },
+    {
+      "id": "event-us-oil-embargo-1941",
+      "title": "美国的对日经济压力与石油禁运",
+      "historicalPart": "part-1-why-war",
+      "eventType": "policy",
+      "startDate": "1941-01-11",
+      "endDate": "1941-12-07",
+      "summary": "美国从限制航空汽油起步，逐步收紧对日出口，1941 年 7 月冻结日本资产后实际切断了石油来源。美国自己清楚这一压力可能引发战争，日本则把它理解为存亡问题。",
+      "article": [
+        {
+          "heading": "从航空汽油开始",
+          "body": "美国对日本侵华的反应，最初是缓慢升级的。1940 年 7 月，美国切断了废钢铁与航空燃料的供应，却让普通石油继续流向日本。到 1941 年 1 月，负责政治关系事务的顾问在一份内部备忘录里确认：限制的范围只到禁止出口俗称八十七辛烷值的航空汽油，并没有全面禁运。备忘录还坦率地写下两点。第一，石油对日本是不可缺少的进口品。第二，任何减少出口的措施都会同时伤害被限制的国家和实施限制的国家。这两句话合起来，就是美国当时的两难：手里有一张能伤到日本的牌，打出这张牌自己也要付出代价。",
+          "sourceIds": [
+            "source-frus-1941-v04-d602",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-us-restriction-reached-aviation-gasoline",
+            "claim-japan-oil-essential-import",
+            "claim-us-restriction-dilemma"
+          ]
+        },
+        {
+          "heading": "美国知道压力可能引发战争",
+          "body": "很多人以为美国是在珍珠港之后才发现自己把日本逼急了。档案显示并非如此。就在 1941 年 1 月 13 日，国务院远东司在另一份备忘录里预言：如果有效地削减日本的石油购买，几乎一定会出现日本自行解决问题的那一刻，方式是用攻击和夺取，而且首先大概会选荷属东印度。同一份备忘录还写道，以日本当时的心态，并不需要很大的限制动作，就可能点燃南亚海域的爆炸。这并不表示美国决定激化局势——远东司当时的建议其实恰恰相反，是暂时不要再大幅削减。但它证明了一件事：在禁运成为事实之前，美国决策圈内部已经公开讨论过“这可能导致战争”这个后果。",
+          "sourceIds": [
+            "source-frus-1941-v04-d603"
+          ],
+          "claimIds": [
+            "claim-us-feared-attack-on-nei",
+            "claim-us-knew-pressure-could-ignite-war"
+          ]
+        },
+        {
+          "heading": "1941 年夏天：谈判与压力同时升级",
+          "body": "1941 年的局势是几条线同时绷紧的。日本与荷属东印度的石油交涉从 1940 年 9 月开始，到 1941 年 6 月 18 日完全破裂——日本要求的是稳定的石油供应，谈判拿不到，就只能考虑用武力夺取产地。7 月，日本军队进入法属印度支那南部。7 月 26 日，美国与英国冻结了日本的海外资产；8 月 1 日，美国对日本实施航空汽油禁运。日方记录认为，这实际上切断了对美国石油的获取。8 月 17 日，罗斯福在白宫接见日本大使，交给他一份书面声明：如果日本继续以武力或武力威胁去支配邻国，美国将立即被迫采取一切必要步骤。外交还在继续，压力也在继续。",
+          "sourceIds": [
+            "source-jm-147",
+            "source-frus-1941-v04-d266",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-nei-negotiations-collapsed-1941-06-18",
+            "claim-freeze-and-avgas-embargo-1941-07",
+            "claim-roosevelt-warning-1941-08-17"
+          ]
+        },
+        {
+          "heading": "数字：储备还能撑多久",
+          "body": "1941 年 1 月，美国国务院估计日本已囤积的石油储备够用九个月到一年，而且储备还在增加而不是减少。这里要特别说明统计口径：这是美国情报与外交人员的推算，不是日本官方的库存数字，教材引用时必须标明这一点。同一份文件还记录了另一组数字：日本曾要求荷属东印度每年提供三百一十五万吨石油，为期五年，最后印尼方面的公司只承诺每年一百八十万吨。把这几组数字放在一起，就能看到日本的处境：它并不是完全没有油，而是无法确定未来几年还能不能稳定地得到油。对一个已经把战争扩大化的国家来说，这种不确定本身就是难以接受的。",
+          "sourceIds": [
+            "source-frus-1941-v04-d602"
+          ],
+          "claimIds": [
+            "claim-japan-reserves-nine-months-to-year",
+            "claim-nei-tonnage-gap"
+          ]
+        },
+        {
+          "heading": "日方怎么理解这一步",
+          "body": "在日方的整理材料里，这一连串措施被描述为“美国对日本的全面禁运”，并被当作“石油饥饿的日本最终被迫开战”的原因之一。这里需要区分两件事。一方面，禁运确实给日本造成了真实而严重的压力，这是可以核实的事实；另一方面，“被迫开战”是日本领导层自己的叙述，而不是对这场战争为什么会发生的完整解释。同一批材料同时记录了日本在中国和东南亚的军事扩张、以及它把建立“大东亚共荣圈”写进国策的过程。资源压力可以解释日本为什么急于行动、为什么把时间窗口看得那么重要，却不能把开战的责任从做决定的人身上转移开。教材在讲述时，必须让读者看见这两层区别。",
+          "sourceIds": [
+            "source-jm-147",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-japan-self-defense-framing",
+            "claim-japan-oil-essential-import",
+            "claim-freeze-and-avgas-embargo-1941-07"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-washington-dc",
+        "place-dutch-east-indies",
+        "place-japan-home-islands"
+      ],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [
+        "concept-logistics"
+      ],
+      "relatedEventIds": [
+        "event-japan-expansion-china",
+        "event-japan-war-decision-1941",
+        "event-overview-part-1-why-war"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-frus-1941-v04-d603",
+        "source-frus-1941-v04-d266",
+        "source-jm-147",
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "claimIds": [
+        "claim-us-restriction-reached-aviation-gasoline",
+        "claim-japan-oil-essential-import",
+        "claim-us-restriction-dilemma",
+        "claim-us-feared-attack-on-nei",
+        "claim-us-knew-pressure-could-ignite-war",
+        "claim-nei-negotiations-collapsed-1941-06-18",
+        "claim-freeze-and-avgas-embargo-1941-07",
+        "claim-roosevelt-warning-1941-08-17",
+        "claim-japan-reserves-nine-months-to-year",
+        "claim-nei-tonnage-gap",
+        "claim-japan-self-defense-framing"
+      ]
+    },
+    {
+      "id": "event-japan-war-decision-1941",
+      "title": "日本的开战决定：1941 年秋到 12 月 1 日",
+      "historicalPart": "part-1-why-war",
+      "eventType": "policy",
+      "startDate": "1941-09-06",
+      "endDate": "1941-12-02",
+      "summary": "1941 年 9 月 6 日的御前会议决定“边谈边备战”，11 月起作战准备加速，11 月 27 日联络会议断定战争不可避免，12 月 1 日御前会议正式决定对美英兰开战。",
+      "article": [
+        {
+          "heading": "9 月 6 日：两条腿走路",
+          "body": "1941 年 9 月 6 日，日本御前会议通过了一份叫「帝国国策遂行要纲」的文件。它的要点是：日本决心面对对美英兰的战争，以十月上旬为大致的期限完成战备；同时用尽一切外交手段达成要求；如果到十月初交涉仍无望，就决心开战。这里最容易误读的地方是：9 月 6 日并不是“当天决定开战”。日方自己的整理材料承认，这次决定“并未意味着政府决心开战”，更接近“更大的期待被放在外交交涉上”，而且会议上没有出现明显的反对意见。它真正的含义是，从这一天起，外交和作战准备被绑进了同一个日历：谈判每拖一天，作战准备就前进一步。",
+          "sourceIds": [
+            "source-jm-147"
+          ],
+          "claimIds": [
+            "claim-sept-6-1941-imperial-conference",
+            "claim-imperial-conference-mixed-motive"
+          ]
+        },
+        {
+          "heading": "会上的真实分歧：海军自己说的风险",
+          "body": "这次会议留下的最珍贵材料，是与会者的说明文本。海军军令部总长永野修身在那天的说明里讲得非常直白：即使日本在一场决定性的海战中获胜，这样的胜利本身也不会结束战争；对手很可能转而倚仗更强的工业和资源打一场长期战争。他还说，日本没有通过入侵作战征服对手或打破其战斗意志的手段，而日本本土资源贫乏，最不希望的就是长期战争。他甚至在文本中写了“我们必须避免任何能够避免的战争”。陆军参谋总长杉山元的说明则是另一种逻辑：如果被美英牵着延长交涉，日本的国防潜力会逐渐下降，而美英的军备会逐渐增强，所以必须在还有信心的时候开始敌对行动。把这两段放在一起看，就能明白当时的选择不是一个简单的“打或不打”，而是两种对时间的不同判断在拉扯。",
+          "sourceIds": [
+            "source-jm-147-appx3",
+            "source-jm-147-appx4"
+          ],
+          "claimIds": [
+            "claim-nagano-long-war-risk",
+            "claim-nagano-cannot-break-enemy-will",
+            "claim-sugiyama-time-against-japan"
+          ]
+        },
+        {
+          "heading": "倒计时：从 10 月 15 日到 11 月 26 日",
+          "body": "1941 年 9 月 24 日，日方统帅部向政府提出了三条具体要求：外交交涉以 10 月 15 日为期限；南方作战开始的最晚时点是 11 月中旬；并须在 11 月初开始作战准备。从这一天起，日本的政治日程被军事时间表锁住了。10 月，近卫内阁因为无法在“继续谈”与“决心打”之间达成一致而总辞职，东条内阁上台。11 月 5 日御前会议再次确认国策，同一天海军军令部以天皇名义发出海军第一号命令，要求 12 月上旬完成作战准备。11 月 7 日，山本五十六发布联合舰队第二号作战命令，把开战日（Y Day）定为 12 月 8 日。11 月 26 日，美方提出自己的方案；11 月 27 日，日方联络会议研究后得出结论：战争已不可避免。",
+          "sourceIds": [
+            "source-jm-147",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-negotiation-deadline-1941-09-24",
+            "claim-navy-order-1-1941-11-05",
+            "claim-y-day-8-december-1941-11-07",
+            "claim-nov-27-liaison-war-inevitable",
+            "claim-us-public-opinion-shift-1941"
+          ]
+        },
+        {
+          "heading": "12 月 1 日：正式决定",
+          "body": "1941 年 12 月 1 日，日本御前会议作出对美国、英国与荷兰开战的决定。日本国立公文书馆亚洲历史资料中心公开的档案提要写得很清楚：基于 11 月 5 日决定的「帝国国策遂行要领」的对美交涉，终于未能成立，帝国遂对米英兰开战。第二天，海军第十二号命令规定自 12 月 8 日起开始军事行动。这里要注意语言的口径：日方战后整理反复用“自卫自存”来表述开战理由。那是当时日本领导层对自己行为的解释，不是史学研究认可的正当理由——同一批文件里明确写着日本对中国与东南亚的军事扩张。教材必须把“当权者如何解释自己”和“事实上发生了什么”分开写。",
+          "sourceIds": [
+            "source-jacar-imperial-conference-1941",
+            "source-jm-097",
+            "source-jm-147"
+          ],
+          "claimIds": [
+            "claim-1941-12-01-imperial-conference",
+            "claim-navy-order-12-1941-12-02",
+            "claim-japan-self-defense-framing"
+          ]
+        },
+        {
+          "heading": "为什么是珍珠港",
+          "body": "开战决定做出之前，攻击美国太平洋舰队的计划早已在推进。美国战略轰炸调查处的报告记录了袭击的目的：使美国太平洋舰队失效，从而争取时间、确保日本在南海作战行动的自由。报告还记录了计划背后的几项技术判断：北方航线天气恶劣，但遇到商船的几率低、最能避开美军巡逻机，而突然性与海上加油是两个“任一项失败就无法行动”的条件；从月相看十二月十日最合适，但考虑到国际形势与周日攻击的好处，最终选定十二月八日。计划本身也设计了中止条件：1941 年 11 月 21 日的海军第五号命令规定，如果日美交涉成功，联合舰队司令长官应立即召回作战部队；航渡中若过早被发现也要返航。这些都说明：在 12 月 1 日之前，日本是一边把战争当作最可能的结局来准备，一边为“谈成了就收兵”留着开关。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-ussbs-norther-route-tradeoff",
+            "claim-ussbs-date-choice",
+            "claim-cancel-if-negotiations-succeed",
+            "claim-ussbs-recall-rules"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-tokyo",
+        "place-pearl-harbor",
+        "place-dutch-east-indies"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku"
+      ],
+      "unitIds": [
+        "unit-combined-fleet",
+        "unit-kido-butai"
+      ],
+      "equipmentIds": [
+        "equipment-akagi"
+      ],
+      "conceptIds": [
+        "concept-logistics"
+      ],
+      "relatedEventIds": [
+        "event-japan-expansion-china",
+        "event-us-oil-embargo-1941",
+        "event-overview-part-1-why-war"
+      ],
+      "sourceIds": [
+        "source-jm-147",
+        "source-jm-147-appx3",
+        "source-jm-147-appx4",
+        "source-jm-097",
+        "source-jacar-imperial-conference-1941",
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-sept-6-1941-imperial-conference",
+        "claim-imperial-conference-mixed-motive",
+        "claim-nagano-long-war-risk",
+        "claim-nagano-cannot-break-enemy-will",
+        "claim-sugiyama-time-against-japan",
+        "claim-negotiation-deadline-1941-09-24",
+        "claim-navy-order-1-1941-11-05",
+        "claim-y-day-8-december-1941-11-07",
+        "claim-nov-27-liaison-war-inevitable",
+        "claim-us-public-opinion-shift-1941",
+        "claim-1941-12-01-imperial-conference",
+        "claim-navy-order-12-1941-12-02",
+        "claim-japan-self-defense-framing",
+        "claim-ussbs-attack-purpose",
+        "claim-ussbs-norther-route-tradeoff",
+        "claim-ussbs-date-choice",
+        "claim-cancel-if-negotiations-succeed",
+        "claim-ussbs-recall-rules"
+      ]
+    },
+    {
+      "id": "event-overview-part-1-why-war",
+      "title": "战争为什么爆发：导读",
+      "historicalPart": "part-1-why-war",
+      "eventType": "analysis",
+      "startDate": "1931-09-18",
+      "endDate": "1941-12-07",
+      "summary": "从 1931 年日本侵占中国东北，到 1941 年 12 月 7 日袭击珍珠港：侵略扩张、资源依赖、美国禁运、双方的判断失误与信息盲区，如何一步步把太平洋战争推出来。",
+      "article": [
+        {
+          "heading": "日本扩张与资源依赖",
+          "body": "这场战争不是突然开始的。1931 年，日本侵占中国东北，扶植满洲国；1937 年，对华战争升级为全面战争。为了支撑在中国大陆的长期作战，日本需要石油、钢铁、橡胶和大量运输船。日本本土是一个资源贫乏的岛国，这些物资很大一部分必须从海外运回。1941 年 1 月，美国国务院的内部文件写下了一句很关键的话：石油对日本来说是不可缺少的进口品。同一份文件估计，日本当时的石油储备够用九个月到一年。资源依赖本身并不会自动导致战争，但它改变了一件事：日本领导层开始把“确保资源”和“排除美国干涉”放进同一张计划表里。当一个国家把战争当成正在发生的事实，它看世界的眼光就会变成“我还缺什么、从哪儿拿”。",
+          "sourceIds": [
+            "source-frus-1941-v04-d602",
+            "source-nww2m-path-pearl-harbor",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-japan-oil-essential-import",
+            "claim-manchuria-1931",
+            "claim-full-scale-war-1937",
+            "claim-japan-southward-resources"
+          ]
+        },
+        {
+          "heading": "美国禁运与战略困境",
+          "body": "美国对日本侵华的反应，一开始很慢。1940 年 7 月，美国切断了废钢铁和航空燃料的供应，却让普通石油继续流向日本。到 1941 年 1 月，限制的范围仍只到禁止出口航空汽油。为什么这么谨慎？1941 年 1 月的两份国务院备忘录给出了答案：美国知道，任何减少出口的措施都会同时伤害被限制国和实施限制国；也知道压力一旦过大，可能反而促使日本把矛头转向荷属东印度的油田。换句话说，美国手里的是一张“打出去自己也会疼”的牌。但同一批文件也记录了更值得注意的一点：在禁运成为现实之前，美国官员已经公开写下“这几乎一定会让日本自己动手去抢”的预判。1941 年 7 月，日本进军法属印度支那南部后，美英冻结了日本的海外资产，美国随后对日本实施航空汽油禁运，实际上切断了对美石油的获取。日本与荷属东印度的石油交涉则早在 1941 年 6 月 18 日就已破裂。",
+          "sourceIds": [
+            "source-frus-1941-v04-d602",
+            "source-frus-1941-v04-d603",
+            "source-jm-147",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-us-restriction-reached-aviation-gasoline",
+            "claim-us-feared-attack-on-nei",
+            "claim-nei-negotiations-collapsed-1941-06-18",
+            "claim-freeze-and-avgas-embargo-1941-07"
+          ]
+        },
+        {
+          "heading": "为什么选择袭击珍珠港",
+          "body": "到 1941 年秋天，日本面对的是一张被时间锁住的日程表。9 月 6 日御前会议决定“边谈边备战”，同时定下十月上旬完成战备。9 月 24 日，统帅部要求外交交涉以 10 月 15 日为期限、南方作战最晚在 11 月中旬开始。为什么要抢时间？陆军参谋总长杉山元在会上的说明是：如果被美英牵着延长交涉，日本的国防潜力会逐渐下降，而美英的军备会逐渐增强。但就在同一场会议上，海军军令部总长永野修身说了另一段话：即使日本在一场决定性海战中获胜，这样的胜利本身也不会结束战争；日本没有击垮对手战斗意志的手段；日本本土资源贫乏，最不希望的就是长期战争。袭击珍珠港的计划正诞生于这种矛盾之中：它希望用一次突然的打击让美国太平洋舰队失效，从而争取时间，让日本从容夺取东南亚的资源。可这同时也是一场赌博——它没有消除美国的工业能力，反而可能让本来意见分裂的美国迅速团结起来。",
+          "sourceIds": [
+            "source-jm-147",
+            "source-jm-147-appx3",
+            "source-jm-147-appx4",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-sept-6-1941-imperial-conference",
+            "claim-nagano-long-war-risk",
+            "claim-sugiyama-time-against-japan",
+            "claim-ussbs-attack-purpose",
+            "claim-negotiation-deadline-1941-09-24"
+          ]
+        },
+        {
+          "heading": "美国为何没有及时防范",
+          "body": "珍珠港事件之后，美国国内做了大量调查，一直在问同一个问题：为什么毫无准备？把答案归结为“某个人疏忽了”，会掩盖真正的原因。1941 年 12 月 7 日清晨 7 时 02 分，瓦胡岛欧帕纳雷达站的士兵已经发现了来袭的第一波日机，距离瓦胡岛以北 137 英里。7 时 06 分，他们向薛夫特堡的信息中心报告了一个距离 113 英里的大目标。问题出现在下一步：接收报告的值班军官处于担任观察员的第二天训练中，他把雷达回波判断为从西海岸预定飞来的 B-17 轰炸机，于是没有发出警报。这一天的移动雷达本来是为弥补巡逻飞机不足而布设的，但五部雷达中只有欧帕纳一部仍在开机。更值得思考的是：即使警报在那天早上发出去，从报告到攻击开始也只有大约四十四分钟；而美国整套防务判断的前提，是认为日本的主攻方向会在别处。所以真正需要解释的不是“某个人为什么犯错”，而是“为什么预警链条的每一环都刚好没有把异常变成行动”。",
+          "sourceIds": [
+            "source-nps-opana-radar",
+            "source-nww2m-path-pearl-harbor",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-opana-radar-detected",
+            "claim-opana-warning-dismissed",
+            "claim-ussbs-carriers-absent"
+          ]
+        },
+        {
+          "heading": "那时候，人们能看到什么",
+          "body": "学习这一段历史，最容易犯的错误是拿现在知道的结果，去评判当时只掌握部分信息的人。用一个很具体的例子来说明这有多重要。日本海军最高层在 1941 年 9 月的御前会议上，就已经知道长期战争对日本不利，知道一场决定性胜利不会结束战争。这一切在当时是可见的。反过来，美国确实知道禁运可能引发战争，也确实收到了雷达警报——这些也在当时是可见的。真正在当时看不见的，是后来才发生的事：美国航母当天并不在港；美国会在四年里把工业能力变成压倒性的力量；而日本在 1941 年 12 月 1 日做出决定时，无法知道这场战争会怎样结束。区分“当时可见的信息”和“事后才知道的结果”，是理解这段历史的起点。",
+          "sourceIds": [
+            "source-jm-147-appx3",
+            "source-frus-1941-v04-d603",
+            "source-nps-opana-radar",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-nagano-long-war-risk",
+            "claim-us-feared-attack-on-nei",
+            "claim-ussbs-carriers-absent",
+            "claim-opana-warning-dismissed"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-manchuria",
+        "place-dutch-east-indies",
+        "place-washington-dc",
+        "place-tokyo",
+        "place-pearl-harbor"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku"
+      ],
+      "unitIds": [
+        "unit-combined-fleet",
+        "unit-kido-butai"
+      ],
+      "equipmentIds": [
+        "equipment-akagi"
+      ],
+      "conceptIds": [
+        "concept-logistics"
+      ],
+      "relatedEventIds": [
+        "event-japan-expansion-china",
+        "event-us-oil-embargo-1941",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-frus-1941-v04-d603",
+        "source-jm-147",
+        "source-jm-147-appx3",
+        "source-jm-147-appx4",
+        "source-ussbs-pto-ch2",
+        "source-nps-opana-radar",
+        "source-nww2m-path-pearl-harbor",
+        "source-jm-097"
+      ],
+      "claimIds": [
+        "claim-japan-oil-essential-import",
+        "claim-manchuria-1931",
+        "claim-full-scale-war-1937",
+        "claim-japan-southward-resources",
+        "claim-us-restriction-reached-aviation-gasoline",
+        "claim-us-feared-attack-on-nei",
+        "claim-nei-negotiations-collapsed-1941-06-18",
+        "claim-freeze-and-avgas-embargo-1941-07",
+        "claim-sept-6-1941-imperial-conference",
+        "claim-nagano-long-war-risk",
+        "claim-sugiyama-time-against-japan",
+        "claim-ussbs-attack-purpose",
+        "claim-negotiation-deadline-1941-09-24",
+        "claim-opana-radar-detected",
+        "claim-opana-warning-dismissed",
+        "claim-ussbs-carriers-absent"
+      ]
+    }
+  ],
+  "battles": [],
+  "people": [
+    {
+      "id": "person-yamamoto-isoroku",
+      "name": "山本五十六",
+      "originalName": "山本五十六（Isoroku Yamamoto）",
+      "side": "japan",
+      "role": "日本海军联合舰队司令长官",
+      "service": "navy",
+      "summary": "日本海军联合舰队司令长官。他清楚美国的工业潜力，却仍然提出并推动了袭击珍珠港的计划；他本人把这场战争看成胜算很低的赌博。",
+      "profile": "要理解山本五十六，得先理解他看到了什么。他在 1904 年的对马海峡海战中负过伤，失去了两根手指；后来长年在美国任职，亲眼看过美国的工厂、油田和劳动力。因此，当日本国内讨论要不要对美开战时，他是少数从一开始就清楚双方力量差距有多大的人之一。据博物馆文章转述，当有人提出日本大约只能与美国打十八个月时，他的回答是：这与我自己的研究一致。他判断日本难以承受一场长期的消耗战。既然如此，他为什么还要支持和策划袭击珍珠港？答案要放回当时的处境去看。第一，日本的作战传统相信“决定性海战”：既然资源不足以长期消耗，就必须在开战之初用一次猛烈打击换取时间。第二，联合舰队面对的现实是：美国太平洋舰队的存在让日本在南进时始终要担心后背。第三，最初提出这个计划的正是他本人——美国战略轰炸调查处的报告明确写道，袭击由山本五十六提出。这里有一个必须讲清楚的区分：对山本判断的评价，不能只记住“他反对对美开战”这句话。他知道风险，却仍然把赌注下了下去，因为在他看来，既然战争已经难以避免，那么唯一的胜机就在开战之初。这个判断对不对，要看它是否建立在他当时能掌握的信息上——那一部分是对的。它的问题出在更远处：一次战术上的成功，能不能换来政治上的结果。1943 年 4 月 18 日，他在布干维尔上空被美军 P-38 击落身亡，没能看到这场战争的结局。还需要补一句容易被忽略的细节：他并不是不了解对手的人，而是一个了解对手、却仍然选择开战的人。正因为如此，他的档案既不能写成被迫应战的军人，也不能写成单纯策划偷袭的反派。把这两面都放进去，才是真实的历史人物。",
+      "decisions": [
+        {
+          "id": "decision-yamamoto-propose-pearl-harbor",
+          "title": "提出以航母突袭珍珠港，而不是等待美国海军西进",
+          "context": "1941 年，日本决定在必要时对美英开战，但南进计划要面对一个始终悬在后背的问题：美国太平洋舰队还在。山本五十六看到的是，如果日本只是按常规方式等待美国舰队西进、寻求一场决战，那么日方会一直处在被动；而如果能在开战之初用舰载机一举削弱美国舰队，日本就能争取到几个月甚至更久的自由行动时间。他为这件事留下了大量功夫：选择航线、训练浅水鱼雷投放、安排海上加油。",
+          "options": [
+            "按常规方式等待美国舰队西进，在菲律宾周边寻求一场决定性的舰队决战。",
+            "用航母舰载机在开战之初突袭珍珠港，先削弱美国太平洋舰队再向南扩张。",
+            "放弃对美作战，只关注中国战场，避免新增一个强大的对手。"
+          ],
+          "choice": "主张用航母舰载机突袭珍珠港，并把它推进到正式作战命令之中。",
+          "constraints": [
+            "舰队必须靠海上加油完成几千海里的航行，而一旦加油失败，整个行动就无法进行。",
+            "行动必须保持绝对秘密；一旦被过早发现，按计划整个部队就要返航。",
+            "日本本土几乎没有后备资源，任何拖延都会让日本的作战潜力相对下降。"
+          ],
+          "consequence": "袭击本身在战术上非常成功：日方自己统计的损失远小于美方，也让美军战列舰力量在相当一段时间内失去作用。但它没有摧毁美国航母，也没有触动美国的工业能力；相反，它把美国社会迅速推向全面参战。这说明一个战术上的胜利，不等于取得了想要的政治结果。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-operation-vengeance",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-ussbs-refuel-critical",
+            "claim-ussbs-carriers-absent"
+          ]
+        },
+        {
+          "id": "decision-yamamoto-accept-long-war-risk",
+          "title": "在明知长期战争不利的情况下，仍然接受速战速决的思路",
+          "context": "日本海军内部其实有两种声音。军令部总长永野修身 1941 年 9 月在御前会议上说得非常直白：即使日本在决定性海战中获胜，这样的胜利本身也不会结束战争；对手会转而倚仗更强的工业和资源打长期战争。作为联合舰队司令长官，山本比谁都清楚美国的力量，据博物馆文章，他把这场战争看成胜算很低的冒险。",
+          "options": [
+            "坚持把长期战争风险说清楚，主张继续外交交涉、避免对美开战。",
+            "接受“速战速决”逻辑：既然长期不利，就必须在开战之初取得决定性战果。",
+            "建议以更低的限度维持现状，例如只在中国战场收缩、换取美国放松压力。"
+          ],
+          "choice": "接受了速战速决的作战思路，并把力量押在了开战之初的一次决定性打击上。",
+          "constraints": [
+            "日本海军内部与陆军对时间的判断不同，速战论在政治与军事体制中占主导。",
+            "军方最高层既然已经决定准备开战，联合舰队司令长官的选择空间被压缩到“怎样打”而不是“打不打”。",
+            "日本的资源储备与工业能力无法支撑长期消耗，这在当时是被普遍承认的现实。"
+          ],
+          "consequence": "这一选择体现的是一种真实的困境：即使知道不利，也不得不在最不利的条件下赌一把。教材把这一点写清楚，是为了让读者明白“当时的决策者知道什么、不知道什么”。但这不能成为把侵略说成自卫的理由——同一批文件也记录了日本对中国和东南亚的军事扩张。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-jm-147-appx3",
+            "source-nww2m-operation-vengeance",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-nagano-long-war-risk",
+            "claim-yamamoto-us-industrial-might",
+            "claim-yamamoto-18-months",
+            "claim-japan-self-defense-framing"
+          ]
+        },
+        {
+          "id": "decision-yamamoto-timing-8-december",
+          "title": "把开战日定为 12 月 8 日",
+          "context": "1941 年 11 月，作战准备已经进入倒计时。美国战略轰炸调查处的报告记载，从月相来看十二月十日最适合突袭，但最终选定了十二月八日（东经日期）。这个选择的依据不是阴历，而是国际形势，以及“周日攻击”带来的便利。11 月 7 日，联合舰队发布第二号作战命令，把开战日（Y Day）定为 12 月 8 日。",
+          "options": [
+            "按最有利的月相选择十二月十日，以获得更好的夜间隐蔽条件。",
+            "选择十二月八日，利用周日美军戒备较松的机会，同时配合外交日程。",
+            "推迟行动，等待日美交涉的最后结果再决定。"
+          ],
+          "choice": "选定十二月八日为开战日，并让部队进入准备阶段。",
+          "constraints": [
+            "外交交涉的期限已经逼近，政治日程不允许无限期等待。",
+            "舰队航行需要高度保密，日期一旦确定就很难更改，且海上加油本身就有失败风险。",
+            "按计划，如果交涉在航渡期间成功，攻击必须取消；如果过早被发现，部队必须返航。"
+          ],
+          "consequence": "十二月八日的选择让袭击在星期日清晨发动，获得了高度的突然性。但同样的日程也意味着，整个决定是在外交结果尚未完全明朗时就已确定方向的。教材在讲这一段时，要区分“当时已经决定”与“当时还留有中止条件”这两件事。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-date-choice",
+            "claim-ussbs-decision-1941-11-03",
+            "claim-y-day-8-december-1941-11-07",
+            "claim-cancel-if-negotiations-succeed"
+          ]
+        }
+      ],
+      "relatedPersonIds": [],
+      "placeIds": [
+        "place-tokyo",
+        "place-pearl-harbor"
+      ],
+      "eventIds": [
+        "event-japan-war-decision-1941",
+        "event-us-oil-embargo-1941",
+        "event-overview-part-1-why-war"
+      ],
+      "battleIds": [],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-nww2m-operation-vengeance",
+        "source-ussbs-pto-ch2",
+        "source-jm-097",
+        "source-jm-147-appx3"
+      ],
+      "claimIds": [
+        "claim-yamamoto-us-industrial-might",
+        "claim-yamamoto-18-months",
+        "claim-yamamoto-tsushima-wounded",
+        "claim-ussbs-attack-purpose",
+        "claim-ussbs-date-choice",
+        "claim-ussbs-decision-1941-11-03",
+        "claim-ussbs-carriers-absent",
+        "claim-y-day-8-december-1941-11-07",
+        "claim-nagano-long-war-risk"
+      ]
+    },
+    {
+      "id": "person-nimitz-chester",
+      "name": "切斯特·尼米兹",
+      "originalName": "Chester W. Nimitz（Chester William Nimitz）",
+      "side": "allies",
+      "role": "美国太平洋舰队总司令（CINCPAC）",
+      "service": "navy",
+      "summary": "珍珠港事件后继任美国太平洋舰队总司令。他到任时手下是一支被打伤的舰队，却要在兵力远少于对手的情况下决定：先打哪里、拿什么去冒险。",
+      "profile": "1941 年 12 月 31 日，尼米兹在珍珠港的潜艇基地正式就任太平洋舰队总司令，同时由两星升为四星上将。他接手的是一支刚刚被打伤的舰队。据特写文章记载，他到任后的评估是：局势严峻但并非灾难——大部分战列舰沉在浅水里可以打捞修复，三艘航母全部可用，包括港口设施在内的基础能力没有受损。他还保留了前任的全套参谋班子，用来提振当时极低的士气。这些细节说明了尼米兹上任时真正的处境：他不是从零开始建军，而是要在残破的家底上，判断哪些东西还能用、哪些风险值得冒。另一个必须提到的约束是，特写文章指出他发现自己必须留在岸上指挥，因为只有珍珠港才具备协调其广阔辖区所需的通信系统——这意味着他不能像对手那样坐镇海上旗舰亲眼观察战场，只能依靠报告去判断。他随后确立的短期思路是：在实力足够反攻之前，先钝化日军的推进。中途岛就是这一思路的第一次大考。到了 6 月 4 日上午，官方战史引述他的判断说得很清楚：中途岛部队已全力出击，但日军并未被牵制，那三种唯一能高比例命中舰船的飞机几乎打光，而日军三艘航母仍基本完好——这就是美军航母攻击开始时的局面。他必须在这种时刻决定是否让仅存的两支航母编队继续留在险境。评价尼米兹时，最该看的是他在信息不完备、兵力处于劣势、且无法亲临现场的条件下如何分配风险，而不是他赢了哪一仗。他在 1941 年 1 月其实已经婉拒过这个职位，理由是资历太浅——这说明他并非急于求功的人。",
+      "decisions": [
+        {
+          "id": "decision-nimitz-retain-staff",
+          "title": "到任后保留前任参谋班子",
+          "context": "1941 年 12 月底，尼米兹接任太平洋舰队总司令。此时舰队刚在珍珠港遭受重创，参谋人员士气极低，而整个太平洋战局正在恶化。他可以换上一批自己的亲信，也可以保留现有班子。",
+          "options": [
+            "把前任基梅尔的全套参谋班子换掉，改用自己的班底，以确立权威。",
+            "保留现有参谋班子，并想办法提振他们的士气，尽快恢复指挥能力。"
+          ],
+          "choice": "保留了前任的全套参谋班子。",
+          "constraints": [
+            "战争已经爆发，没有时间重新磨合一套新班子。",
+            "珍珠港遇袭后的参谋人员士气极低，指挥体系处于受打击状态。"
+          ],
+          "consequence": "指挥体系得以在战争初期保持连续运转。这一选择反映的是时间压力下的取舍：在需要立刻运转指挥链的时刻，熟悉情况的旧班子比新班子的忠诚更有用。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-dmn-king-nimitz"
+          ],
+          "claimIds": [
+            "claim-nimitz-retained-staff",
+            "claim-nimitz-cincpac-1941-12-31"
+          ]
+        },
+        {
+          "id": "decision-nimitz-midway-unified-air-control",
+          "title": "把中途岛上所有陆海军飞机统一交给一位指挥官",
+          "context": "1942 年 5 月，情报显示日军将进攻中途岛。中途岛上原有陆战队航空队，随后又增派了海军鱼雷机、陆军的 B-26 与 B-17 等不同军种的飞机。不同系统的飞机各归各管，在防空与反击时会互相冲突。",
+          "options": [
+            "维持各军种飞机各自受原系统指挥，避免打破既有指挥关系。",
+            "由太平洋舰队总司令下令，把所有派往中途岛的陆军与海军飞机统一交由中途岛海军航空站站长指挥。"
+          ],
+          "choice": "下令统一指挥，并加派有经验的标图军官、通信值班军官与无线电员去协助控制这么多飞机。",
+          "constraints": [
+            "岛上飞机数量多、来源杂，且当天能出动的架数逐日变化。",
+            "空中管制需要专业人员，而中途岛原本缺乏这类人员。"
+          ],
+          "consequence": "6 月 4 日中途岛能在发现敌机后迅速把各型飞机送上天空并加以引导。这一决定是事先的组织工作，而不是战场上的临场发挥——它说明指挥能力很大程度上在开战前就已经决定。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-nimitz-midway-air-control"
+          ]
+        },
+        {
+          "id": "decision-nimitz-coral-lessons",
+          "title": "以珊瑚海的实战结果推动装备与战术修正",
+          "context": "1942 年 5 月珊瑚海海战后，美军损失了列克星敦号，但也首次阻止了日军的一次重大攻势。太平洋舰队司令部需要判断：这场战斗说明了什么问题，下一步该改什么。",
+          "options": [
+            "把珊瑚海视为一次成功的防御，按原有装备与战术继续作战。",
+            "把战斗中暴露的问题逐条列出，据此提出训练、装备与配置的修正要求。"
+          ],
+          "choice": "列出了包括俯冲轰炸瞄准具高空起雾、战斗机数量不足、鱼雷机陈旧、鱼雷机攻击需与俯冲轰炸协同，以及所有航母应配备两部远程雷达等具体修正项。",
+          "constraints": [
+            "当时美国工业仍处于动员初期，新装备无法立刻到位。",
+            "下一场战斗可能很快就来，修正必须赶在它之前开始。"
+          ],
+          "consequence": "这些结论出现在官方战史中，说明当时的指挥层确实在把实战经验转为制度性要求。这也解释了为什么一个月后中途岛的美军表现与珊瑚海有差别——部分原因在于这些修正已经开始生效。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-nimitz-coral-evaluation",
+            "claim-radar-carriers-should-have-two"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-spruance-raymond",
+        "person-fletcher-frank-jack",
+        "person-yamamoto-isoroku"
+      ],
+      "placeIds": [
+        "place-pearl-harbor",
+        "place-coral-sea",
+        "place-washington-dc"
+      ],
+      "eventIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "battleIds": [],
+      "conceptIds": [
+        "concept-radar",
+        "concept-codebreaking",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz",
+        "source-oni-midway-combat-narrative",
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-nimitz-cincpac-1941-12-31",
+        "claim-nimitz-retained-staff",
+        "claim-nimitz-onsite-assessment",
+        "claim-nimitz-midway-air-control",
+        "claim-nimitz-coral-evaluation",
+        "claim-nimitz-decline-1941"
+      ]
+    },
+    {
+      "id": "person-spruance-raymond",
+      "name": "雷蒙德·斯普鲁恩斯",
+      "originalName": "Raymond A. Spruance（Raymond Ames Spruance）",
+      "side": "allies",
+      "role": "美国海军少将，中途岛第 16 特混舰队司令",
+      "service": "navy",
+      "summary": "中途岛战役中首次指挥航母编队。他要在上级的保守指令、飞行距离与起飞时间的硬约束下，决定什么时候放飞机出去、留多少兵力待命。",
+      "profile": "中途岛是斯普鲁恩斯第一次指挥航母编队。按官方战史，他指挥的编队包含企业号与大黄蜂号两艘航母，5 月 26 日到达珍珠港、28 日出航；6 月 2 日在中途岛东北与弗莱彻的编队会合后，合并部队由弗莱彻统一指挥。这一点很重要：斯普鲁恩斯并不是战场上的最高指挥官，他的决定是在别人的意图框架内做的。上级给他的约束非常明确——战史记载，美国舰队总司令金上将认为日军计划意在诱捕美军舰队的一部分，因此指示只采用强有力的消耗战术，不要过度冒险使用航母与巡洋舰；战史还总结说，美军是在兵力劣势所必需的保守政策下、又受固定点防御约束的情况下作战的。也就是说，斯普鲁恩斯既要打，又不能把仅有的两艘航母赌掉。6 月 4 日早上的具体数字说明了操作难度：他的编队以二十五节西进，到七时估计日军航母在约二百五十公里外，随即开始出动飞机；由于东南风很轻，航母必须背向敌人转向才能起飞，而整个出动过程大约需要一小时。这一小时是活生生的时间成本——出发得早，机群可能扑空；出发得晚，可能被对手先打。他随后作出的判断还包括：在确认是否还有第五艘敌方航母之前，保留部分俯冲轰炸机不草率派出。评价斯普鲁恩斯时，应当看到他的选择空间被事先压缩过，而他手上真正能调整的，是时机、兵力的分配与风险的先后次序。还有一个容易被忽略的细节：当天最关键的那个搜索转向——企业号机群向北飞四十五分钟后找到日军编队——是机群指挥官麦克拉斯基在现场做出的，战史称之为“整个行动中最重要的一个决定”。教材把这一点写清楚，是因为它说明航母编队里现场指挥官的判断同样重要，而不能把战场上的每一步都说成旗舰上某一个人的功劳。",
+      "decisions": [
+        {
+          "id": "decision-spruance-launch-at-range",
+          "title": "在约二百五十公里外提前出动全部攻击兵力",
+          "context": "6 月 4 日清晨，巡逻机报告发现日军航母。斯普鲁恩斯的编队正以二十五节西进。此时日军航母大约在二百五十公里外，而航母起飞要求迎风、整个出动过程约需一小时。他可以继续接近再打，也可以在敌机从途岛返航整备前抢占先手。",
+          "options": [
+            "继续西进缩短距离，等更靠近时再出动，让飞机有更多余油作战。",
+            "在约二百五十公里外就开始出动，抢在日军机群返航整备之前把攻击送出去。"
+          ],
+          "choice": "在约二百五十公里处开始出动飞机。",
+          "constraints": [
+            "航母必须背向敌人转向才能起飞，整个出动过程大约需要一小时，这段时间编队无法机动规避。",
+            "上级要求采取消耗战术、不要过度冒险使用航母，因此必须计算燃油与返航余量。"
+          ],
+          "consequence": "攻击机群得以在日军准备第二波攻击的窗口前到达战场。出动的时机是这场战斗中少数几个真正可以由他决定的关键变量之一。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-spruance-launch-timing",
+            "claim-spruance-usn-cinpac-directive"
+          ]
+        },
+        {
+          "id": "decision-spruance-hold-reserve",
+          "title": "保留部分俯冲轰炸机，等待确认是否还有第五艘敌航母",
+          "context": "美军在 6 月 4 日上午击中三艘日军航母后，仍有疑问：是否还有未发现的敌方航母。战史记载，美军担心存在第五艘航母，因此在确认之前没有把所有俯冲轰炸机都派出去。",
+          "options": [
+            "把所有可用的俯冲轰炸机一次全部投入已知目标，追求最大立即战果。",
+            "保留一部分兵力，用于应对可能尚未发现的敌方航母。"
+          ],
+          "choice": "保留部分俯冲轰炸机不派出，直到威胁范围更清楚。",
+          "constraints": [
+            "日军航母数量存在不确定性，战史明确记载了'是否还有第五艘'的担心。",
+            "上级要求保守作战、不要把航母过度暴露，兵力一旦全数投出就没有后备。"
+          ],
+          "consequence": "保留了应对意外的手段。这一选择体现了在信息不完整时如何分配兵力——不是把全部筹码一次押上，而是留出应对未知的空间。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-spruance-reserve-hornets-bombers"
+          ]
+        },
+        {
+          "id": "decision-spruance-strike-hiryu",
+          "title": "下午对残余的飞龙号发起决定性攻击",
+          "context": "6 月 4 日下午，美军已重创三艘日军航母，第四艘飞龙号仍完好并向约克城号发动了两次攻击。搜索机在 14 时 30 分前后报告了飞龙号的位置，此时斯普鲁恩斯的编队仍在战场。",
+          "options": [
+            "见好就收，退出战场保存兵力，避免在夜间与日方水面部队接触。",
+            "在当天下午立即组织新的攻击，争取在飞龙号恢复出击能力前摧毁它。"
+          ],
+          "choice": "当天下午组织攻击，企业号于 15 时 30 分出动 24 架侦察轰炸机打击飞龙号。",
+          "constraints": [
+            "飞行员已经连续作战一整天，疲劳与燃油都是实际限制。",
+            "夜间临近，与日方水面舰艇部队的距离不明，继续停留存在风险。"
+          ],
+          "consequence": "17 时 05 分的攻击中至少六发直接命中飞龙号，日军四艘参战航母全部失去作战能力。战史随后写道，随着第四艘航母被炸，美军赢得了制空权。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-spruance-hiryu-retaliation",
+            "claim-spruance-reserve-hornets-bombers"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-nimitz-chester",
+        "person-fletcher-frank-jack",
+        "person-nagumo-chuichi"
+      ],
+      "placeIds": [
+        "place-pearl-harbor"
+      ],
+      "eventIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "battleIds": [],
+      "conceptIds": [
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative",
+        "source-dmn-king-nimitz",
+        "source-ussbs-pto-campaigns"
+      ],
+      "claimIds": [
+        "claim-spruance-task-force-sugar",
+        "claim-spruance-launch-timing",
+        "claim-spruance-reserve-hornets-bombers",
+        "claim-spruance-hiryu-retaliation",
+        "claim-spruance-usn-cinpac-directive",
+        "claim-spruance-photo-1944",
+        "claim-spruance-search-turn"
+      ]
+    },
+    {
+      "id": "person-fletcher-frank-jack",
+      "name": "弗兰克·弗莱彻",
+      "originalName": "Frank J. Fletcher（Frank Jack Fletcher）",
+      "side": "allies",
+      "role": "美国海军少将，珊瑚海与中途岛航母编队指挥官",
+      "service": "navy",
+      "summary": "珊瑚海海战中，弗莱彻用两艘航母阻挡了日军的南进。他要在燃油、位置、天气与敌情都不确定的情况下，决定什么时候下手、什么时候收手。",
+      "profile": "珊瑚海是弗莱彻军事生涯最能说明问题的一战。官方战史记载，他的编队与另一支航母编队于 5 月 1 日会合后，他被授予两支合并部队的指挥权；中途岛战役中，两支部队会合后同样由他统一指挥。也就是说，他在这两场关键海战里都是最高指挥官。但他手上的牌并不好。战史记载，在航渡阶段他'希望尽可能多地把燃油从补给油船中取出'再让它返回基地——这是上级的命令，却也直接决定了他能走多远；战史还写道，他知道自己的舰只位置偏南，如果日军此刻南下，他根本无法与敌交战，因此专门去问另一编队的燃油状况。这是理解他之后所有选择的钥匙：先看清自己有多少油，才能谈怎么打。5 月 3 日晚，他收到日军在图拉吉登陆的情报，在战斗报告里写下那是'我们等了两个月的那种报告'，随后不等其余舰只会合便率队北上——不是鲁莽，而是机会窗口稍纵即逝，同时他把油船与驱逐舰妥善分开遣往新的会合点。第二天，一架侦察机的联络代码板排列不当造成误报，让整个攻击群出发去执行一个错误的任务；他没有召回，而是让它继续——战史写道，这'被证明是明智的'，因为很快就有正确的位置传来。最值得读的是他 5 月 7 日夜里的那段判断，原文出自他的战斗报告：'如果当时有把握我水面部队能取得接触，让航母编队向南退避也许更合适。但如果水面部队夜间没有接触上，第二天他们可能遭到灾难性的空袭。通盘考虑，最好的方案似乎是保持我部队集中，准备次日晨与敌航母决战。'太平洋舰队司令部后来评价他'极为出色地运用了提供给他的情报'。读弗莱彻，最重要的是看见这样一个事实：他面对的从来不是'打或不打'，而是在燃油、位置、情报和天气的约束里，反复权衡哪一种风险更可以承受。",
+      "decisions": [
+        {
+          "id": "decision-fletcher-fuel-before-battle",
+          "title": "开战前先把补给船的燃油抽干",
+          "context": "1942 年 5 月初，弗莱彻的两支编队刚会合，补给油船需要返回基地。上级要求尽可能多地把燃油从油船里取出来再让它回去。与此同时，他判断自己的位置偏南，如果日军立即南下，他将无法与敌交战。",
+          "options": [
+            "让油船尽快返回、维持既定日程，避免舰队为加油而耽搁。",
+            "尽可能抽干油船，让自己的舰只装满燃油，同时指示另一编队利用夜间航行时给驱逐舰加油。"
+          ],
+          "choice": "优先保证燃油，安排另一编队在夜间西北向航行时给驱逐舰加油。",
+          "constraints": [
+            "上级命令要求尽量把油船燃油取空，这是硬性要求。",
+            "自己的位置偏南，距离可能的战场太远，油量直接决定能否及时赶到。"
+          ],
+          "consequence": "舰队得以在后续几天的追击与规避中保持足够的航程。这一决定说明：在海战里，'能走多远'往往先于'打不打'被决定。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-fletcher-fuel-constraint",
+            "claim-fletcher-fuel-limited-reach"
+          ]
+        },
+        {
+          "id": "decision-fletcher-rush-tulagi",
+          "title": "不等其余舰只到齐就北上打击图拉吉",
+          "context": "1942 年 5 月 3 日 19 时，弗莱彻收到情报：日军已在图拉吉登陆。他的编队还不完整，其余舰只仍分散在外，油船也需要安置。",
+          "options": [
+            "等待所有舰只会合后再行动，保证兵力完整、编队严密。",
+            "按现状立即北上，抓住日军登陆这个稍纵即逝的机会，同时另行安排油船与驱逐舰的会合。"
+          ],
+          "choice": "不等会合就率队北上，并把油船与驱逐舰分开遣往新的会合点。",
+          "constraints": [
+            "舰队尚未完成会合，兵力与护卫都不完整，一旦遇到强敌风险很大。",
+            "燃油与护航安排必须同时解决，不能为了速度把补给完全丢掉。"
+          ],
+          "consequence": "5 月 4 日对图拉吉发起了攻击。这一决定体现的是他对机会窗口的判断：在敌人立足未稳时下手，即使兵力不完整也值得。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-fletcher-tulagi-chance",
+            "claim-fletcher-tulagi-risked-dispersion"
+          ]
+        },
+        {
+          "id": "decision-fletcher-night-retirement",
+          "title": "5 月 7 日夜：不打夜战、保持集中等第二天决战",
+          "context": "5 月 7 日白天，美军击沉了日本'祥凤'号，但日方两艘主力航母'翔鹤'与'瑞鹤'尚未找到。入夜后雷达发现敌机在自己舰队附近被击落，弗莱彻据雷达信息判断东北方向可能有敌方航母，并短暂考虑过派水面舰艇夜间攻击。",
+          "options": [
+            "派水面舰艇夜间攻击东北方向的日军舰只，同时把航母编队向南退避。",
+            "不分散兵力，让编队保持集中，准备第二天早晨与敌航母决战。"
+          ],
+          "choice": "保持编队集中，放弃夜间分兵，准备次晨决战。",
+          "constraints": [
+            "夜间没有可靠的航空侦察，一旦水面部队没接触上敌舰，第二天可能遭到灾难性的空袭。",
+            "天气能见度极差，日间搜索已多次扑空，夜间判断敌主力位置更加困难。"
+          ],
+          "consequence": "5 月 8 日双方航母正面交锋，美军损失列克星敦号、约克城号受伤，但日军被迫中止对莫尔兹比港的海上进攻。这一选择常被后人拿来争论，但他的理由本身是可以核查的：真正的约束不是勇气，而是夜间侦察的缺失带来的不确定性。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-fletcher-night-risk-tradeoff",
+            "claim-fletcher-radar-own-fighters-unidentified"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-nimitz-chester",
+        "person-spruance-raymond",
+        "person-nagumo-chuichi"
+      ],
+      "placeIds": [
+        "place-coral-sea",
+        "place-pearl-harbor"
+      ],
+      "eventIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "battleIds": [],
+      "conceptIds": [
+        "concept-logistics",
+        "concept-radar",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative",
+        "source-dmn-king-nimitz"
+      ],
+      "claimIds": [
+        "claim-fletcher-combined-command",
+        "claim-fletcher-fuel-constraint",
+        "claim-fletcher-fuel-limited-reach",
+        "claim-fletcher-tulagi-chance",
+        "claim-fletcher-tulagi-risked-dispersion",
+        "claim-fletcher-false-report",
+        "claim-fletcher-night-risk-tradeoff",
+        "claim-fletcher-radar-own-fighters-unidentified",
+        "claim-fletcher-cincpac-praise",
+        "claim-fletcher-coral-outcome"
+      ]
+    },
+    {
+      "id": "person-nagumo-chuichi",
+      "name": "南云忠一",
+      "originalName": "南雲忠一（Nagumo Chūichi）",
+      "side": "japan",
+      "role": "日本海军中将，第一航空舰队（机动部队）司令长官",
+      "service": "navy",
+      "summary": "珍珠港与中途岛两次作战中指挥日本主力航母编队。他接到的命令本身就写着'打了就走'，而他真正的难题是：在敌情不断变化、甲板调度需要以小时计的情况下，如何在'再打一波'与'撤收保船'之间选择。",
+      "profile": "南云忠一是日本海军第一航空舰队司令长官，美国战略轰炸调查处的编成表把他的部下列为赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤六艘航母。要理解他在战场上的处境，最该先看他自己签署的命令。1941 年 11 月 23 日他签署的机动部队作战命令要求部队以最高保密状态驶向夏威夷海域、开战时发动奇袭、并在攻击完成后立即撤收返回日本——'打了就走'不是他临场的怯懦，而是命令原文的要求。同一时期的第三号作战命令又规定，两波攻击队返回后应立即完成再次出击的准备，能挂鱼雷的飞机仍挂鱼雷。也就是说，计划里同时安排了'撤收'与'再打'，真正需要他在现场决定的是这两条何时切换。据维基百科条目（低权重，仅用于最基础的履历），他 1887 年生于山形县米泽，1908 年毕业于海军兵学校第三十六期，专长是鱼雷与驱逐舰战术，1939 年晋升中将。中途岛那天，摆在他面前的是一个两头挤压的局面。官方战史从美军一侧写出了这个压力：美军必须赶在日机从中途岛返航、加油、准备第二波攻击之前击中敌舰，而那第二波攻击几乎肯定会指向美军航母；同时日方还要应付不断来袭的美军舰载机。战史明确记载，美军鱼雷机的攻击'迫使日军航母不断机动规避，以致无法起飞自己的轰炸机'——这不是他没有下令，而是规避机动让起飞无法进行。他还面对一个根本的信息问题：在美军俯冲轰炸机 10 时 02 分发现其编队时，'四艘航母均可见，且在初次接触及俯冲过程中都看不到任何损伤'。也就是说，在决定性打击落下之前，从他这一侧看去，编队依然是完好的。官方战史还记载，日军航母在美军攻击机群出发约一小时后转向北，并推测这可能是因为发现了美军航母——这属于战史的推测性表述，不是定论。评价南云时，最需要避免的是用当天的结果反推'他本该如何'。他当时能依靠的是侦察报告、返航机群的报告与甲板上的实际状态，而不是几小时后才会出现的结局。",
+      "decisions": [
+        {
+          "id": "decision-nagumo-execute-hit-and-run-order",
+          "title": "按命令执行'奇袭后立即撤收'的珍珠港作战",
+          "context": "1941 年 11 月 23 日，南云以机动部队司令长官身份签署第一号作战命令：以最高保密状态驶向夏威夷，开战时对敌方舰队发动果断奇袭、给予致命打击，攻击完成后立即撤收返回日本。命令同时保留了在途中被发现、或遭遇优势敌力时中止与返航的条件。",
+          "options": [
+            "按命令执行：打完即走，力求在敌方未及反应时脱离。",
+            "在第一次攻击后再组织更多波次扩大战果，延长在目标海域的停留时间。"
+          ],
+          "choice": "执行'奇袭后立即撤收'的命令。",
+          "constraints": [
+            "命令原文规定攻击完成后立即撤收返回日本，这是他权限内的既定方案。",
+            "舰队必须依靠海上加油远航，返航航程与燃油是硬条件；战机位置不明也增加了滞留风险。"
+          ],
+          "consequence": "当日日军以很小的飞机损失换取了对美军战列舰的沉重打击，并成功脱离。这一决定本身有命令依据，讨论它的时候要区分'他选择做什么'与'命令要求他做什么'。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-jm-097",
+            "source-ussbs-pto-campaigns"
+          ],
+          "claimIds": [
+            "claim-nagumo-strike-doctrine-order",
+            "claim-nagumo-kido-butai-command"
+          ]
+        },
+        {
+          "id": "decision-nagumo-rearm-vs-strike",
+          "title": "中途岛：在返航整备与再次出击之间如何权衡",
+          "context": "1942 年 6 月 4 日上午，南云编队攻击中途岛后，攻击机群需要返航、加油、重新挂弹，才能再进行一次攻击；同时侦察与来敌报告不断到来，甲板上的整备状态直接决定了下一步能做什么。按规定，两波攻击队返回后应立即完成再次出击的准备，能挂鱼雷的飞机仍挂鱼雷。",
+          "options": [
+            "优先完成返航机群的回收与整备，按计划准备好可再次出击的兵力。",
+            "不等整备完成，立即以现有可用的飞机应对新出现的威胁。"
+          ],
+          "choice": "按既定程序推进返航回收与整备，同时以现有兵力应对来袭的美军舰载机。",
+          "constraints": [
+            "甲板上的加油、挂弹与调度需要以小时计，过程一旦被打断就要重来。",
+            "美军鱼雷机的持续攻击'迫使日军航母不断机动规避，以致无法起飞自己的轰炸机'——规避本身就使起飞无法进行。"
+          ],
+          "consequence": "整备被打断、出击时机被一再推迟，而美军的俯冲轰炸机恰在这段时间到达。需要注意的是，这里描述的是一个由敌我行动共同造成的时间挤压，而不是某一个人'犹豫'的结果。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-nagumo-rearm-in-plan",
+            "claim-nagumo-defensive-maneuver-blocked-launch",
+            "claim-nagumo-attack-timing-squeeze"
+          ]
+        },
+        {
+          "id": "decision-nagumo-no-visible-damage-turn",
+          "title": "在'看不到任何损伤'的情况下判断编队状态",
+          "context": "官方战史记载，美军俯冲轰炸机 10 时 02 分发现日军编队时，四艘航母均可见，且在初次接触及俯冲过程中都看不到任何损伤。也就是说，在此之前，从南云这一侧看去，编队并没有出现可从外部察觉的重创。战史还记载，日军航母在美军攻击机群出发约一小时后转向北，并推测这可能是因为发现了美军航母。",
+          "options": [
+            "以现有的侦察与观察为依据，继续按计划应对来袭的美军航母舰载机。",
+            "基于'似乎未受损'的判断，进一步扩大进攻规模或改变部署。"
+          ],
+          "choice": "在既有信息下维持编队应对态势，未出现外部可见的损伤迹象。",
+          "constraints": [
+            "侦察报告与返航机群的报告是他能获得的主要信息来源，敌航母位置仍存在不确定性。",
+            "航母编队一旦被击中甲板就难以恢复作战，任何部署调整都必须快速且不可反复。"
+          ],
+          "consequence": "几分钟后，三艘航母在俯冲轰炸下几乎同时失去作战能力。这段最应引以为戒的教训不是'他判断错了'，而是：在航母作战中，'外部看起来完好'与'实际上仍然安全'是两回事——一旦第一发炸弹落下，留给人反应的时间可能只有几分钟。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-nagumo-no-visible-damage-at-contact",
+            "claim-nagumo-carriers-turned-north",
+            "claim-nagumo-four-carriers-lost"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-yamamoto-isoroku",
+        "person-nimitz-chester",
+        "person-spruance-raymond",
+        "person-fletcher-frank-jack"
+      ],
+      "placeIds": [
+        "place-pearl-harbor",
+        "place-coral-sea"
+      ],
+      "eventIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "battleIds": [],
+      "conceptIds": [
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-radar"
+      ],
+      "sourceIds": [
+        "source-jm-097",
+        "source-oni-midway-combat-narrative",
+        "source-ussbs-pto-campaigns",
+        "source-wikipedia-nagumo"
+      ],
+      "claimIds": [
+        "claim-nagumo-kido-butai-command",
+        "claim-nagumo-strike-doctrine-order",
+        "claim-nagumo-rearm-in-plan",
+        "claim-nagumo-carriers-turned-north",
+        "claim-nagumo-defensive-maneuver-blocked-launch",
+        "claim-nagumo-no-visible-damage-at-contact",
+        "claim-nagumo-attack-timing-squeeze",
+        "claim-nagumo-four-carriers-lost",
+        "claim-nagumo-personal-background"
+      ]
+    }
+  ],
+  "places": [
+    {
+      "id": "place-tokyo",
+      "historicalName": "東京（日本帝国首都）",
+      "modernName": "东京",
+      "modernCountry": "日本",
+      "placeType": "capital",
+      "summary": "日本帝国政治与军事决策中心，1941 年 9 月 6 日与 12 月 1 日的御前会议均在此举行。",
+      "coordinates": {
+        "lat": 35.6762,
+        "lng": 139.6503
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-jacar-imperial-conference-1941",
+        "source-jm-147-appx3"
+      ],
+      "claimIds": [
+        "claim-1941-12-01-imperial-conference",
+        "claim-nagano-long-war-risk"
+      ]
+    },
+    {
+      "id": "place-washington-dc",
+      "historicalName": "华盛顿哥伦比亚特区",
+      "modernName": "华盛顿哥伦比亚特区",
+      "modernCountry": "美国",
+      "placeType": "capital",
+      "summary": "美国首都与国务院所在地，1941 年美日谈判与对日经济措施的主要决策地点。",
+      "coordinates": {
+        "lat": 38.9072,
+        "lng": -77.0369
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-frus-1941-v04-d266"
+      ],
+      "claimIds": [
+        "claim-us-restriction-reached-aviation-gasoline",
+        "claim-roosevelt-warning-1941-08-17"
+      ]
+    },
+    {
+      "id": "place-manchuria",
+      "historicalName": "满洲（日本扶植的满洲国）",
+      "modernName": "中国东北地区",
+      "modernCountry": "中国",
+      "placeType": "region",
+      "summary": "1931 年日本发动九一八事变后占领中国东北并扶植满洲国，是日本大陆扩张的第一步。",
+      "coordinates": {
+        "lat": 45,
+        "lng": 126
+      },
+      "coordinateAccuracyKm": 300,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-beijing"
+      ],
+      "sourceIds": [
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "claimIds": [
+        "claim-manchuria-1931"
+      ]
+    },
+    {
+      "id": "place-beijing",
+      "historicalName": "北平",
+      "modernName": "北京",
+      "modernCountry": "中国",
+      "placeType": "city",
+      "summary": "中国华北主要城市；1937 年 7 月卢沟桥事变后，日本对华战争升级为全面战争。",
+      "coordinates": {
+        "lat": 39.9042,
+        "lng": 116.4074
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-manchuria",
+        "place-china-coast"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "claimIds": [
+        "claim-japan-continues-china-war",
+        "claim-full-scale-war-1937"
+      ]
+    },
+    {
+      "id": "place-china-coast",
+      "historicalName": "中国沿海与长江流域",
+      "modernName": "中国东部沿海与长江流域",
+      "modernCountry": "中国",
+      "placeType": "region",
+      "summary": "1941 年日本海军作战方针明确要求维持对中国沿海与长江的控制，是对华战争的战略目标之一。",
+      "coordinates": {
+        "lat": 31.2,
+        "lng": 121.5
+      },
+      "coordinateAccuracyKm": 500,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-beijing",
+        "place-dutch-east-indies"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "claimIds": [
+        "claim-japan-control-china-coast",
+        "claim-japan-southward-resources"
+      ]
+    },
+    {
+      "id": "place-nanking",
+      "historicalName": "南京",
+      "modernName": "南京",
+      "modernCountry": "中国",
+      "placeType": "city",
+      "summary": "中国首都（当时），1937 年 12 月沦陷后发生大规模平民与战俘伤亡，史称南京大屠杀。",
+      "coordinates": {
+        "lat": 32.0603,
+        "lng": 118.7969
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-beijing",
+        "place-china-coast"
+      ],
+      "sourceIds": [
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "claimIds": [
+        "claim-nanking-casualties-disputed"
+      ]
+    },
+    {
+      "id": "place-dutch-east-indies",
+      "historicalName": "荷属东印度",
+      "modernName": "印度尼西亚",
+      "modernCountry": "印度尼西亚",
+      "placeType": "region",
+      "summary": "东南亚石油产地。日本与荷印的石油交涉在 1941 年 6 月破裂，是日本南进的关键诱因。",
+      "coordinates": {
+        "lat": -2,
+        "lng": 118
+      },
+      "coordinateAccuracyKm": 500,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-china-coast"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-jm-147",
+        "source-frus-1941-v04-d603"
+      ],
+      "claimIds": [
+        "claim-nei-negotiations-collapsed-1941-06-18",
+        "claim-us-feared-attack-on-nei"
+      ]
+    },
+    {
+      "id": "place-japan-home-islands",
+      "historicalName": "日本本土",
+      "modernName": "日本",
+      "modernCountry": "日本",
+      "placeType": "region",
+      "summary": "资源匮乏的岛国本土。石油、废钢铁等关键物资大量依赖进口，构成本国战略的根本约束。",
+      "coordinates": {
+        "lat": 36.2048,
+        "lng": 138.2529
+      },
+      "coordinateAccuracyKm": 200,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-jm-147-appx3"
+      ],
+      "claimIds": [
+        "claim-japan-oil-essential-import",
+        "claim-japan-reserves-nine-months-to-year"
+      ]
+    },
+    {
+      "id": "place-pearl-harbor",
+      "historicalName": "珍珠港（夏威夷瓦胡岛）",
+      "modernName": "珍珠港",
+      "modernCountry": "美国",
+      "placeType": "naval-base",
+      "summary": "美国太平洋舰队主要基地，1941 年 12 月 7 日遭日本海军航空兵袭击。",
+      "coordinates": {
+        "lat": 21.3527,
+        "lng": -157.95
+      },
+      "coordinateAccuracyKm": 2,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-tokyo",
+        "place-japan-home-islands"
+      ],
+      "sourceIds": [
+        "source-nps-opana-radar",
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-opana-radar-detected",
+        "claim-ussbs-attack-purpose"
+      ]
+    },
+    {
+      "id": "place-coral-sea",
+      "historicalName": "珊瑚海（Coral Sea）",
+      "modernName": "珊瑚海",
+      "modernCountry": "澳大利亚 / 巴布亚新几内亚 / 所罗门群岛之间的海域",
+      "placeType": "sea",
+      "summary": "澳大利亚东北方的海域。1942 年 5 月 4 日至 8 日，美日航母编队在此交战，是历史上第一次双方水面舰艇未发一炮、由航空兵决出胜负的主要海战。",
+      "coordinates": {
+        "lat": -15.5,
+        "lng": 152.5
+      },
+      "coordinateAccuracyKm": 400,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-naval-aviation-coral-simultaneous"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "unit-combined-fleet",
+      "name": "日本海军联合舰队（Combined Fleet / 連合艦隊）",
+      "side": "japan",
+      "service": "navy",
+      "echelon": "fleet",
+      "description": "日本海军的最高作战编组，1941 年由山本五十六任司令长官。联合舰队司令长官签发作战命令、确定开战日（Y Day），并统辖包括机动部队在内的各作战部队。",
+      "eventIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku"
+      ],
+      "equipmentIds": [],
+      "sourceIds": [
+        "source-jm-097",
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-y-day-8-december-1941-11-07",
+        "claim-navy-order-1-1941-11-05",
+        "claim-ussbs-attack-purpose"
+      ]
+    },
+    {
+      "id": "unit-kido-butai",
+      "name": "日本海军机动部队（第一航空舰队，Pearl Harbor Carrier Striking Task Force）",
+      "side": "japan",
+      "service": "navy",
+      "echelon": "task-force",
+      "parentUnitId": "unit-combined-fleet",
+      "description": "执行珍珠港袭击的航母编组，1941 年由南云忠一指挥，含赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤六艘航空母舰，另有护卫、支援与补给部队。",
+      "eventIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "personIds": [],
+      "equipmentIds": [
+        "equipment-akagi"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097"
+      ],
+      "claimIds": [
+        "claim-nagumo-signed-kido-butai-orders",
+        "claim-kido-butai-order-1941-11-23",
+        "claim-ussbs-carriers-absent"
+      ]
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-akagi",
+      "name": "赤城号航空母舰（IJN Akagi）",
+      "category": "aircraft-carrier",
+      "side": "japan",
+      "summary": "日本海军第一航空舰队旗舰，1941 年 12 月作为机动部队旗舰参加珍珠港袭击；美国战略轰炸调查处的部队编成表把它列在攻击编组的第一位。",
+      "limitations": "航空母舰要让飞机从海上起降，因此必须迎风航行、集中精力收放机群；一旦被命中飞行甲板，全舰就基本失去作战能力。舰载机的出动与回收需要长时间准备，这也限制了航母能连续出动多少波次。",
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097"
+      ],
+      "claimIds": [
+        "claim-nagumo-signed-kido-butai-orders",
+        "claim-ussbs-carriers-absent"
+      ]
+    },
+    {
+      "id": "equipment-type-97-carrier-attack-plane",
+      "name": "九七式舰载攻击机（Type 97 Carrier Attack Plane）",
+      "category": "aircraft",
+      "side": "japan",
+      "summary": "日军珍珠港袭击使用的舰载攻击机。第一波中一部分携带八百公斤穿甲炸弹执行水平轰炸，另一部分挂载鱼雷执行雷击。",
+      "limitations": "鱼雷攻击在珍珠港这样的狭窄浅水港内很难奏效，日军为此加装稳定装置并从极低空投放；水平轰炸的精度有限，日军自己估计一个五机编队大约四发能命中停泊中的战列舰。",
+      "conceptIds": [
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097"
+      ],
+      "claimIds": [
+        "claim-ussbs-055-shallow-water",
+        "claim-kido-butai-rearm-plan"
+      ]
+    },
+    {
+      "id": "equipment-opana-mobile-radar",
+      "name": "欧帕纳移动式雷达站（Opana Mobile Radar Site）",
+      "category": "radar",
+      "side": "allies",
+      "summary": "瓦胡岛北岸的一部移动式雷达，1941 年 12 月 7 日最先发现来袭的日军机群并向薛夫特堡信息中心报告。当时岛上五部移动雷达只有这一部仍在工作。",
+      "limitations": "雷达只能测出目标的方向与距离，无法判断那是敌机还是自家飞机。要形成有效预警，还需要有人正确识别目标、并把判断迅速传递到能下达命令的人手里；这一天的链条正是在识别与传递环节断掉的。",
+      "conceptIds": [],
+      "sourceIds": [
+        "source-nps-opana-radar"
+      ],
+      "claimIds": [
+        "claim-opana-radar-detected",
+        "claim-opana-warning-dismissed"
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "id": "concept-aircraft-carrier",
+      "title": "航空母舰是什么：一座会移动的机场",
+      "summary": "航空母舰是能让飞机从海上起飞并返回的军舰，等于把一座机场搬到海上。它的价值不在于自己开炮，而在于把飞机的打击范围带到任何一片海域。",
+      "layers": [
+        {
+          "level": 1,
+          "title": "第一层：一座会移动的机场",
+          "body": "航空母舰本质上是一座会移动的机场。普通军舰靠自己的火炮和装甲作战，航母的主要武器是它搭载的飞机。航母有一条长长的飞行甲板，飞机从这里起飞，打完仗再飞回来降落。它解决的是一个很实际的问题：飞机飞不了太远，而陆地上的机场不能跟着舰队走。有了航母，一支舰队就能把飞机的打击范围带到任何一片海域。所以航母最怕的不是被炮击，而是飞行甲板被破坏——一旦甲板不能用，整艘船就失去了它最重要的能力。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-carriers-absent",
+            "claim-nagumo-signed-kido-butai-orders"
+          ]
+        },
+        {
+          "level": 2,
+          "title": "第二层：舰载机如何起飞、返航与整备",
+          "body": "航母的作战离不开一套复杂的流程。飞机起飞前要加满油、挂好弹药，再由甲板人员一辆一辆推到起飞位置，然后才能一架接一架地升空。一次攻击常常要好几十架飞机一起出发，光是让它们全部离舰就需要相当长的时间。飞机回来之后，还要重新加油、重新装弹、再排队准备下一波。在这整段时间里，航母必须保持迎风航行，让飞机更容易起飞和降落；同时还要提防对手的潜艇和飞机靠近。这就是为什么航母编队不只要航母本身，还要一群护卫舰只和补给船跟着。整个编组像一台需要不断上弦的钟表，处理得慢一些，机会就过去了。",
+          "sourceIds": [
+            "source-jm-097",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-kido-butai-rearm-plan",
+            "claim-us-fleet-trains-refuel",
+            "claim-ussbs-055-shallow-water"
+          ]
+        },
+        {
+          "level": 3,
+          "title": "第三层：为什么航母改变了舰队的作战方式",
+          "body": "在航母出现之前，海战的主角是战列舰，靠装甲和火炮在近距离对轰。航母把作战距离拉开了：双方舰队可能始终看不见彼此，战斗由各自的飞机完成。这对指挥员提出了全新的要求。第一，要先找到对方。谁先发现对方，谁就能先攻击；发现得晚的一方往往连还手的时机都没有。第二，要算准时间。飞机出去一趟需要几个小时，这段时间里指挥官不知道外面发生了什么，而对手可能已经改变了位置。第三，航母非常脆弱。一艘航母失去作战能力，往往只需要几枚炸弹命中甲板。1941 年 12 月 7 日的珍珠港就清楚地说明了这三点：日军当天找不到美国航母，于是把攻击重点转向了停泊的战列舰；而正因为美国航母不在港内，几个月后它们成了美国海军最要紧的力量。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-pacific-strategy"
+          ],
+          "claimIds": [
+            "claim-ussbs-carriers-absent",
+            "claim-midway-codebreaking",
+            "claim-ussbs-attack-purpose"
+          ]
+        }
+      ],
+      "whyItMatters": "理解航母，才能理解这场海战为什么会变成现在这个样子。珍珠港当天，美国损失最重的是停泊在港内的战列舰；但真正决定之后战局的，是当时不在港内的航母。此后的珊瑚海与中途岛，双方舰队几乎从未互相看见，胜负由舰载机的发现、起飞与攻击时机决定。这也是为什么本教材要先用三层把航母讲清楚，再去讲具体的战斗经过。",
+      "relatedEntityIds": [
+        "equipment-akagi",
+        "unit-kido-butai",
+        "person-yamamoto-isoroku",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097",
+        "source-nww2m-pacific-strategy"
+      ],
+      "claimIds": [
+        "claim-ussbs-carriers-absent",
+        "claim-kido-butai-rearm-plan",
+        "claim-ussbs-attack-purpose",
+        "claim-midway-codebreaking"
+      ]
+    },
+    {
+      "id": "concept-carrier-aircraft",
+      "title": "舰载机如何起飞、回收与整备",
+      "summary": "舰载机是航母的武器，但它不是按一下按钮就能出动的。加油、挂弹、调度、起飞、返航、降落、再整备，每一步都需要时间，而这段时间正是海战中最宝贵也最脆弱的东西。",
+      "layers": [
+        {
+          "level": 1,
+          "title": "第一层：舰载机的不同类型",
+          "body": "航母上的飞机不是同一种。大致可以分成几类：战斗机负责在天上保护自己一方、拦截对方的飞机；俯冲轰炸机带着炸弹向下俯冲投弹，命中率较高；鱼雷机贴着海面低飞，用水雷打击船体水线以下的部分，对付大型军舰很有效。这些飞机各有各的弱点。比如在珍珠港这样的浅水港里，普通鱼雷扎得太深会触底，日军因此给鱼雷加装稳定装置，并从极低的空中投放。哪一类飞机适合打什么目标，是需要事先判断的。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-055-shallow-water",
+            "claim-aircraft-role-split"
+          ]
+        },
+        {
+          "level": 2,
+          "title": "第二层：从甲板到天空再回到甲板",
+          "body": "一次航母攻击的流程大致是这样的。天还没亮，机务人员已经把飞机推到甲板上，给每一架加好油、挂好对应的弹药。出击时间到了，飞机一架接一架起飞，全部升空往往需要一段时间。机群在空中编好队形再飞向目标，这几十分钟里，航母只能等待。攻击结束后，飞机返航，最危险的一步到了：降落。飞机必须对准甲板落下来，速度太快会冲出去，太慢会掉进海里。全部回收之后，还要决定下一步做什么：是再派一波攻击，还是先把飞机移入机库。日本海军在珍珠港的计划里明确写到，两波攻击队返回后的第一件事，就是“立即完成下一次攻击的准备”，而且能挂鱼雷的飞机仍然挂鱼雷。这说明整备过程不是可选项，它本身就在作战计划之中。",
+          "sourceIds": [
+            "source-jm-097",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-kido-butai-rearm-plan",
+            "claim-deck-cycle-time-cost"
+          ]
+        },
+        {
+          "level": 3,
+          "title": "第三层：时间差如何影响决策",
+          "body": "一旦把整备时间算进来，就能理解许多指挥上的难题。日本海军在珍珠港的计划中预留了再次出击的准备，可指挥官在实际战斗中还必须考虑：侦察飞机报告发现了什么、报告可靠不可靠、派出去的机群什么时候回来、下一次攻击该打哪一类目标。这些判断要在时间压力下做出，而且一旦决定了就很难立刻反悔——飞机已经在甲板上，弹药已经挂好，换弹需要重新来过。因此，读战史时不要只看结果去问“他为什么不这样做”。更公平的问法是：在那几分钟里，他手上有哪些已经准备好的东西？要改变计划需要付出多少时间？这些时间他有没有？把这些问题想清楚，读者就能自己判断当时的选择为什么会有代价。",
+          "sourceIds": [
+            "source-jm-097",
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-kido-butai-rearm-plan",
+            "claim-deck-cycle-time-cost",
+            "claim-ussbs-why-no-second-attack"
+          ]
+        }
+      ],
+      "whyItMatters": "本教材后面要讲的几场海战，胜负常常取决于“谁的飞机先完成整备、先飞出去”。如果不理解加油、挂弹与甲板调度需要多少时间，读者就会把复杂的战场判断误当成某个人聪明或犹豫。把这一层讲清楚，才能让 11 岁的读者真正明白：在航母时代，时间本身就是一种弹药。",
+      "relatedEntityIds": [
+        "concept-aircraft-carrier",
+        "equipment-type-97-carrier-attack-plane",
+        "equipment-akagi",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-jm-097",
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-kido-butai-rearm-plan",
+        "claim-ussbs-055-shallow-water",
+        "claim-deck-cycle-time-cost",
+        "claim-aircraft-role-split"
+      ]
+    },
+    {
+      "id": "concept-logistics",
+      "title": "补给：航程、油料与舰队的隐形边界",
+      "summary": "一支舰队能走多远，不取决于它有多少军舰，而取决于它能带多少油、多少弹药，以及能不能在海上把这些东西补上。补给是一条看不见的边界，却往往决定了作战计划能不能成立。",
+      "layers": [
+        {
+          "level": 1,
+          "title": "第一层：补给链是什么",
+          "body": "军舰航行需要烧油，打仗需要消耗弹药和飞机零件，舰上几百上千人还要吃饭。这些东西都得从本土或基地运过来，于是形成了一条补给链：从港口装货，由油船和货船运到前线附近，再想办法交到作战部队手上。补给链上最脆弱的是运输船，它们跑得慢、没有装甲，一旦被击沉，前面的舰队就会陷入困境。日本本土资源匮乏，石油、废钢铁等关键物资大量依靠进口，这条补给链对日本来说尤其要紧，也尤其容易出问题。",
+          "sourceIds": [
+            "source-frus-1941-v04-d602"
+          ],
+          "claimIds": [
+            "claim-japan-oil-essential-import",
+            "claim-japan-reserves-nine-months-to-year"
+          ]
+        },
+        {
+          "level": 2,
+          "title": "第二层：海上加油与航程限制",
+          "body": "军舰的油舱容量有限，出远门就必须在海上加油。做法是让油船和军舰并排航行，在颠簸的海面上把油管接过去。这听起来简单，实际非常危险：两艘船必须保持完全一致的速度和距离，天气稍有变化就可能撞船或让油管断裂。日本海军为珍珠港的行动做了长时间的海上加油训练。美国战略轰炸调查处的报告记下了当时最清楚的一句话：突然性和海上加油是最重要的两个因素，其中任何一项失败，整个行动都无法进行。也正因为这样，航线的选择里埋着风险的权衡：北方航线天气恶劣，会给加油增加困难，但它遇到商船的几率低、最能避开美军巡逻机，最终还是被选中了。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-ussbs-norther-route-tradeoff",
+            "claim-ussbs-refuel-critical",
+            "claim-us-fleet-trains-refuel"
+          ]
+        },
+        {
+          "level": 3,
+          "title": "第三层：补给如何限制日本扩张与作战计划",
+          "body": "补给线一旦拉长，整个战争的性质就会改变。日本向南扩张，每占一个地方就要派兵驻守、修建航空基地，而驻军和基地本身又需要源源不断地运来补给。日方的作战方针写明，占领婆罗洲、西里伯斯与苏门答腊就是为了“建立航空基地”，再用这些基地进攻爪哇。这说明他们清楚：光拿到资源还不够，必须把它变成能用的基地和运输通道。可是路线越长，需要护航的油船与货船就越多，而那正是最容易被打掉的一环。同样的问题也决定了珍珠港袭击的规模：参与行动的补给单位包括八艘油船，舰队还必须在约定时间到达海上加油点，如果加油失败，护航舰队就得返回。所以航程与油料并不是战斗之外的背景，它们从一开始就写进了计划本身。读到这里，读者就能理解为什么“多占一些地方”并不总是好事。",
+          "sourceIds": [
+            "source-jm-097",
+            "source-ussbs-pto-ch2",
+            "source-nww2m-pacific-strategy"
+          ],
+          "claimIds": [
+            "claim-japan-southward-resources",
+            "claim-us-fleet-trains-refuel",
+            "claim-ussbs-norther-route-tradeoff",
+            "claim-japan-reserves-nine-months-to-year"
+          ]
+        }
+      ],
+      "whyItMatters": "补给是把“战略”和“战术”连起来的东西。美国之所以把经济压力当成武器，正是因为它看准了日本对进口石油的依赖；日本之所以急于向南出手，也是因为补给链无法在国内解决。教材讲述每一场战役时，都要先问一句：这一方的油和弹药能撑多久、从哪里来。如果漏掉这个问题，读者会以为战争只由勇气和舰艇数量决定。",
+      "relatedEntityIds": [
+        "unit-kido-butai",
+        "unit-combined-fleet",
+        "event-us-oil-embargo-1941",
+        "place-dutch-east-indies"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097",
+        "source-frus-1941-v04-d602"
+      ],
+      "claimIds": [
+        "claim-ussbs-norther-route-tradeoff",
+        "claim-ussbs-refuel-critical",
+        "claim-japan-southward-resources",
+        "claim-japan-oil-essential-import"
+      ]
+    },
+    {
+      "id": "concept-radar",
+      "title": "雷达：看见看不见的敌人",
+      "summary": "雷达用无线电波探测远处的飞机和军舰，能在肉眼还看不见的时候发出警告。但它只告诉你'那边有东西'，不会告诉你'那是敌人'——从发现到行动，中间还隔着识别、判断和传递。",
+      "layers": [
+        {
+          "level": 1,
+          "title": "第一层：用无线电波探测",
+          "body": "雷达的做法是：先向空中发射无线电波，再接收从物体反射回来的回声。根据回声返回所用的时间算出目标有多远，根据接收天线的朝向判断目标在哪个方向。这和你在山谷里喊一声、听回声判断山有多远的道理相似，只是改用无线电波，并且要精确得多。雷达最初的目的很单纯：在夜里、在雾里、在云层后面，也能知道有没有飞机或军舰靠近。对一支在浩瀚大洋上作战的舰队来说，这个能力非常宝贵，因为海面太辽阔，光靠人眼和望远镜，一艘军舰能看到的范围实在有限。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-radar-coral-bogey-problem",
+            "claim-radar-midway-detected"
+          ]
+        },
+        {
+          "level": 2,
+          "title": "第二层：它的强项与它做不到的事",
+          "body": "雷达的强项是'早'和'全'。1941 年 12 月 7 日清晨的珍珠港，欧帕纳雷达站在七时零二分发现了来袭的第一波日机，距离瓦胡岛以北一百三十七英里；七时零六分，值勤士兵向信息中心报告了目标。到了 1942 年 6 月 4 日的中途岛，雷达在巡逻机报告后五分钟，就在约九万米外抓到了来袭编队。中途岛守备部队的逐时记录里留下了多条雷达通报：'许多不明飞机 8 英里、方位 330，以及 29 英里、方位 265'。可以看到，雷达给出的是距离和方位。它做不到的是：告诉操作员这架飞机属于哪一方。回波只说明'有金属物体在那里'。要判断敌我，得靠飞行计划、敌方情报、时间推算和人的经验；判断之后，还要把结论迅速送到能下令的人手里。这中间任何一步出错，雷达的优点就传不出来。",
+          "sourceIds": [
+            "source-nps-opana-radar",
+            "source-oni-midway-combat-narrative",
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-radar-opana-chain-broke",
+            "claim-radar-midway-detected",
+            "claim-radar-midway-plot-log"
+          ]
+        },
+        {
+          "level": 3,
+          "title": "第三层：为什么雷达改变了舰队的决策",
+          "body": "有了雷达，指挥官第一次可以在看不见敌人的时候就做出反应，这改变了海战的节奏。但珊瑚海的实战说明了问题有多复杂。当时美军航母的战斗空中巡逻由雷达引导，雷达不断发现'目标'，战斗机就不断被派出去查看——结果大量精力被浪费，因为返回的多半是自己人。官方战史直白地记下了原因：约克城号的战斗机没有雷达识别手段，所以'大量精力被浪费'。另一边，舰队指挥官整夜都在根据雷达信息猜测日方主力在哪个方向，最后选择了保守方案。这场战斗之后，太平洋舰队司令部在总结里写了一句话：'所有航空母舰都应配备两部远程雷达。'这句话说明了当时指挥层的判断——雷达不是可有可无的附件，它直接决定了舰队能不能及时反应、能不能少犯错误。读这段历史时请记住：雷达提供的是'有机会反应'，而不是'自动知道答案'。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative",
+            "source-nps-opana-radar"
+          ],
+          "claimIds": [
+            "claim-radar-carriers-should-have-two",
+            "claim-radar-coral-bogey-problem",
+            "claim-radar-opana-chain-broke"
+          ]
+        }
+      ],
+      "whyItMatters": "雷达是本教材里'技术与人的判断如何互相牵制'的最好例子。珍珠港那天，雷达发现了来袭机群，却因为识别环节的误判而没能变成警报；珊瑚海和中途岛，雷达帮助舰队提前看到了敌人，但敌我识别不完备又让它浪费了大量兵力。如果读者只把雷达当成'更厉害的望远镜'，就会错过真正重要的问题：一个系统再灵敏，也要靠链条上的每一个人把信息变成正确的行动。",
+      "relatedEntityIds": [
+        "equipment-opana-mobile-radar",
+        "place-pearl-harbor",
+        "person-nimitz-chester",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative",
+        "source-nps-opana-radar"
+      ],
+      "claimIds": [
+        "claim-radar-midway-detected",
+        "claim-radar-midway-plot-log",
+        "claim-radar-coral-bogey-problem",
+        "claim-radar-carriers-should-have-two",
+        "claim-radar-opana-chain-broke"
+      ]
+    },
+    {
+      "id": "concept-codebreaking",
+      "title": "密码分析：从碎片到判断",
+      "summary": "密码分析是把敌方加密的电报还原成能读懂的内容，再把它变成指挥官敢用的判断。它提供的不是完整答案，而是带不确定性的碎片；把这些碎片拼起来，还要用别的手段去验证。",
+      "layers": [
+        {
+          "level": 1,
+          "title": "第一层：加密与破译是什么",
+          "body": "军队用电报传递命令，但电波可以被任何一方接收。于是发报方把内容按约定规则打乱，这就是加密；接收方按同样的规则还原。破译就是没有规则本的情况下，想办法把打乱的内容还原出来。难的地方在于：对方会不断更换规则，而且你不会知道自己这次猜对了没有。因此破译不是'读一遍就懂了'，而是长期的技术工作——先截收大量电报，再靠反复出现的规律去猜意思，最后逐字逐句拼出可读的文本。据博物馆文章，美军能够解密日本海军的 JN-25 密码通信，而日方'并不知情'。",
+          "sourceIds": [
+            "source-nww2m-operation-vengeance",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-codebreaking-frupac-jn25",
+            "claim-codebreaking-af-confirmed"
+          ]
+        },
+        {
+          "level": 2,
+          "title": "第二层：破译之后还要验证",
+          "body": "技术解密只是第一步。博物馆对 1943 年一次行动的记载让人看到完整流程：四月十四日美军截收站抄收了一份日军电报，送到珍珠港的太平洋舰队无线电小队（FRUPAC），密码人员'工作了数小时'才解读出来，'再经过仔细分析才确定其含义'。也就是说，先解出字面，再判断这段话指的是什么。中途岛的例子更能说明验证的重要性。日军在电报里用代号'AF'称呼一个目标，但代号对应哪里并不清楚。中途岛基地于是用一则'淡水不足'的假情报发出去，日方回电报告'AF 淡水不足'——这样才确认了 AF 就是中途岛。这种办法之所以必要，正是因为单靠解密本身还不足以让指挥官下定论。",
+          "sourceIds": [
+            "source-nww2m-operation-vengeance",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-codebreaking-frupac-process",
+            "claim-codebreaking-af-confirmed"
+          ]
+        },
+        {
+          "level": 3,
+          "title": "第三层：情报优势能带来什么，又带来不了什么",
+          "body": "密码分析改变了中途岛的态势：美军知道了对手要来、大致什么时候来、兵力如何编排。深处于夏威夷的'海波'站不但确认了地点，还给出了日期与战斗序列。这解释了为什么人数居于劣势的一方能够提前把航母摆在有利位置，而不是被打个措手不及。但必须讲清楚局限。第一，破译给出的常是模糊区间：日期只到'六月四日或五日'，代号要靠验证才知道指哪。第二，知道了敌人的计划，不等于知道敌人的船此刻在哪一格海域——搜索、侦察、天气照样会带来意外。第三，情报本身不会代替决策：要不要相信、信到什么程度、据此冒多大的风险，仍然要由指挥官承担。所以把中途岛的胜利简单归因于'破译了密码'，就和把失败归因于'某个人失误'一样，都是把复杂的原因压成了一句话。",
+          "sourceIds": [
+            "source-nww2m-battle-midway",
+            "source-nww2m-operation-vengeance"
+          ],
+          "claimIds": [
+            "claim-codebreaking-station-hypo-scope",
+            "claim-codebreaking-limit-not-omniscient",
+            "claim-codebreaking-af-confirmed"
+          ]
+        }
+      ],
+      "whyItMatters": "密码分析是理解中途岛的关键之一，也是本教材强调'区分事实、解释与争议'的好例子。读者需要知道：破译确实发生了，确实给出了带定位的证据；但它给出的信息是碎片和区间，还要经过验证才可用。同时，破译的成功来源于长期的组织工作——截收站、密码人员、分析人员各自分工，这种看不见的协作往往比某一次灵机一动更重要。理解了这一层，读者就不会把战争的结果简单归功于或归咎于某一环。",
+      "relatedEntityIds": [
+        "concept-radar",
+        "event-japan-war-decision-1941",
+        "concept-aircraft-carrier"
+      ],
+      "sourceIds": [
+        "source-nww2m-battle-midway",
+        "source-nww2m-operation-vengeance"
+      ],
+      "claimIds": [
+        "claim-codebreaking-af-confirmed",
+        "claim-codebreaking-station-hypo-scope",
+        "claim-codebreaking-frupac-jn25",
+        "claim-codebreaking-frupac-process",
+        "claim-codebreaking-limit-not-omniscient"
+      ]
+    },
+    {
+      "id": "concept-naval-aviation",
+      "title": "海军航空作战：搜索、攻击与时间差",
+      "summary": "海军航空作战不是'飞机去打仗'这么简单。它是一场关于信息和时间的竞赛：先找到对方，再算准自己的飞机何时能到、对手的飞机何时会回来，最后在几分钟内把打击投出去。谁在这条时间线上落后，谁就可能在还没看见敌人的时候输掉。",
+      "layers": [
+        {
+          "level": 1,
+          "title": "第一层：先找到对方——搜索与侦察",
+          "body": "在茫茫大海上，两支舰队可能相距几百公里却完全不知道对方在哪里。所以海军航空作战的第一件事不是攻击，而是搜索：派出巡逻机沿着划定的扇区飞出去，看有没有军舰、有多少、往哪个方向走。这一步做得好不好，往往就决定了后面的一切。1942 年 6 月 4 日清晨的中途岛，美军远程巡逻机被命令搜索到八百多公里范围，除非更早发现四艘敌方航母。上午五时四十五分，一架巡逻机用明语报告'大批飞机飞向中途岛，方位 320，距离 150'，官方战史称之为'整个战斗最重要的一次接触'。珊瑚海也一样：一艘巡逻机报告发现敌方航母，美军据此派出打击群；后来才发现报告有误——飞行员看到的是巡洋舰，是一次因联络代码板错置造成的误报。搜索不是背景铺垫，它本身就是战斗的第一回合。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-naval-aviation-search-arcs",
+            "claim-naval-aviation-coral-simultaneous"
+          ]
+        },
+        {
+          "level": 2,
+          "title": "第二层：把一波攻击组织起来",
+          "body": "发现目标之后，要把攻击送出去，需要把不同机种配在一起。战斗机负责护航，拦截对方战斗机；俯冲轰炸机从高空垂直俯冲投弹，命中率高；鱼雷机贴海面低飞，攻击船体水线。三种飞机速度不同、高度不同，很难同时到达目标上空。中途岛这天就暴露了这个难题：美军鱼雷机队多次在'没有保护'的情况下发起攻击——打击群在途中失去了战斗机护航，于是遭到极占优势的日军战斗机拦截，几乎全军覆没。官方战史记载，那天上午十五架鱼雷机一架都没有返航，只有一名飞行员幸存。同时，从航母起飞本身也很费时：战史记录，光是完成一次出动'大约需要一小时'。所以组织一波攻击，本质上是把不同速度、不同高度的机群，在正确的时间聚到正确的位置。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-naval-aviation-fighter-escort-gap",
+            "claim-naval-aviation-dive-vs-torpedo"
+          ]
+        },
+        {
+          "level": 3,
+          "title": "第三层：时间差为什么决定胜负",
+          "body": "海军航空作战最残酷的地方是时间。飞机飞出去要几十分钟，这段时间里指挥官对外面发生的事几乎一无所知；而对手的位置可能已经变了。官方战史记下了一个决定性的细节：美军航母的打击群出发约一小时后，日军航母转向北；而美军为保持无线电静默，没有把这个变化告诉飞行员，于是他们飞到预定位置时找不到目标。同一段还写道，必须赶在日机从中途岛返航、加油、准备第二波攻击之前击中敌舰——这是一个精确的时间窗口。谁先完成整备、谁先发现对方、谁的飞机先到，往往比谁有多少艘船更重要。还有一层更微妙的：那天损失惨重的鱼雷机攻击，官方战史认为反而带来两个好处——它迫使日军航母不断规避、无法起飞自己的轰炸机，又把日军战斗机吸引到低空，使随后到达的俯冲轰炸机几乎无人拦截。可见在海军航空作战中，'看起来失败'的一步也可能为后面创造机会。这不是运气，而是时间差被复杂地利用了。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-naval-aviation-timing-collapse",
+            "claim-naval-aviation-torpedo-attack-indirect-effect",
+            "claim-naval-aviation-dive-vs-torpedo"
+          ]
+        }
+      ],
+      "whyItMatters": "这是本教材六篇专题里最难也最重要的一篇。前面讲的航母、舰载机、雷达、密码分析、补给，最后都要落到同一个问题上：在正确的时间把打击投到正确的位置。中途岛和珊瑚海的胜负，很大程度上不是由舰艇数量决定，而是由搜索是否及时、攻击是否协同、时间差是否被算准决定的。理解这一点，读者才不会把海战看成'谁船多谁赢'，也才不会把复杂的结果简单归给某一个人的性格。",
+      "relatedEntityIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-radar",
+        "concept-codebreaking"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative",
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-naval-aviation-search-arcs",
+        "claim-naval-aviation-dive-vs-torpedo",
+        "claim-naval-aviation-fighter-escort-gap",
+        "claim-naval-aviation-timing-collapse",
+        "claim-naval-aviation-torpedo-attack-indirect-effect",
+        "claim-naval-aviation-coral-simultaneous"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-frus-1941-v04-d602",
+      "title": "Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV, Document 602 (Memorandum by the Adviser on Political Relations, Hornbeck, January 11, 1941)",
+      "creator": "United States Department of State, Office of the Historian",
+      "publisher": "U.S. Government Publishing Office",
+      "year": 1956,
+      "sourceType": "primary-document",
+      "url": "https://history.state.gov/historicaldocuments/frus1941v04/d602",
+      "accessedDate": "2026-11-04",
+      "citation": "United States Department of State, Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV (Washington, DC: U.S. Government Printing Office, 1956), Document 602, pp. 777-779.",
+      "reliabilityNote": "美国国务院官方外交文件系列，属同时代政府内部文件。可支持美国 1941 年初对日石油出口限制的内部权衡、日本石油储备估计与美国当时的自我节制判断；不能支持日本方面决策动机，也不能当作美国政策的最终定论。",
+      "language": "en",
+      "archiveCollectionId": "frus1941v04/d602"
+    },
+    {
+      "id": "source-frus-1941-v04-d603",
+      "title": "Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV, Document 603 (Memorandum by the Chief of the Division of Far Eastern Affairs, Hamilton, January 13, 1941)",
+      "creator": "United States Department of State, Office of the Historian",
+      "publisher": "U.S. Government Publishing Office",
+      "year": 1956,
+      "sourceType": "primary-document",
+      "url": "https://history.state.gov/historicaldocuments/frus1941v04/d603",
+      "accessedDate": "2026-11-04",
+      "citation": "United States Department of State, Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV (Washington, DC: U.S. Government Printing Office, 1956), Document 603, pp. 780-781.",
+      "reliabilityNote": "同时代国务院远东司内部备忘录。可支持美国官员在 1941 年 1 月就已预判经济压力可能促使日本以武力夺取荷属东印度石油；是其时美国知情状态的直接证据。不代表美国最终决定。",
+      "language": "en",
+      "archiveCollectionId": "frus1941v04/d603"
+    },
+    {
+      "id": "source-frus-1941-v04-d266",
+      "title": "Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV, Document 266 (The Secretary of State to the Ambassador in Japan, August 18, 1941)",
+      "creator": "United States Department of State, Office of the Historian",
+      "publisher": "U.S. Government Publishing Office",
+      "year": 1956,
+      "sourceType": "primary-document",
+      "url": "https://history.state.gov/historicaldocuments/frus1941v04/d266",
+      "accessedDate": "2026-11-04",
+      "citation": "United States Department of State, Foreign Relations of the United States, Diplomatic Papers, 1941, The Far East, Volume IV (Washington, DC: U.S. Government Printing Office, 1956), Document 266, p. 379.",
+      "reliabilityNote": "同时代国务院电报。可支持 1941 年 8 月罗斯福当面警告日本大使的日期、场合与措辞层级，以及美方自述的立场。不含日方回应，不能据此判断日方感受。",
+      "language": "en",
+      "archiveCollectionId": "frus1941v04/d266"
+    },
+    {
+      "id": "source-jacar-imperial-conference-1941",
+      "title": "December 1, 1941 Outbreak of war against the U.S., Britain and the Netherlands",
+      "creator": "Imperial Conference of Japan",
+      "publisher": "Japan Center for Asian Historical Records, National Archives of Japan",
+      "year": 1941,
+      "sourceType": "archive",
+      "url": "https://www.jacar.archives.go.jp/das/meta-en/C12120240100",
+      "accessedDate": "2026-11-04",
+      "citation": "Imperial Conference of Japan, \"December 1, 1941 Outbreak of war against the U.S., Britain and the Netherlands,\" JACAR Ref. C12120240100, Call Number 中央-戦争指導重要国策文書-1118, National Institute for Defense Studies, Ministry of Defense.",
+      "reliabilityNote": "日本官方档案目录与说明。可支持 1941 年 12 月 1 日御前会议开战决定的日期与日文提要文字；英文页面为目录说明而非完整英译，Contents 为日文原文，正式引用须注明语种与译本情况。",
+      "language": "ja",
+      "archiveCollectionId": "C12120240100"
+    },
+    {
+      "id": "source-jm-097",
+      "title": "Japanese Monograph No. 97: Pearl Harbor Operations, General Outline of Orders and Plans",
+      "creator": "Military History Section, Headquarters Army Forces Far East",
+      "publisher": "Office of the Chief of Military History, Department of the Army (transcription by HyperWar Foundation)",
+      "year": 1953,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/pha/monos/097/index.html",
+      "accessedDate": "2026-11-04",
+      "citation": "Military History Section, Headquarters Army Forces Far East, Japanese Monograph No. 97: Pearl Harbor Operations, General Outline of Orders and Plans (Office of the Chief of Military History, Department of the Army, 1953), pp. 1-31.",
+      "reliabilityNote": "美方委托日方原军官编写的海军命令汇编，收录 1941 年 11 至 12 月对美开战与袭击珍珠港的命令序列与编号。前言自述原始命令多已销毁、由笔记与记忆重建，故日期与命令结构可采信，逐字措辞不应视为原件转录。",
+      "language": "en",
+      "archiveCollectionId": "monos/097"
+    },
+    {
+      "id": "source-jm-147",
+      "title": "Japanese Monograph No. 147: Political Strategy Prior to the Outbreak of War, Part III",
+      "creator": "Military History Section, Headquarters Army Forces Far East",
+      "publisher": "Office of the Chief of Military History, Department of the Army (transcription by HyperWar Foundation)",
+      "year": 1953,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/pha/monos/147/index.html",
+      "accessedDate": "2026-11-04",
+      "citation": "Military History Section, Headquarters Army Forces Far East, Japanese Monograph No. 147: Political Strategy Prior to the Outbreak of War, Part III (Office of the Chief of Military History, Department of the Army, 1953), pp. 1-53.",
+      "reliabilityNote": "日方战后官方整理的政策史，按年记录 1941 年政策节点与御前会议决定文本。可支持日方决策时间线与其自述理由；文中以自卫自存表述开战理由属于当时日本领导人的自我叙述，不是史学研究认可的正当理由，引用时必须标明叙述立场。",
+      "language": "en",
+      "archiveCollectionId": "monos/147"
+    },
+    {
+      "id": "source-jm-147-appx3",
+      "title": "Japanese Monograph No. 147, Appendix No. 3: Explanation by Chief of Naval General Staff Nagano at the Imperial Conference of 6 September 1941",
+      "creator": "Military History Section, Headquarters Army Forces Far East",
+      "publisher": "Office of the Chief of Military History, Department of the Army (transcription by HyperWar Foundation)",
+      "year": 1953,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/pha/monos/147/147app03.html",
+      "accessedDate": "2026-11-04",
+      "citation": "Military History Section, Headquarters Army Forces Far East, Japanese Monograph No. 147, Appendix No. 3 (Office of the Chief of Military History, Department of the Army, 1953), pp. A3-i to A3-iv.",
+      "reliabilityNote": "1941 年 9 月 6 日御前会议上海军军令部总长的说明文本，本轮读到全文。可支持日本海军最高层在开战前就公开认知到长期战争风险与自身无法击垮对手意志，是判断当时可见信息的关键证据。属战后整理的记录，非会议速记原件。",
+      "language": "en",
+      "archiveCollectionId": "monos/147/appx3"
+    },
+    {
+      "id": "source-jm-147-appx4",
+      "title": "Japanese Monograph No. 147, Appendix No. 4: Explanation by Chief of Army General Staff Sugiyama at the Imperial Conference of 6 September 1941",
+      "creator": "Military History Section, Headquarters Army Forces Far East",
+      "publisher": "Office of the Chief of Military History, Department of the Army (transcription by HyperWar Foundation)",
+      "year": 1953,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/pha/monos/147/147app04.html",
+      "accessedDate": "2026-11-04",
+      "citation": "Military History Section, Headquarters Army Forces Far East, Japanese Monograph No. 147, Appendix No. 4 (Office of the Chief of Military History, Department of the Army, 1953), pp. A4-i to A4-iii.",
+      "reliabilityNote": "1941 年 9 月 6 日御前会议上陆军参谋总长的说明文本，本轮读到全文。可支持日方陆军关于时间对日本不利的判断，解释为何 1941 年秋被视为窗口期。属战后整理的记录，非会议速记原件。",
+      "language": "en",
+      "archiveCollectionId": "monos/147/appx4"
+    },
+    {
+      "id": "source-ussbs-pto-ch2",
+      "title": "Campaigns of the Pacific War, Chapter 2: The Japanese Attack on Pearl Harbor, Planning and Execution (United States Strategic Bombing Survey)",
+      "creator": "United States Strategic Bombing Survey",
+      "publisher": "United States Strategic Bombing Survey (HyperWar Foundation transcription)",
+      "year": 1946,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-2.html",
+      "accessedDate": "2026-11-04",
+      "citation": "United States Strategic Bombing Survey, Campaigns of the Pacific War, Chapter 2, \"The Japanese Attack on Pearl Harbor, Planning and Execution\" (Washington, 1946), pp. 13-25.",
+      "reliabilityNote": "以战后对日方军官访谈为基础的美方官方调查报告。可支持袭击的战略目的、计划提出者、航线与日期取舍、浅水鱼雷技术难题、航渡中的中止条件与日军估算。编者在前言自述内容源于回忆，适合说明计划逻辑，不适合逐分钟行动时间线。",
+      "language": "en",
+      "archiveCollectionId": "USSBS-PTO-2"
+    },
+    {
+      "id": "source-nara-infamy",
+      "title": "'A Date Which Will Live in Infamy': The First Typed Draft of Franklin D. Roosevelt's War Address",
+      "creator": "U.S. National Archives and Records Administration",
+      "publisher": "U.S. National Archives and Records Administration",
+      "year": 2019,
+      "sourceType": "archive",
+      "url": "https://www.archives.gov/education/lessons/day-of-infamy",
+      "accessedDate": "2026-11-04",
+      "citation": "U.S. National Archives and Records Administration, \"'A Date Which Will Live in Infamy': The First Typed Draft of Franklin D. Roosevelt's War Address,\" Educator Resources, last reviewed December 12, 2019.",
+      "reliabilityNote": "美国国家档案馆教育页面，含讲稿原件与 Background 小节。可支持罗斯福得知袭击的时间、12 月 8 日对国会演说的时刻、两院表决结果与签署宣战的时刻。不承担战斗损失数字。",
+      "language": "en"
+    },
+    {
+      "id": "source-nara-eo9066",
+      "title": "Executive Order 9066: Resulting in Japanese-American Incarceration (1942)",
+      "creator": "U.S. National Archives and Records Administration",
+      "publisher": "U.S. National Archives and Records Administration",
+      "year": 2026,
+      "sourceType": "archive",
+      "url": "https://www.archives.gov/milestone-documents/executive-order-9066",
+      "accessedDate": "2026-11-04",
+      "citation": "U.S. National Archives and Records Administration, \"Executive Order 9066: Resulting in Japanese-American Incarceration (1942),\" Milestone Documents, last reviewed February 9, 2026.",
+      "reliabilityNote": "美国国家档案馆里程碑文件页，含行政命令 9066 全文与背景说明。可支持战时强制迁移的人数、公民比例与政府未提出指控的事实，以及 1988 年正式道歉。用于说明盟方的人权问题。",
+      "language": "en"
+    },
+    {
+      "id": "source-nps-opana-radar",
+      "title": "Opana Mobile Radar Site",
+      "creator": "U.S. National Park Service, Pearl Harbor National Memorial",
+      "publisher": "U.S. National Park Service",
+      "year": 2024,
+      "sourceType": "official-history",
+      "url": "https://www.nps.gov/perl/learn/historyculture/opana-mobile-radar-site.htm",
+      "accessedDate": "2026-11-04",
+      "citation": "U.S. National Park Service, Pearl Harbor National Memorial, \"Opana Mobile Radar Site,\" last updated September 25, 2024.",
+      "reliabilityNote": "美国国家公园管理局官方历史页面，给出雷达发现与报告的时刻序列及值班人员的训练状态。可支持预警链条中识别与判断环节的失灵；不构成完整的指挥与通信调查结论。",
+      "language": "en"
+    },
+    {
+      "id": "source-nps-uss-arizona",
+      "title": "USS Arizona",
+      "creator": "U.S. National Park Service, Pearl Harbor National Memorial",
+      "publisher": "U.S. National Park Service",
+      "year": 2024,
+      "sourceType": "official-history",
+      "url": "https://www.nps.gov/perl/learn/historyculture/uss-arizona.htm",
+      "accessedDate": "2026-11-04",
+      "citation": "U.S. National Park Service, Pearl Harbor National Memorial, \"USS Arizona,\" last updated August 28, 2024.",
+      "reliabilityNote": "官方纪念地页面。可支持亚利桑那号舰员伤亡口径与纪念设施史实；只用于这一艘舰的数字，不能外推为珍珠港全部伤亡。",
+      "language": "en"
+    },
+    {
+      "id": "source-nww2m-path-pearl-harbor",
+      "title": "The Path to Pearl Harbor",
+      "creator": "The National WWII Museum",
+      "publisher": "The National WWII Museum, New Orleans",
+      "year": 2026,
+      "sourceType": "museum",
+      "url": "https://www.nationalww2museum.org/war/articles/path-pearl-harbor",
+      "accessedDate": "2026-11-04",
+      "citation": "The National WWII Museum, \"The Path to Pearl Harbor,\" https://www.nationalww2museum.org/war/articles/path-pearl-harbor, accessed November 4, 2026.",
+      "reliabilityNote": "博物馆普及性综述，用于串联 1931 年满洲到 1941 年禁运与袭击的因果链并给出若干节点日期。属二手概述，不替代官方战斗叙事；其中关于突袭口令的具体转述长期存在质疑，本教材不将其作为事实使用。",
+      "language": "en"
+    },
+    {
+      "id": "source-nww2m-battle-midway",
+      "title": "The Battle of Midway",
+      "creator": "The National WWII Museum",
+      "publisher": "The National WWII Museum, New Orleans",
+      "year": 2026,
+      "sourceType": "museum",
+      "url": "https://www.nationalww2museum.org/war/articles/battle-midway",
+      "accessedDate": "2026-11-04",
+      "citation": "The National WWII Museum, \"The Battle of Midway,\" https://www.nationalww2museum.org/war/articles/battle-midway, accessed November 4, 2026.",
+      "reliabilityNote": "博物馆综述，可支持美军密码分析确认 AF 即中途岛的过程与双方损失对照。其美军伤亡口径与本站点其他页面不一致，使用时必须注明采用哪一页并另记争议。",
+      "language": "en"
+    },
+    {
+      "id": "source-nww2m-operation-vengeance",
+      "title": "Operation Vengeance: The Killing of Isoroku Yamamoto",
+      "creator": "John Curatola, PhD (Samuel Zemurray Stone Senior Historian)",
+      "publisher": "The National WWII Museum, New Orleans",
+      "year": 2023,
+      "sourceType": "museum",
+      "url": "https://www.nationalww2museum.org/war/articles/operation-vengeance-killing-isoroku-yamamoto",
+      "accessedDate": "2026-11-04",
+      "citation": "John Curatola, \"Operation Vengeance: The Killing of Isoroku Yamamoto,\" The National WWII Museum, April 26, 2023.",
+      "reliabilityNote": "博物馆资深史学家撰写的文章，可支持山本五十六的对美力量判断、早年负伤经历与 1943 年 4 月 18 日阵亡。文中引语转引自 Agawa 的传记，属二手转引，不能当作一手文件逐字引用。",
+      "language": "en"
+    },
+    {
+      "id": "source-nww2m-pacific-strategy",
+      "title": "The Pacific Strategy, 1941-1944",
+      "creator": "The National WWII Museum",
+      "publisher": "The National WWII Museum, New Orleans",
+      "year": 2026,
+      "sourceType": "museum",
+      "url": "https://www.nationalww2museum.org/war/articles/pacific-strategy-1941-1944",
+      "accessedDate": "2026-11-04",
+      "citation": "The National WWII Museum, \"The Pacific Strategy, 1941-1944,\" https://www.nationalww2museum.org/war/articles/pacific-strategy-1941-1944, accessed November 4, 2026.",
+      "reliabilityNote": "博物馆综述，可支持日军进攻范围（关岛、威克岛、菲律宾、香港、马来亚、缅甸）、其以决定性胜利迫使美国谈判的目标表述，以及美军在战列舰受创后转向航母与潜艇的记载。属二手概述，不替代官方战斗叙事。",
+      "language": "en"
+    },
+    {
+      "id": "source-oni-midway-combat-narrative",
+      "title": "ONI Combat Narratives: The Battle of Midway, June 3-6, 1942",
+      "creator": "Office of Naval Intelligence, United States Navy",
+      "publisher": "U.S. Navy, Office of Naval Intelligence (HyperWar Foundation transcription)",
+      "year": 1943,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/index.html",
+      "accessedDate": "2026-11-04",
+      "citation": "Office of Naval Intelligence, United States Navy, The Battle of Midway, June 3-6, 1942, Combat Narratives (Washington: ONI, 1943), chapters \"Background\" p. 1, \"Preparations at Midway\" p. 5, \"The enemy attack on Midway, June 4\" p. 11, \"Our carrier attack on the enemy carriers, June 4\" p. 19, \"The fourth Japanese carrier, June 4\" p. 31.",
+      "reliabilityNote": "美国海军情报局 1943 年官方战史叙事，依据当时的正式文件编写，署名前言为海军作战部长金上将。可支持中途岛的海空行动序列、指挥官、搜索与雷达报告、部队编成与当日战果口径。属于战时保密出版物，编者自述'由于仓促征集资料，个别细节可能不准确'，且部分信息当年仍属机密而未写入。",
+      "language": "en",
+      "archiveCollectionId": "USN-CN-Midway"
+    },
+    {
+      "id": "source-oni-coral-sea-combat-narrative",
+      "title": "ONI Combat Narratives: The Battle of the Coral Sea, May 4-8, 1942",
+      "creator": "Office of Naval Intelligence, United States Navy",
+      "publisher": "U.S. Navy, Office of Naval Intelligence (HyperWar Foundation transcription)",
+      "year": 1943,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Coral/index.html",
+      "accessedDate": "2026-11-04",
+      "citation": "Office of Naval Intelligence, United States Navy, The Battle of the Coral Sea, May 4-8, 1942, Combat Narratives (Washington: ONI, 1943), chapters \"The Battle of the Coral Sea\" p. 1, \"The action off Misima, May 7th\" p. 13, \"Conclusions\" p. 46.",
+      "reliabilityNote": "美国海军情报局 1943 年官方战史叙事。可支持珊瑚海的行动序列、旗舰发现与误报、雷达跟踪、弗莱彻的风险权衡原话，以及当时太平洋舰队司令部总结的教训（含雷达配置要求）。属战时出版物，含编者承认的细节偏差。",
+      "language": "en",
+      "archiveCollectionId": "USN-CN-Coral"
+    },
+    {
+      "id": "source-ussbs-pto-campaigns",
+      "title": "Campaigns of the Pacific War (United States Strategic Bombing Survey)",
+      "creator": "United States Strategic Bombing Survey",
+      "publisher": "United States Strategic Bombing Survey (HyperWar Foundation transcription)",
+      "year": 1946,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/index.html",
+      "accessedDate": "2026-11-04",
+      "citation": "United States Strategic Bombing Survey, Campaigns of the Pacific War (Washington, 1946), Chapter 2, \"The Japanese Attack on Pearl Harbor, Planning and Execution\", pp. 13-25.",
+      "reliabilityNote": "美国战略轰炸调查处战后官方调查报告（用于说明珍珠港袭击的计划与执行）。内容依据对日方军官的访谈整理，编者前言自述可能仍有细节修正。适合说明计划逻辑与日方自我解释，不适合逐分钟行动时间线。",
+      "language": "en",
+      "archiveCollectionId": "USSBS-PTO-Campaigns"
+    },
+    {
+      "id": "source-dmn-king-nimitz",
+      "title": "Admirals Ernest J. King and Chester W. Nimitz: The S.O.B. and the quiet man",
+      "creator": "Dwight Jon Zimmerman",
+      "publisher": "Defense Media Network",
+      "year": 2012,
+      "sourceType": "other",
+      "url": "https://www.defensemedianetwork.com/stories/admirals-ernest-j-king-chester-w-nimitz/",
+      "accessedDate": "2026-11-04",
+      "citation": "Dwight Jon Zimmerman, \"Admirals Ernest J. King and Chester W. Nimitz: The S.O.B. and the quiet man,\" Defense Media Network, January 30, 2012.",
+      "reliabilityNote": "军事主题网站的特写文章，非官方战史。可支持尼米兹接任太平洋舰队总司令的日期与经过、他对珍珠港残局的实地评估、他选择岸上指挥的原因，以及金上将要求主动出击的背景。文中含人物轶事与转述评价，本教材只使用其中可与其他官方来源相互印证的事实性内容，不采用其性格判断。",
+      "language": "en"
+    },
+    {
+      "id": "source-wikipedia-nagumo",
+      "title": "Chuichi Nagumo (Wikipedia article, revision 1379810745)",
+      "creator": "Wikipedia contributors",
+      "publisher": "Wikimedia Foundation",
+      "year": 2026,
+      "sourceType": "reference",
+      "url": "https://en.wikipedia.org/wiki/Ch%C5%ABichi_Nagumo",
+      "accessedDate": "2026-11-04",
+      "citation": "Wikipedia contributors, \"Chūichi Nagumo,\" Wikipedia, The Free Encyclopedia, revision 1379810745, accessed November 4, 2026.",
+      "reliabilityNote": "低权重来源（LOW WEIGHT）。本教材未取得南云的官方传记，此条目仅用于最基础的履历事实（生卒年、毕业届次与名次、专长、晋升与任职年份）。该条目的“Early life”一节本身带有“本段未引用任何来源”的明确警示，因此不得据其作出任何因果解释或性格评价，也不得让它单独支撑任何承重论断；南云的决策与约束全部另有官方战史与日方专档支撑。",
+      "language": "en"
+    }
+  ],
+  "media": [],
+  "questions": [
+    {
+      "id": "question-why-japan-chose-war",
+      "historicalPart": "part-1-why-war",
+      "prompt": "日本在 1941 年为什么选择对美国开战？是资源被卡住了，还是另有原因？",
+      "answer": "这个问题不能用一个原因回答，需要把几层原因分开看。第一层是资源压力，这是可以核实的事实：日本本土资源匮乏，石油、废钢铁等关键物资大量依赖进口。1941 年 1 月美国国务院的内部文件明确写下「石油对日本是不可缺少的进口品」，并估计日本储备够用九个月到一年；同年 6 月，日本与荷属东印度的石油交涉完全破裂；7 月美英冻结日本资产，随后美国实施航空汽油禁运，实际上切断了对美石油的获取。第二层是决策机制：1941 年 9 月 6 日御前会议决定了「边谈边备战」，9 月 24 日统帅部又把外交交涉的期限定在 10 月 15 日、南方作战最晚 11 月中旬开始。从这天起，谈判每拖一天，作战准备就前进一步，军事日历锁住了政治日程。第三层是决策者相互冲突的判断：陆军参谋总长杉山元认为时间对日本不利，美英军备会越来越强；而海军军令部总长永野修身在同一场会议上却说，即使赢了一场决定性海战也不会结束战争，日本没有击垮对手意志的手段，最不希望的就是长期战争。第四层要特别警惕：日方战后材料反复用「自卫自存」来表述开战理由，那是当时日本领导层对自己行为的解释，而不是史学研究认可的正当理由——同一批文件里同时记录着日本对中国和东南亚的军事扩张。所以更准确的回答是：资源被卡住、时间窗口收窄、速战逻辑占上风，这三者叠加在一起，让日本领导层认为只能趁现在赌一次。但「能不能不赌」这个问题，他们当时确实讨论过，也确实有人提出了风险。理解这一点，比记住一个「因为禁运」的答案重要得多。",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "event-us-oil-embargo-1941",
+        "event-japan-expansion-china",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602",
+        "source-jm-147",
+        "source-jm-147-appx3",
+        "source-jm-147-appx4"
+      ],
+      "claimIds": [
+        "claim-japan-oil-essential-import",
+        "claim-nei-negotiations-collapsed-1941-06-18",
+        "claim-freeze-and-avgas-embargo-1941-07",
+        "claim-sept-6-1941-imperial-conference",
+        "claim-negotiation-deadline-1941-09-24",
+        "claim-sugiyama-time-against-japan",
+        "claim-nagano-long-war-risk",
+        "claim-japan-self-defense-framing"
+      ]
+    },
+    {
+      "id": "question-why-pearl-harbor-unprepared",
+      "historicalPart": "part-1-why-war",
+      "prompt": "既然雷达已经发现了来袭的飞机，美国为什么还是没有及时防范珍珠港？",
+      "answer": "这个问题的答案不在某一个人身上，而在一条完整的链条上。1941 年 12 月 7 日清晨 7 时 02 分，瓦胡岛欧帕纳雷达站确实发现了来袭的第一波日机，距离瓦胡岛以北 137 英里；7 时 06 分，值勤士兵向薛夫特堡信息中心报告了一个距离 113 英里的大目标。预警链条要成功，需要四步都成立：发现、识别、判断、传递。这一天断在后面的环节：接收报告的值班军官正处于担任观察员的第二天训练中，把雷达回波判断为从西海岸预定飞来的 B-17 轰炸机，于是没有发出警报。还有两个背景需要补充：第一，岛上五部移动雷达本来是为了弥补巡逻飞机不足而布设的，但当天只有欧帕纳一部仍在开机；第二，即使警报发出了，离攻击开始大约只剩四十四分钟，能做的事情有限。更重要的是，美国整套防务判断的前提是认为日本的主攻方向会在别处，因此珍珠港的准备程度本来就不高。所以更公平的结论是：这不是一次孤立的疏忽，而是多个环节在同一个早上都没有把异常变成行动的叠加结果。把原因简化成「某个人走神了」，会让读者错过真正值得学习的东西——预警系统最脆弱的地方，往往不是探测设备，而是探测之后的那几步判断。",
+      "entityIds": [
+        "event-overview-part-1-why-war",
+        "equipment-opana-mobile-radar",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nps-opana-radar",
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "claimIds": [
+        "claim-opana-radar-detected",
+        "claim-opana-warning-dismissed"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-manchuria-1931",
+      "text": "1931 年，日本入侵中国东北（满洲），随后扶植傀儡政权并将其改称满洲国；美国以不承认任何以武力强加于中国的政权回应，即后来的史汀生主义。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-manchuria",
+        "event-japan-expansion-china"
+      ],
+      "sourceIds": [
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-path-pearl-harbor",
+          "locatorType": "section-paragraph",
+          "locator": "The Roots of the Conflict, paragraphs 1-2"
+        }
+      ],
+      "note": "日本大陆扩张的起点，也是美国对日政策的出发点。"
+    },
+    {
+      "id": "claim-full-scale-war-1937",
+      "text": "日本对华战争在 1937 年升级为全面战争；美国企业在此之后仍继续向日本供应其作战所需的钢铁与石油。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-beijing",
+        "event-japan-expansion-china"
+      ],
+      "sourceIds": [
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-path-pearl-harbor",
+          "locatorType": "section-paragraph",
+          "locator": "The Roots of the Conflict, paragraphs 3-4"
+        }
+      ],
+      "note": "说明美国早期并未用物资手段制止日本侵华。"
+    },
+    {
+      "id": "claim-nanking-casualties-disputed",
+      "text": "1937 年南京陷落后，日军杀害大量中国战俘与平民，并对大批中国妇女施暴；死亡人数存在实质分歧，本教材读到的博物馆页面给出的区间为十万至二十万人，而中文与部分学界常用的范围为二十万至三十万或更多，本教材并列两说、不取单一数字作为定论。",
+      "claimType": "disputed",
+      "entityIds": [
+        "place-nanking",
+        "event-japan-expansion-china"
+      ],
+      "sourceIds": [
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-path-pearl-harbor",
+          "locatorType": "section-paragraph",
+          "locator": "The Roots of the Conflict, paragraphs 4-5"
+        }
+      ],
+      "note": "本教材只读到一方口径，另一口径无本轮可读来源，因此明确标为争议并说明来源不足。"
+    },
+    {
+      "id": "claim-japan-continues-china-war",
+      "text": "1941 年 1 月，美国国务院的内部文件记录日本仍在继续征服中国的努力，并已在印度支那建立基地。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-expansion-china",
+        "place-beijing"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d602",
+          "locatorType": "page-range",
+          "locator": "Document 602, p. 779"
+        }
+      ],
+      "note": "同时代美方文件，可用于确定 1941 年初的战争状态。"
+    },
+    {
+      "id": "claim-japan-control-china-coast",
+      "text": "日方 1941 年海军作战方针的第一句就写明：继续控制中国沿海与长江；随后才是击破东亚的敌方舰队与航空力量。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-china-coast",
+        "event-japan-expansion-china",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 27"
+        }
+      ],
+      "note": "说明对华战争的既得利益被写进了对美英开战的作战方针。"
+    },
+    {
+      "id": "claim-japan-southward-resources",
+      "text": "日方作战方针要求在南进中尽快占领英属婆罗洲、荷属婆罗洲、西里伯斯与苏门答腊南部等地，在这些地方建立航空基地，再以此进攻爪哇，并切断对中国的补给路线。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-expansion-china",
+        "place-dutch-east-indies",
+        "place-china-coast"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "pp. 27-28"
+        }
+      ],
+      "note": "资源夺取与对华封锁是同一个作战计划的两面。"
+    },
+    {
+      "id": "claim-japan-oil-essential-import",
+      "text": "1941 年 1 月美国国务院备忘录写道，对日本而言石油是不可缺少的进口品（原文为 to the Japanese petroleum is an essential import）。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-expansion-china",
+        "event-us-oil-embargo-1941",
+        "place-japan-home-islands"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d602",
+          "locatorType": "page-range",
+          "locator": "Document 602, p. 777"
+        }
+      ]
+    },
+    {
+      "id": "claim-japan-reserves-nine-months-to-year",
+      "text": "1941 年 1 月的美国国务院备忘录估计，日本已囤积的石油产品储备足以支撑九个月到一年，而且储备还在增加而不是减少。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-japan-home-islands"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d602",
+          "locatorType": "page-range",
+          "locator": "Document 602, p. 779"
+        }
+      ],
+      "note": "这是当时美方的推断口径，不是日本官方数字；教材须注明这一点。"
+    },
+    {
+      "id": "claim-us-restriction-reached-aviation-gasoline",
+      "text": "到 1941 年 1 月，美国对日石油贸易的限制只做到禁止出口航空汽油（俗称八十七辛烷值汽油），并没有全面禁运。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d602",
+          "locatorType": "page-range",
+          "locator": "Document 602, pp. 777-778"
+        }
+      ]
+    },
+    {
+      "id": "claim-us-restriction-dilemma",
+      "text": "同一份备忘录指出，任何减少出口的做法都会同时伤害被限制国与实施限制国，并担心对日施压会促使日本把压力转向荷属东印度。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d602",
+          "locatorType": "page-range",
+          "locator": "Document 602, pp. 777-778"
+        }
+      ],
+      "note": "这是美方内部对两难的自述，属当时人的判断而非事实结论。"
+    },
+    {
+      "id": "claim-us-feared-attack-on-nei",
+      "text": "1941 年 1 月 13 日，国务院远东司预判：如果有效削减日本的石油购买，几乎一定会出现日本自行以攻击与夺取来解决问题的时刻，而且首先瞄准的大概是荷属东印度。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-dutch-east-indies"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d603"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d603",
+          "locatorType": "page-range",
+          "locator": "Document 603, p. 780"
+        }
+      ],
+      "note": "证明美国决策圈在禁运前就已预见可能引发战争，这削弱了“毫无预料”的说法。"
+    },
+    {
+      "id": "claim-us-knew-pressure-could-ignite-war",
+      "text": "同一份备忘录还写道，在远东司看来，以日本当时的心态，并不需要很大的限制动作就可能点燃南亚海域的爆炸。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "event-us-oil-embargo-1941"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d603"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d603",
+          "locatorType": "page-range",
+          "locator": "Document 603, p. 780"
+        }
+      ]
+    },
+    {
+      "id": "claim-freeze-and-avgas-embargo-1941-07",
+      "text": "1941 年 7 月 26 日美英冻结日本海外资产，8 月 1 日对日本实施航空汽油禁运；日方记录认为这实际上切断了对美石油的获取。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-washington-dc",
+        "place-japan-home-islands"
+      ],
+      "sourceIds": [
+        "source-jm-147",
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "pp. 43-44"
+        },
+        {
+          "sourceId": "source-nww2m-path-pearl-harbor",
+          "locatorType": "section-paragraph",
+          "locator": "The Impending Crisis, paragraph 1"
+        }
+      ],
+      "note": "两条来源分别为日方整理与博物馆综述，日期一致。"
+    },
+    {
+      "id": "claim-nei-negotiations-collapsed-1941-06-18",
+      "text": "日本与荷属东印度的石油交涉自 1940 年 9 月开始，1941 年 6 月 18 日完全破裂；日方记录称石油供应是交涉的核心诉求。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-dutch-east-indies"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 13"
+        }
+      ]
+    },
+    {
+      "id": "claim-nei-tonnage-gap",
+      "text": "日本曾向荷属东印度要求每年三百一十五万吨、为期五年的石油合同；美方备忘录记载，最终印尼方面的公司只承诺每年一百八十万吨。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-dutch-east-indies"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d602"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d602",
+          "locatorType": "page-range",
+          "locator": "Document 602, p. 778"
+        }
+      ],
+      "note": "数字来自美方文件，属当时美方掌握的口径。"
+    },
+    {
+      "id": "claim-roosevelt-warning-1941-08-17",
+      "text": "1941 年 8 月 17 日，罗斯福在白宫接见日本大使，并交给他一份书面口头声明：若日本继续以武力或武力威胁推行支配邻国的计划，美国将立即被迫采取一切必要步骤。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-frus-1941-v04-d266"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-frus-1941-v04-d266",
+          "locatorType": "page-range",
+          "locator": "Document 266, p. 379"
+        }
+      ]
+    },
+    {
+      "id": "claim-sept-6-1941-imperial-conference",
+      "text": "1941 年 9 月 6 日御前会议通过「帝国国策遂行要纲」，其要点是：决心面对对美英兰战争以完成战备、以十月上旬为大致的完成期限，同时继续外交交涉；若到十月初交涉仍无望，则决心开战。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "pp. 46-48"
+        }
+      ],
+      "note": "日方整理文本。这是“边谈边准备”的决定，不等于已经决定开战。"
+    },
+    {
+      "id": "claim-nagano-long-war-risk",
+      "text": "1941 年 9 月 6 日御前会议上，海军军令部总长永野修身明确表示：即使日本在一场决定性海战中获胜，这样的胜利本身也不会结束战争，对手很可能转而倚仗更强的工业与资源打长期战争；而日本本土资源贫乏，最不希望的就是长期战争。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-jm-147-appx3"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147-appx3",
+          "locatorType": "page",
+          "locator": "pp. A3-i to A3-ii"
+        }
+      ],
+      "note": "开战前日本最高海军将领已公开认知到长期战争风险，这是判断“当时可见信息”的关键证据。"
+    },
+    {
+      "id": "claim-nagano-cannot-break-enemy-will",
+      "text": "永野在同一说明中说，日本“没有通过入侵作战征服敌人或打破其战斗意志的手段”，并说“我们必须避免任何能够避免的战争”，但又说不能被迫在极其不利的条件下作战。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-jm-147-appx3"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147-appx3",
+          "locatorType": "page",
+          "locator": "pp. A3-ii to A3-iv"
+        }
+      ],
+      "note": "同一段说明里同时出现'避免可避免的战争'与'不能被迫在不利条件下作战'，显示当时并非所有人都认为必须速战。"
+    },
+    {
+      "id": "claim-sugiyama-time-against-japan",
+      "text": "1941 年 9 月 6 日御前会议上，陆军参谋总长杉山元说：如果被美国与英国牵着延长交涉，日本的国防潜力会逐渐下降，而美英的军备会逐渐增强，所以必须在有信心作战的时候开始敌对行动。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-jm-147-appx4"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147-appx4",
+          "locatorType": "page",
+          "locator": "pp. A4-i to A4-ii"
+        }
+      ],
+      "note": "解释日本为何把 1941 年秋视为窗口期。"
+    },
+    {
+      "id": "claim-imperial-conference-mixed-motive",
+      "text": "日方整理承认，9 月 6 日的决定“并未意味着政府决心开战”，更接近“更大的期待被放在外交交涉上”；会议本身没有出现明显的反对意见。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 49"
+        }
+      ],
+      "note": "日方自身对会议性质的判断，帮助读者避免把 9 月 6 日误读为“当场决定开战”。"
+    },
+    {
+      "id": "claim-japan-self-defense-framing",
+      "text": "日方战后整理反复用“自卫自存”（self-existence and self-defense）表述开战理由。需要说明：这是当时日本领导层对自己行为的解释，不是史学研究认可的正当理由；同一套文本同时记录了日本对中国与东南亚的军事扩张。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "event-japan-expansion-china"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "pp. 46-47"
+        }
+      ],
+      "note": "教材必须把'当权者如何解释自己'与'事实评价'分开写，避免把侵略说成自卫。"
+    },
+    {
+      "id": "claim-negotiation-deadline-1941-09-24",
+      "text": "1941 年 9 月 24 日，日方统帅部向政府提出：以外交交涉的期限为 10 月 15 日，南方作战开始的最晚时点为 11 月中旬，并须在 11 月初开始作战准备。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 6"
+        }
+      ],
+      "note": "把外交与作战准备绑上同一个日历，是理解 1941 年 10 月至 12 月节奏的钥匙。"
+    },
+    {
+      "id": "claim-us-public-opinion-shift-1941",
+      "text": "日方整理引述当时的盖洛普调查：赞成“即使冒着战争风险也要遏制日本扩张”的比例，从 1941 年 7 月的百分之五十七上升到 9 月的百分之七十。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "event-japan-war-decision-1941",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 53"
+        }
+      ],
+      "note": "民调数字经日方转引，属二次引用，须注明转引来源。"
+    },
+    {
+      "id": "claim-nov-27-liaison-war-inevitable",
+      "text": "1941 年 11 月 27 日，日方大本营与政府联络会议研究美方 11 月 26 日的提案，结论是“战争已不可避免”。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 11"
+        }
+      ]
+    },
+    {
+      "id": "claim-1941-12-01-imperial-conference",
+      "text": "1941 年 12 月 1 日，日本御前会议作出对美国、英国与荷兰开战的决定；日方档案的提要写明，基于 11 月 5 日决定的「帝国国策遂行要领」的对美交涉终于未能成立。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-jacar-imperial-conference-1941",
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jacar-imperial-conference-1941",
+          "locatorType": "archival-item",
+          "locator": "Reference Code C12120240100, item Contents"
+        },
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 11"
+        }
+      ],
+      "note": "日方一手档案目录 + 日方整理，两条来源日期一致。"
+    },
+    {
+      "id": "claim-navy-order-1-1941-11-05",
+      "text": "1941 年 11 月 5 日，日本海军军令部以天皇名义发布海军第一号命令：鉴于对美英兰开战的可能性很大，日本决定在 12 月上旬完成各项作战准备。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-combined-fleet"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 1"
+        }
+      ],
+      "note": "说明战备在正式开战决定之前一个多月就已启动。"
+    },
+    {
+      "id": "claim-y-day-8-december-1941-11-07",
+      "text": "1941 年 11 月 7 日，联合舰队司令长官山本五十六发布联合舰队第二号作战命令，把开战日（Y Day）定为 12 月 8 日。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-combined-fleet",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 4"
+        }
+      ]
+    },
+    {
+      "id": "claim-cancel-if-negotiations-succeed",
+      "text": "1941 年 11 月 21 日，日本海军军令部以天皇名义发布海军第五号命令，规定若日美交涉成功，联合舰队司令长官应即召回作战部队；这是计划中保留的中止条件。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-combined-fleet"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 6"
+        }
+      ],
+      "note": "说明日本在准备开战的同时仍为“谈成即收兵”留了开关。"
+    },
+    {
+      "id": "claim-ussbs-attack-purpose",
+      "text": "美国战略轰炸调查处的报告称，袭击珍珠港的目的是使美国太平洋舰队失效，以便争取时间并确保日本在南海作战行动的自由；报告认定该计划由联合舰队司令长官山本五十六提出。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-pearl-harbor",
+        "person-yamamoto-isoroku"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Introduction"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-norther-route-tradeoff",
+      "text": "报告记载，北方航线虽然天气恶劣、增加海上加油的困难，但遇到商船的几率低、最能避开美军陆基巡逻机，因此被选中；报告强调突然性与海上加油是两个最重要的因素，任一项失败都会使行动无法进行。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Selection of Track"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-date-choice",
+      "text": "报告说，从月相看十二月十日最适合突袭，但考虑到国际形势与周日攻击的好处，最终把十二月八日（东经日期）定为 X 日。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Selection of Date and Time of Attack"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-055-shallow-water",
+      "text": "报告记载，珍珠港狭窄而浅，加上预计会有鱼雷网，因此日军为主力舰设计了两种打法：给鱼雷加装稳定装置并从极低空投放，同时保留水平轰炸与俯冲轰炸；军港内舰只常并排停靠，内侧舰只只能靠轰炸攻击。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-pearl-harbor",
+        "equipment-type-97-carrier-attack-plane"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack Plans"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-decision-1941-11-03",
+      "text": "报告记载，1941 年 11 月 3 日，军令部总长永野修身与山本五十六决定：若对美国的外交交涉失败，就攻击珍珠港；12 月 1 日山本最终批准总体计划。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "person-yamamoto-isoroku"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack Plans (naval decision clause)"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-recall-rules",
+      "text": "报告列出航渡期间生效的规则：若在 X 日之前两天以上被发现，机动部队应返回日本而不执行攻击；若被发现的时机更晚，则由部队指挥官决定；若交涉在途中成功，攻击将被取消。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Movement of Pearl Harbor Task Force"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-carriers-absent",
+      "text": "报告记载，由于攻击当天美军航空母舰不在其锚地，攻击机群把重点转向了战列舰；日方当时估计夏威夷海域有四到五艘美军航母。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-pearl-harbor",
+        "equipment-akagi",
+        "concept-aircraft-carrier"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-why-no-second-attack",
+      "text": "报告记载，日军没有用水面舰艇追击或持续攻击，理由有三：行动的既定目标只是削弱美国太平洋舰队的战列舰力量以延后美军西进；美军航母位置不明且空中搜索难以找到；以及估计夏威夷还留有五十架以上的大型陆基飞机可能反击。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section General Information"
+        }
+      ],
+      "note": "这段是日方自我解释的记录，属“当时如何理解任务”的证据，不是对决策对错的最终评价。"
+    },
+    {
+      "id": "claim-kido-butai-order-1941-11-23",
+      "text": "1941 年 11 月 23 日，机动部队指挥官南云忠一签署机动部队第一号作战命令，要求以最高保密状态驶向夏威夷海域，在开战时对敌方舰队发动果断的奇袭并给予致命打击，攻击完成后立即撤收返回日本。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 7"
+        }
+      ]
+    },
+    {
+      "id": "claim-kido-butai-rearm-plan",
+      "text": "机动部队第三号作战命令规定：第一、第二波攻击队返回后应立即完成再次出击的准备，此时能携带鱼雷的舰载攻击机仍装鱼雷（只要鱼雷库存允许）。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-kido-butai",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 13"
+        }
+      ],
+      "note": "说明“是否再打第三波”的争论发生在计划本身就预留了再出击准备的条件下。"
+    },
+    {
+      "id": "claim-navy-order-9-1941-12-01",
+      "text": "1941 年 12 月 1 日的海军第九号命令写明：日本已决定在 12 月初对美国、英国与荷兰开始敌对行动。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-combined-fleet"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 22"
+        }
+      ]
+    },
+    {
+      "id": "claim-navy-order-12-1941-12-02",
+      "text": "1941 年 12 月 2 日的海军第十二号命令规定：自 12 月 8 日起，联合舰队司令长官依第九号命令开始军事行动。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-japan-war-decision-1941",
+        "unit-combined-fleet"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 24"
+        }
+      ]
+    },
+    {
+      "id": "claim-opana-radar-detected",
+      "text": "1941 年 12 月 7 日，瓦胡岛的欧帕纳雷达站在 7:02 发现来袭的第一波日机（距瓦胡岛以北 137 英里），7:06 值勤士兵向薛夫特堡信息中心报告了一个距离 113 英里的大目标。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-pearl-harbor",
+        "place-tokyo"
+      ],
+      "sourceIds": [
+        "source-nps-opana-radar"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nps-opana-radar",
+          "locatorType": "section-paragraph",
+          "locator": "The Opana Radar Plot, paragraphs 2-3"
+        }
+      ]
+    },
+    {
+      "id": "claim-opana-warning-dismissed",
+      "text": "接收报告的值班军官处于担任观察员的第二天训练中，把雷达回波判断为从西海岸预定飞来的 B-17 轰炸机，因此没有发出警报；当天只有欧帕纳一站仍在开机。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nps-opana-radar"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nps-opana-radar",
+          "locatorType": "section-paragraph",
+          "locator": "The Missed Warning at Opana Radar Site, paragraphs 1-2"
+        }
+      ]
+    },
+    {
+      "id": "claim-arizona-crew-losses",
+      "text": "美国国家公园管理局纪录：亚利桑那号 1177 名舰员中，有 900 余人长眠于该舰残骸之中。此处只指这一艘舰，不覆盖珍珠港全部伤亡。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nps-uss-arizona"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nps-uss-arizona",
+          "locatorType": "section-paragraph",
+          "locator": "The USS Arizona Memorial, paragraphs 1-2"
+        }
+      ]
+    },
+    {
+      "id": "claim-us-declares-war-1941-12-08",
+      "text": "1941 年 12 月 8 日 12:30，罗斯福对国会两院联席会议与全国发表演说；参议院一致支持战争，众议院只有蒙大拿州的和平主义者 Jeanette Rankin 反对；当天 16:00 罗斯福签署宣战书。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-nara-infamy"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nara-infamy",
+          "locatorType": "section-paragraph",
+          "locator": "Background, paragraphs 3-4"
+        }
+      ]
+    },
+    {
+      "id": "claim-roosevelt-draft-first-line",
+      "text": "罗斯福讲稿的首句原为 a date which will live in world history（将活在世界大战史中的一天），最终改为后来广为人知的表述。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-nara-infamy"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nara-infamy",
+          "locatorType": "section-paragraph",
+          "locator": "Background, paragraphs 2-3"
+        }
+      ]
+    },
+    {
+      "id": "claim-eo9066-incarceration",
+      "text": "1942 年 2 月 19 日罗斯福签署第 9066 号行政命令，授权军事指挥官划设军事区并排除平民；其后约十二万二千名日裔（其中近七万为美国公民）被强制迁入拘留营，政府未提出指控、当事人也无申诉渠道。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-nara-eo9066"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nara-eo9066",
+          "locatorType": "section-paragraph",
+          "locator": "Background, paragraphs 5-8"
+        }
+      ],
+      "note": "用于说明盟方也存在严重的人权问题，同时不抵消日本的侵略责任。"
+    },
+    {
+      "id": "claim-eo9066-1988-apology",
+      "text": "1988 年美国通过 Public Law 100-383，承认强制拘禁的不正义、正式道歉，并给予部分赔偿：每位被拘禁者两万美元。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-nara-eo9066"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nara-eo9066",
+          "locatorType": "section-paragraph",
+          "locator": "Background, paragraph 9"
+        }
+      ]
+    },
+    {
+      "id": "claim-yamamoto-us-industrial-might",
+      "text": "美国战略轰炸调查处的报告确认，袭击珍珠港的计划由联合舰队司令长官山本五十六提出；至于他对美国工业潜力的具体判断，本教材只在另有可定位来源时才陈述。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-yamamoto-isoroku",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Introduction"
+        }
+      ],
+      "note": "原先关于其工业潜力判断的段落无法用真实小节定位，已收窄为 USSBS 明确记载的事实。"
+    },
+    {
+      "id": "claim-yamamoto-18-months",
+      "text": "美军情报界与日军内部对“日本能撑多久”的数字并不一致；日方专档保留了海军军令部总长在 1941 年 9 月御前会议上的判断：对手很可能把战争拖长，日本必须为此做准备，而日本本土资源贫乏，最不希望的就是长期战争。因此“只能打十八个月”这类说法属于后见之明式的流行概括，本教材不把它当作可核查的历史引语。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "person-yamamoto-isoroku",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-jm-147-appx3"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147-appx3",
+          "locatorType": "page",
+          "locator": "pp. A3-i to A3-ii"
+        }
+      ],
+      "note": "本 claim 原先引用一篇二手转述中的“十八个月”引语，现已改为引用日方专档原文中的可定位段落；原引语不再使用。"
+    },
+    {
+      "id": "claim-yamamoto-tsushima-wounded",
+      "text": "关于山本五十六早年经历的若干细节（如 1904 年对马海战负伤），本教材在已读来源中没有找到带可定位段落的一手或官方记述，因此不作具体描写，只保留其作为海军军官参加了早期海战的表述。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "person-yamamoto-isoroku"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Introduction"
+        }
+      ],
+      "note": "USSBS 该节只确认山本为联合舰队司令长官并提出该计划，不含其早年负伤细节；教材据此只写可核实的部分。"
+    },
+    {
+      "id": "claim-nagumo-signed-kido-butai-orders",
+      "text": "日方专档收录的机动部队作战命令均署名南云忠一；美国战略轰炸调查处的附录一也把第一航空舰队司令官记为南云忠一，统辖赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤六艘航母。",
+      "claimType": "fact",
+      "entityIds": [
+        "unit-kido-butai",
+        "equipment-akagi"
+      ],
+      "sourceIds": [
+        "source-jm-097",
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 7"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 1"
+        }
+      ],
+      "note": "只能支持其职务与命令署名关系，不构成完整传记。"
+    },
+    {
+      "id": "claim-heeding-orders-to-prep",
+      "text": "1941 年 5 月 20 日美国成立两洋海军扩张法案授权建造的舰船；1941 年 9 月 16 日美国海军部宣布自 1941 年 1 月以来已签约建造 2800 艘舰船。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 7"
+        }
+      ],
+      "note": "日方整理的记录，说明“美国军备扩充”在日方判断中占据的位置。"
+    },
+    {
+      "id": "claim-us-shipbuilding-alarm-in-tokyo",
+      "text": "日方记录称，到 1941 年 9 月，美国船厂已签订建造 112 艘一万吨级货船与 72 艘一万六千吨级油轮的合同，合计 184 艘。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-oil-embargo-1941",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-jm-147"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-147",
+          "locatorType": "page",
+          "locator": "p. 25"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-refuel-critical",
+      "text": "美国战略轰炸调查处的报告强调，突然性与海上加油是这次行动最重要的两个因素，其中任何一项失败，行动都将无法进行。",
+      "claimType": "fact",
+      "entityIds": [
+        "unit-kido-butai",
+        "person-yamamoto-isoroku",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Selection of Track"
+        }
+      ],
+      "note": "说明后勤与保密是计划的前提条件，而不是背景装饰。"
+    },
+    {
+      "id": "claim-aircraft-role-split",
+      "text": "日军珍珠港攻击编组按机种分工：舰载攻击机分别执行水平轰炸与鱼雷攻击，俯冲轰炸机攻击航空基地，零式战斗机负责空战与扫射停在地面的飞机。",
+      "claimType": "fact",
+      "entityIds": [
+        "equipment-type-97-carrier-attack-plane",
+        "unit-kido-butai",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack"
+        }
+      ],
+      "note": "说明舰载机不是单一机型，而是按任务分工的机群。"
+    },
+    {
+      "id": "claim-deck-cycle-time-cost",
+      "text": "航母的作战节奏受限于整备与回收时间：日方计划规定第一、第二波攻击队返回后要立即完成再次出击的准备，说明每一波出击之间都要经过一段不可省略的加油与挂弹过程。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "concept-carrier-aircraft",
+        "concept-aircraft-carrier",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 13"
+        }
+      ],
+      "note": "这是从计划文本推得的教学解释，不是原始文件中的原句。"
+    },
+    {
+      "id": "claim-us-fleet-trains-refuel",
+      "text": "珍珠港机动部队的编成中包含补给部队：第一补给队五艘油船、第二补给队三艘油船，合计八艘；按美方调查报告，若海上加油失败，计划是让护卫的驱逐舰之外的部队继续前进。",
+      "claimType": "fact",
+      "entityIds": [
+        "unit-kido-butai",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 1"
+        },
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "pp. 9-11"
+        }
+      ],
+      "note": "数字口径：油船数量来自 USSBS 附录一的部队编成表。加油失败时的处置按 USSBS 原文更正为“不带驱逐舰继续前进”，不是“护卫部队返回”。"
+    },
+    {
+      "id": "claim-midway-codebreaking",
+      "text": "据国家二战博物馆，美国海军密码分析人员 1942 年初开始破译日军通信，中途岛基地用一则“淡水不足”的假情报诱使日方回电确认“AF”即中途岛，从而确认了攻击地点，并给出大致日期与战斗序列。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-logistics",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-nww2m-battle-midway"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-battle-midway",
+          "locatorType": "section-paragraph",
+          "locator": "Breaking the Code, paragraph 1"
+        }
+      ],
+      "note": "仅用于说明后续阶段的情报背景；本阶段正文不使用其细节。"
+    },
+    {
+      "id": "claim-radar-midway-detected",
+      "text": "1942 年 6 月 4 日清晨，中途岛的雷达在接到巡逻机报告后五分钟，就在约九万米的距离上发现了来袭的日机编队，高度约一万英尺。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-radar",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The enemy attack on Midway, June 4, p. 12"
+        }
+      ],
+      "note": "原文为 93 miles。说明到了 1942 年中途岛，雷达已成为岸基防空的有效探测手段。"
+    },
+    {
+      "id": "claim-radar-midway-plot-log",
+      "text": "中途岛守备部队的逐时记录里留下多条雷达报告，例如上午 6 时 29 分记录'许多不明飞机 8 英里、方位 330，以及 29 英里、方位 265'，6 时 37 分又记录了两批不同方位与距离的目标。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-radar"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The enemy attack on Midway, June 4, pp. 14-15"
+        }
+      ],
+      "note": "这些是原始作战记录中的雷达通报摘录，可说明雷达提供的是距离与方位，而不是敌我识别。"
+    },
+    {
+      "id": "claim-radar-coral-bogey-problem",
+      "text": "珊瑚海海战时，美军航母的战斗空中巡逻由雷达引导，但雷达无法分辨敌我：约克城号的战斗机没有雷达识别手段，因此'大量精力被浪费'，飞机被反复派出查看最终证明是友军的目标。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-radar",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Combat air patrol on the 7th, p. 18"
+        }
+      ],
+      "note": "说明雷达提供的是'有东西在那里'，不等于'那是敌人'。"
+    },
+    {
+      "id": "claim-radar-carriers-should-have-two",
+      "text": "珊瑚海海战之后，太平洋舰队司令部总结的教训中明确写道：'所有航空母舰都应配备两部远程雷达。'同一份清单还提到，俯冲轰炸瞄准具在高空起雾、战斗机数量不足、鱼雷机过于陈旧等问题。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-radar",
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Conclusions, p. 46"
+        }
+      ],
+      "note": "这是官方战史引述的当时结论，属于可靠性较高的一手判断，不是后人评价。"
+    },
+    {
+      "id": "claim-radar-opana-chain-broke",
+      "text": "1941 年 12 月 7 日珍珠港，欧帕纳雷达站确实在 7 时 02 分发现了来袭机群并向上级报告，但接收报告的值班军官把回波判断为预定抵达的美军轰炸机，没有发出警报。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-radar",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nps-opana-radar"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nps-opana-radar",
+          "locatorType": "section-paragraph",
+          "locator": "The Missed Warning at Opana Radar Site, paragraphs 1-2"
+        }
+      ],
+      "note": "雷达本身工作正常，断在识别与传递环节。"
+    },
+    {
+      "id": "claim-codebreaking-af-confirmed",
+      "text": "据美国国家二战博物馆，美国海军密码分析人员 1942 年初开始破译日军通信；中途岛基地用一则'淡水不足'的假情报，诱使日方回电确认'AF'指的就是中途岛，从而确认了攻击地点，并给出了大致日期与战斗序列。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-codebreaking",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nww2m-battle-midway"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-battle-midway",
+          "locatorType": "section-paragraph",
+          "locator": "Breaking the Code, paragraph 1"
+        }
+      ],
+      "note": "博物馆综述口径。'AF'确认是一种验证方法，不是全知：它确认的是地点，日期仍有'六月四日或五日'的不确定。"
+    },
+    {
+      "id": "claim-codebreaking-station-hypo-scope",
+      "text": "同一博物馆文章说，位于夏威夷的'海波'站（Station Hypo）不但确认了攻击地点，还能给出日期（六月四日或五日）与日本海军的战斗序列。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-codebreaking"
+      ],
+      "sourceIds": [
+        "source-nww2m-battle-midway"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-battle-midway",
+          "locatorType": "section-paragraph",
+          "locator": "Breaking the Code, paragraphs 1-2"
+        }
+      ],
+      "note": "注意博物馆给出的是'六月四日或五日'，说明当时仍有不确定性。"
+    },
+    {
+      "id": "claim-codebreaking-frupac-jn25",
+      "text": "据博物馆文章，美军密码分析人员能解密日本的 JN-25 海军密码通信，而日方对此并不知情；这一能力在 1943 年 4 月又被用来破获山本五十六的行程。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-codebreaking",
+        "person-yamamoto-isoroku"
+      ],
+      "sourceIds": [
+        "source-nww2m-operation-vengeance"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-operation-vengeance",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraphs 4-5"
+        }
+      ],
+      "note": "只支持'能解密 JN-25 且日方不知情'这一层，不涉及密码学细节。"
+    },
+    {
+      "id": "claim-codebreaking-frupac-process",
+      "text": "博物馆文章记载，1943 年 4 月 14 日美军截收站抄收了一份日军电报，送到珍珠港的太平洋舰队无线电小队（FRUPAC），密码人员工作了数小时才解读出来，再经过仔细分析才确定其含义。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-codebreaking"
+      ],
+      "sourceIds": [
+        "source-nww2m-operation-vengeance"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-operation-vengeance",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 5"
+        }
+      ],
+      "note": "这说明破译是'截收—技术解密—人工研判'三个阶段，不是直接读到明文。"
+    },
+    {
+      "id": "claim-codebreaking-limit-not-omniscient",
+      "text": "综合博物馆两篇文章：破译提供的是带有不确定性的片段——地点需要靠假情报去验证，日期只能给到'六月四日或五日'两天区间。因此情报优势不等于掌握对手的全部计划。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "concept-codebreaking"
+      ],
+      "sourceIds": [
+        "source-nww2m-battle-midway",
+        "source-nww2m-operation-vengeance"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-battle-midway",
+          "locatorType": "section-paragraph",
+          "locator": "Breaking the Code, paragraph 1"
+        },
+        {
+          "sourceId": "source-nww2m-operation-vengeance",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 5"
+        }
+      ],
+      "note": "这是本教材基于已读材料的教学性解释，不是博物馆原文结论。"
+    },
+    {
+      "id": "claim-naval-aviation-search-arcs",
+      "text": "1942 年 6 月 4 日中途岛，美军远程巡逻机被命令搜索到八百多公里（425 英里）范围，除非更早发现四艘敌方航母；上午 5 时 45 分，一架巡逻机用明语报告'大批飞机飞向中途岛，方位 320，距离 150'，官方战史称之为'整个战斗最重要的一次接触'。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-naval-aviation",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The enemy attack on Midway, June 4, p. 12"
+        }
+      ],
+      "note": "说明先发现对方本身就是一场战斗，搜索距离与报告速度直接决定后续。"
+    },
+    {
+      "id": "claim-naval-aviation-dive-vs-torpedo",
+      "text": "中途岛的实战显示，同样一批飞机用不同方式攻击，效果差别极大：鱼雷机被迫低空慢速接近，往往在投弹前就被击落；俯冲轰炸机从高空垂直俯冲，命中率高得多。6 月 4 日上午，美军三支鱼雷机队几乎全灭，而俯冲轰炸机在几分钟内重创了三艘日军航母。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-naval-aviation",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, pp. 21-25"
+        }
+      ],
+      "note": "原文记录：15 架鱼雷机无一返航，只有一名飞行员幸存；约克城号的俯冲轰炸机五发直接命中。"
+    },
+    {
+      "id": "claim-naval-aviation-fighter-escort-gap",
+      "text": "官方战史记载，中途岛当天美军鱼雷机队多次在'没有保护'的情况下发起攻击：打击群在途中失去了战斗机护航，结果遭到极占优势的日军战斗机拦截，损失惨重。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, pp. 22-23"
+        }
+      ],
+      "note": "说明机种协同（护航与攻击的配合）是海军航空作战的核心难题。"
+    },
+    {
+      "id": "claim-naval-aviation-timing-collapse",
+      "text": "官方战史记录了一个关键的时间差：美军航母起飞的打击群没有找到日军航母，是因为日军航母在它们出发约一小时后转向北；而美军航母为保持无线电静默，没有把这一变化告知飞行员。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-naval-aviation",
+        "person-spruance-raymond"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 21"
+        }
+      ],
+      "note": "同一段还写道：必须赶在日机从途岛返航、加油、准备第二波攻击之前击中敌舰。"
+    },
+    {
+      "id": "claim-naval-aviation-torpedo-attack-indirect-effect",
+      "text": "官方战史给出了一个反直觉的结论：损失惨重的鱼雷机攻击有两个意外的好处——一是迫使日军航母不断规避机动，因而无法起飞自己的轰炸机；二是日军把战斗机都吸引到低空去打鱼雷机，俯冲轰炸机到达时几乎没有战斗机拦截。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 23"
+        }
+      ],
+      "note": "这是官方战史本身的评价，不是本教材的推断。它说明战场上'看起来失败'的行动可能产生关键作用。"
+    },
+    {
+      "id": "claim-naval-aviation-coral-simultaneous",
+      "text": "珊瑚海海战是历史上第一次交战双方的水面舰艇一炮未发、完全由航空兵决出胜负的主要海战；官方战史称其为'纯粹的空中作战'，双方以同样的手段在同一时间追求同样的目标。",
+      "claimType": "fact",
+      "entityIds": [
+        "concept-naval-aviation",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of the Coral Sea, p. 1"
+        }
+      ],
+      "note": "这是海军航空作战成为主战形式的转折点。"
+    },
+    {
+      "id": "claim-nimitz-cincpac-1941-12-31",
+      "text": "1941 年 12 月，尼米兹抵达珍珠港视察；12 月 31 日，他在潜艇基地正式就任太平洋舰队总司令，并同时由两星升为四星上将。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 6"
+        }
+      ],
+      "note": "转载性特写，日期与其他官方来源一致。"
+    },
+    {
+      "id": "claim-nimitz-decline-1941",
+      "text": "据特写文章，尼米兹曾在 1941 年 1 月婉拒过这个职位，理由是自己资历太浅。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 2"
+        }
+      ]
+    },
+    {
+      "id": "claim-nimitz-onsite-assessment",
+      "text": "达特写文章记载尼米兹到任后的判断：局势严峻但并非灾难——大部分战列舰沉在珍珠港浅水里可以打捞修复，他的三艘航母全部可用，而且包括四百五十万桶燃油在内的港口设施没有受损。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 7"
+        }
+      ],
+      "note": "四百五十万桶燃油这一数字仅见于此文，属单一来源口径，正文使用时会说明为'据该文'。"
+    },
+    {
+      "id": "claim-nimitz-retained-staff",
+      "text": "尼米兹保留了前任基梅尔的全套参谋班子，以此提振当时极低的士气。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 7"
+        }
+      ]
+    },
+    {
+      "id": "claim-nimitz-ashore-command",
+      "text": "特写文章指出，尼米兹发现自己必须留在岸上指挥而不能像日方对手那样坐镇海上旗舰，因为只有珍珠港才具备协调其广阔辖区所需的通信系统。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 8"
+        }
+      ]
+    },
+    {
+      "id": "claim-nimitz-short-term-strategy",
+      "text": "同一篇文章概括尼米兹的短期战略是：在实力足够反攻之前，先钝化日军的推进。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph 7"
+        }
+      ],
+      "note": "'钝化推进'是该文的概括，属叙事性解释。"
+    },
+    {
+      "id": "claim-nimitz-midway-air-control",
+      "text": "官方战史记载，经太平洋舰队总司令尼米兹的安排，派往中途岛的所有陆军与海军飞机统一由中途岛海军航空站站长指挥；为此还专门加派了有经验的飞机标图军官、通信值班军官与无线电员。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Preparations at Midway, p. 6"
+        }
+      ],
+      "note": "这是官方战史对尼米兹指挥安排的具体记录。"
+    },
+    {
+      "id": "claim-nimitz-midway-assessment-quote",
+      "text": "官方战史引述尼米兹对 6 月 4 日上午态势的判断：中途岛部队已全力出击，但日军尚未被牵制；从中途岛起飞、唯一能高比例命中舰船的三种飞机几乎打光，而日军三艘航母仍基本完好，这就是美军航母攻击开始时的局面。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 19"
+        }
+      ],
+      "note": "原文标注为 'the report of Admiral Nimitz'，属其本人呈报内容。"
+    },
+    {
+      "id": "claim-nimitz-coral-evaluation",
+      "text": "官方战史引述太平洋舰队司令部的评价：弗莱彻'极为出色地运用了提供给他的情报'，并在珊瑚海的一系列交战中赢得了一场决定性的胜利。同一份结论还列举了当时发现的问题，包括俯冲轰炸瞄准具高空起雾、战斗机不足、鱼雷机陈旧，并提出所有航母都应配备两部远程雷达。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nimitz-chester",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Conclusions, pp. 46-47"
+        }
+      ],
+      "note": "官方战史将这段话归为 CINCPAC 的评价，并点名是尼米兹关于瞄准具缺陷的判断。"
+    },
+    {
+      "id": "claim-spruance-task-force-sugar",
+      "text": "官方战史记载，中途岛战役中由斯普鲁恩斯少将指挥的编队（代号 SUGAR）包含企业号与大黄蜂号两艘航母，于 5 月 26 日抵达珍珠港、5 月 28 日出航；它与弗莱彻的编队于 6 月 2 日在中途岛东北会合，此后合并部队由弗莱彻统一指挥。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, pp. 2-3"
+        }
+      ],
+      "note": "说明斯普鲁恩斯是首次指挥航母编队，且并非最高指挥官。"
+    },
+    {
+      "id": "claim-spruance-launch-timing",
+      "text": "官方战史记载，6 月 4 日斯普鲁恩斯的编队以二十五节航速西进，到早上七时估计日军航母在东北偏西南约二百五十公里（155 英里）处，随即开始出动飞机；由于东南风很轻，航母必须背向敌人转向才能起飞，整个出动过程'大约需要一小时'。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 20"
+        }
+      ],
+      "note": "原文把航母起飞所需时间作为实际约束写出。"
+    },
+    {
+      "id": "claim-spruance-search-turn",
+      "text": "官方战史记载，企业号的机群指挥官麦克拉斯基在找不到预期位置上的日军航母后向北转向，战史称这是'整个行动中最重要的一个决定'；转向搜索约四十五分钟后，他在一万九千英尺高度发现了日军编队。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, pp. 23-24"
+        }
+      ],
+      "note": "该转向由现场机群指挥官作出，不是斯普鲁恩斯从旗舰下令的；教材须区分。"
+    },
+    {
+      "id": "claim-spruance-reserve-hornets-bombers",
+      "text": "官方战史记载，在确保有足够兵力继续搜索可能存在的第五艘日军航母之前，美军保留了部分俯冲轰炸机不派出；直到 6 月 4 日下午发动反击时才开始成规模出动。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 20"
+        }
+      ],
+      "note": "战史原文表述为'担心是否还有第五艘敌方航母'。"
+    },
+    {
+      "id": "claim-spruance-hiryu-retaliation",
+      "text": "官方战史记载，6 月 4 日下午，企业号在 15 时 30 分出动 24 架侦察轰炸机（其中 14 架来自约克城号）对飞龙号实施攻击，17 时 05 分攻击中至少六发直接命中飞龙号。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The fourth Japanese carrier, June 4, pp. 31-32"
+        }
+      ],
+      "note": "这是斯普鲁恩斯编队在当天下午的决定性行动。"
+    },
+    {
+      "id": "claim-spruance-usn-cinpac-directive",
+      "text": "官方战史记载，美国舰队总司令金上将认为日军计划意在诱捕美军舰队的一部分，因此指示只采用强有力的消耗战术，不要过度冒险使用航母与巡洋舰；战史总结说，中途岛的美国海军是在兵力处于劣势所必需的保守政策下、又受固定点防御约束的情况下作战的。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond",
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 5"
+        }
+      ],
+      "note": "这是给斯普鲁恩斯与弗莱彻的上级约束，说明他们的选择空间被事先压缩。"
+    },
+    {
+      "id": "claim-spruance-photo-1944",
+      "text": "特写文章所配照片说明指出，尼米兹、欧内斯特·金与雷蒙德·斯普鲁恩斯三位海军上将曾于 1944 年前后在重巡洋舰印第安纳波利斯号上合影。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-spruance-raymond"
+      ],
+      "sourceIds": [
+        "source-dmn-king-nimitz"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-dmn-king-nimitz",
+          "locatorType": "section-paragraph",
+          "locator": "Article image caption, paragraph 1"
+        }
+      ],
+      "note": "仅支持其后期军衔与职位关系，不用于叙事判断。"
+    },
+    {
+      "id": "claim-fletcher-combined-command",
+      "text": "官方战史记载，珊瑚海战斗中弗莱彻少将指挥的编队与另一支航母编队于 5 月 1 日会合，他随即被授予两支合并部队的指挥权；中途岛战役中，两支部队于 6 月 2 日会合后同样由弗莱彻统一指挥。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "person-spruance-raymond"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, p. 2"
+        },
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 4"
+        }
+      ],
+      "note": "两条官方战史都记载了他的统辖关系。"
+    },
+    {
+      "id": "claim-fletcher-fuel-constraint",
+      "text": "官方战史记载，在珊瑚海战斗前的航渡中，弗莱彻'希望尽可能多地把燃油从补给油船中取出'再让它返回基地，这是上级的命令要求；他因此指示另一编队利用夜间西北向航行的同时给自己的驱逐舰加油。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, pp. 2-3"
+        }
+      ],
+      "note": "燃油是他在珊瑚海能动用兵力的直接边界。"
+    },
+    {
+      "id": "claim-fletcher-fuel-limited-reach",
+      "text": "官方战史记载，弗莱彻知道自己的舰只位置偏南，如果日军现在就南下，他无法与敌交战，因此专门询问了另一编队的燃油状况。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, p. 3"
+        }
+      ],
+      "note": "说明'油不够就走不到战场'是真实约束。"
+    },
+    {
+      "id": "claim-fletcher-tulagi-chance",
+      "text": "官方战史记载，5 月 3 日 19 时弗莱彻收到日军已在图拉吉登陆的情报，他在战斗报告里写道这是'我们等了两个月的那种报告'；随后他不等其余舰只会合便率队北上。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, pp. 3-4"
+        }
+      ],
+      "note": "引语出自其战斗报告，由官方战史引述。"
+    },
+    {
+      "id": "claim-fletcher-tulagi-risked-dispersion",
+      "text": "同一段官方战史记载，弗莱彻'不想错过这个极好的打击机会'，因此没有等待其余舰只到齐；但他同时把油船连同驱逐舰分开遣往会合点，并指定了新的会合位置。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, pp. 3-4"
+        }
+      ],
+      "note": "体现了'抓机会'与'保后勤'之间的取舍。"
+    },
+    {
+      "id": "claim-fletcher-false-report",
+      "text": "官方战史记载，5 月 7 日一架侦察机报告发现两艘敌航母，美军据此出动打击群；随后发现是飞行员的联络代码板排列不当造成误报，飞行员实际看到的是两艘重巡洋舰和两艘轻巡洋舰。战史称，这个错误让整个攻击群出发执行了一个错误的任务。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action off Misima, May 7th, p. 14"
+        }
+      ],
+      "note": "这是真实发生的情报错误，不是某人的失职；战史同时写道，随后决定让飞机继续前进，结果'被证明是明智的'。"
+    },
+    {
+      "id": "claim-fletcher-night-risk-tradeoff",
+      "text": "官方战史引述弗莱彻的战斗报告：当时曾考虑派遣水面舰艇夜间攻击东北方向的日军舰只。他写道，'如果当时有把握我水面部队能取得接触，让航母编队向南退避也许更合适'；'但如果水面部队夜间没有接触上，第二天他们可能遭到灾难性的空袭。通盘考虑，最好的方案似乎是保持我部队集中，准备次日晨与敌航母决战'。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Combat air patrol on the 7th, p. 19"
+        }
+      ],
+      "note": "这是他本人在战斗报告中的原话，由官方战史引述。是全场最完整的'选项—约束—取舍'证据。"
+    },
+    {
+      "id": "claim-fletcher-radar-own-fighters-unidentified",
+      "text": "官方战史记载，约克城号的战斗机没有雷达识别手段，因此'大量精力被浪费'，飞机被反复派出查看最终证明是友军的目标。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "concept-radar"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Combat air patrol on the 7th, p. 18"
+        }
+      ],
+      "note": "技术限制直接转化为指挥成本。"
+    },
+    {
+      "id": "claim-fletcher-cincpac-praise",
+      "text": "官方战史的结论部分引述太平洋舰队司令部的评价：弗莱彻'极为出色地运用了提供给他的情报'，并在 5 月 4 日至 8 日的珊瑚海交战中为盟国的事业赢得了一场'具有决定性且影响深远'的胜利。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Conclusions, p. 46"
+        }
+      ],
+      "note": "这是上级机关的正式评价，不是本教材的判断。"
+    },
+    {
+      "id": "claim-fletcher-coral-outcome",
+      "text": "官方战史记载，珊瑚海是历史上第一次交战双方水面舰艇一炮未发、由航空兵决出胜负的主要海战；5 月 7 日美军击沉日本'祥凤'号，自身损失 3 架侦察轰炸机与 3 架战斗机。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of the Coral Sea, p. 1"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Results of the 7th, p. 20"
+        }
+      ],
+      "note": "损失数字采用官方战史当日的统计口径。"
+    },
+    {
+      "id": "claim-nagumo-kido-butai-command",
+      "text": "美国战略轰炸调查处的部队编成表把第一航空舰队司令官记为南云忠一中将，下辖赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤六艘航母；日方专档收录的机动部队作战命令第一号与第三号也都署名南云忠一。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "unit-kido-butai",
+        "equipment-akagi"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-campaigns",
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-campaigns",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 1, p. 21"
+        },
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 7"
+        }
+      ],
+      "note": "两条来源一致确认其职务与命令署名关系。"
+    },
+    {
+      "id": "claim-nagumo-strike-doctrine-order",
+      "text": "南云 1941 年 11 月 23 日签署的机动部队作战命令要求部队以最高保密状态驶向夏威夷海域，在开战时发动奇袭、给予敌方舰队致命打击，并在攻击完成后立即撤收返回日本。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 7"
+        }
+      ],
+      "note": "这条命令的措辞本身规定了'打了就走'，是理解他后来决定的一把钥匙。"
+    },
+    {
+      "id": "claim-nagumo-rearm-in-plan",
+      "text": "南云签署的机动部队第三号作战命令规定：第一、第二波攻击队返回后应立即完成再次出击的准备，此时能携带鱼雷的舰载攻击机仍装鱼雷，只要库存允许。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "unit-kido-butai",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-jm-097"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 13"
+        }
+      ],
+      "note": "说明整备压力与'是否再打一波'的问题在计划阶段就存在，不是临场才出现的。"
+    },
+    {
+      "id": "claim-nagumo-carriers-turned-north",
+      "text": "官方战史记载，中途岛战役中日军航母在美军攻击机群出发约一小时后转向北，而没有继续朝中途岛方向航行；战史推测，这可能是因为日军发现了美军航母。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 21"
+        }
+      ],
+      "note": "战史给出的是推测性表述（'possibly'），教材引用时保留其不确定性。"
+    },
+    {
+      "id": "claim-nagumo-defensive-maneuver-blocked-launch",
+      "text": "官方战史记载，美军鱼雷机攻击'迫使日军航母不断机动规避，以致无法起飞自己的轰炸机'。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 23"
+        }
+      ],
+      "note": "这不是'他没有下令起飞'，而是规避机动使起飞无法进行。"
+    },
+    {
+      "id": "claim-nagumo-no-visible-damage-at-contact",
+      "text": "官方战史记载，美军俯冲轰炸机在 10 时 02 分发现日军编队时，'四艘航母均可见，且在初次接触及俯冲过程中都看不到任何损伤'。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 24"
+        }
+      ],
+      "note": "说明在决定性打击落下前，日军编队从外部看仍是完好的——这直接关系到'当时能看到什么'。"
+    },
+    {
+      "id": "claim-nagumo-attack-timing-squeeze",
+      "text": "官方战史记载，美军航母出动飞机时'必须赶在日机从中途岛返航、加油、准备第二波攻击之前击中敌舰，而第二波攻击几乎肯定会指向美军航母'。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 21"
+        }
+      ],
+      "note": "从美军视角写出的日方时间压力，可反推出南云当时面对的两头挤压。"
+    },
+    {
+      "id": "claim-nagumo-four-carriers-lost",
+      "text": "官方战史记载，6 月 4 日上午三艘日军航母（赤城、加贺、苍龙）被炸起火最终沉没，第四艘飞龙号北撤未受损；当天下午飞龙号在中至少六发直接命中后也失去作战能力。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, p. 26"
+        },
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The fourth Japanese carrier, June 4, pp. 31-32"
+        }
+      ],
+      "note": "这是当日结果的官方统计口径。"
+    },
+    {
+      "id": "claim-nagumo-personal-background",
+      "text": "据维基百科条目，南云忠一 1887 年 3 月 25 日生于山形县米泽市，1944 年 7 月 6 日死于塞班岛；1908 年毕业于海军兵学校第三十六期，在 191 名学员中位列第 8；其专长为鱼雷与驱逐舰战术；1939 年 11 月 15 日晋升中将，1940 至 1941 年指挥第一航空舰队。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-nagumo-chuichi"
+      ],
+      "sourceIds": [
+        "source-wikipedia-nagumo"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-wikipedia-nagumo",
+          "locatorType": "chapter-section",
+          "locator": "Section Early life, paragraphs 1-3; infobox"
+        }
+      ],
+      "note": "低权重来源：该条目的'早年生活'一节带有'本段未引用任何来源'的明确警示。教材只把它用于最基础的履历事实，且不与官方战史冲突；不作为任何因果或评价的依据。"
+    }
+  ]
+}
