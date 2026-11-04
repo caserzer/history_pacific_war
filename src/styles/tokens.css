@@ -1,0 +1,116 @@
+/*
+ * 设计 token（见 DESIGN.md §3）
+ *
+ * 所有颜色都经过 WCAG 对比度实测（DESIGN.md §3.1 列出数值），组件只消费 token，
+ * 不写裸色值，因此后续地图模块（MAP-01）可以直接复用同一套色板。
+ */
+
+:root {
+  /* —— 色板：旧纸 / 深海军蓝 / 旧地图绿 / 黄铜 / 克制的红 —— */
+  --pw-paper: #f2e8d5;
+  --pw-paper-2: #e8dcc3;
+  --pw-paper-3: #dccdad;
+  --pw-paper-card: #fbf5e9;
+
+  --pw-navy-950: #141c26;
+  --pw-navy-900: #18222d;
+  --pw-navy-800: #1c2530;
+  --pw-navy-700: #25313d;
+
+  --pw-ink: #1c2530;
+  --pw-ink-soft: #3f4954;
+  --pw-ink-muted: #4a5561;
+  --pw-ink-faint: #5d6873;
+
+  --pw-map-green: #1f5c4a;
+  --pw-map-green-soft: #7fb49c;
+  --pw-map-green-tint: #dfe9df;
+
+  --pw-brass: #7a4e0c;
+  --pw-brass-text: #8a5a14;
+  --pw-brass-light: #d9b45a;
+  --pw-brass-tint: #efe0bc;
+
+  --pw-alert: #9c2f22;
+  --pw-alert-tint: #f3ded6;
+
+  /* —— 字体：全部为本地系统字体栈，不引用任何 CDN 字体 —— */
+  --pw-font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', 'Times New Roman', serif;
+  --pw-font-sans: 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', system-ui, sans-serif;
+  --pw-font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+
+  /* —— 阅读字号：可调（§6 阅读字号），由 a11y/readingSize.ts 写入 data-reading-size —— */
+  --pw-reading-size: 1.0625rem; /* 17px，中文正文默认 */
+  --pw-reading-line: 1.9;
+  --pw-reading-measure: 34em;
+
+  /* —— 排版尺度 —— */
+  --pw-size-xs: 0.75rem;
+  --pw-size-sm: 0.875rem;
+  --pw-size-base: 1rem;
+  --pw-size-md: 1.125rem;
+  --pw-size-lg: 1.375rem;
+  --pw-size-xl: 1.75rem;
+  --pw-size-2xl: 2.25rem;
+  --pw-size-3xl: 3rem;
+
+  /* —— 间距节奏（4px 基准） —— */
+  --pw-space-1: 0.25rem;
+  --pw-space-2: 0.5rem;
+  --pw-space-3: 0.75rem;
+  --pw-space-4: 1rem;
+  --pw-space-5: 1.5rem;
+  --pw-space-6: 2rem;
+  --pw-space-7: 3rem;
+  --pw-space-8: 4rem;
+
+  /* —— 边框与圆角（档案馆气质：方角为主，圆形仅用于标签字形） —— */
+  --pw-radius-sm: 2px;
+  --pw-radius-md: 4px;
+  --pw-radius-pill: 999px;
+  --pw-border-hairline: 1px solid color-mix(in srgb, var(--pw-ink) 22%, transparent);
+  --pw-border-brass: 1px solid var(--pw-brass-light);
+  --pw-shadow-card: 0 1px 0 color-mix(in srgb, var(--pw-ink) 10%, transparent);
+
+  /* —— 焦点环：所有交互元素共用，保证键盘可见 —— */
+  --pw-focus-ring: 3px solid var(--pw-map-green);
+  --pw-focus-offset: 2px;
+
+  /* —— 动效：只用于状态提示；reduced-motion 下全部关闭 —— */
+  --pw-transition: 160ms ease;
+}
+
+/* 阅读字号三档（页头按钮切换，存 localStorage） */
+:root[data-reading-size='cozy'] {
+  --pw-reading-size: 0.9375rem; /* 15px */
+}
+:root[data-reading-size='standard'] {
+  --pw-reading-size: 1.0625rem; /* 17px */
+}
+:root[data-reading-size='large'] {
+  --pw-reading-size: 1.25rem; /* 20px */
+  --pw-reading-measure: 30em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pw-transition: 0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 深色底区域（页眉、图例）复用同一批 token 的对偶值 */
+.pw-on-dark {
+  --pw-local-ink: var(--pw-paper);
+  --pw-local-ink-soft: var(--pw-paper-2);
+  --pw-local-muted: #c9b98f;
+  --pw-local-accent: var(--pw-brass-light);
+  --pw-local-link: var(--pw-map-green-soft);
+}
