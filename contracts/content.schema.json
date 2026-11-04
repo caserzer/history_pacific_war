@@ -261,7 +261,7 @@
         "sourceIds": { "$ref": "#/$defs/sourceRefs" },
         "claimIds": { "$ref": "#/$defs/claimRefs" }
       },
-      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。ARCH-02 起早期战役的目标结构是 analysisProfiles（十键具名分析）；旧的 earlyCampaignAnalysis（五键）在过渡窗口内仍被 schema 接受。researchStatus 是唯一允许表达研究/检索过程状态的位置。"
+      "description": "battleId 仅用于把时间线事件指向战役页；不能通过事件复制另一份战役叙述。ARCH-02 起早期战役的目标结构是 analysisProfiles（十键具名分析）；旧的 earlyCampaignAnalysis（五键）仅为迁移诊断保留在 schema 中，验证器在门禁中一律拒绝。researchStatus 是唯一允许表达研究/检索过程状态的位置，早期战役事件必须声明它。"
     },
     "researchStatus": {
       "type": "string",

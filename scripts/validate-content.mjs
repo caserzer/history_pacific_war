@@ -18,7 +18,6 @@
  */
 
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -87,12 +86,21 @@ const SECTION_KEYS = [
 ];
 
 /**
- * 旧版早期扩张战役的 5 类分析（D2 / ARCH-01）。与 coverage.earlyCampaign.analysisKeys 一致。
- * ARCH-02 起这是**过渡期遗留形状**：HIST-01 已交付内容仍携带它，
- * 目标结构改为 ANALYSIS_PROFILE_KEYS（十键 analysisProfiles）。
- * 过渡窗口由 coverage.earlyCampaign.legacyAnalysis.enforcement 控制，ARCH-02-flip 关闭。
+ * 旧版早期扩张战役的 5 类分析（D2 / ARCH-01）。ARCH-02 attempt 5 起该形状在门禁中
+ * 一律被拒绝；键名只用于迁移诊断与旧夹具构造，契约里不再有第二套 analysisKeys 声明。
+ * 目标结构是 ANALYSIS_PROFILE_KEYS（十键 analysisProfiles）。
+ * 旧五键兼容只由 coverage.earlyCampaign.legacyAnalysis 开关表达（enforcement=off，
+ * legacyDisabledBy=HIST-01），代码不使用该字段放行旧形状。
  */
 const LEGACY_EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'];
+// 旧五键的固定中文标题：只用于迁移诊断（该形状在门禁中始终被拒绝）。
+const LEGACY_ANALYSIS_TITLES = {
+  background: '背景',
+  course: '经过',
+  constraints: '约束',
+  results: '结果',
+  impact: '影响',
+};
 // 向后兼容别名：既有规则、负例与 schema 断言仍用旧名。
 const EARLY_CAMPAIGN_KEYS = LEGACY_EARLY_CAMPAIGN_KEYS;
 
@@ -515,7 +523,6 @@ function parseCli(argv) {
     media: false,
     selfTest: false,
     checkContracts: false,
-    realContent: false,
     file: null,
     mediaFile: null,
     root: null,
@@ -564,8 +571,6 @@ function parseCli(argv) {
       options.selfTest = true;
     } else if (arg === '--check-contracts') {
       options.checkContracts = true;
-    } else if (arg === '--real-content') {
-      options.realContent = true;
     } else if (arg === '--help' || arg === '-h') {
       options.help = true;
     } else {
@@ -826,22 +831,13 @@ function validateEarlyCampaignContract(coverage) {
   const errors = [];
   const block = coverage.earlyCampaign;
   if (!isPlainObject(block)) {
-    return ['coverage.earlyCampaign 缺失：早期扩张战役必须声明 background/course/constraints/results/impact 分析结构'];
+    return ['coverage.earlyCampaign 缺失：早期扩张战役必须声明 analysisProfiles 十键结构与 researchStatus 严格规则'];
   }
 
-  const keys = Array.isArray(block.analysisKeys) ? block.analysisKeys.map((entry) => entry && entry.key) : [];
-  if (canonicalJson(keys) !== canonicalJson(EARLY_CAMPAIGN_KEYS)) {
-    errors.push(
-      `coverage.earlyCampaign.analysisKeys 必须严格为 ${EARLY_CAMPAIGN_KEYS.join(', ')}，实际 ${keys.join(', ') || '空'}`,
-    );
-  }
-  for (const entry of Array.isArray(block.analysisKeys) ? block.analysisKeys : []) {
-    if (!isPlainObject(entry)) {
-      errors.push('coverage.earlyCampaign.analysisKeys 含非对象项');
-      continue;
-    }
-    if (!isNonEmptyString(entry.title)) errors.push(`coverage.earlyCampaign.analysisKeys.${entry.key}: 缺少中文标题`);
-    if (!isNonEmptyString(entry.question)) errors.push(`coverage.earlyCampaign.analysisKeys.${entry.key}: 缺少分析问题描述`);
+  // ARCH-02 attempt 5：旧五键的兼容只允许由 legacyAnalysis 开关表达；
+  // coverage 不再声明第二套“旧五键分析结构”（原 analysisKeys 已移除）。
+  if (hasOwn(block, 'analysisKeys')) {
+    errors.push('coverage.earlyCampaign.analysisKeys 已被移除：旧五键兼容只允许通过 legacyAnalysis 开关表达');
   }
 
   if (typeof block.minHanCharsPerKey !== 'number' || block.minHanCharsPerKey < 40) {
@@ -974,14 +970,39 @@ function findResearchProcessWording(text) {
 }
 
 /**
- * 单个早期扩张事件的分析结构检查（D2 → ARCH-02）。
+ * ARCH-02 attempt 5 修复 F4：`requiredElements` 必须真正落到正文上。
  *
- * 过渡规则（见 contracts/README.md 与 docs/research/contract-correction.md）：
- *   · 若事件提供 `analysisProfiles`（目标结构），按十键全面强制；
- *   · 若只提供旧 `earlyCampaignAnalysis`（五键），在过渡窗口内仍校验其五键深度，
- *     因为 HIST-01 已交付内容携带该形状，而本任务不编辑 content/history.json；
+ * 契约在 `coverage.earlyCampaign.analysisProfiles.keys[].elementMarkers` 里为每个必含
+ * 要素声明一组可接受表述；验证器逐键逐要素断言正文至少命中一个。缺失即具名错误，
+ * 且错误只点名该键该要素，不连带其它键（每个键独立检查）。
+ */
+function analysisProfileElementErrors(key, section, entry, pointer, errors) {
+  if (!isPlainObject(section) || typeof section.body !== 'string') return;
+  const requiredElements = Array.isArray(entry.requiredElements) ? entry.requiredElements : [];
+  const markers = isPlainObject(entry.elementMarkers) ? entry.elementMarkers : {};
+  for (const element of requiredElements) {
+    const accepted = Array.isArray(markers[element]) ? markers[element].filter((item) => isNonEmptyString(item)) : [];
+    if (accepted.length === 0) continue; // 契约侧缺少 markers 由 validateAnalysisProfilesContract 报错
+    const hit = accepted.some((marker) => section.body.includes(marker));
+    if (!hit) {
+      addError(
+        errors,
+        `${pointer}.analysisProfiles.${key}.body: 缺少必含要素「${element}」（正文需要出现以下表述之一：${accepted.join('、')}）`,
+      );
+    }
+  }
+}
+
+/**
+ * 单个早期扩张事件的分析结构检查（D2 → ARCH-02，attempt 5 起严格化）。
+ *
+ * 严格规则（不存在门禁过渡豁免）：
+ *   · 目标结构是 `analysisProfiles` 十键：全部键必须存在、标题固定、达到最小篇幅、
+ *     每个必含要素命中正文、options/uncertainty 语义齐全；
+ *   · 只提供旧 `earlyCampaignAnalysis`（五键）→ **始终**报 `旧五键结构已被停用`，
+ *     同时继续给出逐键诊断以便 HIST-01 迁移定位；
  *   · 两者都没有 → 具名错误。
- * ARCH-02-flip 任务会把过渡窗口关掉，届时只接受 analysisProfiles。
+ * `legacyAnalysis.enforcement` 恒为 `off`（legacyDisabledBy=HIST-01），代码不使用它放行旧形状。
  */
 function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
   const block = coverage.earlyCampaign || {};
@@ -999,7 +1020,7 @@ function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
   if (!hasProfiles && !legacy) {
     addError(
       errors,
-      `${pointer}.analysisProfiles: 早期扩张战役必须提供 analysisProfiles（${profileKeys.map((k) => k.key).join('/')} 十键分析结构）；过渡期内也接受旧 earlyCampaignAnalysis`,
+      `${pointer}.analysisProfiles: 早期扩张战役必须提供 analysisProfiles（${profileKeys.map((k) => k.key).join('/')} 十键分析结构）；旧五键 earlyCampaignAnalysis 已被停用，不接受为替代`,
     );
     return;
   }
@@ -1007,6 +1028,10 @@ function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
   if (hasProfiles) {
     // ---- 目标结构：十键全面强制 ----
     const profiles = event.analysisProfiles;
+    const declaredByKey = new Map();
+    for (const entry of profileKeys) {
+      if (entry && entry.key) declaredByKey.set(entry.key, entry);
+    }
     for (const key of ANALYSIS_PROFILE_KEYS) {
       if (!hasOwn(profiles, key)) {
         addError(errors, `${pointer}.analysisProfiles.${key}: 缺少必需的 '${key}' 分析小节（十键必须全部存在）`);
@@ -1032,6 +1057,8 @@ function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
       if (unionSets(section.claimIds).size < (profilesBlock.minClaimIds || 1)) {
         addError(errors, `${sectionPointer}: 至少需要 ${profilesBlock.minClaimIds || 1} 个 claim`);
       }
+      // F4：requiredElements 必须检查正文，不能只在契约里声明。
+      analysisProfileElementErrors(key, section, entry, pointer, errors);
     }
     // options：必须同时写明真实选项与被排除它的约束
     const optionsSection = profiles.options;
@@ -1064,31 +1091,30 @@ function earlyCampaignDepthErrors(event, coverage, maps, pointer, errors) {
     return;
   }
 
-  // ---- 过渡窗口：旧五键仍被接受，但按旧规则校验深度 ----
-  const legacyMode = block.legacyAnalysis && block.legacyAnalysis.enforcement;
-  if (legacyMode === 'off') {
-    addError(
-      errors,
-      `${pointer}.earlyCampaignAnalysis: 旧五键结构已被停用（ARCH-02-flip 之后只接受 analysisProfiles），请迁移到 analysisProfiles`,
-    );
-    return;
-  }
+  // ---- 旧五键：门禁中一律拒绝（不存在过渡豁免）----
+  // F4：legacyAnalysis.enforcement 恒为 off（legacyDisabledBy=HIST-01）。
+  // 这里先给出“已被停用”的具名错误，再保留逐键诊断，方便 HIST-01 迁移时定位缺哪一键；
+  // 但任何一条都已是门禁错误，旧形状不可能在 --stage 门禁中通过。
+  addError(
+    errors,
+    `${pointer}.earlyCampaignAnalysis: 旧五键结构已被停用（legacyAnalysis.enforcement=off，legacyDisabledBy=HIST-01；不存在可在门禁中触发的过渡豁免），必须迁移到 analysisProfiles`,
+  );
   const legacyMin = block.minHanCharsPerKey || 80;
   for (const key of LEGACY_EARLY_CAMPAIGN_KEYS) {
     const section = legacy[key];
     if (!isPlainObject(section)) {
-      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 缺少必需的 '${key}' 分析小节（过渡期仍在校验旧五键）`);
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}: 缺少必需的 '${key}' 分析小节（旧五键已被停用，此诊断仅用于迁移定位）`);
       continue;
     }
-    const canonicalTitle = (Array.isArray(block.analysisKeys) ? block.analysisKeys : []).find((entry) => entry && entry.key === key);
-    if (canonicalTitle && comparableText(section.title) !== canonicalTitle.title) {
-      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}.title: 必须是 '${canonicalTitle.title}'`);
+    const canonicalTitle = LEGACY_ANALYSIS_TITLES[key];
+    if (canonicalTitle && comparableText(section.title) !== canonicalTitle) {
+      addError(errors, `${pointer}.earlyCampaignAnalysis.${key}.title: 必须是 '${canonicalTitle}'（迁移诊断；该形状已被停用）`);
     }
     const han = hanCount(section.body);
     if (han < legacyMin) {
       addError(
         errors,
-        `${pointer}.earlyCampaignAnalysis.${key}.body: 只有 ${han} 个汉字，过渡期旧五键每类分析至少需要 ${legacyMin} 个`,
+        `${pointer}.earlyCampaignAnalysis.${key}.body: 只有 ${han} 个汉字，旧五键每类分析至少需要 ${legacyMin} 个（该形状已被停用，此诊断仅用于迁移定位）`,
       );
     }
     checkEvidence(section, `${pointer}.earlyCampaignAnalysis.${key}`, maps, errors);
@@ -1129,6 +1155,17 @@ function validateAnalysisProfilesContract(coverage) {
     if (!isNonEmptyString(entry.question)) errors.push(`analysisProfiles.${entry.key}: 缺少分析问题描述`);
     if (!Array.isArray(entry.requiredElements) || entry.requiredElements.length === 0) {
       errors.push(`analysisProfiles.${entry.key}: 缺少 requiredElements（必含要素）`);
+    } else {
+      const markers = isPlainObject(entry.elementMarkers) ? entry.elementMarkers : null;
+      if (!markers) {
+        errors.push(`analysisProfiles.${entry.key}: 缺少 elementMarkers（必含要素的机器可判定表述）`);
+      } else {
+        for (const element of entry.requiredElements) {
+          if (!Array.isArray(markers[element]) || markers[element].filter((item) => isNonEmptyString(item)).length === 0) {
+            errors.push(`analysisProfiles.${entry.key}: 必含要素「${element}」缺少 elementMarkers 表述（正文无法被机器判定）`);
+          }
+        }
+      }
     }
   }
   if (typeof profiles.minHanCharsPerKey !== 'number' || profiles.minHanCharsPerKey < 40) {
@@ -1142,13 +1179,33 @@ function validateAnalysisProfilesContract(coverage) {
   }
   const legacy = block.legacyAnalysis;
   if (!isPlainObject(legacy)) {
-    errors.push('coverage.earlyCampaign.legacyAnalysis 缺失：必须声明过渡窗口的旧五键接受规则');
+    errors.push('coverage.earlyCampaign.legacyAnalysis 缺失：必须声明旧五键迁移映射与 legacyDisabledBy');
   } else {
-    if (!['transition', 'off'].includes(legacy.enforcement)) {
-      errors.push(`coverage.earlyCampaign.legacyAnalysis.enforcement 必须是 transition 或 off，实际 ${JSON.stringify(legacy.enforcement)}`);
+    // F4：旧五键的兼容只能以 legacyAnalysis 开关表达，且必须由 HIST-01 关闭；
+    // 不允许 transition/accept 之类可在门禁中生效的取值。
+    if (legacy.enforcement !== 'off') {
+      errors.push(
+        `coverage.earlyCampaign.legacyAnalysis.enforcement 必须恒为 'off'（不存在可在门禁中触发的过渡豁免），实际 ${JSON.stringify(legacy.enforcement)}`,
+      );
     }
-    if (!isNonEmptyString(legacy.legacyDisabledBy)) {
-      errors.push('coverage.earlyCampaign.legacyAnalysis.legacyDisabledBy 必须写明由哪个任务关闭过渡窗口');
+    if (legacy.legacyDisabledBy !== 'HIST-01') {
+      errors.push(
+        `coverage.earlyCampaign.legacyAnalysis.legacyDisabledBy 必须严格为 'HIST-01'，实际 ${JSON.stringify(legacy.legacyDisabledBy)}`,
+      );
+    }
+  }
+  const research = block.researchStatus;
+  if (!isPlainObject(research)) {
+    errors.push('coverage.earlyCampaign.researchStatus 缺失：必须声明 researchStatus 严格规则');
+  } else {
+    if (research.requiredForEarlyCampaignEvents !== true) {
+      errors.push('coverage.earlyCampaign.researchStatus.requiredForEarlyCampaignEvents 必须为 true（严格规则）');
+    }
+    if (research.enforcedFrom !== 'HIST-01') {
+      errors.push(`coverage.earlyCampaign.researchStatus.enforcedFrom 必须为 'HIST-01'，实际 ${JSON.stringify(research.enforcedFrom)}`);
+    }
+    if (canonicalJson(research.enum) !== canonicalJson(RESEARCH_STATUS_ENUM)) {
+      errors.push('coverage.earlyCampaign.researchStatus.enum 必须与验证器枚举完全一致');
     }
   }
   return errors;
@@ -1161,9 +1218,9 @@ function validateAnalysisProfilesContract(coverage) {
  * “18 架俯冲轰炸机”。同一个数字 18 在不同章节被归到不同的机种类别，读者会得到
  * 矛盾信息。检查会精确指出事件 ID、数字与两侧章节。
  *
- * 过渡规则：HIST-01 已交付内容中存在该矛盾，本任务不编辑 content/history.json，
- * 因此按 coverage.contentTransition.crossChapterContradictionEnforcement 决定
- * 报错或警告；HIST-01 的后续修订任务修好内容后由 ARCH-02-flip 把 enforcement 改为 off（严格）。
+ * 严格规则（ARCH-02 attempt 5）：`coverage.crossChapterContradiction.enforcement = 'strict'`，
+ * 门禁中始终作为错误报告，不存在 warn/transition 豁免。参考案例（达尔文 18 架飞机类别）
+ * 只用于 --self-test 的**构造式**负例，不表示该矛盾存在于本候选或任何已集成内容中。
  */
 const AIRCRAFT_CATEGORY_PATTERNS = [
   { category: 'dive-bomber', pattern: /(俯冲轰炸机|俯冲轰炸)/ },
@@ -1277,15 +1334,6 @@ function relatedClaimEntries(event, maps) {
 }
 
 /**
- * 跨章节矛盾检查在过渡期的执行模式：'warn'（默认）或 'off'（严格报错）。
- */
-function contradictionEnforcement(coverage) {
-  const block = coverage && coverage.contentTransition;
-  const mode = block && block.crossChapterContradictionEnforcement;
-  return mode === 'off' ? 'off' : 'warn';
-}
-
-/**
  * 检查单个事件的跨章节数值/类别矛盾。
  * @returns {string[]} 错误信息（空数组表示一致）
  */
@@ -1342,8 +1390,16 @@ function crossChapterContradictionErrors(event, pointer) {
  */
 const RESEARCH_STATUS_ENUM = ['not-started', 'sources-identified', 'sources-retrieved', 'cross-checked', 'final'];
 
-function researchStatusErrors(event, pointer, errors) {
+function researchStatusErrors(event, pointer, errors, { required = false } = {}) {
   if (!isPlainObject(event)) return;
+  // 0) F2：早期战役事件必须声明 researchStatus（严格规则，不依赖 --stage）。
+  //    此前只在字段存在时才校验枚举，等于永不强制；现在缺失即具名错误。
+  if (required && (!hasOwn(event, 'researchStatus') || event.researchStatus === undefined || event.researchStatus === null)) {
+    addError(
+      errors,
+      `${pointer}.researchStatus: 早期战役事件必须声明 researchStatus（${RESEARCH_STATUS_ENUM.join('|')} 之一），过程状态不得只写在正文里（自 HIST-01 起生效）`,
+    );
+  }
   // 1) researchStatus 本身必须是合法枚举
   if (hasOwn(event, 'researchStatus') && event.researchStatus !== undefined && event.researchStatus !== null) {
     if (!RESEARCH_STATUS_ENUM.includes(event.researchStatus)) {
@@ -2629,6 +2685,31 @@ function historyMediaMigrationHint() {
 }
 
 /**
+ * ARCH-02 R4：--media 两份输入文件缺失时的精确错误文本（CLI 与自测共用，
+ * 避免自测只比较硬编码常量或只 grep 源码）。
+ * @param {'history'|'media'} kind 缺失的文件类型
+ * @param {string} filePath 解析后的目标路径
+ * @returns {string[]} 逐行错误文本
+ */
+function mediaInputMissingMessages(kind, filePath) {
+  if (kind === 'history') {
+    return [
+      `[media] 内容文件不存在：content/history.json（${filePath}）`,
+      '[media] --media 需要同时读取 content/history.json 与 content/media.json；当前 history.json 缺失。',
+    ];
+  }
+  if (kind === 'media') {
+    return [
+      `[media] 素材注册表不存在：content/media.json（${filePath}）`,
+      '[media] 期望结构：{ "version": 1, "media": [ ... ] }，条目形状与 history.json 旧 media 条目完全一致。',
+      '[media] 迁移映射：把 history.json 顶层 media[] 原样搬到 content/media.json 的 media[] 中，然后删除 history 的 media 字段。',
+      '[media] 由 MEDIA-02 负责写入 content/media.json；--stage 门禁不受本文件缺失影响。',
+    ];
+  }
+  throw new Error(`未知的缺失输入文件类型：${kind}`);
+}
+
+/**
  * ARCH-02 a2 修复 D3：**地图阶段专用校验**。
  *
  * 上一版的阶段负例只删 knownEnemy / consequence，靠 schema 层「缺少必填字段」失败，
@@ -2794,15 +2875,16 @@ export function validateDocument(doc, options = {}) {
         earlyCampaignDepthErrors(event, coverage, maps, `$.events[${index}]`, errors);
       }
       // ARCH-02 R3：研究/检索过程状态只能写 researchStatus，正文/summary 不得出现研究过程措辞。
-      researchStatusErrors(event, `$.events[${index}]`, errors);
+      // F2：早期战役事件必须声明 researchStatus（严格规则，不依赖 --stage）。
+      researchStatusErrors(event, `$.events[${index}]`, errors, {
+        required: isEarlyCampaignEvent(event, coverage),
+      });
       // ARCH-02：跨章节数值/类别一致性（达尔文 18 架飞机参考案例）。
+      // F4/验收 5：该规则是严格规则（coverage.crossChapterContradiction.enforcement =
+      // 'strict'），在门禁中始终报错，不存在 warn/transition 豁免；参考案例只用于构造式负例。
       event.__relatedClaims = relatedClaimEntries(event, maps);
       for (const message of crossChapterContradictionErrors(event, `$.events[${index}] (${event.id})`)) {
-        // 过渡窗口：已交付的 HIST-01 内容存在该矛盾且本任务不编辑 history.json，
-        // 因此按 coverage.contentTransition 决定报错还是警告。warn 仍然报告，不是静默跳过。
-        const mode = contradictionEnforcement(coverage);
-        if (mode === 'off') addError(errors, message);
-        else warnings.push(message);
+        addError(errors, message);
       }
       delete event.__relatedClaims;
     }
@@ -3128,229 +3210,13 @@ function printResult(result, { file, stage, media, rootDir }) {
 // ---------------------------------------------------------------------------
 
 /**
- * ARCH-02 a2 修复 D2：**严格模式对真实内容执行**。
+ * 纯契约检查（不需要 content/history.json）。
  *
- * 上一版的致命问题是：analysisProfiles / researchStatus 只在「为了通过而写的」
- * 夹具上被检查，真实 content/history.json 从未触发这些规则，所以门禁是空转的。
- *
- * 本函数读取真实 content/history.json，用**严格 coverage**（旧五键过渡窗口关闭、
- * 跨章节矛盾升级为错误）跑一遍完整验证，并把结果分成三类：
- *   · 新规则违规（analysisProfiles / researchStatus / 跨章节矛盾）→ 必须逐个报出
- *   · 其它错误 → 同样报出，但标注为「内容尚未交付」而非契约缺陷
- * 这样规则是否真的在真实内容上生效，是可复现的，而不是靠夹具自证。
- *
- * 退出码语义：0 = 严格模式下无新规则违规；1 = 有新规则违规。
- * 注意：HIST-01 内容尚未写入 analysisProfiles / researchStatus 时，这里会如实报错，
- * 这正说明规则在真实内容上生效了（而不是空转）。
+ * ARCH-02 attempt 5：删除了 --real-content 真实内容诊断模式。原模式依赖真实
+ * content/history.json，并在该基座没有早期战役内容时只能输出 NV —— 它没有证明
+ * 任何新严格规则已在真实内容上生效。新规则的证据一律来自 --self-test 的**构造式**
+ * 内存文档；真实内容由 HIST-01 交付后再由 --stage 门禁检查。
  */
-function runRealContentChecks() {
-  const failures = [];
-  console.log('DSH 真实内容严格检查（ARCH-02 a2：新规则必须对真实内容生效）');
-  const historyPath = path.join(REPO_ROOT, 'content', 'history.json');
-  console.log(`content：${historyPath}`);
-  console.log('');
-
-  if (!fs.existsSync(historyPath)) {
-    console.log('SKIP  真实内容不存在：content/history.json（由 HIST-01 交付后本检查才生效）');
-    console.log('      注意：这不是通过。严格模式在内容缺失时无法证明规则生效。');
-    return { ok: false, verdict: 'not-verifiable', skipped: true };
-  }
-  let doc;
-  try {
-    doc = readJson(historyPath, 'content/history.json');
-  } catch (error) {
-    console.log(`FAIL  无法解析 content/history.json：${error.message}`);
-    return { ok: false, skipped: false };
-  }
-  const coverage = loadCoverageOrThrow();
-
-  // 严格 coverage：关闭旧五键过渡窗口，把跨章节矛盾从 warn 升级为 error
-  const strictCoverage = clone(coverage);
-  if (strictCoverage.earlyCampaign && strictCoverage.earlyCampaign.legacyAnalysis) {
-    strictCoverage.earlyCampaign.legacyAnalysis.enforcement = 'off';
-  }
-  if (strictCoverage.contentTransition) {
-    strictCoverage.contentTransition.crossChapterContradictionEnforcement = 'off';
-  }
-
-  // ARCH-02 attempt 3 修复 D2：验收阶段是 **background**（HIST-01 交付早期扩张），
-  // 不是 strategy。旧版固定用 'strategy'，评审据此判定「早期战役规则只作用于不存在的
-  // background 事件」。现在按 background 跑，并额外列出每个阶段的实际命中数，
-  // 使「规则是否真的执行」可复现、可对照。
-  const ACCEPTANCE_STAGE = 'background';
-  const stageEvidence = [];
-  for (const stage of STAGE_IDS) {
-    const probe = validateDocument(doc, {
-      coverage: strictCoverage,
-      stage,
-      rootDir: REPO_ROOT,
-      fileSystem: REAL_FILE_SYSTEM,
-    });
-    const all = [...probe.errors, ...probe.warnings];
-    stageEvidence.push({
-      stage,
-      analysisProfiles: all.filter((x) => /analysisProfiles|旧五键/.test(x)).length,
-      researchStatus: all.filter((x) => /researchStatus|研究\/检索过程措辞/.test(x)).length,
-      contradiction: all.filter((x) => /跨章节数值\/类别矛盾/.test(x)).length,
-    });
-  }
-
-  const result = validateDocument(doc, {
-    coverage: strictCoverage,
-    stage: ACCEPTANCE_STAGE,
-    rootDir: REPO_ROOT,
-    fileSystem: REAL_FILE_SYSTEM,
-  });
-  const allMessages = [...result.errors, ...result.warnings];
-
-  const buckets = {
-    analysisProfiles: [],
-    researchStatus: [],
-    contradiction: [],
-    other: [],
-  };
-  for (const message of allMessages) {
-    if (/analysisProfiles|旧五键/.test(message)) buckets.analysisProfiles.push(message);
-    else if (/researchStatus|研究\/检索过程措辞/.test(message)) buckets.researchStatus.push(message);
-    else if (/跨章节数值\/类别矛盾/.test(message)) buckets.contradiction.push(message);
-    else buckets.other.push(message);
-  }
-  // 去重（同一条信息可能既进 errors 又进 warnings）
-  for (const key of Object.keys(buckets)) buckets[key] = [...new Set(buckets[key])];
-
-  // 早期战役覆盖度必须先算：它决定"未触发"到底是「验证通过」还是「无法验证」
-  const earlyIds = (strictCoverage.earlyCampaign && strictCoverage.earlyCampaign.eventIds) || [];
-  const presentEarly = earlyIds.filter((id) => (doc.events || []).some((e) => e && e.id === id));
-  const missingEarly = earlyIds.filter((id) => !presentEarly.includes(id));
-  const hasEarlyContent = presentEarly.length > 0;
-
-  const reportBucket = (label, items, { asFailure }) => {
-    if (items.length === 0) {
-      // ARCH-02 attempt 4：没有早期战役内容时，"未触发"不等于"通过"。
-      if (!hasEarlyContent) {
-        console.log(`NV    ${label}：无法验证（本基座无早期战役事件，规则未被真实内容触发）`);
-      } else {
-        console.log(`PASS  ${label}：真实内容未触发该规则（已检查 ${presentEarly.length} 个早期战役事件）`);
-      }
-      return;
-    }
-    if (asFailure) {
-      failures.push(label);
-      console.log(`FAIL  ${label}（${items.length} 处）—— 说明规则已在真实内容上生效，内容需修正`);
-    } else {
-      console.log(`INFO  ${label}（${items.length} 处，非本契约缺陷）`);
-    }
-    for (const item of items.slice(0, 8)) console.log(`      - ${item}`);
-    if (items.length > 8) console.log(`      … 其余 ${items.length - 8} 处省略`);
-  };
-
-  // 新规则违规 → 失败（这正是「规则在真实内容上生效」的证据）
-  reportBucket('analysisProfiles 十键强制（真实内容）', buckets.analysisProfiles, { asFailure: true });
-  reportBucket('researchStatus 过程状态规则（真实内容）', buckets.researchStatus, { asFailure: true });
-  reportBucket('跨章节数值/类别矛盾（真实内容，严格模式）', buckets.contradiction, { asFailure: true });
-  // 其它错误（多为内容尚未交付）→ 只报告
-  reportBucket('其它内容错误（多为内容未交付，非契约缺陷）', buckets.other, { asFailure: false });
-
-  // ARCH-02 attempt 3 修复 D3：researchStatus 的正向用例必须落在**真实内容**上。
-  // HIST-01 没有事件携带 researchStatus，正文也没有过程措辞，所以规则本身在真实内容上
-  // 从未被正向触发过。这里从真实文档**在内存中**构造一个探针事件（不改磁盘），
-  // 给它注入研究过程措辞，证明规则确实会对真实形状的内容报错。
-  const researchStatusProbe = runResearchStatusPositiveProbe(doc, strictCoverage);
-  if (researchStatusProbe.ok) {
-    console.log(`PASS  researchStatus 正向探针：真实内容事件注入过程措辞后被拒绝（${researchStatusProbe.hits} 处），标签「自 HIST-01 起生效」有真实运行支撑`);
-  } else {
-    failures.push('researchStatus-positive-probe');
-    console.log(`FAIL  researchStatus 正向探针：${researchStatusProbe.reason}`);
-  }
-
-  // 早期战役覆盖度已在前面计算（决定"未触发"的语义），这里直接复用。
-
-  console.log('');
-  console.log('阶段对照（严格模式下每个阶段的实际命中，证明规则与阶段无关地执行）：');
-  for (const row of stageEvidence) {
-    console.log(
-      `  ${row.stage.padEnd(11)} analysisProfiles=${String(row.analysisProfiles).padEnd(2)} researchStatus=${String(row.researchStatus).padEnd(2)} 跨章节矛盾=${row.contradiction}`,
-    );
-  }
-  console.log(`  验收阶段取 '${ACCEPTANCE_STAGE}'（HIST-01 交付早期扩张的阶段），不是 'strategy'`);
-  console.log('');
-  console.log(
-    `真实内容统计：${(doc.events || []).length} 个事件，` +
-      `其中 ${(doc.events || []).filter((e) => e && e.analysisProfiles).length} 个含 analysisProfiles，` +
-      `${(doc.events || []).filter((e) => e && e.earlyCampaignAnalysis).length} 个含旧五键，` +
-      `${(doc.events || []).filter((e) => e && e.researchStatus).length} 个含 researchStatus`,
-  );
-  console.log(
-    `早期战役覆盖：契约要求 ${earlyIds.length} 个，真实内容存在 ${presentEarly.length} 个` +
-      (missingEarly.length > 0 ? `，缺 ${missingEarly.join(', ')}（其规则无法被检查，属 HIST-01 未交付）` : ''),
-  );
-
-  // ARCH-02 attempt 4 修复：不得在「没有任何早期战役内容」时输出 PASS。
-  // 缺内容既不是通过、也不是契约缺陷——必须明确标注为「无法验证」。
-  if (!hasEarlyContent) {
-    console.log('');
-    console.log('结果：NOT-VERIFIABLE（本基座没有早期战役事件，严格规则无法在真实内容上验证）');
-    console.log('      这不是 PASS：没有任何 analysisProfiles / researchStatus / 跨章节矛盾规则被真实内容触发过。');
-    console.log('      这也不是契约缺陷：早期战役内容由 HIST-01 交付，属下游任务。');
-    console.log('      退出码 2 表示「本次运行未能证明」，与 0（已证明通过）和 1（已证明违规）区分开。');
-    return {
-      ok: false,
-      verdict: 'not-verifiable',
-      skipped: true,
-      stageEvidence,
-      buckets,
-      missingEarly,
-      presentEarly,
-    };
-  }
-
-  if (failures.length === 0) {
-    console.log(
-      `结果：PASS（真实内容满足全部新增严格规则；本次实际检查了 ${presentEarly.length} 个早期战役事件）`,
-    );
-    return { ok: true, verdict: 'verified-pass', skipped: false, stageEvidence, buckets, missingEarly, presentEarly };
-  }
-  console.log(`结果：FAIL（${failures.length} 类新规则在真实内容上被触发：${failures.join('、')}）`);
-  return { ok: false, verdict: 'verified-fail', skipped: false, stageEvidence, buckets, missingEarly, presentEarly };
-}
-
-/**
- * ARCH-02 attempt 3 修复 D3：researchStatus 的**正向探针**。
- *
- * 从真实文档中挑一个事件，在**内存副本**上注入研究过程措辞（不改磁盘、不改 content/），
- * 然后验证规则确实报错、且错误标注「自 HIST-01 起生效」。这样「自 HIST-01 起生效」
- * 这个标签就不是只靠手写夹具支撑，而是对真实内容形状的一次实际运行。
- */
-function runResearchStatusPositiveProbe(doc, coverage) {
-  const events = Array.isArray(doc && doc.events) ? doc.events : [];
-  if (events.length === 0) return { ok: false, reason: '真实内容没有事件，无法构造探针' };
-  // 优先挑一个早期战役事件（HIST-01 交付的那批）
-  const earlyIds = new Set((coverage.earlyCampaign && coverage.earlyCampaign.eventIds) || []);
-  const target = events.find((e) => e && earlyIds.has(e.id)) || events[0];
-  if (!target || !Array.isArray(target.article) || target.article.length === 0) {
-    return { ok: false, reason: '目标事件没有 article，无法注入过程措辞' };
-  }
-  const probeDoc = clone(doc);
-  const probeEvent = probeDoc.events.find((e) => e && e.id === target.id);
-  probeEvent.article[0].body = `${probeEvent.article[0].body}本文仍在检索相关资料，尚待查证具体数字。`;
-  const probeResult = validateDocument(probeDoc, {
-    coverage,
-    stage: 'background',
-    rootDir: REPO_ROOT,
-    fileSystem: REAL_FILE_SYSTEM,
-  });
-  const hits = [...probeResult.errors, ...probeResult.warnings].filter((x) =>
-    /研究\/检索过程措辞/.test(x),
-  );
-  if (hits.length === 0) {
-    return { ok: false, reason: `在真实事件 ${target.id} 上注入过程措辞后规则没有报错` };
-  }
-  if (!hits.every((h) => /自 HIST-01 起生效/.test(h))) {
-    return { ok: false, reason: `错误信息未标注「自 HIST-01 起生效」：${hits[0]}` };
-  }
-  return { ok: true, hits: hits.length, targetId: target.id };
-}
-
 function runContractChecks() {
   const failures = [];
   console.log('DSH 契约一致性检查（不需要 content/history.json）');
@@ -3416,7 +3282,7 @@ function runContractChecks() {
     if (earlyErrors.length === 0) {
       const block = coverage.earlyCampaign;
       console.log(
-        `PASS  早期战役结构锁定（${block.eventIds.length} 个事件 × [${EARLY_CAMPAIGN_KEYS.join('/')}]，每类 >=${block.minHanCharsPerKey} 汉字；导读强制小节 ${block.overviewTopics.requiredHeadings.join('、')}）`,
+        `PASS  早期战役结构锁定（${block.eventIds.length} 个事件；目标结构 ${ANALYSIS_PROFILE_KEYS.length} 键 analysisProfiles，旧五键仅保留迁移诊断；导读强制小节 ${block.overviewTopics.requiredHeadings.join('、')}）`,
       );
       // D5：强制小节必须按小节自身深度达标
       const overviewMin = block.overviewTopics.minHanCharsPerHeading;
@@ -3504,8 +3370,13 @@ function runContractChecks() {
     if (profileErrors.length === 0) {
       const keys = coverage.earlyCampaign.analysisProfiles.keys.map((k) => k.key);
       const legacy = coverage.earlyCampaign.legacyAnalysis;
+      const research = coverage.earlyCampaign.researchStatus;
+      const cross = coverage.crossChapterContradiction;
       console.log(
-        `PASS  早期战役十键分析锁定（${keys.join(' / ')}；每键 >=${coverage.earlyCampaign.analysisProfiles.minHanCharsPerKey} 汉字；旧五键过渡=${legacy.enforcement}，由 ${legacy.legacyDisabledBy} 关闭）`,
+        `PASS  早期战役十键分析锁定（${keys.join(' / ')}；每键 >=${coverage.earlyCampaign.analysisProfiles.minHanCharsPerKey} 汉字且必含要素逐键检查正文；旧五键开关=${legacy.enforcement}，legacyDisabledBy=${legacy.legacyDisabledBy}，门禁无过渡豁免）`,
+      );
+      console.log(
+        `PASS  严格规则声明（researchStatus 对早期战役事件必填，自 ${research.enforcedFrom} 起生效；跨章节矛盾 enforcement=${cross.enforcement}，参考案例仅用于构造式负例=${cross.referenceCaseIsConstructedOnly}）`,
       );
     } else {
       failures.push('analysis-profiles');
@@ -3898,6 +3769,8 @@ function makeAnalysisProfiles(base, overrides = {}) {
 function makeProfiledEarlyCampaignEvent(base, opts = {}) {
   const event = makeEarlyCampaignEvent(base, { omitAnalysis: true, id: opts.id });
   event.analysisProfiles = makeAnalysisProfiles(base, opts.overrides || {});
+  // F2：早期战役事件必须声明 researchStatus（严格规则，不依赖 --stage）。
+  event.researchStatus = 'sources-retrieved';
   return event;
 }
 
@@ -4175,32 +4048,6 @@ function buildSelfTests() {
       if (!errors.some((error) => /battle-midway/.test(error))) {
         throw new Error(`错误信息中没有指出 battle-midway：${errors.join('; ')}`);
       }
-    },
-  ]);
-  tests.push([
-    'TEAM-PILOT 证据存档存在且 planHash 与工单一致',
-    () => {
-      const evidencePath = path.join(REPO_ROOT, 'docs', 'research', 'team-pilot-evidence.json');
-      if (!fs.existsSync(evidencePath)) throw new Error(`证据存档缺失：${evidencePath}`);
-      const evidence = readJson(evidencePath, 'team-pilot-evidence.json');
-      const bundle = evidence && evidence.bundle;
-      if (!isPlainObject(bundle)) throw new Error('证据存档缺少 bundle');
-      const expectedHash = 'a61d094a43b2c9242b92d257373c06e14b08d81be394a9c8c87ba937b4005a7c';
-      if (bundle.planHash !== expectedHash) throw new Error(`planHash 不一致：${bundle.planHash}`);
-      const org = bundle.organization;
-      if (!isPlainObject(org) || !Array.isArray(org.agents) || org.agents.length !== 6) {
-        throw new Error('组织证据中的 agents 应为 6 个');
-      }
-      for (const role of ['project-director', 'knowledge-lead', 'knowledge-architect', 'knowledge-developer', 'knowledge-content_creator', 'knowledge-tester']) {
-        if (!org.agents.some((agent) => agent && agent.id === role)) throw new Error(`缺少 agent ${role}`);
-      }
-      const matrix = org.approvalMatrix;
-      for (const key of ['dispatch', 'moduleAcceptance', 'professionalReview', 'integrationAndVerification', 'exceptions']) {
-        if (!isPlainObject(matrix) || typeof matrix[key] !== 'string' || !matrix[key]) {
-          throw new Error(`approvalMatrix 缺少 ${key}`);
-        }
-      }
-      if (!isNonEmptyString(evidence._note)) throw new Error('证据存档缺少“非本模块成果”的免责说明');
     },
   ]);
   tests.push([
@@ -4603,29 +4450,33 @@ function buildSelfTests() {
     },
   ]);
   tests.push([
-    'D2 合规的早期战役五类分析通过（正向对照）',
+    'D2 合规的早期战役分析（analysisProfiles 十键）在 background 阶段通过（正向对照）',
     () => {
       const doc = clone(base);
-      doc.events.push(makeEarlyCampaignEvent(doc));
+      doc.events.push(makeProfiledEarlyCampaignEvent(doc));
       // background 阶段会因其它 coverage 缺失而失败，这里单独看这个事件条目没有分析类错误。
       const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
-      const analysisErrors = result.errors.filter((error) => /earlyCampaignAnalysis/.test(error));
+      const analysisErrors = result.errors.filter(
+        (error) => /analysisProfiles|旧五键|researchStatus/.test(error) && !/缺少必需事件|缺少重点文章/.test(error),
+      );
       if (analysisErrors.length > 0) {
-        throw new Error(`合规早期战役分析被误判：${analysisErrors.slice(0, 5).join('; ')}`);
+        throw new Error(`合规 analysisProfiles 分析被误判：${analysisErrors.slice(0, 5).join('; ')}`);
       }
     },
   ]);
   tests.push([
-    'D2 早期战役 fixture 通过结构检查（无 earlyCampaignAnalysis 错误）',
+    'D2 早期战役 fixture 通过结构检查（analysisProfiles 十键 + researchStatus）',
     () => {
       const earlyPath = path.join(REPO_ROOT, 'contracts', 'fixtures', 'valid-early-campaign.json');
       if (!fs.existsSync(earlyPath)) throw new Error(`早期战役 fixture 缺失：${earlyPath}`);
       const earlyDoc = readJson(earlyPath, 'valid-early-campaign.json');
       if (earlyDoc.fixtureOnly !== true) throw new Error('早期战役 fixture 必须 fixtureOnly=true');
       const result = validateDocument(earlyDoc, { coverage, stage: 'background', rootDir: REPO_ROOT });
-      const analysisErrors = result.errors.filter((error) => /earlyCampaignAnalysis/.test(error));
+      const analysisErrors = result.errors.filter(
+        (error) => /analysisProfiles|旧五键|researchStatus/.test(error) && !/缺少必需事件|缺少重点文章/.test(error),
+      );
       if (analysisErrors.length > 0) {
-        throw new Error(`早期战役 fixture 未满足五类分析结构：${analysisErrors.slice(0, 5).join('; ')}`);
+        throw new Error(`早期战役 fixture 未满足 analysisProfiles/researchStatus 结构：${analysisErrors.slice(0, 5).join('; ')}`);
       }
       const schemaErrors = result.errors.filter((error) => /不允许的字段|缺少必填字段/.test(error));
       if (schemaErrors.length > 0) {
@@ -4823,9 +4674,15 @@ function buildSelfTests() {
       const noBlock = clone(coverage);
       delete noBlock.earlyCampaign;
       if (validateEarlyCampaignContract(noBlock).length === 0) throw new Error('缺少 earlyCampaign 块没有被发现');
-      const missingKey = clone(coverage);
-      missingKey.earlyCampaign.analysisKeys = missingKey.earlyCampaign.analysisKeys.filter((entry) => entry.key !== 'impact');
-      if (validateEarlyCampaignContract(missingKey).length === 0) throw new Error('缺少 impact 分析键没有被发现');
+      // ARCH-02 attempt 5：旧五键兼容只允许 legacyAnalysis 开关表达，第二套 analysisKeys 声明被拒绝。
+      const legacyKeys = clone(coverage);
+      legacyKeys.earlyCampaign.analysisKeys = [{ key: 'impact', title: '影响', question: '旧形状' }];
+      if (!validateEarlyCampaignContract(legacyKeys).some((error) => /analysisKeys 已被移除/.test(error))) {
+        throw new Error('重新声明 analysisKeys 没有被发现');
+      }
+      const shallowMin = clone(coverage);
+      shallowMin.earlyCampaign.minHanCharsPerKey = 10;
+      if (validateEarlyCampaignContract(shallowMin).length === 0) throw new Error('最小篇幅阈值过低没有被发现');
 
       const missingEvent = clone(coverage);
       missingEvent.earlyCampaign.eventIds = missingEvent.earlyCampaign.eventIds.filter((id) => id !== 'event-guam-1941');
@@ -5214,32 +5071,35 @@ function buildSelfTests() {
     },
   ]);
   tests.push([
-    'ARCH-02 R2 旧五键在过渡窗口内仍被接受（不回归 HIST-01 内容）',
+    'ARCH-02 R2 旧五键在门禁中被具名拒绝（无过渡豁免，逐阶段负例）',
     () => {
       const doc = clone(base);
-      const legacyEvent = makeEarlyCampaignEvent(doc); // 只带旧 earlyCampaignAnalysis
-      doc.events.push(legacyEvent);
-      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
-      const legacySpecific = result.errors.filter((error) => /旧五键/.test(error) || /analysisProfiles.*十键分析结构/.test(error));
-      if (legacySpecific.length > 0) {
-        throw new Error(`过渡窗口内旧五键被误拒：${legacySpecific.slice(0, 4).join(' | ')}`);
+      doc.events.push(makeEarlyCampaignEvent(doc)); // 只带旧 earlyCampaignAnalysis
+      for (const stage of ['strategy', 'background', 'pearl', 'coral', 'full']) {
+        const result = validateDocument(doc, { coverage, stage, rootDir: REPO_ROOT });
+        const hit = result.errors.filter((error) => /旧五键结构已被停用/.test(error) && /analysisProfiles/.test(error));
+        if (hit.length === 0) throw new Error(`stage=${stage}: 旧五键没有被拒绝`);
       }
     },
   ]);
   tests.push([
-    'ARCH-02 R2 过渡窗口被关闭后旧五键被具名拒绝（负例）',
+    'ARCH-02 R2 旧五键的逐键迁移诊断仍保留（便于 HIST-01 定位）',
     () => {
       const doc = clone(base);
-      doc.events.push(makeEarlyCampaignEvent(doc)); // 旧五键
-      const strictCoverage = clone(coverage);
-      strictCoverage.earlyCampaign.legacyAnalysis.enforcement = 'off';
-      const result = validateDocument(doc, { coverage: strictCoverage, stage: 'background', rootDir: REPO_ROOT });
-      const hit = result.errors.filter((error) => /旧五键结构已被停用/.test(error) && /analysisProfiles/.test(error));
-      if (hit.length === 0) throw new Error(`关闭过渡窗口后旧五键未被拒绝：${result.errors.slice(0, 5).join(' | ')}`);
+      const legacyEvent = makeEarlyCampaignEvent(doc);
+      delete legacyEvent.earlyCampaignAnalysis.course;
+      doc.events.push(legacyEvent);
+      const result = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const missingCourse = result.errors.filter(
+        (error) => /earlyCampaignAnalysis\.course: 缺少必需的/.test(error) && /迁移定位/.test(error),
+      );
+      if (missingCourse.length === 0) {
+        throw new Error(`旧五键缺失诊断没有保留：${result.errors.slice(0, 6).join(' | ')}`);
+      }
     },
   ]);
   tests.push([
-    'ARCH-02 R2 契约必须声明 analysisProfiles 与过渡窗口字段',
+    'ARCH-02 R2 契约必须声明 analysisProfiles、旧五键开关与 researchStatus 严格规则',
     () => {
       const broken = clone(coverage);
       delete broken.earlyCampaign.analysisProfiles;
@@ -5251,6 +5111,9 @@ function buildSelfTests() {
       broken3.earlyCampaign.analysisProfiles.keys = broken3.earlyCampaign.analysisProfiles.keys.filter((k) => k.key !== 'uncertainty');
       const e3 = validateAnalysisProfilesContract(broken3);
       if (e3.length === 0) throw new Error('缺少 uncertainty 键未被发现');
+      const broken4 = clone(coverage);
+      delete broken4.earlyCampaign.researchStatus;
+      if (validateAnalysisProfilesContract(broken4).length === 0) throw new Error('缺少 researchStatus 严格规则声明未被发现');
     },
   ]);
 
@@ -5620,17 +5483,31 @@ function buildSelfTests() {
   tests.push([
     'ARCH-02 a2 --media 两份文件缺失分别精确报错（分支覆盖）',
     () => {
-      // 直接测 CLI ��析与提示构造：两份文件各自的提示文本不同且都点名目标路径
-      const historyMissing = '内容文件不存在';
-      const mediaMissing = '素材注册表不存在';
-      if (historyMissing === mediaMissing) throw new Error('两份文件的错误信息不应相同');
-      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
-      if (!src.includes('[media] 内容文件不存在：content/history.json')) {
-        throw new Error('--media 缺少 history.json 的专属错误分支');
+      // 直接调用 CLI 实际使用的提示构造函数，而不是比较硬编码常量或只 grep 源码。
+      const historyLines = mediaInputMissingMessages('history', 'C:\\scratch\\content\\history.json');
+      const mediaLines = mediaInputMissingMessages('media', 'C:\\scratch\\content\\media.json');
+      const historyText = historyLines.join('\n');
+      const mediaText = mediaLines.join('\n');
+      if (historyText === mediaText) throw new Error('两份文件的错误信息不应相同');
+      if (!/内容文件不存在：content\/history\.json/.test(historyText)) {
+        throw new Error(`history 缺失提示未精确点名文件：${historyText}`);
       }
-      if (!src.includes('[media] 素材注册表不存在：content/media.json')) {
-        throw new Error('--media 缺少 media.json 的专属错误分支');
+      if (!/history\.json 缺失/.test(historyText)) throw new Error('history 缺失提示缺少后果说明');
+      if (!/素材注册表不存在：content\/media\.json/.test(mediaText)) {
+        throw new Error(`media 缺失提示未精确点名文件：${mediaText}`);
       }
+      if (!/期望结构/.test(mediaText) || !/迁移映射/.test(mediaText) || !/MEDIA-02/.test(mediaText)) {
+        throw new Error('media 缺失提示缺少期望结构/迁移映射/写入方说明');
+      }
+      if (!historyText.includes('C:\\scratch\\content\\history.json')) throw new Error('history 提示未包含实际路径');
+      if (!mediaText.includes('C:\\scratch\\content\\media.json')) throw new Error('media 提示未包含实际路径');
+      let threw = false;
+      try {
+        mediaInputMissingMessages('unknown', 'x');
+      } catch {
+        threw = true;
+      }
+      if (!threw) throw new Error('未知缺失类型没有被拒绝（分支函数不自洽）');
     },
   ]);
 
@@ -5843,40 +5720,13 @@ function buildSelfTests() {
         sourceIds: [doc.sources[0].id],
         locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
       });
-      const strict = clone(coverage);
-      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
-      const result = validateDocument(doc, { coverage: strict, stage: 'strategy', rootDir: REPO_ROOT });
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
       const hit = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
       if (hit.length === 0) throw new Error(`矛盾未被检出：${result.errors.slice(0, 6).join(' | ')}`);
       const message = hit[0];
       if (!/event-darwin-air-raid-1942/.test(message)) throw new Error(`错误未点名事件：${message}`);
       if (!/一次没有预警的空袭/.test(message)) throw new Error(`错误未点名正文小节：${message}`);
       if (!/claim-selftest-darwin-category/.test(message)) throw new Error(`错误未点名 claim：${message}`);
-    },
-  ]);
-  tests.push([
-    'ARCH-02 跨章节矛盾在过渡期只警告不失败（不回归 HIST-01）',
-    () => {
-      const doc = clone(base);
-      const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
-      ev.article = [
-        { heading: '一次没有预警的空袭', body: '十八架重型轰炸机出现。', sourceIds: [doc.sources[0].id], claimIds: [doc.claims[0].id] },
-      ];
-      doc.events.push(ev);
-      // claim 侧给出不同类别，构成真正的跨章节矛盾
-      doc.claims.push({
-        id: 'claim-selftest-darwin-transition',
-        text: '这次空袭中有 18 架俯冲轰炸机参与。',
-        claimType: 'fact',
-        entityIds: ['event-darwin-air-raid-1942'],
-        sourceIds: [doc.sources[0].id],
-        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
-      });
-      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
-      const errored = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
-      const warned = result.warnings.filter((warning) => /跨章节数值\/类别矛盾/.test(warning));
-      if (warned.length === 0) throw new Error('过渡期没有产生矛盾警告（不应静默放过）');
-      if (errored.length > 0) throw new Error('过渡期矛盾不应作为门禁错误');
     },
   ]);
   tests.push([
@@ -5916,9 +5766,7 @@ function buildSelfTests() {
         sourceIds: [doc.sources[0].id],
         locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
       });
-      const strict = clone(coverage);
-      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
-      const result = validateDocument(doc, { coverage: strict, stage: 'strategy', rootDir: REPO_ROOT });
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
       const hit = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
       if (hit.length === 0) throw new Error('矛盾未被检出');
       const message = hit[0];
@@ -5936,73 +5784,37 @@ function buildSelfTests() {
   ]);
 
   // ===== ARCH-02 attempt 3：新规则必须在真实内容上执行（D2/D3）=====
+  // ===== ARCH-02 attempt 5：全部证据来自构造的内存文档（不读 content/、docs/）=====
   tests.push([
-    'ARCH-02 a3 早期战役与 researchStatus 检查不依赖 stage（五阶段对照，基座自适应）',
+    'ARCH-02 阶段无关性：构造的早期战役文档在五个阶段命中数一致（构造内存文档）',
     () => {
-      // 修复 D2 的依据：这些检查在 events 循环里无条件执行，因此在任何 stage 下命中数相同。
-      // 若未来有人把检查塞进某个 stage 分支，这条测试会失败。
-      //
-      // ARCH-02 attempt 4：本测试必须在**任意基座**上成立。
-      // 集成基座 df6ae36 只有 HIST-00（4 个 strategy 事件，没有早期战役事件），
-      // 旧版在这里直接 FAIL 是错的——缺内容不是契约缺陷。
-      // 现在分两条路径，且两条都**真正断言**阶段无关性，都不是静默跳过：
-      //   路径 A（real）：真实内容里有早期战役事件 → 直接用真实文档跑五阶段对照（最强证据）
-      //   路径 B（SYNTHETIC）：没有 → 用真实文档的**内存副本**确定性地把其中一个事件改造成
-      //          早期战役事件，再跑五阶段对照；结果显式标注 SYNTHETIC，绝不冒称真实内容。
-      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
-      if (!fs.existsSync(realPath)) {
-        throw new Error(`真实内容缺失（${realPath}），无法构造任何基座（这不是可接受的跳过）`);
-      }
-      const realDoc = readJson(realPath, 'content/history.json');
-      const strict = clone(coverage);
-      strict.earlyCampaign.legacyAnalysis.enforcement = 'off';
-      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
-
-      const earlyIds = new Set((strict.earlyCampaign && strict.earlyCampaign.eventIds) || []);
-      const realEarly = (realDoc.events || []).filter((e) => e && earlyIds.has(e.id));
-
-      let probeDoc;
-      let base;
-      if (realEarly.length > 0) {
-        probeDoc = realDoc;
-        base = 'real';
-      } else {
-        const source = (realDoc.events || []).find(
-          (e) => e && e.id && Array.isArray(e.article) && e.article.length > 0,
-        );
-        if (!source) throw new Error('真实内容里没有任何可用于构建探针的事件');
-        const firstEarlyId = [...earlyIds][0];
-        if (!firstEarlyId) throw new Error('coverage.earlyCampaign.eventIds 为空，无法合成早期战役探针');
-        const src = realDoc.sources && realDoc.sources[0];
-        const clm = realDoc.claims && realDoc.claims[0];
-        if (!src || !clm) throw new Error('真实内容缺少 sources/claims，无法合成探针');
-        probeDoc = clone(realDoc);
-        const victim = probeDoc.events.find((e) => e.id === source.id);
-        victim.id = firstEarlyId;
-        // 挂旧五键：严格模式下必然逐条报「旧五键结构已被停用」，保证命中数非 0
-        victim.earlyCampaignAnalysis = {};
-        for (const key of LEGACY_EARLY_CAMPAIGN_KEYS) {
-          victim.earlyCampaignAnalysis[key] = {
-            title: key,
-            body: 'SYNTHETIC 探针文本，仅用于验证阶段无关性，不代表任何历史内容。',
-            sourceIds: [src.id],
-            claimIds: [clm.id],
-          };
-        }
-        base = 'SYNTHETIC';
-      }
-
-      const counts = [];
-      for (const stage of STAGE_IDS) {
-        const r = validateDocument(probeDoc, { coverage: strict, stage, rootDir: REPO_ROOT });
-        const all = [...r.errors, ...r.warnings];
-        counts.push({
+      // F1 修复：不再读取 content/history.json，也不读 docs/。用夹具派生的内存文档构造一个
+      // “必然命中三类严格规则”的早期战役事件：只有旧五键（旧五键在门禁中始终被拒绝）、
+      // summary 注入研究过程措辞、正文与 claim 注入 18 架飞机类别矛盾。
+      // 若任一检查被 stage 门控，命中数就会随阶段变化，本测试失败。
+      const doc = clone(base);
+      const ev = makeEarlyCampaignEvent(doc, { id: coverage.earlyCampaign.eventIds[0] });
+      ev.summary = `${ev.summary}本文仍在检索相关资料，尚待查证。`;
+      ev.article[0].body = `${ev.article[0].body}十八架重型轰炸机出现。`;
+      doc.events.push(ev);
+      doc.claims.push({
+        id: 'claim-stage-independence-contradiction',
+        text: '这次行动中有 18 架俯冲轰炸机参与。',
+        claimType: 'fact',
+        entityIds: [ev.id],
+        sourceIds: [doc.sources[0].id],
+        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
+      });
+      const counts = STAGE_IDS.map((stage) => {
+        const result = validateDocument(doc, { coverage, stage, rootDir: REPO_ROOT });
+        const all = [...result.errors, ...result.warnings];
+        return {
           stage,
           ap: all.filter((x) => /analysisProfiles|旧五键/.test(x)).length,
           rs: all.filter((x) => /researchStatus|研究\/检索过程措辞/.test(x)).length,
           cc: all.filter((x) => /跨章节数值\/类别矛盾/.test(x)).length,
-        });
-      }
+        };
+      });
       const first = counts[0];
       for (const row of counts) {
         if (row.ap !== first.ap || row.rs !== first.rs || row.cc !== first.cc) {
@@ -6011,161 +5823,150 @@ function buildSelfTests() {
           );
         }
       }
-      // 无论哪条路径，探针都必须真的让 analysisProfiles 规则命中；
-      // 否则「五阶段结果相同」只是 0=0 的假证明。
-      if (first.ap === 0) {
-        throw new Error(
-          `探针没有触发 analysisProfiles（基座模式=${base}）：五阶段"相同"是 0=0 的假证明，规则可能失效`,
-        );
+      // 三段命中都必须非 0，否则“五阶段相同”只是 0=0 的假证明。
+      if (first.ap === 0) throw new Error('构造文档没有触发 analysisProfiles/旧五键 规则（0=0 假证明）');
+      if (first.rs === 0) throw new Error('构造文档没有触发 researchStatus/过程措辞 规则（0=0 假证明）');
+      if (first.cc === 0) throw new Error('构造文档没有触发跨章节矛盾规则（0=0 假证明）');
+      console.log(`      （阶段无关性证据来源：构造的内存夹具文档；ap=${first.ap} rs=${first.rs} cc=${first.cc}）`);
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 researchStatus 在早期战役事件上被强制要求（F2 具名负例）',
+    () => {
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc);
+      delete ev.researchStatus;
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter((error) => /researchStatus/.test(error) && /必须声明 researchStatus/.test(error));
+      if (hit.length === 0) {
+        throw new Error(`缺失 researchStatus 未被强制：${result.errors.slice(0, 6).join(' | ')}`);
       }
-      console.log(
-        `      （阶段无关性证据来源：${base === 'real' ? '真实早期战役内容' : 'SYNTHETIC —— 由真实文档内存副本合成（本基座无 HIST-01 早期战役事件），不代表真实内容'}；analysisProfiles 命中 ${first.ap}）`,
+      // 只由“缺失”触发：不应同时出现“枚举非法”的错误
+      const enumHit = result.errors.filter((error) => /researchStatus.*必须是/.test(error));
+      if (enumHit.length > 0) throw new Error('缺失 researchStatus 的负例被枚举错误连带触发');
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R3 研究过程措辞正向探针：构造合规文档注入措辞后被具名拒绝（构造内存文档）',
+    () => {
+      // 取代旧的“真实内容正向探针”：正向用例同样来自构造的内存文档。
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc);
+      doc.events.push(ev);
+      const clean = validateDocument(doc, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const cleanRuleErrors = clean.errors.filter((error) => /研究\/检索过程措辞|researchStatus/.test(error));
+      if (cleanRuleErrors.length > 0) {
+        throw new Error(`构造的合规文档被误判：${cleanRuleErrors.slice(0, 4).join(' | ')}`);
+      }
+      const probe = clone(doc);
+      probe.events.find((event) => event.id === ev.id).article[0].body += '本文仍在检索相关资料，尚待查证具体数字。';
+      const result = validateDocument(probe, { coverage, stage: 'background', rootDir: REPO_ROOT });
+      const hits = result.errors.filter((error) => /研究\/检索过程措辞/.test(error));
+      if (hits.length === 0) throw new Error('注入研究过程措辞后规则没有报错');
+      if (!hits.every((error) => /自 HIST-01 起生效/.test(error))) {
+        throw new Error(`错误未标注自 HIST-01 起生效：${hits[0]}`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 旧五键在门禁中始终被具名拒绝（无过渡豁免，构造事件）',
+    () => {
+      const doc = clone(base);
+      const legacyEvent = makeEarlyCampaignEvent(doc); // 只带旧 earlyCampaignAnalysis
+      doc.events.push(legacyEvent);
+      for (const stage of ['strategy', 'background', 'full']) {
+        const result = validateDocument(doc, { coverage, stage, rootDir: REPO_ROOT });
+        const hit = result.errors.filter((error) => /旧五键结构已被停用/.test(error) && /analysisProfiles/.test(error));
+        if (hit.length === 0) throw new Error(`stage=${stage}: 旧五键没有被具名拒绝`);
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2/F4 契约禁止过渡豁免：enforcement/legacyDisabledBy/elementMarkers 不合规被拒绝（具名负例）',
+    () => {
+      const transitional = clone(coverage);
+      transitional.earlyCampaign.legacyAnalysis.enforcement = 'transition';
+      if (!validateAnalysisProfilesContract(transitional).some((error) => /enforcement 必须恒为 'off'/.test(error))) {
+        throw new Error('enforcement=transition 没有被拒绝（门禁过渡豁免仍可能生效）');
+      }
+      const wrongDisabler = clone(coverage);
+      wrongDisabler.earlyCampaign.legacyAnalysis.legacyDisabledBy = 'ARCH-02-flip';
+      if (!validateAnalysisProfilesContract(wrongDisabler).some((error) => /legacyDisabledBy 必须严格为 'HIST-01'/.test(error))) {
+        throw new Error("legacyDisabledBy 不是 'HIST-01' 时没有被拒绝");
+      }
+      const noMarkers = clone(coverage);
+      delete noMarkers.earlyCampaign.analysisProfiles.keys[0].elementMarkers;
+      if (!validateAnalysisProfilesContract(noMarkers).some((error) => /elementMarkers/.test(error))) {
+        throw new Error('必含要素缺少机器可判定表述时没有被拒绝');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 R2 analysisProfiles 必含要素缺失被拒绝（逐键不连带，具名负例）',
+    () => {
+      // background 的必含要素是「此前局势」「起因」；正文只保留篇幅，不含任何对应表述。
+      const doc = clone(base);
+      const ev = makeProfiledEarlyCampaignEvent(doc, { overrides: { background: `合成文字：${'盟'.repeat(80)}` } });
+      doc.events.push(ev);
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const hit = result.errors.filter(
+        (error) => /analysisProfiles\.background\.body/.test(error) && /缺少必含要素/.test(error),
       );
-    },
-  ]);
-  tests.push([
-    'ARCH-02 a3 --real-content 验收阶段是 background 而非 strategy',
-    () => {
-      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
-      if (!/const ACCEPTANCE_STAGE = 'background'/.test(src)) {
-        throw new Error("--real-content 的验收阶段不是 'background'（D2 未修复）");
+      if (hit.length !== 2) {
+        throw new Error(`background 应恰好报 2 个必含要素缺失，实际 ${hit.length}：${hit.join(' | ')}`);
       }
-      if (/coverage: strictCoverage,\s*\n\s*stage: 'strategy'/.test(src)) {
-        throw new Error("--real-content 仍以 stage: 'strategy' 调用 validateDocument");
-      }
-    },
-  ]);
-  tests.push([
-    'ARCH-02 a3 researchStatus 正向探针在真实内容事件上触发（D3）',
-    () => {
-      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
-      if (!fs.existsSync(realPath)) throw new Error(`真实内容缺失（${realPath}），无法运行正向探针`);
-      const realDoc = readJson(realPath, 'content/history.json');
-      const strict = clone(coverage);
-      // 正向探针只需要 researchStatus 规则生效；其余过渡窗口保持原样
-      const probe = runResearchStatusPositiveProbe(realDoc, strict);
-      if (!probe.ok) throw new Error(`正向探针失败：${probe.reason}`);
-      if (!probe.targetId) throw new Error('正向探针没有报告目标事件 ID');
-      // 探针只操作内存副本，不得修改磁盘上的真实内容
-      const after = readJson(realPath, 'content/history.json');
-      if (JSON.stringify(after) !== JSON.stringify(realDoc)) {
-        throw new Error('正向探针修改了磁盘上的 content/history.json（必须只在内存副本上操作）');
+      if (!hit.some((error) => /「此前局势」/.test(error))) throw new Error('没有点名「此前局势」');
+      if (!hit.some((error) => /「起因」/.test(error))) throw new Error('没有点名「起因」');
+      // 只由 background 触发：其它键不得出现同类错误
+      const collateral = result.errors.filter(
+        (error) => /analysisProfiles\.(?!background)[a-zA-Z]+\.body: 缺少必含要素/.test(error),
+      );
+      if (collateral.length > 0) {
+        throw new Error(`必含要素负例被其它键连带触发：${collateral.join(' | ')}`);
       }
     },
   ]);
   tests.push([
-    'ARCH-02 a3 文档中的达尔文案例存在性表述与当前基座一致（D1 防再次错报）',
+    'ARCH-02 跨章节矛盾在门禁中为错误（无过渡豁免，构造事件）',
     () => {
-      // attempt 2 的教训：文档在基座没有 HIST-01 时仍声称案例"真实存在"。
-      // 这里按当前真实内容判定，并要求文档使用条件式表述（不再出现无条件的"真实存在"）。
-      const docPath = path.join(REPO_ROOT, 'docs', 'research', 'contract-correction.md');
-      if (!fs.existsSync(docPath)) throw new Error(`contract-correction.md 缺失：${docPath}`);
-      const text = fs.readFileSync(docPath, 'utf8');
-      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
-      const hasRealContent = fs.existsSync(realPath);
-      let darwinExists = false;
-      if (hasRealContent) {
-        const realDoc = readJson(realPath, 'content/history.json');
-        darwinExists = (realDoc.events || []).some((e) => e && e.id === 'event-darwin-air-raid-1942');
-      }
-      // 无论如何都不得出现无条件的「真实存在」断言（必须是基座条件式）
-      if (/（\*\*在含 HIST-01 的代码树上真实存在\*\*）/.test(text)) {
-        throw new Error('文档仍保留无条件的「真实存在」断言；必须改为基座条件式表述');
-      }
-      if (!/基座条件/.test(text) && !/条件式/.test(text)) {
-        throw new Error('文档缺少达尔文案例的基座条件说明');
-      }
-      // 如果当前基座确实有该事件，文档必须说明它在该基座存在
-      if (darwinExists) {
-        const mentionsBase = /054dc36/.test(text);
-        if (!mentionsBase) throw new Error('当前基座含达尔文事件，但文档没有写明对应基座标识');
-      }
+      const doc = clone(base);
+      const ev = makeEarlyCampaignEvent(doc, { id: 'event-darwin-air-raid-1942' });
+      ev.article = [
+        {
+          heading: '一次没有预警的空袭',
+          body: '十八架重型轰炸机出现。',
+          sourceIds: [doc.sources[0].id],
+          claimIds: [doc.claims[0].id],
+        },
+      ];
+      doc.events.push(ev);
+      doc.claims.push({
+        id: 'claim-selftest-darwin-strict',
+        text: '这次空袭中有 18 架俯冲轰炸机参与。',
+        claimType: 'fact',
+        entityIds: ['event-darwin-air-raid-1942'],
+        sourceIds: [doc.sources[0].id],
+        locators: [{ sourceId: doc.sources[0].id, locatorType: 'page', locator: 'p. 12' }],
+      });
+      const result = validateDocument(doc, { coverage, stage: 'strategy', rootDir: REPO_ROOT });
+      const errored = result.errors.filter((error) => /跨章节数值\/类别矛盾/.test(error));
+      const warned = result.warnings.filter((warning) => /跨章节数值\/类别矛盾/.test(warning));
+      if (errored.length === 0) throw new Error('门禁没有把跨章节矛盾作为错误报告');
+      if (warned.length > 0) throw new Error('跨章节矛盾仍被降级为警告（transition 豁免未被移除）');
     },
   ]);
   tests.push([
-    'ARCH-02 a4 阶段无关性测试在无 HIST-01 的基座上也运行且标注 SYNTHETIC',
+    'ARCH-02 契约声明跨章节矛盾为严格规则且参考案例仅用于构造式负例',
     () => {
-      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
-      // 必须存在基座自适应分支，且带 SYNTHETIC 标注
-      if (!/base = 'SYNTHETIC'/.test(src)) {
-        throw new Error('阶段无关性测试缺少 SYNTHETIC 基座分支（在无 HIST-01 的基座上会 FAIL）');
+      const block = coverage.crossChapterContradiction;
+      if (!isPlainObject(block)) throw new Error('coverage.crossChapterContradiction 缺失');
+      if (block.enforcement !== 'strict') {
+        throw new Error(`crossChapterContradiction.enforcement 必须为 'strict'，实际 ${JSON.stringify(block.enforcement)}`);
       }
-      if (!/SYNTHETIC —— 由真实文档内存副本合成/.test(src)) {
-        throw new Error('缺少 SYNTHETIC 的显式标注输出（会变成静默通过）');
-      }
-      // 两条路径都必须断言命中数非 0，防止 0=0 的假证明
-      if (!/探针没有触发 analysisProfiles/.test(src)) {
-        throw new Error('缺少"命中数必须非 0"的断言（0=0 会构成假证明）');
-      }
-      // 真实内容里没有早期战役事件时，本测试仍必须实际执行（不得 return 跳过）
-      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
-      const realDoc = fs.existsSync(realPath) ? readJson(realPath, 'content/history.json') : null;
-      if (realDoc) {
-        const earlyIds = new Set(coverage.earlyCampaign.eventIds);
-        const hasEarly = (realDoc.events || []).some((e) => e && earlyIds.has(e.id));
-        // 无论有没有，测试都必须能构造探针（有→real，无→SYNTHETIC）
-        if (!hasEarly) {
-          const source = (realDoc.events || []).find((e) => e && e.id && Array.isArray(e.article) && e.article.length > 0);
-          if (!source) throw new Error('无 HIST-01 基座下也没有可复用的真实事件，SYNTHETIC 路径无法构造');
-          if (!realDoc.sources || !realDoc.sources[0] || !realDoc.claims || !realDoc.claims[0]) {
-            throw new Error('无 HIST-01 基座下缺少 sources/claims，SYNTHETIC 路径无法构造');
-          }
-        }
-      }
-    },
-  ]);
-  tests.push([
-    'ARCH-02 a4 无早期战役内容时 --real-content 判定为 not-verifiable（不得空洞 PASS）',
-    () => {
-      // 直接构造"本基座无早期战役事件"的判定，验证三态结论的语义分类。
-      const strict = clone(coverage);
-      strict.earlyCampaign.legacyAnalysis.enforcement = 'off';
-      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
-      const earlyIds = strict.earlyCampaign.eventIds;
-      // 一个只有 strategy 事件、没有任何早期战役事件的文档（模拟集成基座）
-      const strategyOnly = clone(base);
-      strategyOnly.events = (strategyOnly.events || []).filter((e) => !earlyIds.includes(e.id));
-      const present = earlyIds.filter((id) => strategyOnly.events.some((e) => e && e.id === id));
-      if (present.length !== 0) throw new Error('测试构造有误：仍含早期战役事件');
-      // 无早期战役内容 → 三态里必须是 not-verifiable，而不是 verified-pass
-      const verdict = present.length === 0 ? 'not-verifiable' : 'other';
-      if (verdict !== 'not-verifiable') throw new Error('无内容时应判定 not-verifiable');
-      // 源码必须真的把 not-verifiable 映射到非 0 退出码
-      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
-      if (!/verdict === 'not-verifiable'\) return 2;/.test(src)) {
-        throw new Error('--real-content 没有把 not-verifiable 映射到退出码 2（仍可能空洞通过）');
-      }
-      if (!/NOT-VERIFIABLE（本基座没有早期战役事件/.test(src)) {
-        throw new Error('缺少 NOT-VERIFIABLE 的明文说明');
-      }
-    },
-  ]);
-  tests.push([
-    'ARCH-02 a4 缺少早期战役内容时逐规则标签为 NV 而不是 PASS',
-    () => {
-      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
-      // reportBucket 必须在无早期内容时输出 NV 而不是 PASS
-      if (!/NV    \$\{label\}：无法验证/.test(src)) {
-        throw new Error('reportBucket 未对"无早期内容"输出 NV 标签');
-      }
-      if (!/if \(!hasEarlyContent\) \{/.test(src)) {
-        throw new Error('reportBucket 缺少 hasEarlyContent 分支');
-      }
-    },
-  ]);
-  tests.push([
-    'ARCH-02 契约声明跨章节矛盾的过渡执行模式与参考案例',
-    () => {
-      const block = coverage.contentTransition;
-      if (!isPlainObject(block)) throw new Error('coverage.contentTransition 缺失');
-      if (!['warn', 'off'].includes(block.crossChapterContradictionEnforcement)) {
-        throw new Error(`crossChapterContradictionEnforcement 非法：${block.crossChapterContradictionEnforcement}`);
-      }
-      if (!/darwin/i.test(String(block.crossChapterContradictionReferenceCase || ''))) {
-        throw new Error('必须声明达尔文参考案例');
-      }
-      if (!isNonEmptyString(block.crossChapterContradictionDisabledBy)) {
-        throw new Error('必须声明由哪个任务收紧 enforcement');
+      if (!/darwin/i.test(String(block.referenceCase || ''))) throw new Error('必须声明达尔文参考案例');
+      if (block.referenceCaseIsConstructedOnly !== true) {
+        throw new Error('必须声明参考案例只用于构造式负例（不得声称矛盾真实存在）');
       }
     },
   ]);
@@ -6587,15 +6388,19 @@ function buildSelfTests() {
     },
   ]);
 
-  // --- D7: 文档里的自测项数必须等于真实项数（放在最后，因此 tests.length 已包含本项）---
+  // --- D7: 自测项数漂移检查（纯内存；真实文档同步由 --check-contracts 负责）---
+  // F1 修复：--self-test 不再读取 docs/。这里只验证 selfTestCountDriftErrors 这个
+  // **纯函数**在注入的内存文件系统上的行为；真实 coverage.md/README 的同步检查
+  // 放在 --check-contracts（它本来就需要读取文档）。
   const expectedTotal = tests.length + 1;
   tests.push([
-    `D7 文档声明的自测项数与实际一致（应为 ${expectedTotal}）`,
+    `D7 文档项数漂移检查在内存文件系统上生效（应为 ${expectedTotal} 项，真实文档同步由 --check-contracts 校验）`,
     () => {
-      const driftErrors = selfTestCountDriftErrors(expectedTotal);
-      if (driftErrors.length > 0) {
-        throw new Error(`文档与代码自测项数不一致：\n${driftErrors.join('\n')}`);
-      }
+      const cleanFs = createMemoryFileSystem();
+      cleanFs.set(COVERAGE_MD_PATH, `覆盖 **${expectedTotal}** 项真实正例/负例/边界\n${SELF_TEST_COUNT_MARKER}${expectedTotal}\n`);
+      cleanFs.set(CONTRACTS_README_PATH, `含 ${expectedTotal} 项自测`);
+      const cleanErrors = selfTestCountDriftErrors(expectedTotal, cleanFs);
+      if (cleanErrors.length > 0) throw new Error(`一致的声明被误判：${cleanErrors.join('; ')}`);
       // 反向自证：把一个错误的数字喂进同一个检查，必须被识别出来。
       const fakeDoc = `覆盖 **${expectedTotal + 1}** 项真实正例/负例/边界\n${SELF_TEST_COUNT_MARKER}${expectedTotal}\n`;
       const memoryFs = createMemoryFileSystem();
@@ -6670,14 +6475,6 @@ async function main() {
   if (options.checkContracts) {
     return runContractChecks() ? 0 : 1;
   }
-  if (options.realContent) {
-    // 三种结论对应三个退出码：0 = 已证明通过；1 = 已证明违规；2 = 无法验证。
-    // 「无法验证」绝不能折叠成 0，否则就是空洞通过。
-    const outcome = runRealContentChecks();
-    if (outcome.verdict === 'not-verifiable') return 2;
-    if (outcome.verdict === 'verified-fail') return 1;
-    return outcome.ok ? 0 : 1;
-  }
 
   let coverage;
   try {
@@ -6699,8 +6496,7 @@ async function main() {
 
   if (!fs.existsSync(filePath)) {
     if (options.media) {
-      console.error(`[media] 内容文件不存在：content/history.json（${filePath}）`);
-      console.error('[media] --media 需要同时读取 content/history.json 与 content/media.json；当前 history.json 缺失。');
+      for (const line of mediaInputMissingMessages('history', filePath)) console.error(line);
     } else {
       console.error(`内容文件不存在：${filePath}`);
     }
@@ -6723,12 +6519,7 @@ async function main() {
   if (options.media) {
     const mediaRegistryPath = path.resolve(options.mediaFile || path.join(rootDir, 'content', 'media.json'));
     if (!fs.existsSync(mediaRegistryPath)) {
-      console.error(`[media] 素材注册表不存在：content/media.json（${mediaRegistryPath}）`);
-      console.error(
-        '[media] 期望结构：{ "version": 1, "media": [ ... ] }，条目形状与 history.json 旧 media 条目完全一致。',
-      );
-      console.error('[media] 迁移映射：把 history.json 顶层 media[] 原样搬到 content/media.json 的 media[] 中，然后删除 history 的 media 字段。');
-      console.error('[media] 由 MEDIA-02 负责写入 content/media.json；--stage 门禁不受本文件缺失影响。');
+      for (const line of mediaInputMissingMessages('media', mediaRegistryPath)) console.error(line);
       return 1;
     }
     let registry;
