@@ -3153,7 +3153,7 @@ function runRealContentChecks() {
   if (!fs.existsSync(historyPath)) {
     console.log('SKIP  真实内容不存在：content/history.json（由 HIST-01 交付后本检查才生效）');
     console.log('      注意：这不是通过。严格模式在内容缺失时无法证明规则生效。');
-    return { ok: false, skipped: true };
+    return { ok: false, verdict: 'not-verifiable', skipped: true };
   }
   let doc;
   try {
@@ -3218,9 +3218,20 @@ function runRealContentChecks() {
   // 去重（同一条信息可能既进 errors 又进 warnings）
   for (const key of Object.keys(buckets)) buckets[key] = [...new Set(buckets[key])];
 
+  // 早期战役覆盖度必须先算：它决定"未触发"到底是「验证通过」还是「无法验证」
+  const earlyIds = (strictCoverage.earlyCampaign && strictCoverage.earlyCampaign.eventIds) || [];
+  const presentEarly = earlyIds.filter((id) => (doc.events || []).some((e) => e && e.id === id));
+  const missingEarly = earlyIds.filter((id) => !presentEarly.includes(id));
+  const hasEarlyContent = presentEarly.length > 0;
+
   const reportBucket = (label, items, { asFailure }) => {
     if (items.length === 0) {
-      console.log(`PASS  ${label}：真实内容未触发该规则`);
+      // ARCH-02 attempt 4：没有早期战役内容时，"未触发"不等于"通过"。
+      if (!hasEarlyContent) {
+        console.log(`NV    ${label}：无法验证（本基座无早期战役事件，规则未被真实内容触发）`);
+      } else {
+        console.log(`PASS  ${label}：真实内容未触发该规则（已检查 ${presentEarly.length} 个早期战役事件）`);
+      }
       return;
     }
     if (asFailure) {
@@ -3252,10 +3263,7 @@ function runRealContentChecks() {
     console.log(`FAIL  researchStatus 正向探针：${researchStatusProbe.reason}`);
   }
 
-  // 早期战役覆盖度：契约要求 9 个，真实内容只有 8 个 → 第 9 个规则无法被检查
-  const earlyIds = (strictCoverage.earlyCampaign && strictCoverage.earlyCampaign.eventIds) || [];
-  const presentEarly = earlyIds.filter((id) => (doc.events || []).some((e) => e && e.id === id));
-  const missingEarly = earlyIds.filter((id) => !presentEarly.includes(id));
+  // 早期战役覆盖度已在前面计算（决定"未触发"的语义），这里直接复用。
 
   console.log('');
   console.log('阶段对照（严格模式下每个阶段的实际命中，证明规则与阶段无关地执行）：');
@@ -3277,12 +3285,33 @@ function runRealContentChecks() {
       (missingEarly.length > 0 ? `，缺 ${missingEarly.join(', ')}（其规则无法被检查，属 HIST-01 未交付）` : ''),
   );
 
+  // ARCH-02 attempt 4 修复：不得在「没有任何早期战役内容」时输出 PASS。
+  // 缺内容既不是通过、也不是契约缺陷——必须明确标注为「无法验证」。
+  if (!hasEarlyContent) {
+    console.log('');
+    console.log('结果：NOT-VERIFIABLE（本基座没有早期战役事件，严格规则无法在真实内容上验证）');
+    console.log('      这不是 PASS：没有任何 analysisProfiles / researchStatus / 跨章节矛盾规则被真实内容触发过。');
+    console.log('      这也不是契约缺陷：早期战役内容由 HIST-01 交付，属下游任务。');
+    console.log('      退出码 2 表示「本次运行未能证明」，与 0（已证明通过）和 1（已证明违规）区分开。');
+    return {
+      ok: false,
+      verdict: 'not-verifiable',
+      skipped: true,
+      stageEvidence,
+      buckets,
+      missingEarly,
+      presentEarly,
+    };
+  }
+
   if (failures.length === 0) {
-    console.log('结果：PASS（真实内容满足全部新增严格规则）');
-    return { ok: true, skipped: false };
+    console.log(
+      `结果：PASS（真实内容满足全部新增严格规则；本次实际检查了 ${presentEarly.length} 个早期战役事件）`,
+    );
+    return { ok: true, verdict: 'verified-pass', skipped: false, stageEvidence, buckets, missingEarly, presentEarly };
   }
   console.log(`结果：FAIL（${failures.length} 类新规则在真实内容上被触发：${failures.join('、')}）`);
-  return { ok: false, skipped: false, stageEvidence, buckets, missingEarly };
+  return { ok: false, verdict: 'verified-fail', skipped: false, stageEvidence, buckets, missingEarly, presentEarly };
 }
 
 /**
@@ -5908,22 +5937,64 @@ function buildSelfTests() {
 
   // ===== ARCH-02 attempt 3：新规则必须在真实内容上执行（D2/D3）=====
   tests.push([
-    'ARCH-02 a3 早期战役与 researchStatus 检查不依赖 stage（真实内容五阶段对照）',
+    'ARCH-02 a3 早期战役与 researchStatus 检查不依赖 stage（五阶段对照，基座自适应）',
     () => {
       // 修复 D2 的依据：这些检查在 events 循环里无条件执行，因此在任何 stage 下命中数相同。
       // 若未来有人把检查塞进某个 stage 分支，这条测试会失败。
+      //
+      // ARCH-02 attempt 4：本测试必须在**任意基座**上成立。
+      // 集成基座 df6ae36 只有 HIST-00（4 个 strategy 事件，没有早期战役事件），
+      // 旧版在这里直接 FAIL 是错的——缺内容不是契约缺陷。
+      // 现在分两条路径，且两条都**真正断言**阶段无关性，都不是静默跳过：
+      //   路径 A（real）：真实内容里有早期战役事件 → 直接用真实文档跑五阶段对照（最强证据）
+      //   路径 B（SYNTHETIC）：没有 → 用真实文档的**内存副本**确定性地把其中一个事件改造成
+      //          早期战役事件，再跑五阶段对照；结果显式标注 SYNTHETIC，绝不冒称真实内容。
       const realPath = path.join(REPO_ROOT, 'content', 'history.json');
       if (!fs.existsSync(realPath)) {
-        // 真实内容缺失时无法证明；显式失败而不是静默跳过
-        throw new Error(`真实内容缺失（${realPath}），无法证明规则与 stage 无关`);
+        throw new Error(`真实内容缺失（${realPath}），无法构造任何基座（这不是可接受的跳过）`);
       }
       const realDoc = readJson(realPath, 'content/history.json');
       const strict = clone(coverage);
       strict.earlyCampaign.legacyAnalysis.enforcement = 'off';
       strict.contentTransition.crossChapterContradictionEnforcement = 'off';
+
+      const earlyIds = new Set((strict.earlyCampaign && strict.earlyCampaign.eventIds) || []);
+      const realEarly = (realDoc.events || []).filter((e) => e && earlyIds.has(e.id));
+
+      let probeDoc;
+      let base;
+      if (realEarly.length > 0) {
+        probeDoc = realDoc;
+        base = 'real';
+      } else {
+        const source = (realDoc.events || []).find(
+          (e) => e && e.id && Array.isArray(e.article) && e.article.length > 0,
+        );
+        if (!source) throw new Error('真实内容里没有任何可用于构建探针的事件');
+        const firstEarlyId = [...earlyIds][0];
+        if (!firstEarlyId) throw new Error('coverage.earlyCampaign.eventIds 为空，无法合成早期战役探针');
+        const src = realDoc.sources && realDoc.sources[0];
+        const clm = realDoc.claims && realDoc.claims[0];
+        if (!src || !clm) throw new Error('真实内容缺少 sources/claims，无法合成探针');
+        probeDoc = clone(realDoc);
+        const victim = probeDoc.events.find((e) => e.id === source.id);
+        victim.id = firstEarlyId;
+        // 挂旧五键：严格模式下必然逐条报「旧五键结构已被停用」，保证命中数非 0
+        victim.earlyCampaignAnalysis = {};
+        for (const key of LEGACY_EARLY_CAMPAIGN_KEYS) {
+          victim.earlyCampaignAnalysis[key] = {
+            title: key,
+            body: 'SYNTHETIC 探针文本，仅用于验证阶段无关性，不代表任何历史内容。',
+            sourceIds: [src.id],
+            claimIds: [clm.id],
+          };
+        }
+        base = 'SYNTHETIC';
+      }
+
       const counts = [];
       for (const stage of STAGE_IDS) {
-        const r = validateDocument(realDoc, { coverage: strict, stage, rootDir: REPO_ROOT });
+        const r = validateDocument(probeDoc, { coverage: strict, stage, rootDir: REPO_ROOT });
         const all = [...r.errors, ...r.warnings];
         counts.push({
           stage,
@@ -5940,8 +6011,16 @@ function buildSelfTests() {
           );
         }
       }
-      // 真实内容确实会触发 analysisProfiles（8 个旧五键事件）
-      if (first.ap === 0) throw new Error('严格模式下真实内容没有触发 analysisProfiles，规则可能失效');
+      // 无论哪条路径，探针都必须真的让 analysisProfiles 规则命中；
+      // 否则「五阶段结果相同」只是 0=0 的假证明。
+      if (first.ap === 0) {
+        throw new Error(
+          `探针没有触发 analysisProfiles（基座模式=${base}）：五阶段"相同"是 0=0 的假证明，规则可能失效`,
+        );
+      }
+      console.log(
+        `      （阶段无关性证据来源：${base === 'real' ? '真实早期战役内容' : 'SYNTHETIC —— 由真实文档内存副本合成（本基座无 HIST-01 早期战役事件），不代表真实内容'}；analysisProfiles 命中 ${first.ap}）`,
+      );
     },
   ]);
   tests.push([
@@ -6000,6 +6079,77 @@ function buildSelfTests() {
       if (darwinExists) {
         const mentionsBase = /054dc36/.test(text);
         if (!mentionsBase) throw new Error('当前基座含达尔文事件，但文档没有写明对应基座标识');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a4 阶段无关性测试在无 HIST-01 的基座上也运行且标注 SYNTHETIC',
+    () => {
+      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+      // 必须存在基座自适应分支，且带 SYNTHETIC 标注
+      if (!/base = 'SYNTHETIC'/.test(src)) {
+        throw new Error('阶段无关性测试缺少 SYNTHETIC 基座分支（在无 HIST-01 的基座上会 FAIL）');
+      }
+      if (!/SYNTHETIC —— 由真实文档内存副本合成/.test(src)) {
+        throw new Error('缺少 SYNTHETIC 的显式标注输出（会变成静默通过）');
+      }
+      // 两条路径都必须断言命中数非 0，防止 0=0 的假证明
+      if (!/探针没有触发 analysisProfiles/.test(src)) {
+        throw new Error('缺少"命中数必须非 0"的断言（0=0 会构成假证明）');
+      }
+      // 真实内容里没有早期战役事件时，本测试仍必须实际执行（不得 return 跳过）
+      const realPath = path.join(REPO_ROOT, 'content', 'history.json');
+      const realDoc = fs.existsSync(realPath) ? readJson(realPath, 'content/history.json') : null;
+      if (realDoc) {
+        const earlyIds = new Set(coverage.earlyCampaign.eventIds);
+        const hasEarly = (realDoc.events || []).some((e) => e && earlyIds.has(e.id));
+        // 无论有没有，测试都必须能构造探针（有→real，无→SYNTHETIC）
+        if (!hasEarly) {
+          const source = (realDoc.events || []).find((e) => e && e.id && Array.isArray(e.article) && e.article.length > 0);
+          if (!source) throw new Error('无 HIST-01 基座下也没有可复用的真实事件，SYNTHETIC 路径无法构造');
+          if (!realDoc.sources || !realDoc.sources[0] || !realDoc.claims || !realDoc.claims[0]) {
+            throw new Error('无 HIST-01 基座下缺少 sources/claims，SYNTHETIC 路径无法构造');
+          }
+        }
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a4 无早期战役内容时 --real-content 判定为 not-verifiable（不得空洞 PASS）',
+    () => {
+      // 直接构造"本基座无早期战役事件"的判定，验证三态结论的语义分类。
+      const strict = clone(coverage);
+      strict.earlyCampaign.legacyAnalysis.enforcement = 'off';
+      strict.contentTransition.crossChapterContradictionEnforcement = 'off';
+      const earlyIds = strict.earlyCampaign.eventIds;
+      // 一个只有 strategy 事件、没有任何早期战役事件的文档（模拟集成基座）
+      const strategyOnly = clone(base);
+      strategyOnly.events = (strategyOnly.events || []).filter((e) => !earlyIds.includes(e.id));
+      const present = earlyIds.filter((id) => strategyOnly.events.some((e) => e && e.id === id));
+      if (present.length !== 0) throw new Error('测试构造有误：仍含早期战役事件');
+      // 无早期战役内容 → 三态里必须是 not-verifiable，而不是 verified-pass
+      const verdict = present.length === 0 ? 'not-verifiable' : 'other';
+      if (verdict !== 'not-verifiable') throw new Error('无内容时应判定 not-verifiable');
+      // 源码必须真的把 not-verifiable 映射到非 0 退出码
+      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+      if (!/verdict === 'not-verifiable'\) return 2;/.test(src)) {
+        throw new Error('--real-content 没有把 not-verifiable 映射到退出码 2（仍可能空洞通过）');
+      }
+      if (!/NOT-VERIFIABLE（本基座没有早期战役事件/.test(src)) {
+        throw new Error('缺少 NOT-VERIFIABLE 的明文说明');
+      }
+    },
+  ]);
+  tests.push([
+    'ARCH-02 a4 缺少早期战役内容时逐规则标签为 NV 而不是 PASS',
+    () => {
+      const src = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+      // reportBucket 必须在无早期内容时输出 NV 而不是 PASS
+      if (!/NV    \$\{label\}：无法验证/.test(src)) {
+        throw new Error('reportBucket 未对"无早期内容"输出 NV 标签');
+      }
+      if (!/if \(!hasEarlyContent\) \{/.test(src)) {
+        throw new Error('reportBucket 缺少 hasEarlyContent 分支');
       }
     },
   ]);
@@ -6521,8 +6671,12 @@ async function main() {
     return runContractChecks() ? 0 : 1;
   }
   if (options.realContent) {
-    const { ok } = runRealContentChecks();
-    return ok ? 0 : 1;
+    // 三种结论对应三个退出码：0 = 已证明通过；1 = 已证明违规；2 = 无法验证。
+    // 「无法验证」绝不能折叠成 0，否则就是空洞通过。
+    const outcome = runRealContentChecks();
+    if (outcome.verdict === 'not-verifiable') return 2;
+    if (outcome.verdict === 'verified-fail') return 1;
+    return outcome.ok ? 0 : 1;
   }
 
   let coverage;
