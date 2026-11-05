@@ -3033,6 +3033,196 @@
         "claim-ussbs-attack-purpose"
       ],
       "researchStatus": "sources-retrieved"
+    },
+    {
+      "id": "event-overview-part-4-turning-point",
+      "title": "战局开始变化：导读",
+      "historicalPart": "part-4-turning-point",
+      "eventType": "analysis",
+      "startDate": "1942-01-01",
+      "endDate": "1942-06-03",
+      "summary": "从美军航母在 1942 年上半年的出击，到杜立特空袭、珊瑚海海战与日本转向中途岛：战局怎样从日本的快速扩张，转向双方在航母与情报上的较量。",
+      "article": [
+        {
+          "heading": "美国航母的早期行动",
+          "body": "珍珠港之后，美国太平洋舰队能依靠的进攻力量主要是幸存的航空母舰。1942 年春天，美军航母编队不断出击：3 月 10 日对莱城与萨拉马瓦的空袭削弱了日军南下的势头，却没有改变新几内亚港口仍在日军手中的事实；4 月 18 日，十六架 B-25 从大黄蜂号起飞空袭日本本土，证明美国仍能打击日本的心脏地带。这些行动规模不大，却让日军必须分兵防备，也为美军航母部队积累了作战经验。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-doolittle-after-action-report"
+          ],
+          "claimIds": [
+            "claim-coral-lae-salamaua-raid",
+            "claim-doolittle-purpose-and-plan",
+            "claim-doolittle-significance-limits"
+          ]
+        },
+        {
+          "heading": "杜立特空袭",
+          "body": "杜立特空袭在军事上造成的破坏有限：十六架飞机投下的炸弹数量不大，对日本工业的损害很容易修复。但它改变了两件看不见的事：日本本土的防空此前已被大幅削减，这次空袭证明本土并非不可触及；它又发生在美军连续失守的时期，对盟国士气与日本决策层的判断都产生了影响。为了这次行动，美军让陆基轰炸机从航母起飞、单程飞往中国，这本身就是一次对航母运用方式的试验。",
+          "sourceIds": [
+            "source-doolittle-after-action-report"
+          ],
+          "claimIds": [
+            "claim-doolittle-significance-limits",
+            "claim-doolittle-purpose-and-plan",
+            "claim-doolittle-forced-early-launch",
+            "claim-doolittle-crew-fates"
+          ]
+        },
+        {
+          "heading": "珊瑚海、莫尔兹比港与澳大利亚方向",
+          "body": "1942 年 4 月中，日军在新几内亚—新不列颠—所罗门地区的据点使其能够威胁整个美拉尼西亚与澳大利亚本身；其目标之一是经海路夺取莫尔兹比港。5 月 4—8 日，美军航母编队在珊瑚海迎击日军 MO 作战部队。这是历史上第一次双方水面舰艇没有互射、由舰载机决定胜负的主要海战：美军损失列克星敦号、约克城号受损，日军损失祥凤号、翔鹤号重创，其登陆船团被迫北撤，莫尔兹比港的登陆没有按原计划发生。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-moresby-threat",
+            "claim-coral-mo-operation",
+            "claim-coral-may8-exchange",
+            "claim-coral-losses-summary",
+            "claim-coral-moresby-postponed"
+          ]
+        },
+        {
+          "heading": "航母作战方式的变化",
+          "body": "珊瑚海让双方都看到，航母编队的胜负越来越取决于“先发现、先攻击、先收回飞机”。雷达可以发现来袭机群，却无法分辨敌我；联络代码板排列错误会让攻击群扑向错误目标；战斗机引导失误会让数量占优的飞机来不及拦截。战后太平洋舰队的总结要求航母配备两部远程雷达、增加战斗机数量、改进鱼雷机与瞄准具。这些技术细节说明，航母不是单件武器，而是一整套搜索、指挥、整备与恢复的流程。这场战斗也第一次让双方在实战中检验了航母编队的搜索、打击与恢复流程。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-naval-aviation-coral-simultaneous",
+            "claim-radar-coral-bogey-problem",
+            "claim-radar-carriers-should-have-two",
+            "claim-coral-fighter-direction-criticism"
+          ]
+        },
+        {
+          "heading": "日本为何转向中途岛",
+          "body": "珊瑚海之后，日军在西南太平洋的行动出现停顿，但并没有停止进攻：ONI 中途岛叙事判断，日军知道美军航母集中在南太平洋、列克星敦与约克城在珊瑚海受损，于是把在中太平洋的重击视为一个战略时机。日军打击部队在中途岛只编入赤城、加贺、苍龙、飞龙四艘航母，参加珊瑚海作战的翔鹤与瑞鹤不在其中；美军则用三天抢修约克城号，使其赶上中途岛。于是珊瑚海不仅改变了日军的时间表，也改变了下一次航母决战的兵力对比。这也解释了为什么珊瑚海常被视为中途岛的前奏，而不是一场孤立的战斗。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-midway-shift",
+            "claim-coral-midway-carrier-list",
+            "claim-coral-yorktown-repair",
+            "claim-midway-codebreaking"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-coral-sea",
+        "place-port-moresby",
+        "place-tulagi",
+        "place-pearl-harbor"
+      ],
+      "personIds": [
+        "person-fletcher-frank-jack",
+        "person-fitch-aubrey",
+        "person-takagi-takeo",
+        "person-nimitz-chester"
+      ],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-radar",
+        "concept-codebreaking"
+      ],
+      "battleId": "battle-coral-sea",
+      "relatedEventIds": [
+        "event-us-carrier-raids-early-1942",
+        "event-doolittle-raid-1942"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative",
+        "source-doolittle-after-action-report",
+        "source-nww2m-battle-midway"
+      ],
+      "claimIds": [
+        "claim-coral-lae-salamaua-raid",
+        "claim-doolittle-purpose-and-plan",
+        "claim-doolittle-significance-limits",
+        "claim-doolittle-forced-early-launch",
+        "claim-doolittle-crew-fates",
+        "claim-coral-moresby-threat",
+        "claim-coral-mo-operation",
+        "claim-coral-may8-exchange",
+        "claim-coral-losses-summary",
+        "claim-coral-moresby-postponed",
+        "claim-naval-aviation-coral-simultaneous",
+        "claim-radar-coral-bogey-problem",
+        "claim-radar-carriers-should-have-two",
+        "claim-coral-fighter-direction-criticism",
+        "claim-coral-midway-shift",
+        "claim-coral-midway-carrier-list",
+        "claim-coral-yorktown-repair",
+        "claim-midway-codebreaking"
+      ],
+      "researchStatus": "sources-retrieved"
+    },
+    {
+      "id": "event-us-carrier-raids-early-1942",
+      "title": "美国航母的早期出击",
+      "historicalPart": "part-4-turning-point",
+      "eventType": "raid",
+      "startDate": "1942-03-10",
+      "endDate": "1942-04-18",
+      "summary": "1942 年春天，美国航母编队先后空袭莱城与萨拉马瓦、并以航母为基地实施杜立特空袭；规模不大，却让日军必须分兵防备。",
+      "article": [
+        {
+          "heading": "莱城与萨拉马瓦空袭",
+          "body": "1942 年 3 月 10 日，美军航母舰载机攻击了新几内亚的莱城与萨拉马瓦。ONI 战史记载，这次攻击削弱但没有阻止日军南下的势头：尽管损失了舰船，新几内亚港口仍在日军手中，盟军处境继续恶化。对美军来说，这次行动的意义在于证明航母编队可以远程出击并安全撤回，同时为后来的珊瑚海作战积累了经验。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-lae-salamaua-raid"
+          ]
+        },
+        {
+          "heading": "从航母起飞的杜立特空袭",
+          "body": "4 月 18 日，十六架 B-25 轰炸机从大黄蜂号起飞空袭日本本土，随后飞往中国境内降落。这次行动在军事上的破坏有限，却证明美国能够打击日本心脏地带，并在美军连续失守的时期提振了盟国士气。对航母运用来说，它是一次特殊试验：陆基轰炸机可以从航母起飞，却几乎不可能再降回航母，因此只能设计成单程任务。",
+          "sourceIds": [
+            "source-doolittle-after-action-report"
+          ],
+          "claimIds": [
+            "claim-doolittle-purpose-and-plan",
+            "claim-doolittle-significance-limits",
+            "claim-doolittle-launch-position"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-coral-sea",
+        "place-tokyo"
+      ],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft"
+      ],
+      "relatedEventIds": [
+        "event-doolittle-raid-1942",
+        "event-overview-part-4-turning-point"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-doolittle-after-action-report"
+      ],
+      "claimIds": [
+        "claim-coral-lae-salamaua-raid",
+        "claim-doolittle-purpose-and-plan",
+        "claim-doolittle-significance-limits",
+        "claim-doolittle-launch-position"
+      ],
+      "researchStatus": "sources-retrieved"
     }
   ],
   "battles": [
@@ -3814,6 +4004,926 @@
           ]
         }
       ]
+    },
+    {
+      "id": "battle-coral-sea",
+      "title": "珊瑚海海战",
+      "historicalPart": "part-4-turning-point",
+      "battleType": "carrier-battle",
+      "theater": "pacific",
+      "startDate": "1942-05-04",
+      "endDate": "1942-05-08",
+      "summary": "1942 年 5 月 4—8 日，美日航母编队在珊瑚海交战，这是历史上第一次双方水面舰艇没有互射、由舰载机决定胜负的主要海战；美军损失列克星敦号，日军损失祥凤号、翔鹤号重创，日军对莫尔兹比港的海上进攻被推迟。",
+      "belligerents": {
+        "japan": "日本帝国海军 MO 作战部队",
+        "allies": "美国太平洋舰队第 17 特混舰队与澳新巡洋舰编队"
+      },
+      "outcome": {
+        "summary": "战术上双方各有损失：美军失去列克星敦号、约克城号受损，日军失去祥凤号、翔鹤号重创；战略上日军对莫尔兹比港的海上进攻被推迟，随后转向中途岛。",
+        "winner": "allies",
+        "certainty": "disputed"
+      },
+      "placeIds": [
+        "place-coral-sea",
+        "place-tulagi",
+        "place-port-moresby",
+        "place-misima"
+      ],
+      "personIds": [
+        "person-fletcher-frank-jack",
+        "person-fitch-aubrey",
+        "person-takagi-takeo"
+      ],
+      "commanderIds": {
+        "japan": [
+          "person-takagi-takeo"
+        ],
+        "allies": [
+          "person-fletcher-frank-jack",
+          "person-fitch-aubrey"
+        ]
+      },
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-radar"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative",
+        "source-wikipedia-takagi",
+        "source-doolittle-after-action-report"
+      ],
+      "claimIds": [
+        "claim-coral-lae-salamaua-raid",
+        "claim-coral-tulagi-attack",
+        "claim-coral-tulagi-cost",
+        "claim-coral-shoho-sunk",
+        "claim-coral-fighter-direction-criticism",
+        "claim-coral-may8-exchange",
+        "claim-coral-losses-summary",
+        "claim-coral-neosho-sims",
+        "claim-coral-moresby-threat",
+        "claim-coral-mo-operation",
+        "claim-coral-us-objective",
+        "claim-coral-outcome-disputed",
+        "claim-coral-midway-carrier-list",
+        "claim-coral-midway-shift",
+        "claim-coral-yorktown-repair",
+        "claim-coral-moresby-postponed",
+        "claim-coral-fitch-command",
+        "claim-coral-fletcher-retire",
+        "claim-coral-takagi-command",
+        "claim-naval-aviation-coral-simultaneous",
+        "claim-radar-coral-bogey-problem",
+        "claim-radar-carriers-should-have-two",
+        "claim-nimitz-coral-evaluation",
+        "claim-fletcher-combined-command",
+        "claim-fletcher-fuel-constraint",
+        "claim-fletcher-fuel-limited-reach",
+        "claim-fletcher-tulagi-chance",
+        "claim-fletcher-tulagi-risked-dispersion",
+        "claim-fletcher-false-report",
+        "claim-fletcher-night-risk-tradeoff",
+        "claim-fletcher-coral-outcome",
+        "claim-fletcher-cincpac-praise",
+        "claim-aircraft-role-split",
+        "claim-doolittle-significance-limits",
+        "claim-coral-shokaku-not-sunk"
+      ],
+      "sections": {
+        "background": {
+          "title": "背景",
+          "body": "1942 年春天，日本在夺取东南亚资源后继续向南推进，目标之一是从海路夺取新几内亚的莫尔兹比港，以威胁澳大利亚北部并切断盟军的反攻路线。美军把仅有的航母编队派往珊瑚海，试图在日军登陆前找到并打击其舰队。双方都明白，谁先失去空中掩护，谁就无法继续作战，因此这场战斗从一开始就是围绕航母与舰载机展开的。从 3 月的莱城—萨拉马瓦空袭到 5 月的珊瑚海，美军航母的任务始终是迟滞日军向南的推进，而不是守住某一块固定阵地。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-moresby-threat",
+            "claim-naval-aviation-coral-simultaneous",
+            "claim-coral-lae-salamaua-raid"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "珊瑚海位于新几内亚东南、所罗门群岛以南与澳大利亚东北之间。日军从拉包尔出发，需经路易西亚德群岛的约马德海峡驶向莫尔兹比港；美军航母则在珊瑚海中部机动，距离拉包尔约七百英里。5 月 7 日天气锋面掩护了美军编队，8 日同一片云雨区转而掩护日军。米西马岛、德博因群岛与图拉吉构成搜索与攻击的关键节点。这些地理条件解释了为什么双方都把侦察与天气当作决定胜负的因素：谁能先看见对方，谁就能先出手。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-moresby-threat",
+            "claim-coral-mo-operation",
+            "claim-coral-tulagi-attack"
+          ]
+        },
+        "participants": {
+          "title": "主要参与方",
+          "body": "美方参战的是弗莱彻指挥的航母编队：约克城号与列克星敦号两艘航母，外加巡洋舰、驱逐舰与补给油船，以及澳大利亚与新西兰的巡洋舰编队。日方参战的是执行 MO 作战的部队：以翔鹤、瑞鹤为核心的第 5 航空战队，另有轻型航母祥凤号、巡洋舰、驱逐舰与运载登陆部队的船团。弗莱彻于 5 月 1 日会合后统一指挥两支美军编队，菲奇负责航空作战。此外还有岸基侦察机与潜艇参与搜索；美军的两艘油船一度是编队能否继续留在海上的关键。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-wikipedia-takagi"
+          ],
+          "claimIds": [
+            "claim-coral-tulagi-attack",
+            "claim-coral-fitch-command",
+            "claim-coral-takagi-command",
+            "claim-fletcher-combined-command"
+          ]
+        },
+        "commanders": {
+          "title": "主要指挥官",
+          "body": "美军由弗莱彻少将统一指挥，5 月 8 日把战术指挥权交给航空指挥官菲奇；太平洋舰队司令尼米兹在后方评价与总结这次作战。日方由第 5 航空战队司令高木武雄指挥航母部队。双方指挥官在 5 月 7—8 日都面临同一个问题：侦察信息不完整、天气多变、航母位置只能靠有限报告推断；美军还遇到雷达无法识别敌我与联络代码误报的问题。日方现场指挥官的具体姓名与职责细节在已读的 ONI 战史中没有逐项列出，因此本档案对日方指挥层的描述以航母部队司令高木武雄为核心，其余职务不作推断。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative",
+            "source-wikipedia-takagi"
+          ],
+          "claimIds": [
+            "claim-coral-fitch-command",
+            "claim-coral-takagi-command",
+            "claim-nimitz-coral-evaluation",
+            "claim-fletcher-false-report",
+            "claim-coral-fighter-direction-criticism"
+          ]
+        },
+        "forces": {
+          "title": "双方军力对比",
+          "body": "美军有两艘大型航母、约十艘巡洋舰与驱逐舰，以及油船与岸基侦察支援；日方有两艘大型航母、一艘轻型航母，另有巡洋舰、驱逐舰与登陆船团。5 月 7 日美军把两艘航母的飞机合并成约 92 架的攻击群，日方则以航母舰载机与岸基飞机配合作战。数量之外，更关键的是双方都把航母当作浮动机场：谁先发现对方、谁先放飞攻击群，谁就能在对方反应之前完成打击。美军的两艘航母在纸面上少于日方三艘，但日方的祥凤号是轻型航母，且其两艘大型航母还需要分兵掩护登陆船团。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-shoho-sunk",
+            "claim-coral-may8-exchange",
+            "claim-aircraft-role-split"
+          ]
+        },
+        "objectives": {
+          "title": "各自战略目标",
+          "body": "日方的目标是夺取莫尔兹比港，把澳大利亚北部纳入威胁范围，并寻机打击美军航母。美方的目标是阻止日军在新几内亚—所罗门地区继续推进：弗莱彻的作战命令要求抓住有利机会摧毁敌舰船与飞机。双方目标并不对称：日军需要保住登陆船团，美军只需要让登陆无法按计划进行。对美军来说，只要让登陆船团无法按计划靠岸，即使自身损失较大，也可以宣称达到了战略目的。这种目标差异也决定了双方对“胜利”的不同理解。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-moresby-threat",
+            "claim-coral-us-objective",
+            "claim-coral-mo-operation"
+          ]
+        },
+        "constraints": {
+          "title": "决策约束",
+          "body": "美方的约束首先来自燃油：航母编队必须先从油船抽油，再让油船返回基地，弗莱彻因此担心自己位置偏南、来不及拦截日军。其次是搜索与识别：雷达可以发现目标却无法分辨敌我，战斗机被反复派去查看友军；联络代码板排列错误还导致一次误报。日方的约束是必须掩护登陆船团、搜索范围受天气与距离限制，并且要在美军航母出现前保持登陆时间表。5 月 7 日的误报和 5 月 8 日的引导失误说明，这些约束不是抽象条件，而是直接改变了攻击与拦截的结果。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-fletcher-fuel-constraint",
+            "claim-fletcher-fuel-limited-reach",
+            "claim-radar-coral-bogey-problem",
+            "claim-coral-fighter-direction-criticism"
+          ]
+        },
+        "plan": {
+          "title": "作战计划",
+          "body": "日方的 MO 作战把部队分成登陆船团、近距离掩护群与航母部队：船团经约马德海峡驶向莫尔兹比港，航母部队负责压制美军航母与岸基航空兵。美军的计划是先完成海上加油，再用侦察机搜索日军航母，一旦发现就以两艘航母的合并攻击群实施打击；弗莱彻还要求编队保持集中，避免被各个击破。双方的计划都依赖对方先暴露位置：日军希望用登陆行动引出美军航母，美军则希望用侦察与情报在日军登陆前找到其航母。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-mo-operation",
+            "claim-coral-us-objective",
+            "claim-fletcher-fuel-constraint"
+          ]
+        },
+        "course": {
+          "title": "战斗经过",
+          "body": "5 月 4 日，约克城号舰载机空袭图拉吉，击沉数艘舰船但未取得决定性战果。5 月 5—6 日美军完成会合与加油，并判断日军将经约马德海峡进攻莫尔兹比港。5 月 7 日，一次误报让美军攻击群扑向错误目标，但随后发现日军掩护群并击沉祥凤号；同日日军飞机击沉美军油船尼奥肖号与驱逐舰西姆斯号。5 月 8 日双方几乎同时发现并攻击对方航母：美军损失列克星敦号、约克城号受损，日军翔鹤号重创；随后双方撤离战场。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-tulagi-attack",
+            "claim-coral-shoho-sunk",
+            "claim-fletcher-false-report",
+            "claim-coral-neosho-sims",
+            "claim-coral-may8-exchange",
+            "claim-coral-fletcher-retire"
+          ]
+        },
+        "decisions": {
+          "title": "关键决策",
+          "body": "关键决策发生在几个时刻。5 月 3 日收到图拉吉登陆报告后，弗莱彻决定不等其余舰只会合就北上攻击；5 月 7 日夜，他放弃派水面舰艇夜战，选择保持集中、准备次日决战；5 月 8 日下午，面对飞机与航速损失，他放弃再次攻击、向南撤退。日方则必须在掩护登陆与寻找美军航母之间分配兵力，并在翔鹤号受重创后决定撤离。把结果放回当时的信息条件看，这些决定都有明确的约束，而不是事后才知道答案的选择题。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-fletcher-tulagi-chance",
+            "claim-fletcher-tulagi-risked-dispersion",
+            "claim-fletcher-night-risk-tradeoff",
+            "claim-coral-fletcher-retire",
+            "claim-coral-outcome-disputed"
+          ]
+        },
+        "results": {
+          "title": "结果与损失",
+          "body": "按 ONI 当时的统计口径：日军祥凤号沉没、翔鹤号重创；美军列克星敦号沉没，尼奥肖号与西姆斯号被击沉，约克城号受损；美军飞机损失 66 架，人员损失估计 543 人，日军人员损失估计在 2,000 至 5,000 人以上。列克星敦号的沉没主要不是被直接命中所致，而是内部汽油蒸气爆炸与大火无法控制。这些数字是战时估计，战后研究可能修正细节，本教材明确标注口径，不把估计写成精确事实。需要说明的是，翔鹤号与瑞鹤号都没有沉没：翔鹤号重创、瑞鹤号仅受轻伤，这与当时一些报道所称的更大战果不同。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-losses-summary",
+            "claim-coral-may8-exchange",
+            "claim-coral-outcome-disputed",
+            "claim-coral-shokaku-not-sunk"
+          ]
+        },
+        "aftermath": {
+          "title": "后续影响",
+          "body": "珊瑚海之后日军在西南太平洋的行动出现停顿，莫尔兹比港的海上登陆没有按原计划发生；日本把主攻方向转向中太平洋，准备在中途岛寻求决战。美军方面，约克城号在珍珠港用三天抢修后参加中途岛，而日军参加珊瑚海的两艘大型航母没有出现在中途岛编成中。珊瑚海因此既是一次战术交换，也是中途岛战役前双方航母兵力对比发生变化的一环。对日本来说，珊瑚海没有阻止其继续进攻，但消耗了航母与舰载机；对美国来说，它证明航母编队可以在劣势中打乱日军的时间表。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-moresby-postponed",
+            "claim-coral-midway-shift",
+            "claim-coral-midway-carrier-list",
+            "claim-coral-yorktown-repair"
+          ]
+        },
+        "controversies": {
+          "title": "历史争议",
+          "body": "争议集中在三处。第一是胜负评价：美方官方战史称其为决定性的胜利，但日军并未因此停止进攻，只是把方向转向中太平洋；若以不同目标与时限衡量，结论可以不同。第二是战斗机引导：5 月 8 日 17 架美军战斗机只有 3 架在日军投弹前完成拦截，战后总结把引导与雷达识别列为重要问题。第三是损失统计口径：战时估计与战后统计存在差异，双方宣传也各有取舍，引用时必须说明来源与时点。本教材的处理是把可核实的事实（舰艇损失、日期、地点）与评价性判断分开，并在涉及分歧处并列不同解释。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-outcome-disputed",
+            "claim-coral-fighter-direction-criticism",
+            "claim-nimitz-coral-evaluation",
+            "claim-radar-carriers-should-have-two",
+            "claim-coral-losses-summary",
+            "claim-coral-shokaku-not-sunk"
+          ]
+        },
+        "furtherReading": {
+          "title": "延伸阅读",
+          "body": "延伸阅读可按入口串联：人物页读弗莱彻、菲奇与高木武雄，理解双方指挥层在侦察与时间压力下的选择；专题页读航母、舰载机、海军航空作战与雷达，理解为什么一次误报和一次引导失误会改变战斗过程；事件页沿第 4 部分导读读美国航母的早期行动、杜立特空袭与日本转向中途岛；地图页按四个阶段回放图拉吉空袭、搜索与加油、米西马海战与 5 月 8 日交换打击。原始来源以 ONI 珊瑚海与中途岛两部战史为主。",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative",
+            "source-doolittle-after-action-report"
+          ],
+          "claimIds": [
+            "claim-coral-outcome-disputed",
+            "claim-coral-moresby-postponed",
+            "claim-coral-midway-shift",
+            "claim-doolittle-significance-limits"
+          ]
+        }
+      },
+      "phases": [
+        {
+          "id": "phase-coral-1-tulagi",
+          "sequence": 1,
+          "title": "图拉吉空袭（示意）",
+          "time": {
+            "start": "1942-05-04T08:45:00-11:00",
+            "end": "1942-05-04T17:02:00-11:00",
+            "display": "1942 年 5 月 4 日 08:45–17:02（当地时间）",
+            "uncertainty": "时刻按 ONI 记载的首次攻击与末机回收时间；舰位与航线为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "图拉吉守备与泊地（示意位置）",
+              "description": "日军在图拉吉港及其附近泊有运输船、驱逐舰、炮艇与水上飞机。",
+              "placeIds": [
+                "place-tulagi"
+              ],
+              "coordinates": {
+                "lat": -9.1,
+                "lng": 160.15
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 20,
+              "uncertaintyNote": "泊地位置按图拉吉港大致区域示意，不表示单舰锚位。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-tulagi-attack"
+              ]
+            },
+            "allies": {
+              "label": "约克城号编队（示意位置）",
+              "description": "约克城号在瓜达尔卡纳尔以南约一百英里处放飞攻击群。",
+              "placeIds": [
+                "place-coral-sea",
+                "place-tulagi"
+              ],
+              "coordinates": {
+                "lat": -11.2,
+                "lng": 158.8
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 120,
+              "uncertaintyNote": "航母位置为示意，实际位置在战役中不断机动。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-tulagi-attack"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道美军航母可能在附近，但无法确定其位置与规模。",
+            "allies": "美方收到日军在图拉吉登陆的报告，判断这是一次可以立即打击的机会。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军航母已靠近到可以当天出击的距离。",
+            "allies": "美方不知道日军航母主力的位置，也不确定图拉吉有多少舰船。"
+          },
+          "decision": {
+            "japan": "日方按计划在图拉吉设立水上飞机基地，未预料到当天会遭空袭。",
+            "allies": "弗莱彻决定不等其余舰只会合，立即北上攻击图拉吉。"
+          },
+          "consequence": {
+            "japan": "图拉吉的部分舰船被击沉，但日军主力航母未受影响。",
+            "allies": "美军取得有限战果，同时暴露了自己在该海域的存在。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：图拉吉是登陆计划的一环，只要站稳就能威胁附近海域；美军航母出现的时间比预期更早。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-tulagi-attack"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：图拉吉登陆是一个立即打击的机会，即使编队尚未完全会合也值得出击。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-fletcher-tulagi-chance",
+                "claim-coral-tulagi-attack"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-coral-tulagi-strike",
+              "side": "allies",
+              "label": "约克城号舰载机攻击图拉吉（示意）",
+              "fromPlaceId": "place-coral-sea",
+              "toPlaceId": "place-tulagi",
+              "path": [
+                {
+                  "lat": -11.2,
+                  "lng": 158.8
+                },
+                {
+                  "lat": -10.2,
+                  "lng": 159.5
+                },
+                {
+                  "lat": -9.1,
+                  "lng": 160.15
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示舰载机大致出击方向，不代表真实航线。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-tulagi-attack"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位、航线与时刻为教学示意；真实航迹没有逐点记录。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-tulagi-attack",
+            "claim-coral-tulagi-cost",
+            "claim-fletcher-tulagi-chance"
+          ]
+        },
+        {
+          "id": "phase-coral-2-search-fuel",
+          "sequence": 2,
+          "title": "会合、加油与搜索（示意）",
+          "time": {
+            "start": "1942-05-05T08:46:00-11:00",
+            "end": "1942-05-06T18:00:00-11:00",
+            "display": "1942 年 5 月 5 日–6 日（当地时间）",
+            "uncertainty": "会合与加油时刻按 ONI 概括记载；位置为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军 MO 部队（示意位置）",
+              "description": "登陆船团与掩护群向路易西亚德群岛方向前进，航母部队在后方策应。",
+              "placeIds": [
+                "place-misima",
+                "place-port-moresby"
+              ],
+              "coordinates": {
+                "lat": -10.5,
+                "lng": 153
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 200,
+              "uncertaintyNote": "日军编队位置为示意，实际航迹受天气与时间表影响。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-mo-operation"
+              ]
+            },
+            "allies": {
+              "label": "美军航母编队（示意位置）",
+              "description": "两支持混编队在约南纬 15 度、东经 160 度附近会合并加油。",
+              "placeIds": [
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -15,
+                "lng": 160
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "会合位置有记载，但舰队机动后位置为示意。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-fitch-command"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道美军航母可能在珊瑚海，但无法确认其位置与兵力。",
+            "allies": "美方通过情报判断日军将经约马德海峡进攻莫尔兹比港，但不知道航母部队的确切位置。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军两艘航母已经会合。",
+            "allies": "美方不知道日军航母部队是否已经进入珊瑚海，也不知道登陆船团的具体航线。"
+          },
+          "decision": {
+            "japan": "日方按时间表推进登陆，同时派侦察机搜索美军航母。",
+            "allies": "弗莱彻先完成加油，再把编队驶向预计的日军进攻方向。"
+          },
+          "consequence": {
+            "japan": "日军登陆船团继续接近约马德海峡。",
+            "allies": "美军获得燃油与位置优势，为 5 月 7—8 日的攻击做好准备。"
+          },
+          "certainty": "estimated",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：只要按时间表推进，登陆就能在美军航母反应过来之前完成。但天气与侦察限制让这一时间表并不可靠。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-mo-operation"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：先加满油、再保持集中，才能在发现日军航母时打出一次完整的攻击。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-fletcher-fuel-constraint",
+                "claim-coral-us-objective"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-coral-japan-approach",
+              "side": "japan",
+              "label": "日军登陆船团接近路易西亚德群岛（示意）",
+              "fromPlaceId": "place-misima",
+              "toPlaceId": "place-port-moresby",
+              "path": [
+                {
+                  "lat": -10.5,
+                  "lng": 153
+                },
+                {
+                  "lat": -10,
+                  "lng": 150.5
+                },
+                {
+                  "lat": -9.5,
+                  "lng": 147.2
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示日军登陆船团的大致前进方向，不代表真实航迹。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-mo-operation"
+              ]
+            },
+            {
+              "id": "route-coral-us-search",
+              "side": "allies",
+              "label": "美军编队搜索机动（示意）",
+              "fromPlaceId": "place-tulagi",
+              "toPlaceId": "place-coral-sea",
+              "path": [
+                {
+                  "lat": -9.1,
+                  "lng": 160.15
+                },
+                {
+                  "lat": -12,
+                  "lng": 160
+                },
+                {
+                  "lat": -15,
+                  "lng": 160
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示编队会合与加油的大致区域，不代表真实航迹。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-fitch-command"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位与航线为示意；航母编队实际位置随时间变化较大。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-mo-operation",
+            "claim-coral-us-objective",
+            "claim-fletcher-fuel-constraint"
+          ]
+        },
+        {
+          "id": "phase-coral-3-misima",
+          "sequence": 3,
+          "title": "5 月 7 日：米西马海战（示意）",
+          "time": {
+            "start": "1942-05-07T06:00:00-11:00",
+            "end": "1942-05-07T20:00:00-11:00",
+            "display": "1942 年 5 月 7 日（当地时间）",
+            "uncertainty": "攻击与沉没时刻按 ONI 记载；舰位为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军掩护群（示意位置）",
+              "description": "祥凤号与护航舰只在米西马岛以北掩护登陆船团。",
+              "placeIds": [
+                "place-misima"
+              ],
+              "coordinates": {
+                "lat": -10.5,
+                "lng": 153
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 120,
+              "uncertaintyNote": "掩护群位置为示意，不表示单舰精确位置。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-shoho-sunk"
+              ]
+            },
+            "allies": {
+              "label": "美军航母编队与攻击群（示意位置）",
+              "description": "美军从航母放飞约 92 架飞机的合并攻击群，攻击米西马以北的日军掩护群。",
+              "placeIds": [
+                "place-coral-sea",
+                "place-misima"
+              ],
+              "coordinates": {
+                "lat": -13.4,
+                "lng": 154.8
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 180,
+              "uncertaintyNote": "航母位置为示意；攻击群航线没有逐点记录。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-shoho-sunk",
+                "claim-fletcher-false-report"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道美军航母可能在附近，但侦察没有确认其位置。",
+            "allies": "美方相信发现了日军航母，但最初的目标位置是错误报告；随后通过岸基侦察修正。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军攻击群已经起飞并扑向掩护群。",
+            "allies": "美方不知道日军另外两艘大型航母的位置，也不知道其是否会赶来。"
+          },
+          "decision": {
+            "japan": "日军掩护群继续掩护登陆船团，未预料到美军攻击群会先打到自己。",
+            "allies": "美军攻击群在发现目标后改为攻击日军掩护群，并击沉祥凤号。"
+          },
+          "consequence": {
+            "japan": "祥凤号沉没，登陆船团失去部分空中掩护。",
+            "allies": "美军取得开战以来第一次击沉敌方航母的战果，但未能打击日军两艘大型航母。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：掩护群的任务是保护船团，即使损失一艘轻航母，主力航母仍在。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-shoho-sunk",
+                "claim-coral-mo-operation"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：先打掉看得见的日军航母，再准备迎接日军主力的反击。但两艘日军大型航母的位置仍不清楚。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-shoho-sunk",
+                "claim-fletcher-false-report"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-coral-us-misima-strike",
+              "side": "allies",
+              "label": "美军合并攻击群攻击米西马以北（示意）",
+              "fromPlaceId": "place-coral-sea",
+              "toPlaceId": "place-misima",
+              "path": [
+                {
+                  "lat": -13.4,
+                  "lng": 154.8
+                },
+                {
+                  "lat": -12,
+                  "lng": 154
+                },
+                {
+                  "lat": -10.6,
+                  "lng": 153.1
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示攻击群大致方向，不代表真实航线。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-shoho-sunk"
+              ]
+            },
+            {
+              "id": "route-coral-japan-counter",
+              "side": "japan",
+              "label": "日军舰载机反击美军编队（示意）",
+              "fromPlaceId": "place-misima",
+              "toPlaceId": "place-coral-sea",
+              "path": [
+                {
+                  "lat": -10.5,
+                  "lng": 153
+                },
+                {
+                  "lat": -12,
+                  "lng": 154.5
+                },
+                {
+                  "lat": -13.5,
+                  "lng": 155
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示日军航空兵大致攻击方向，不代表真实航迹。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-neosho-sims"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位、航线与时刻为示意；真实交战位置只能按战史概括。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-shoho-sunk",
+            "claim-coral-neosho-sims",
+            "claim-fletcher-false-report",
+            "claim-coral-mo-operation"
+          ]
+        },
+        {
+          "id": "phase-coral-4-may8",
+          "sequence": 4,
+          "title": "5 月 8 日：航母交换打击（示意）",
+          "time": {
+            "start": "1942-05-08T08:00:00-11:00",
+            "end": "1942-05-08T19:52:00-11:00",
+            "display": "1942 年 5 月 8 日（当地时间）",
+            "uncertainty": "攻击与沉没时刻按 ONI 记载；双方舰位为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军航母部队（示意位置）",
+              "description": "翔鹤与瑞鹤在珊瑚海东北方向，放飞攻击群后遭到美军攻击。",
+              "placeIds": [
+                "place-misima",
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -11.9,
+                "lng": 156.1
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "航母位置为示意，不表示精确舰位。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-may8-exchange",
+                "claim-coral-losses-summary"
+              ]
+            },
+            "allies": {
+              "label": "美军航母编队（示意位置）",
+              "description": "约克城号与列克星敦号在珊瑚海中部，双方几乎同时发现并攻击对方。",
+              "placeIds": [
+                "place-coral-sea"
+              ],
+              "coordinates": {
+                "lat": -14.4,
+                "lng": 154.5
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 120,
+              "uncertaintyNote": "航母位置为示意；两舰在战斗中因规避而分散。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-may8-exchange"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道美军航母就在附近，但不知道对方的具体位置与损伤。",
+            "allies": "美方知道日军航母部队在东北方向，但不知道其确切位置与数量。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军是否还有第二艘航母可以继续作战。",
+            "allies": "美方不知道日军另一艘大型航母是否参战、损伤程度如何。"
+          },
+          "decision": {
+            "japan": "日军在翔鹤号受重创后选择撤离，放弃继续掩护登陆。",
+            "allies": "弗莱彻在损失与航速下降后放弃再次攻击，向南撤退准备次日再战。"
+          },
+          "consequence": {
+            "japan": "翔鹤号重创、舰载机损失严重，登陆行动推迟。",
+            "allies": "列克星敦号沉没、约克城号受损，但日军登陆船团没有达成目标。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：航母受损、飞机损失严重，继续留在珊瑚海风险太大，先撤回修理。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative",
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-losses-summary",
+                "claim-coral-moresby-postponed"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：损失虽大，但日军登陆船团已经北撤；先保住剩余航母，再准备下一场战斗。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-fletcher-retire",
+                "claim-coral-may8-exchange"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-coral-may8-us-strike",
+              "side": "allies",
+              "label": "美军攻击群攻击日军航母（示意）",
+              "fromPlaceId": "place-coral-sea",
+              "toPlaceId": "place-misima",
+              "path": [
+                {
+                  "lat": -14.4,
+                  "lng": 154.5
+                },
+                {
+                  "lat": -13,
+                  "lng": 155.3
+                },
+                {
+                  "lat": -11.9,
+                  "lng": 156.1
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示美军攻击群大致方向，不代表真实航线。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-may8-exchange"
+              ]
+            },
+            {
+              "id": "route-coral-may8-jp-strike",
+              "side": "japan",
+              "label": "日军攻击群空袭美军航母（示意）",
+              "fromPlaceId": "place-misima",
+              "toPlaceId": "place-coral-sea",
+              "path": [
+                {
+                  "lat": -11.9,
+                  "lng": 156.1
+                },
+                {
+                  "lat": -13.2,
+                  "lng": 155.3
+                },
+                {
+                  "lat": -14.4,
+                  "lng": 154.5
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示日军攻击群大致方向，不代表真实航迹。",
+              "sourceIds": [
+                "source-oni-coral-sea-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-coral-may8-exchange"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位、航线与时刻为示意；双方航母在战斗中不断机动，真实位置无法逐点重建。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-may8-exchange",
+            "claim-coral-losses-summary",
+            "claim-coral-fletcher-retire",
+            "claim-coral-moresby-postponed"
+          ]
+        }
+      ]
     }
   ],
   "people": [
@@ -4247,6 +5357,29 @@
             "claim-fletcher-night-risk-tradeoff",
             "claim-fletcher-radar-own-fighters-unidentified"
           ]
+        },
+        {
+          "id": "decision-fletcher-retire-may8",
+          "title": "5 月 8 日下午：再战还是撤退",
+          "context": "5 月 8 日交换打击后，美军损失严重：约克城号中弹、列克星敦号起火，两舰飞机损失大；弗莱彻考虑再次空袭或派水面舰艇夜战，但都可能面对日军另一艘航母。",
+          "options": [
+            "再次组织空袭或水面攻击，争取扩大战果",
+            "向南撤退，修复损伤并在次日再战"
+          ],
+          "choice": "放弃再次空袭与水面攻击，向南撤退并准备次日再战。",
+          "constraints": [
+            "约克城最大航速降至 30 节、列克星敦降至 24 节",
+            "两舰飞机损失严重，水面攻击可能在天黑前遭日军航母空袭"
+          ],
+          "consequence": "美军撤离战场；列克星敦号随后因内部爆炸被放弃，但约 92% 的舰员获救。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-fletcher-retire",
+            "claim-coral-may8-exchange"
+          ]
         }
       ],
       "relatedPersonIds": [
@@ -4261,7 +5394,9 @@
       "eventIds": [
         "event-japan-war-decision-1941"
       ],
-      "battleIds": [],
+      "battleIds": [
+        "battle-coral-sea"
+      ],
       "conceptIds": [
         "concept-logistics",
         "concept-radar",
@@ -4282,7 +5417,10 @@
         "claim-fletcher-night-risk-tradeoff",
         "claim-fletcher-radar-own-fighters-unidentified",
         "claim-fletcher-cincpac-praise",
-        "claim-fletcher-coral-outcome"
+        "claim-fletcher-coral-outcome",
+        "claim-coral-fletcher-retire",
+        "claim-coral-fitch-command",
+        "claim-nimitz-coral-evaluation"
       ]
     },
     {
@@ -5104,6 +6242,172 @@
         "claim-pearl-us-command-split",
         "claim-pearl-three-tactical-warnings",
         "claim-pearl-warning-context"
+      ]
+    },
+    {
+      "id": "person-fitch-aubrey",
+      "name": "奥布里·菲奇",
+      "originalName": "Aubrey W. Fitch",
+      "side": "allies",
+      "role": "美国第 11 特混舰队/航空部队指挥官（少将）",
+      "service": "navy",
+      "summary": "1942 年 5 月珊瑚海海战中的美军航母航空指挥官，5 月 8 日接替弗莱彻承担战术指挥。",
+      "profile": "菲奇在 1942 年 4 月 2 日接替布朗指挥另一支航母编队，5 月 1 日与弗莱彻的编队在珊瑚海会合后由弗莱彻统一指挥。作为航空部队指挥官，他负责协调两艘航母的飞行作业与战斗机引导；5 月 8 日 09:07，弗莱彻把战术指挥权交给他，使他负责当天的空中作战。官方战史记载，5 月 8 日美军战斗机在引导上出现困难，17 架飞机中只有 3 架在日军投弹前完成有效拦截；这一天的经验后来成为太平洋舰队总结战斗机引导与雷达识别问题的材料。",
+      "decisions": [
+        {
+          "id": "decision-fitch-tactical-command-may8",
+          "title": "5 月 8 日接过战术指挥权",
+          "context": "5 月 8 日晨双方航母几乎同时发现对方，弗莱彻需要同时处理编队机动与航空作战，于是在 09:07 把战术指挥权交给航空指挥官菲奇。",
+          "options": [
+            "接过战术指挥，统一协调两艘航母的出击与战斗机引导",
+            "维持弗莱彻统一指挥，避免指挥权在战斗中途切换"
+          ],
+          "choice": "菲奇接过战术指挥，负责当天的空中作战协调。",
+          "constraints": [
+            "两艘航母的攻击群已经或即将起飞，协调时间极短",
+            "通信与雷达识别能力有限，战斗机引导体系不完备"
+          ],
+          "consequence": "当天美军攻击群各自出击，但战斗机拦截效果不佳；战斗后太平洋舰队把战斗机引导列为需要改进的问题。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-fitch-command",
+            "claim-coral-fighter-direction-criticism"
+          ]
+        },
+        {
+          "id": "decision-fitch-radio-silence-search",
+          "title": "是否在无线电静默与搜索之间取舍",
+          "context": "5 月 7—8 日美军需要通过侦察与无线电截获判断日军航母位置，同时又要避免暴露自身位置；油船与护航舰只的分散使情报回传更困难。",
+          "options": [
+            "保持无线电静默，主要依靠舰载侦察机搜索",
+            "更多使用无线电报告与岸基侦察，以更快获得敌情但增加暴露风险"
+          ],
+          "choice": "以舰载侦察与有限无线电报告为主，保持编队集中。",
+          "constraints": [
+            "岸基侦察受天气与距离限制，未能及时定位日军航母",
+            "航母需要保持无线电静默以维持突然性"
+          ],
+          "consequence": "美军在 5 月 7 日一度因误报而攻击错误目标，5 月 8 日才与日军航母部队正面交战。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-fitch-command",
+            "claim-fletcher-false-report"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-fletcher-frank-jack"
+      ],
+      "placeIds": [
+        "place-coral-sea"
+      ],
+      "eventIds": [],
+      "battleIds": [
+        "battle-coral-sea"
+      ],
+      "conceptIds": [
+        "concept-radar",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-coral-fitch-command",
+        "claim-coral-fighter-direction-criticism",
+        "claim-fletcher-false-report"
+      ]
+    },
+    {
+      "id": "person-takagi-takeo",
+      "name": "高木武雄",
+      "originalName": "Takagi Takeo",
+      "side": "japan",
+      "role": "日本海军第 5 航空战队司令（中将）",
+      "service": "navy",
+      "summary": "1942 年 5 月指挥以翔鹤、瑞鹤为核心的第 5 航空战队参加 MO 作战，是珊瑚海海战时日本方面的高级现场指挥官。",
+      "profile": "高木武雄是日本海军将领，1942 年 5 月 1 日晋升中将，随后指挥以翔鹤、瑞鹤为核心的第 5 航空战队参加 MO 作战。MO 作战的目标是经海路夺取莫尔兹比港，航母部队负责为登陆船团提供空中掩护并寻机打击美军航母。5 月 7—8 日的交战中，日军航母部队先与美军攻击群交战、损失轻型航母祥凤号，随后在 5 月 8 日与美军航母正面交换打击，翔鹤号受重创。高木此前参加过爪哇海作战，此后在中途岛指挥第 5 巡洋战队。",
+      "decisions": [
+        {
+          "id": "decision-takagi-cover-moresby",
+          "title": "航母部队先掩护登陆还是先寻歼美军航母",
+          "context": "MO 作战需要航母部队掩护驶向莫尔兹比港的登陆船团，同时又要防备美军航母介入；日军对美军航母位置掌握并不完整。",
+          "options": [
+            "以掩护登陆船团为优先，同时派出侦察搜索美军航母",
+            "把航母集中用于寻找并歼灭美军航母，暂时放松对船团的直接掩护"
+          ],
+          "choice": "以掩护登陆作战为主，并在发现美军航母后寻机攻击。",
+          "constraints": [
+            "侦察距离与天气限制，难以持续掌握美军航母位置",
+            "登陆作战的时间表要求航母部队保持在船团附近"
+          ],
+          "consequence": "5 月 7 日日军航空兵先攻击了美军油船与驱逐舰，5 月 8 日才与美军航母正面交战；翔鹤号受重创，登陆行动随后推迟。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-wikipedia-takagi"
+          ],
+          "claimIds": [
+            "claim-coral-mo-operation",
+            "claim-coral-neosho-sims",
+            "claim-coral-takagi-command"
+          ]
+        },
+        {
+          "id": "decision-takagi-withdraw-may8",
+          "title": "5 月 8 日受损后是否继续作战",
+          "context": "5 月 8 日交换打击后，日军翔鹤号受重创、舰载机损失严重；美军仍有一艘航母可作战，但日军不清楚其确切损伤。",
+          "options": [
+            "继续留在珊瑚海寻找并攻击美军航母",
+            "撤出战斗、返回基地修理并保存航母兵力"
+          ],
+          "choice": "日军航母部队撤离珊瑚海，返回基地。",
+          "constraints": [
+            "翔鹤号受损、舰载机损失严重，继续作战能力有限",
+            "燃油与补给需要返回基地补充"
+          ],
+          "consequence": "日军未能按计划继续掩护莫尔兹比港登陆，登陆行动被推迟；两艘大型航母随后没有参加中途岛。",
+          "certainty": "estimated",
+          "sourceIds": [
+            "source-oni-coral-sea-combat-narrative",
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-losses-summary",
+            "claim-coral-moresby-postponed",
+            "claim-coral-midway-carrier-list"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-fletcher-frank-jack"
+      ],
+      "placeIds": [
+        "place-coral-sea",
+        "place-misima"
+      ],
+      "eventIds": [],
+      "battleIds": [
+        "battle-coral-sea"
+      ],
+      "conceptIds": [
+        "concept-aircraft-carrier"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative",
+        "source-wikipedia-takagi"
+      ],
+      "claimIds": [
+        "claim-coral-takagi-command",
+        "claim-coral-mo-operation",
+        "claim-coral-moresby-postponed"
       ]
     }
   ],
@@ -6083,6 +7387,78 @@
         "claim-pearl-oahu-and-launch",
         "claim-pearl-date-takeoff"
       ]
+    },
+    {
+      "id": "place-tulagi",
+      "historicalName": "图拉吉",
+      "modernName": "图拉吉（所罗门群岛）",
+      "modernCountry": "所罗门群岛",
+      "placeType": "island",
+      "summary": "所罗门群岛中的小岛，1942 年 5 月 3 日日军在此登陆并设立水上飞机基地；5 月 4 日美军约克城号舰载机对其发动空袭。",
+      "coordinates": {
+        "lat": -9.1,
+        "lng": 160.15
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-coral-tulagi-attack"
+      ]
+    },
+    {
+      "id": "place-port-moresby",
+      "historicalName": "莫尔兹比港",
+      "modernName": "莫尔兹比港（巴布亚新几内亚）",
+      "modernCountry": "巴布亚新几内亚",
+      "placeType": "port",
+      "summary": "新几内亚东南部的港口，1942 年 5 月是日军 MO 作战的海上入侵目标；控制它可使日军威胁澳大利亚北部与美拉尼西亚。",
+      "coordinates": {
+        "lat": -9.48,
+        "lng": 147.15
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-coral-sea",
+        "place-misima"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-coral-moresby-threat",
+        "claim-coral-mo-operation"
+      ]
+    },
+    {
+      "id": "place-misima",
+      "historicalName": "米西马岛",
+      "modernName": "米西马岛（巴布亚新几内亚）",
+      "modernCountry": "巴布亚新几内亚",
+      "placeType": "island",
+      "summary": "路易西亚德群岛中的岛屿，1942 年 5 月 7 日美军攻击群在米西马岛以北发现并击沉日军掩护群的祥凤号航母。",
+      "coordinates": {
+        "lat": -10.68,
+        "lng": 152.83
+      },
+      "coordinateAccuracyKm": 10,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-port-moresby",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-coral-shoho-sunk"
+      ]
     }
   ],
   "units": [
@@ -6444,7 +7820,10 @@
         "equipment-opana-mobile-radar",
         "place-pearl-harbor",
         "person-nimitz-chester",
-        "person-fletcher-frank-jack"
+        "person-fletcher-frank-jack",
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point",
+        "event-us-carrier-raids-early-1942"
       ],
       "sourceIds": [
         "source-oni-coral-sea-combat-narrative",
@@ -6509,7 +7888,10 @@
       "relatedEntityIds": [
         "concept-radar",
         "event-japan-war-decision-1941",
-        "concept-aircraft-carrier"
+        "concept-aircraft-carrier",
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point",
+        "event-us-carrier-raids-early-1942"
       ],
       "sourceIds": [
         "source-nww2m-battle-midway",
@@ -6573,7 +7955,10 @@
         "concept-aircraft-carrier",
         "concept-carrier-aircraft",
         "concept-radar",
-        "concept-codebreaking"
+        "concept-codebreaking",
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point",
+        "event-us-carrier-raids-early-1942"
       ],
       "sourceIds": [
         "source-oni-midway-combat-narrative",
@@ -6982,6 +8367,19 @@
       "accessedDate": "2026-11-05",
       "citation": "Richard B. Frank, \"The Three Missed Tactical Warnings That Could Have Made a Difference at Pearl Harbor\", The National WWII Museum, October 13, 2021.",
       "reliabilityNote": "博物馆邀请历史学者撰写的分析文章，可支持夏威夷陆海军指挥关系、战备状态与三次战术预警的经过；属二手分析，不用于精确伤亡总数或逐分钟舰位。"
+    },
+    {
+      "id": "source-wikipedia-takagi",
+      "title": "Takeo Takagi (Wikipedia article, revision 1379846610)",
+      "creator": "Wikipedia contributors",
+      "publisher": "Wikipedia, The Free Encyclopedia",
+      "year": 2026,
+      "sourceType": "reference",
+      "url": "https://en.wikipedia.org/wiki/Takeo_Takagi",
+      "accessedDate": "2026-11-05",
+      "citation": "\"Takeo Takagi\", Wikipedia, The Free Encyclopedia, revision 1379846610.",
+      "reliabilityNote": "低权重参考来源（LOW WEIGHT）。仅用于补充高木武雄的职务信息（第 5 航空战队司令、参与 MO 作战、为珊瑚海日方现场高级指挥官）以及生卒年份；不作为战斗过程、数字或因果判断的依据，这些一律以 ONI 官方战史为准。该条目自身带有来源不足警示。",
+      "language": "en"
     }
   ],
   "media": [],
@@ -7118,6 +8516,30 @@
         "claim-pearl-us-damage-estimate",
         "claim-pearl-air-organization",
         "claim-nimitz-onsite-assessment"
+      ]
+    },
+    {
+      "id": "question-why-coral-sea-judged-differently",
+      "historicalPart": "part-4-turning-point",
+      "prompt": "珊瑚海海战为什么可以从不同角度评价胜负？",
+      "answer": "因为这场海战的结果在不同目标下有不同的意义。若只看 5 月 8 日的舰艇损失，美军失去列克星敦号、约克城号受损，日军只损失祥凤号、翔鹤号重创，日方似乎占了便宜；但若看战略目标，日军原计划经海路夺取莫尔兹比港，珊瑚海之后其登陆船团北撤、西南太平洋行动停顿，莫尔兹比港的登陆没有按原计划发生。美方官方战史因此把它称为“具有决定性且影响深远”的胜利，而同一部 ONI 叙事也提醒：日军并没有停止进攻，只是把主攻方向转向中太平洋。再加上双方战时宣传与战后统计口径不同，损失数字也会影响评价。所以，评价珊瑚海必须先说清楚用哪把尺子：是当天的舰艇交换，还是登陆是否被阻止、后续战局是否被改变。",
+      "entityIds": [
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point",
+        "person-fletcher-frank-jack",
+        "place-port-moresby"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-coral-outcome-disputed",
+        "claim-coral-losses-summary",
+        "claim-coral-may8-exchange",
+        "claim-coral-moresby-postponed",
+        "claim-coral-midway-shift",
+        "claim-coral-midway-carrier-list"
       ]
     }
   ],
@@ -12122,6 +13544,436 @@
           "sourceId": "source-nww2m-pearl-missed-warnings",
           "locatorType": "section-paragraph",
           "locator": "Article body, paragraph beginning “That morning the key principle later to guide American WWII conduct was conspicuously violated”"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-lae-salamaua-raid",
+      "text": "ONI 战史记载，1942 年 3 月 10 日美军对莱城与萨拉马瓦的空中攻击削弱但没有阻止日军南下的势头：尽管损失了舰船，新几内亚港口仍在日军手中，盟军处境持续恶化。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-us-carrier-raids-early-1942",
+        "concept-aircraft-carrier"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of the Coral Sea, p. 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-tulagi-attack",
+      "text": "ONI 战史记载，5 月 4 日约克城号出动三个攻击波攻击图拉吉港：先由侦察机与轰炸机投弹、鱼雷机随后攻击，统计击沉 2 艘驱逐舰、1 艘货船、4 艘炮艇与多艘小艇，击伤 1 艘水上飞机母舰与 1 艘货船；美军损失 2 架战斗机（飞行员获救）与 1 架鱼雷机。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-tulagi",
+        "concept-aircraft-carrier"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action at Tulagi on May 4th, pp. 5-8"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-tulagi-cost",
+      "text": "ONI 战史对图拉吉行动的观察是：以消耗的弹药与取得的战果相比，这次行动令人失望；太平洋舰队司令部指出，这暴露了战时熟练度下降的问题，强调需要抓住一切机会进行目标训练。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Observations, p. 9"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-shoho-sunk",
+      "text": "ONI 战史记载，5 月 7 日美军合并攻击群约 92 架飞机攻击日军掩护群，击沉轻型航母祥凤号（当时一度误称龙骧级）与 1 艘轻巡洋舰；日军损失包括 13 架战斗机、3 架鱼雷机、2 架侦察轰炸机与 1 架四发巡逻机；美军损失 3 架 SBD 与 3 架 F4F，另有 2 架飞机在战斗中被击落或迫降。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-misima",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action off Misima, May 7th, pp. 13-20"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Results of the 7th, p. 20"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-fighter-direction-criticism",
+      "text": "ONI 战史记载，5 月 8 日 17 架美军战斗机中只有 3 架在日军投弹前有效拦截；脚注引述一名航母军官的批评，认为战斗机引导把飞机零散派出、高度不当，使总算在空中的 17 架战斗机几乎等于没有发挥作用。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "concept-radar",
+        "concept-naval-aviation"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Combat air patrol on the 8th, pp. 26-28"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-may8-exchange",
+      "text": "ONI 战史记载，5 月 8 日双方几乎同时发现并攻击对方航母；约克城号与列克星敦号的攻击群分别出击，日机同时空袭美军编队。约克城号被一枚炸弹命中，37 人阵亡但舰体仍能保持航行；列克星敦号被鱼雷与炸弹命中后因内部汽油蒸气爆炸与大火无法控制，最终由美军驱逐舰以鱼雷击沉。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-coral-sea",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action of May 8th, pp. 21-25"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Attack on the Yorktown, pp. 29-30"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Sinking of the Lexington, pp. 39-45"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-losses-summary",
+      "text": "ONI 战史的损失汇总（当时口径）为：日军祥凤号沉没、翔鹤号重创；美军列克星敦号沉没，尼奥肖号油船与西姆斯号驱逐舰被击沉，约克城号受损；美军飞机损失 66 架，人员损失估计 543 人；日军人员损失估计在 2,000 至 5,000 人以上。不同来源与战后研究的统计口径可能不同，本教材引用时注明这是 ONI 当时的估计。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Summary of Enemy Damage and Summary of our losses, p. 45"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-neosho-sims",
+      "text": "ONI 战史记载，美军油船尼奥肖号与驱逐舰西姆斯号在 5 月 7 日被日军飞机击沉；两舰当时在主力东南方单独行动，其被攻击的报告没有说明来袭日机是否来自航母。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action of May 8th, p. 21"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Summary of Enemy Damage and Summary of our losses, p. 45"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-moresby-threat",
+      "text": "ONI 战史记载，到 1942 年 4 月中，日军在新几内亚—新不列颠—所罗门地区的据点使其有能力威胁整个美拉尼西亚与澳大利亚本身；盟军判断日军目标之一是对莫尔兹比港实施海上入侵，或进攻下所罗门群岛，或两者兼有。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-overview-part-4-turning-point",
+        "place-port-moresby",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of the Coral Sea, p. 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-mo-operation",
+      "text": "ONI 战史记载，到 5 月 6 日下午，情报已显示日军将经约马德海峡进攻莫尔兹比港，并可能在途中于德博因群岛建立基地；预计进攻日期为 5 月 7 日或 8 日。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-port-moresby",
+        "place-misima"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Events between Tulagi and Misima, pp. 10-11"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-us-objective",
+      "text": "ONI 战史摘录的弗莱彻 5 月 6 日作战命令写道：本部队将抓住有利机会摧毁敌舰船与飞机，以协助阻止敌军在新几内亚—所罗门地区的进一步推进。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Events between Tulagi and Misima, p. 10"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-outcome-disputed",
+      "text": "关于珊瑚海海战的胜负评价存在分歧。美方官方战史的结论引述太平洋舰队司令部的评价，称弗莱彻以高超技巧运用情报，赢得了一场“具有决定性且影响深远”的胜利；但同一部 ONI 叙事也记载，日军在珊瑚海之后并没有停止进攻，而是把主攻方向转向中太平洋（ONI 中途岛叙事认为珊瑚海后的平静更可能意味着日军在寻找更脆弱的攻击点）。因此，若以“是否阻止日军下一步攻势”衡量，珊瑚海没有结束日本的进攻；若以“是否阻止莫尔兹比港登陆、并迫使日军航母部队消耗”衡量，它达到了目的。两种评价角度不同，现有材料不能给出单一结论。",
+      "claimType": "disputed",
+      "entityIds": [
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point",
+        "place-port-moresby"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Conclusions, p. 46"
+        },
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-midway-carrier-list",
+      "text": "ONI 中途岛叙事所列的日军打击部队航母编成只有赤城、加贺、苍龙、飞龙四艘；参加了珊瑚海作战的翔鹤与瑞鹤不在这一编成中。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-overview-part-4-turning-point",
+        "concept-aircraft-carrier",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-midway-shift",
+      "text": "ONI 中途岛叙事判断：珊瑚海之后的相对平静并不表示日本放弃进攻；日军知道美军航母集中在南太平洋、列克星敦与约克城在珊瑚海受损，因而把在中太平洋的重击视为一个战略时机。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-overview-part-4-turning-point",
+        "place-coral-sea",
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-yorktown-repair",
+      "text": "ONI 中途岛叙事记载，约克城号在珍珠港由船厂与后勤部门抢修，用三天恢复作战状态，于 5 月 30 日随弗莱彻出航参加中途岛。",
+      "claimType": "fact",
+      "entityIds": [
+        "event-overview-part-4-turning-point",
+        "place-pearl-harbor",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 3"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-moresby-postponed",
+      "text": "综合 ONI 珊瑚海与中途岛两部战史：日军原计划经海路进攻莫尔兹比港，但 5 月 8 日之后其入侵船团向北退去，西南太平洋的行动出现停顿，主攻转向中太平洋；因此这次海战虽然没有改变日军总体攻势，却使莫尔兹比港的登陆没有按原计划发生。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "battle-coral-sea",
+        "event-overview-part-4-turning-point",
+        "place-port-moresby"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative",
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action of May 8th, p. 21"
+        },
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-fitch-command",
+      "text": "ONI 战史记载，4 月 2 日菲奇接替布朗指挥另一支航母编队；5 月 1 日两编队会合后由弗莱彻统一指挥；5 月 8 日 09:07 弗莱彻把战术指挥权交给航空指挥官菲奇。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fitch-aubrey",
+        "battle-coral-sea",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, p. 2"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action of May 8th, p. 21"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-fletcher-retire",
+      "text": "ONI 战史记载，5 月 8 日下午弗莱彻放弃了再次空中攻击与水面攻击的方案：两艘航母的飞机损失严重，约克城号最大航速降到 30 节、列克星敦号降到 24 节，水面攻击还可能在天黑前遭到日军航母空袭；他决定向南撤退、修复并准备次日再战。这一决定后来被认为使列克星敦号约 92% 的舰员得以获救。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-fletcher-frank-jack",
+        "battle-coral-sea",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Sinking of the Lexington, p. 39"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-takagi-command",
+      "text": "低权重参考来源记载：高木武雄在 1942 年 5 月 1 日晋升中将，指挥以翔鹤、瑞鹤为核心的第 5 航空战队参加 MO 作战，因而也是珊瑚海海战时日本方面的高级现场指挥官；他此前参加过爪哇海作战，此后在中途岛指挥第 5 巡洋战队。",
+      "claimType": "fact",
+      "entityIds": [
+        "person-takagi-takeo",
+        "battle-coral-sea",
+        "concept-aircraft-carrier"
+      ],
+      "sourceIds": [
+        "source-wikipedia-takagi"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-wikipedia-takagi",
+          "locatorType": "section-paragraph",
+          "locator": "Biography, paragraph 5"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-shokaku-not-sunk",
+      "text": "ONI 战史在记述 5 月 8 日战果时指出：美军内部对日军损失判断不一，弗莱彻与菲奇认为重创一艘、击伤一艘，太平洋舰队司令部则指出两个攻击群可能打的是同一艘航母；后续情况表明翔鹤号与瑞鹤号都没有沉没，翔鹤号受重创、瑞鹤号仅受轻伤。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action of May 8th, p. 25"
         }
       ]
     }
