@@ -4,7 +4,7 @@
 > 候选基座：已接受集成 HEAD `338dc2a`（ARCH-02 + HIST-00..HIST-04 + MEDIA-02 + QQUEST-01），工作树在任务开始时干净。
 > 本任务范围：只编辑 `content/history.json` 与 `docs/research/profile-depth-report.md`。**没有**改写 HIST-00/HIST-02/HIST-03 已接受的叙述段落、既有问题答案，未新建/删除杜立特事件，未改契约、验证器、`src`、`tests`、`public/` 或 `content/media.json`。
 >
-> **结论摘要**：HIST-00 的四项遗留点在已接受集成中已有三项被后续任务关闭、一项（山本 claims 定位）经逐条核对为**可核查**；“警戒不到一小时”已由 HIST-02 修正为 44 分钟口径。本任务**唯一按先前接受日志移交的真实缺口**是山本档案缺“当时不知道什么”要素——已用既有 claim、以日方/联合舰队视角补写（与 claim 主语一致）。另按订单/验收措辞裁定：六大专题的第三层应落脚到“如何影响中途岛决策”，其中 4 篇此前只落到珍珠港/珊瑚海，本任务**仅追加**与中途岛决策相连的段落（attempt 3 另修正雷达专题第 2、3 层与 claim 中的同一处距离换算）；另 2 篇已达标，只核对不改。后续 task-34 又按验收“并互链”要求，为这 2 篇已达标专题追加 `battle-midway` 互链（见 §5.2 的互链一致性更正）。共修改 **7 个实体**（山本 + 6 个专题），未新增/删除任何 claim 或 source，未改任何既有 claim 文本。
+> **结论摘要**：HIST-00 的四项遗留点在已接受集成中已有三项被后续任务关闭、一项（山本 claims 定位）经逐条核对为**可核查**；“警戒不到一小时”已由 HIST-02 修正为 44 分钟口径。本任务**唯一按先前接受日志移交的真实缺口**是山本档案缺“当时不知道什么”要素——已用既有 claim、以日方/联合舰队视角补写（与 claim 主语一致）。另按订单/验收措辞裁定：六大专题的第三层应落脚到“如何影响中途岛决策”，其中 4 篇此前只落到珍珠港/珊瑚海，本任务**仅追加**与中途岛决策相连的段落（attempt 3 另修正雷达专题第 2、3 层与 claim 中的同一处距离换算）；另 2 篇已达标，只核对不改。后续 task-34 又按验收“并互链”要求，为这 2 篇已达标专题追加 `battle-midway` 互链（见 §5.2 的互链一致性更正）。共修改 **8 个实体**（1 位人物 + 6 个专题 + 1 条既有 claim 的文本）。未新增或删除任何 claim 或 source（claims 282 / sources 31 不变）；仅对既有 `claim-radar-midway-detected.text` 的距离换算作事实更正（93 miles ≈ 150 公里），未改写其他 claim 文本。
 
 ## 1. 第 0 步：只读核对（真实命令与输出）
 
@@ -34,7 +34,7 @@ DSH 太平洋战争教材内容验证
 
 | 遗留项（HIST-00 评审时） | 在已接受集成中的当前状态（本任务实测） | 处理 |
 |---|---|---|
-| 六大核心专题仅 3/6 | 现为 **6/6**：`concept-aircraft-carrier`、`concept-carrier-aircraft`、`concept-naval-aviation`、`concept-radar`、`concept-codebreaking`、`concept-logistics` 均存在，且各有 3 层、`relatedEntityIds` 非空 | HIST-00 之后的任务已补齐，本任务只核对；另按订单裁定补第三层“中途岛决策”落点（见 §5.2）；attempt 3 仅修正雷达第 2 层同一处距离换算，未重写结构 |
+| 六大核心专题仅 3/6 | 现为 **6/6**：`concept-aircraft-carrier`、`concept-carrier-aircraft`、`concept-naval-aviation`、`concept-radar`、`concept-codebreaking`、`concept-logistics` 均存在，且各有 3 层、`relatedEntityIds` 非空 | HIST-00 之后的任务已补齐，本任务只核对；另按订单裁定补第三层“中途岛决策”落点（见 §5.2）；attempt 3 修正雷达专题第 2、3 层与 `claim-radar-midway-detected` 的同一处距离换算（93 miles ≈ 150 公里），以及 `concept-aircraft-carrier` 第 3 层的措辞更正（改为“以致命打击”），未重写结构 |
 | 五位指挥官仅 1/5 | 现为 **5/5**：山本五十六、南云忠一、尼米兹、斯普鲁恩斯、弗莱彻均有决策型档案（profile + 3–4 张决策卡 + 来源 + claims） | 已补齐；本任务逐卡复核 rubric，只补山本“当时不知道什么”这一个已登记缺口（见 §5.1） |
 | 山本 claims 定位“不可核查” | 9 条 claims 的 locator 逐条核对，**全部指向真实存在的章节/页**（详见 §4.3） | 不需修复；记录核对证据 |
 | “警戒不到一小时”与 NPS 7:06→7:50 的 44 分钟不符 | `content/history.json` 中 **“不到一小时”出现 0 次**；“四十四分钟”出现 **2 次**（第 1 部分导读 `event-overview-part-1-why-war` 的「美国为何没有及时防范」小节，与第 1 部分问题 `question-why-pearl-harbor-unprepared` 的答案）；7:06/7:50 时刻均在 | HIST-02 已按 44 分钟口径修正；本任务只核对，不改 |
@@ -112,7 +112,7 @@ rubric §2.1 要求每个重要决策回答五问：(1) 当时知道/不知道�
 
 ## 5. 本任务所做的修改（before → after）
 
-修改**仅**涉及 `content/history.json` 中 **1 位人物 + 6 个专题**（4 个专题为第三层中途岛落点；另 2 个专题见 §5.2 的 task-34 互链追加）。主任务阶段为 33 个叶子路径（deep-diff 实测），task-34 再增加 2 个 `relatedEntityIds` 叶子，attempt 2/3 只对既有新增文字做精确更正（不新增实体/字段）；集合计数不变（people 14、concepts 6、claims 282、sources 31、questions 7）。
+修改**仅**涉及 `content/history.json` 中 **8 个实体**：1 位人物 + 6 个专题 + 1 条既有 claim 的文本。以已接受集成 `338dc2a` 为基准的 deep-diff 实测：**37 个叶子路径 = 7 个修改值（value leaves）+ 30 个新增数组元素，0 删除**。7 个修改值为 `person-yamamoto-isoroku.profile`、`concept-aircraft-carrier` / `concept-carrier-aircraft` / `concept-logistics` 的第 3 层正文、`concept-radar` 的第 2 与第 3 层正文，以及 `claim-radar-midway-detected.text`；30 个新增数组元素为 6 个专题与山本的 `claimIds` / `sourceIds` / `relatedEntityIds` 追加。attempt 2/3 的更正都落在上述 8 个实体内部（不新增/删除实体或字段）；集合计数不变（people 14、concepts 6、claims 282、sources 31、questions 7）。
 
 ### 5.1 山本档案：补“当时不知道什么”要素（已登记缺口）
 
@@ -122,7 +122,7 @@ rubric §2.1 要求每个重要决策回答五问：(1) 当时知道/不知道�
 
 > 还可以补上一个容易被忽略的问题：山本提出并推动的这份袭击计划，还带着一个日方当时无法消除的未知——美国航母在哪里。美国战略轰炸调查处的报告记载，日方估计夏威夷海域有四到五艘美军航母，并把它们列为攻击目标；但攻击当天这些航母并不在锚地，机群只能把重点转向战列舰。同一报告在解释日军为何没有继续追击、而是选择快速撤退时也写道：美军航母位置不明，靠空中搜索找到它们的可能性很小。对日方而言，这意味着计划里最关键的目标之一带着无法消除的不确定性——他们能确定的是必须让美国太平洋舰队失效，不能确定的是这一击能不能碰到对方真正的航母力量。把这一层写出来，才能解释为什么一场战术上成功的袭击，没有带来日方真正想要的政治结果。
 
-- **claim 支撑**（均为既有 claim，未新增/未改写文本）：
+- **claim 支撑**（均为既有 claim；本段未新增 claim，也未改写这两条 claim 的文本）：
   - `claim-ussbs-carriers-absent`（locator：USSBS Ch.2, section *The Attack*）——日方估计夏威夷有 4–5 艘美军航母、攻击当天航母不在锚地、机群转向战列舰。
   - `claim-ussbs-why-no-second-attack`（locator：USSBS Ch.2, section *General Information*）——报告记日军未继续追击/持续攻击、选择快速撤退，三项理由之一是“美军航母位置不明且空中搜索难以找到”。
 - 说明：这一段回答的是“日方当时**不能确定**什么”，与既有段落“山本清楚风险”形成互补；主体写成日方/联合舰队，是因为两条 claim 的主语都是日方，而不是山本个人心理。
@@ -154,7 +154,7 @@ rubric §2.1 要求每个重要决策回答五问：(1) 当时知道/不知道�
 4. `concept-logistics` 第 3 层追加：*“中途岛作战也能看到后勤与多线行动的影响：日军在同一时期还发动了阿留申方向的行动，ONI 判断这次行动可能是对中途岛作战的牵制、更可能是掩护基斯卡与阿图岛的占领；美军则依靠珍珠港的抢修能力，让受损的约克城号在三天内恢复作战状态，才凑出三艘航母投入决战。”*（attempt 2 更正：删去无 claim 支撑的“兵力与时间因此分散”，按 `claim-midway-aleutian-role` 的谨慎措辞改写为“可能是牵制、更可能是掩护占领”。）
    - 新挂 claims：`claim-midway-aleutian-role`、`claim-coral-yorktown-repair`、`claim-nimitz-carrier-commitment`；source：`source-oni-midway-combat-narrative`。
 
-**互链**：`concept-aircraft-carrier`、`concept-carrier-aircraft`、`concept-radar` 在 `relatedEntityIds` 增加 `battle-midway`（`concept-logistics` 原本已有）；后续 task-34 又为 `concept-codebreaking`、`concept-naval-aviation` 追加（见下方更正）。现在六个专题都链到中途岛战役。既有 `sourceIds`/`claimIds` 与正文未动（唯一例外：attempt 3 对 `concept-radar` 第 2 层同一处距离换算的事实更正）。
+**互链**：`concept-aircraft-carrier`、`concept-carrier-aircraft`、`concept-radar` 在 `relatedEntityIds` 增加 `battle-midway`（`concept-logistics` 原本已有）；后续 task-34 又为 `concept-codebreaking`、`concept-naval-aviation` 追加（见下方更正）。现在六个专题都链到中途岛战役。各专题的 `claimIds` / `sourceIds` / `relatedEntityIds` 只做追加（30 个新增数组元素，0 删除）；第 1、2 层的既有正文未动，既有正文与既有 claim 的唯一事实更正是 `concept-radar` 第 2 层与 `claim-radar-midway-detected.text` 的同一处距离换算（见 §5.2 第 3 条）。
 
 **互链一致性更正（task-34 后续小修）**：事后核对发现，第三层**已经**落到中途岛决策的两篇专题——`concept-codebreaking` 与 `concept-naval-aviation`——此前却没有任何中途岛内容链接，形成“最直接讲中途岛的专题反而没连到中途岛”的图内不一致。本任务在不改动正文、层、claim 与 source 的前提下，仅向这两个 `relatedEntityIds` **追加** `battle-midway`（未删除任何既有链接）：
 
@@ -173,7 +173,7 @@ rubric §2.1 要求每个重要决策回答五问：(1) 当时知道/不知道�
 | 四个专题的既有第 3 层与第 1、2 层结构 | 订单要求只补真实缺口、不重写三层结构；本任务只追加中途岛落点段。attempt 3 例外地修正了雷达专题第 2 层同一处距离换算（事实错误），不改变结构。 |
 | 杜立特事件 | 订单明令不得新建/删除/改写；只核对 `historicalPart` 与 `stageOwnership`、`eventPartPolicy` 的一致性（§2）。 |
 | HIST-00/HIST-02/HIST-03 的叙事段落与既有问题答案 | 订单与验收禁止改写；“44 分钟”等已由 HIST-02 修正的项只核对。 |
-| claims 文本、sources、契约、验证器、`src`、`tests`、`public/`、`content/media.json` | 本任务未新增/删除/改写任何 claim 或 source 文本，也未触碰契约与代码；所有新增引用都是**既有** claim/source。 |
+| claims 文本、sources、契约、验证器、`src`、`tests`、`public/`、`content/media.json` | 未新增或删除任何 claim 或 source（claims 282 / sources 31 不变），也未触碰契约与代码；仅对既有 `claim-radar-midway-detected.text` 的距离换算作事实更正（93 miles ≈ 150 公里），未改写其他 claim 文本；所有新增引用都是**既有** claim/source。 |
 
 ## 7. 记录检查（真实输出 + 退出码）
 
@@ -196,11 +196,11 @@ $ node scripts/validate-content.mjs --check-contracts
 
 - `--stage full`：真实退出码 **0**（唯一警告为既有 history 顶层空 `media` 迁移提示，非失败条件）。
 - `--media`、`--check-contracts`：均 **exit 0**，证明无跨模块回归。
-- 变更范围：相对 DOC-02 前的已接受集成 `338dc2a`，deep-diff 得到 `people:person-yamamoto-isoroku`、`concepts:concept-aircraft-carrier`、`concepts:concept-carrier-aircraft`、`concepts:concept-radar`、`concepts:concept-logistics`、`concepts:concept-naval-aviation`、`concepts:concept-codebreaking` 共 7 组；attempt 2 只改写其中 `person-yamamoto-isoroku.profile` 与 `concept-logistics` 第 3 层两处文字；attempt 3 再修正 `claim-radar-midway-detected`、`concept-radar` 第 2/3 层（距离换算）与 `concept-aircraft-carrier` 第 3 层（把强于 claim 的措辞改为“以致命打击”），并更新本报告派生数字；均不新增实体/字段。`git status --porcelain` 只显示 `content/history.json`（M）与本报告（新增），顶层 `media`/`fixtureOnly`/`schemaVersion` 均未变。
+- 变更范围：相对 DOC-02 前的已接受集成 `338dc2a`，deep-diff 得到 **8 个实体**（`people:person-yamamoto-isoroku`、`concepts:concept-aircraft-carrier`、`concepts:concept-carrier-aircraft`、`concepts:concept-logistics`、`concepts:concept-radar`、`concepts:concept-codebreaking`、`concepts:concept-naval-aviation`、`claims:claim-radar-midway-detected`），共 **37 个叶子路径 = 7 个修改值 + 30 个新增数组元素（0 删除）**；attempt 2 只改写其中 `person-yamamoto-isoroku.profile` 与 `concept-logistics` 第 3 层两处文字；attempt 3 再修正 `claim-radar-midway-detected.text`、`concept-radar` 第 2/3 层（距离换算）与 `concept-aircraft-carrier` 第 3 层（把强于 claim 的措辞改为“以致命打击”），并更新本报告派生数字；均不新增/删除实体或字段。本轮（attempt 4，报告-only 修正）`git status --porcelain` 仅显示 `docs/research/profile-depth-report.md`（M），`content/history.json` 自 attempt 3 提交后未再改动；`content/history.json` 顶层 `media`/`fixtureOnly`/`schemaVersion` 均未变。
 
 ## 8. 已知限制
 
 - rubric 是**人工评审标准**；本报告记录本任务的逐项审计与证据，最终“深度/适龄/可读性”签署仍归 content-lead。`tests/evidence/pedagogy.md` 尚不存在，本任务**不声称**可读性评审通过。
-- 本任务只复用既有 claim/source；未新增来源。为核对既有 locator，用 HTTP（HTTPS TLS 在本沙箱失败）取回 USSBS Ch.2 / JM 97 / JM 147 App.3 页面检查标题与页码——仅作核对，未据未验证材料新增断言。
+- 本任务复用既有 claim/source，未新增 claim 或 source；唯一对既有 claim 文本的改动是 `claim-radar-midway-detected` 的距离换算事实更正（见 §5.2）。为核对既有 locator，用 HTTP（HTTPS TLS 在本沙箱失败）取回 USSBS Ch.2 / JM 97 / JM 147 App.3 页面检查标题与页码——仅作核对，未据未验证材料新增断言。
 - 山本档案的“未知”要素以日方/联合舰队视角补写，聚焦“美军航母位置不明”这一可核查的未知；更深的人员/政治判断仍可能被后续研究细化，本任务不把单一未知写成完整解释。
 - 概念第 3 层的“中途岛落点”是按订单/验收措辞所作的裁定；若内容负责人认为 rubric §1.2 的宽松口径足够，可保留追加段而不视为必需——本记录已说明理由，便于复核。
