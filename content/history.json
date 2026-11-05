@@ -3223,6 +3223,198 @@
         "claim-doolittle-launch-position"
       ],
       "researchStatus": "sources-retrieved"
+    },
+    {
+      "id": "event-overview-part-5-midway",
+      "title": "中途岛：导读",
+      "historicalPart": "part-5-midway",
+      "eventType": "analysis",
+      "startDate": "1942-06-04",
+      "endDate": "1942-06-07",
+      "summary": "1942 年 6 月 4—7 日（6 月 3 日为前一天的首次接触）的中途岛海战：日本计划、美国情报、双方盲区、搜索与整备的时间差、损失与失败原因，以及这场海战是否真正改变了战略主动权。",
+      "article": [
+        {
+          "heading": "日本的计划与内部假设",
+          "body": "USSBS 第 5 章记载的日军计划是：夺取中途岛与阿留申群岛，建立本土以东与东北的外围防线，并把空中掩护半径扩展到约 1,300 英里，把 1942 年 6 月 6 日定为占领中途岛的日期。ONI 判断阿留申方向的行动“可能是对中途岛作战的牵制，但更可能是掩护基斯卡与阿图岛的占领”。美方金上将则认为日军计划意在诱歼一部分美国舰队，因此要求只取消耗战术——这是美方的评估，不是日军计划原文。计划是否还包含更具体的诱歼设想，现有已读材料只能提供双方不同的判断，不能给出确定答案。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-ch5"
+          ],
+          "claimIds": [
+            "claim-midway-codebreaking",
+            "claim-ussbs-midway-plan",
+            "claim-midway-aleutian-role",
+            "claim-midway-king-trap"
+          ]
+        },
+        {
+          "heading": "美国情报与密码分析",
+          "body": "美国海军在 1942 年初开始破译日军通信，并通过中途岛发出的“淡水不足”假情报确认“AF”就是中途岛。尼米兹因此能够提前把航母布置在中途岛东北，等待日军进攻。但破译并不是全知：它给出的是地点与大致日期，具体战斗序列与现场位置仍要靠巡逻机与雷达去确认；情报优势要转化成战果，还需要正确的时机判断。",
+          "sourceIds": [
+            "source-nww2m-battle-midway",
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-midway-codebreaking",
+            "claim-codebreaking-af-confirmed",
+            "claim-codebreaking-station-hypo-scope",
+            "claim-codebreaking-limit-not-omniscient"
+          ]
+        },
+        {
+          "heading": "双方兵力、指挥官与盲区",
+          "body": "日军以赤城、加贺、苍龙、飞龙四艘大型航母为核心，另有战列舰、巡洋舰、驱逐舰与运输船团；美军只有企业号、大黄蜂号与刚抢修完的约克城号三艘航母，外加中途岛岸基飞机。日方由山本五十六统辖、南云忠一指挥航母部队；美方由尼米兹坐镇珍珠港，斯普鲁恩斯与弗莱彻分别指挥两支特混舰队。双方的盲区不同：美军不知道日军航母的确切位置，日军则不知道美军已经在等待——一种解释认为美军在中途岛设伏，使日军在不知情的情况下进入美军航母的攻击范围。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-dmn-king-nimitz"
+          ],
+          "claimIds": [
+            "claim-coral-midway-carrier-list",
+            "claim-coral-yorktown-repair",
+            "claim-nagumo-kido-butai-command",
+            "claim-spruance-task-force-sugar",
+            "claim-midway-failure-cause-disputed"
+          ]
+        },
+        {
+          "heading": "搜索、侦察、攻击与整备的时间差",
+          "body": "6 月 4 日清晨，日军空袭中途岛后，航母甲板需要回收飞机、加油、重新挂弹；与此同时，美军航母攻击群正在接近。南云部队在“继续攻击中途岛”与“准备迎击美军航母”之间反复调整，防御机动又使甲板无法起飞。美军鱼雷机几乎全灭，但俯冲轰炸机恰好在日军航母最脆弱的时刻到达：这个时间差不是运气一词能完全解释的，它来自双方的搜索、整备与决策流程。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-nagumo-attack-timing-squeeze",
+            "claim-nagumo-defensive-maneuver-blocked-launch",
+            "claim-nagumo-carriers-turned-north",
+            "claim-spruance-launch-timing",
+            "claim-spruance-search-turn"
+          ]
+        },
+        {
+          "heading": "运气、情报、组织、指挥与战术",
+          "body": "把中途岛归结为任何单一原因都会失真。一种解释认为，情报让美军提前设伏；组织与流程决定了日军航母在关键时刻能否放飞飞机；指挥判断决定了南云如何分配兵力、斯普鲁恩斯何时全力出击；战术层面的鱼雷机与俯冲轰炸机配合则决定了攻击能否奏效。运气也存在：美军鱼雷机的牺牲迫使日军航母规避并把战斗机吸引到低空，为俯冲轰炸机创造了窗口。这些因素互相叠加，才构成当天结果。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-midway-failure-cause-disputed",
+            "claim-codebreaking-limit-not-omniscient",
+            "claim-spruance-launch-timing",
+            "claim-spruance-reserve-hornets-bombers",
+            "claim-naval-aviation-torpedo-attack-indirect-effect"
+          ]
+        },
+        {
+          "heading": "损失、失败原因与战略争议",
+          "body": "日军损失四艘大型航母、估计 275 架飞机与约 2,400 人（ONI 汇总中与航母损失相关的估计），总人员损失估计约 4,800 人；美军损失约克城号、哈曼号、约 150 架飞机与 307 人。USSBS 第 5 章另记为约 250 架飞机与约 100 名一线飞行员，两套数字口径不同，本教材并列而不合并。关于日本失败的主要原因，一种解释强调美国破译与设伏，另一种强调日军侦察与整备的时间差；两种解释并不互斥。关于中途岛是否真正改变战略主动权，也存在不同评价：它使日本失去四艘航母，但 USSBS 第 5 章也指出，日本把战列舰与水机母舰改装为航母来补充损失，弥补努力仍不足以恢复原来的优势。这也是为什么同一组损失数字可以被不同史家用来支持不同评价。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-ch5"
+          ],
+          "claimIds": [
+            "claim-midway-japanese-losses",
+            "claim-midway-us-losses",
+            "claim-midway-failure-cause-disputed",
+            "claim-ussbs-midway-consequences"
+          ]
+        },
+        {
+          "heading": "中途岛是否真正改变战略主动权",
+          "body": "可以确认的是：中途岛之后日本失去了四艘大型航母与大量熟练飞行员，短期内无法再发动类似的大规模航母攻势；美国则保住了中途岛与航母兵力，开始能够选择战场。但“战略主动权”不只是航母数量的比较，还包括工业能力、飞行员补充与长期战略选择。因此更谨慎的说法是：中途岛是太平洋战争战略主动权转移的关键节点之一，它加速了日本由攻转守，但并不是单独决定战争结局的一战。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-campaigns"
+          ],
+          "claimIds": [
+            "claim-midway-japanese-losses",
+            "claim-midway-failure-cause-disputed",
+            "claim-coral-midway-shift"
+          ]
+        },
+        {
+          "heading": "长期影响",
+          "body": "长期来看，USSBS 的评价是：中途岛使日本向东的扩张停止、中途岛作为美军前哨得以保存，此后太平洋的力量平衡持续向美国倾斜；日本损失了四艘精锐航母、约 250 架飞机与约 100 名一线飞行员，难以补充。对今天的读者来说，中途岛的意义不仅在于“谁赢了”，更在于它展示了情报、组织、时间与判断如何共同决定一场海战的结果。中途岛因此既是军事转折，也是理解情报与组织如何改变战争走向的案例。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-campaigns",
+            "source-ussbs-pto-ch5"
+          ],
+          "claimIds": [
+            "claim-midway-japanese-losses",
+            "claim-midway-failure-cause-disputed",
+            "claim-nimitz-midway-assessment-quote",
+            "claim-ussbs-midway-consequences"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-midway",
+        "place-pearl-harbor",
+        "place-japan-home-islands"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku",
+        "person-nagumo-chuichi",
+        "person-nimitz-chester",
+        "person-spruance-raymond",
+        "person-fletcher-frank-jack"
+      ],
+      "unitIds": [
+        "unit-kido-butai"
+      ],
+      "equipmentIds": [
+        "equipment-akagi"
+      ],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-codebreaking",
+        "concept-radar",
+        "concept-naval-aviation"
+      ],
+      "battleId": "battle-midway",
+      "relatedEventIds": [
+        "event-overview-part-4-turning-point",
+        "event-us-carrier-raids-early-1942"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative",
+        "source-nww2m-battle-midway",
+        "source-ussbs-pto-campaigns",
+        "source-ussbs-pto-ch5",
+        "source-dmn-king-nimitz"
+      ],
+      "claimIds": [
+        "claim-coral-midway-shift",
+        "claim-coral-midway-carrier-list",
+        "claim-midway-codebreaking",
+        "claim-codebreaking-af-confirmed",
+        "claim-codebreaking-station-hypo-scope",
+        "claim-codebreaking-limit-not-omniscient",
+        "claim-coral-yorktown-repair",
+        "claim-nagumo-kido-butai-command",
+        "claim-spruance-task-force-sugar",
+        "claim-nagumo-attack-timing-squeeze",
+        "claim-nagumo-defensive-maneuver-blocked-launch",
+        "claim-nagumo-carriers-turned-north",
+        "claim-spruance-launch-timing",
+        "claim-spruance-search-turn",
+        "claim-spruance-reserve-hornets-bombers",
+        "claim-midway-failure-cause-disputed",
+        "claim-midway-japanese-losses",
+        "claim-midway-us-losses",
+        "claim-nimitz-midway-assessment-quote",
+        "claim-ussbs-midway-plan",
+        "claim-ussbs-midway-us-defense",
+        "claim-ussbs-midway-consequences"
+      ],
+      "researchStatus": "sources-retrieved"
     }
   ],
   "battles": [
@@ -4928,6 +5120,1039 @@
           ]
         }
       ]
+    },
+    {
+      "id": "battle-midway",
+      "title": "中途岛海战",
+      "historicalPart": "part-5-midway",
+      "battleType": "carrier-battle",
+      "theater": "pacific",
+      "startDate": "1942-06-04",
+      "endDate": "1942-06-07",
+      "summary": "1942 年 6 月 4—7 日（6 月 3 日为前一天的首次接触），美日航母编队在中途岛海域决战；日军损失四艘大型航母与大量飞行员，美军损失约克城号。美军取得决定性胜利，战略主动权开始转向美国。",
+      "belligerents": {
+        "japan": "日本帝国海军联合舰队机动部队",
+        "allies": "美国太平洋舰队第 16、17 特混舰队与中途岛守备部队"
+      },
+      "outcome": {
+        "summary": "美军以一艘航母与约 150 架飞机的代价，击沉日军四艘大型航母；日军中途岛作战失败并转入防御，太平洋战争的战略主动权开始转向美国，但战争仍持续数年。",
+        "winner": "allies",
+        "certainty": "documented"
+      },
+      "placeIds": [
+        "place-midway",
+        "place-pearl-harbor",
+        "place-japan-home-islands",
+        "place-us-tf-area",
+        "place-japan-mobile-force-area"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku",
+        "person-nagumo-chuichi",
+        "person-nimitz-chester",
+        "person-spruance-raymond",
+        "person-fletcher-frank-jack"
+      ],
+      "commanderIds": {
+        "japan": [
+          "person-yamamoto-isoroku",
+          "person-nagumo-chuichi"
+        ],
+        "allies": [
+          "person-nimitz-chester",
+          "person-spruance-raymond",
+          "person-fletcher-frank-jack"
+        ]
+      },
+      "unitIds": [
+        "unit-kido-butai",
+        "unit-combined-fleet"
+      ],
+      "equipmentIds": [
+        "equipment-akagi",
+        "equipment-type-97-carrier-attack-plane"
+      ],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-radar",
+        "concept-codebreaking",
+        "concept-logistics"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative",
+        "source-nww2m-battle-midway",
+        "source-ussbs-pto-campaigns",
+        "source-ussbs-pto-ch5",
+        "source-dmn-king-nimitz"
+      ],
+      "claimIds": [
+        "claim-midway-june3-contact",
+        "claim-midway-midway-attack",
+        "claim-midway-japanese-losses",
+        "claim-midway-us-losses",
+        "claim-midway-yorktown-loss",
+        "claim-midway-failure-cause-disputed",
+        "claim-midway-codebreaking",
+        "claim-codebreaking-af-confirmed",
+        "claim-codebreaking-station-hypo-scope",
+        "claim-codebreaking-limit-not-omniscient",
+        "claim-nimitz-midway-assessment-quote",
+        "claim-spruance-task-force-sugar",
+        "claim-spruance-launch-timing",
+        "claim-spruance-reserve-hornets-bombers",
+        "claim-spruance-hiryu-retaliation",
+        "claim-spruance-usn-cinpac-directive",
+        "claim-radar-midway-detected",
+        "claim-radar-midway-plot-log",
+        "claim-nagumo-carriers-turned-north",
+        "claim-nagumo-defensive-maneuver-blocked-launch",
+        "claim-nagumo-no-visible-damage-at-contact",
+        "claim-nagumo-attack-timing-squeeze",
+        "claim-nagumo-four-carriers-lost",
+        "claim-nagumo-kido-butai-command",
+        "claim-fletcher-combined-command",
+        "claim-coral-midway-carrier-list",
+        "claim-coral-midway-shift",
+        "claim-coral-yorktown-repair",
+        "claim-ussbs-midway-plan",
+        "claim-ussbs-midway-us-defense",
+        "claim-ussbs-midway-consequences",
+        "claim-midway-tf-positions",
+        "claim-midway-june4-dawn-search",
+        "claim-yamamoto-midway-command",
+        "claim-midway-aleutian-role",
+        "claim-midway-king-trap",
+        "claim-fletcher-flagship-transfer",
+        "claim-midway-japanese-forces",
+        "claim-naval-aviation-torpedo-attack-indirect-effect",
+        "claim-ussbs-midway-retirement"
+      ],
+      "sections": {
+        "background": {
+          "title": "背景",
+          "body": "珊瑚海之后，日本把主攻方向转向中太平洋：USSBS 第 5 章记载，日军计划夺取中途岛与阿留申群岛，建立本土以东与东北的外围防线，并把 1942 年 6 月 6 日定为占领中途岛的日期。美军通过破译日军通信提前判断目标可能是中途岛，并把仅有的三艘航母派往该海域；美方金上将从日方兵力调动判断其计划可能意在诱歼部分美国舰队，因此要求只取消耗战术、不让航母过度冒险——这是美方的评估，不是日军计划原文。双方都希望对方先暴露位置，战斗因此从搜索开始。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-coral-midway-shift",
+            "claim-coral-midway-carrier-list",
+            "claim-midway-codebreaking",
+            "claim-spruance-usn-cinpac-directive",
+            "claim-ussbs-midway-plan",
+            "claim-midway-aleutian-role",
+            "claim-midway-king-trap",
+            "claim-nimitz-carrier-commitment"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "中途岛是北太平洋的环礁，距夏威夷约一千一百英里，是美军的前哨基地。日军航母在中途岛西北方向（约 320° 方位）活动，美军航母则在中途岛东北海域等待，希望先发现对方。6 月 3 日，中途岛的巡逻机在最远搜索距离上首次发现日军水面舰艇，但日军航母仍未出现；搜索距离与时间差从一开始就决定了双方的判断。中途岛本身面积很小，但它的机场与雷达使其成为美军在北太平洋的重要前哨，谁控制这里，谁就能延伸搜索与打击范围。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-midway-june3-contact",
+            "claim-spruance-task-force-sugar",
+            "claim-midway-tf-positions"
+          ]
+        },
+        "participants": {
+          "title": "主要参与方",
+          "body": "日方参战的是以四艘大型航母（赤城、加贺、苍龙、飞龙）为核心的机动部队，另有战列舰、巡洋舰、驱逐舰与运输船团，以及同时进行的阿留申方向部队（ONI 判断它可能是牵制，更可能是掩护基斯卡与阿图岛的占领）。美方参战的是第 16、17 特混舰队的三艘航母（企业号、大黄蜂号、约克城号）、巡洋舰与驱逐舰，以及驻中途岛的陆军与海军陆战队航空兵。双方都还有潜艇与岸基巡逻机参与搜索。航母之外，岸基飞机、潜艇与巡逻机也参与了搜索与攻击，它们提供的信息往往先于航母之间的直接接触。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-midway-carrier-list",
+            "claim-spruance-task-force-sugar",
+            "claim-fletcher-combined-command",
+            "claim-midway-japanese-forces",
+            "claim-midway-aleutian-role"
+          ]
+        },
+        "commanders": {
+          "title": "主要指挥官",
+          "body": "日方由山本五十六统辖联合舰队，南云忠一指挥航母机动部队；美方由尼米兹坐镇珍珠港指挥太平洋舰队，斯普鲁恩斯指挥第 16 特混舰队，弗莱彻指挥第 17 特混舰队并在会合后统一指挥。双方指挥官掌握的信息并不对称：美军通过破译情报判断日军可能进攻中途岛，但不知道其航母的确切位置；关于日军是否察觉美军已在等待，一种解释认为美军在中途岛设伏，使日军在不知情的情况下进入美军航母的攻击范围，另一种解释更强调侦察与整备的时间差（见「历史争议」）。这种信息不对称，使双方指挥官在同一片海域里看到的是两幅不同的战场图景。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-nagumo-kido-butai-command",
+            "claim-spruance-task-force-sugar",
+            "claim-fletcher-combined-command",
+            "claim-ussbs-midway-plan",
+            "claim-yamamoto-midway-command",
+            "claim-midway-codebreaking",
+            "claim-midway-failure-cause-disputed",
+            "claim-codebreaking-limit-not-omniscient"
+          ]
+        },
+        "forces": {
+          "title": "双方军力对比",
+          "body": "日方以四艘大型航母为核心，航母与舰载机数量占优（四艘对三艘），但需要分兵阿留申方向并掩护登陆船团。美方只有三艘航母，其中约克城号刚在珊瑚海受损、经三天抢修后参战；中途岛还有岸基飞机与雷达。数量上日军占优，但美军把航母集中在日军搜索范围之外等待时机，使局部交战的兵力对比发生逆转。美军把三艘航母集中在日军搜索范围之外，靠巡逻机与情报选择出击时机，这在一定程度上抵消了数量劣势。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-coral-midway-carrier-list",
+            "claim-coral-yorktown-repair",
+            "claim-spruance-task-force-sugar",
+            "claim-midway-japanese-forces",
+            "claim-radar-midway-detected"
+          ]
+        },
+        "objectives": {
+          "title": "各自战略目标",
+          "body": "USSBS 第 5 章记载的日方目标是占领中途岛与阿留申群岛、建立本土以东与东北的外围防线，并把空中掩护半径扩展到约 1,300 英里；阿留申方向的行动可能是牵制，更可能是掩护基斯卡与阿图岛的占领。美方金上将判断日军计划可能意在诱歼部分美国舰队，因此要求采取消耗战术（这是美方评估，不是日军计划原文）。美方的目标是守住中途岛，并利用情报优势在日军到达前用航母远程空袭削弱其舰队。双方目标的不对称在于：日军需要按计划完成登陆并保持兵力完整，美军只需要让日军航母先暴露、再集中打击。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-coral-midway-shift",
+            "claim-spruance-usn-cinpac-directive",
+            "claim-ussbs-midway-plan",
+            "claim-midway-aleutian-role",
+            "claim-midway-king-trap",
+            "claim-ussbs-midway-us-defense"
+          ]
+        },
+        "constraints": {
+          "title": "决策约束",
+          "body": "日方需要同时执行中途岛与阿留申方向的行动，兵力与时间因此分散；航母甲板的整备周期是当天实际出现的约束。美方的约束是航母数量少、不能承受正面消耗，因此必须依靠情报与时机；破译给出的信息仍有不确定性，需要验证。中途岛岸基飞机的作战半径与航母甲板的整备周期，同样限制了双方的选择；侦察、攻击与整备之间的时间差，成为双方都无法回避的硬条件。这些限制共同压缩了双方可用的决策时间。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-codebreaking-limit-not-omniscient",
+            "claim-nagumo-attack-timing-squeeze",
+            "claim-spruance-launch-timing",
+            "claim-ussbs-midway-plan",
+            "claim-ussbs-midway-us-defense",
+            "claim-midway-aleutian-role"
+          ]
+        },
+        "plan": {
+          "title": "作战计划",
+          "body": "日方计划以航母机动部队空袭中途岛、压制其航空力量，并由登陆船团随后夺取该岛；USSBS 记载的计划还包括占领阿留申群岛、建立外围防线与约 1,300 英里的空中掩护半径，并把 6 月 6 日定为占领中途岛的日期。ONI 判断阿留申方向的行动“可能是牵制，但更可能是掩护基斯卡与阿图岛的占领”。美方计划把航母布置在中途岛东北，依靠岸基巡逻机与破译情报寻找日军航母，在日军攻击中途岛、甲板忙于整备时发起集中打击。金上将认为日军可能想诱歼部分美国舰队，因此要求只取消耗战术。双方的计划都依赖对方先暴露位置，因此搜索与时机成为计划能否成立的前提。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-midway-codebreaking",
+            "claim-midway-june3-contact",
+            "claim-spruance-task-force-sugar",
+            "claim-ussbs-midway-plan",
+            "claim-ussbs-midway-us-defense",
+            "claim-midway-aleutian-role",
+            "claim-midway-king-trap",
+            "claim-nagumo-attack-timing-squeeze"
+          ]
+        },
+        "course": {
+          "title": "战斗经过",
+          "body": "6 月 3 日（作为战斗前一天的背景），中途岛巡逻机首次发现日军水面舰艇，美军岸基飞机发起攻击但未取得决定性战果。6 月 4 日清晨，日军航母空袭中途岛，岛上设施与油罐受损；与此同时，美军航母攻击群连续出击。美军鱼雷机几乎全灭，但它们的攻击迫使日军航母规避并把战斗机吸引到低空，为随后到达的俯冲轰炸机创造了窗口，赤城、加贺、苍龙相继被击中；飞龙号随后反击、重创约克城号，当日傍晚也被击中。此后美军追击，约克城号于 6 月 7 日沉没。双方的攻击几乎在同一时间段内交错进行，使“谁先发现、谁先攻击”成为决定当天结果的关键。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-midway-june3-contact",
+            "claim-midway-midway-attack",
+            "claim-nagumo-four-carriers-lost",
+            "claim-spruance-hiryu-retaliation",
+            "claim-midway-yorktown-loss",
+            "claim-nagumo-defensive-maneuver-blocked-launch",
+            "claim-naval-aviation-torpedo-attack-indirect-effect"
+          ]
+        },
+        "decisions": {
+          "title": "关键决策",
+          "body": "关键决策包括：南云在搜索美军航母与攻击中途岛之间反复调整，防御机动使甲板无法起飞；斯普鲁恩斯决定在确认日军航母位置后立即全力出击，并把部分俯冲轰炸机留作搜索与 reserve；弗莱彻在约克城号受损后转移指挥；尼米兹在情报尚有不确的情况下决定把三艘航母投入中途岛。评价这些决定，需要看当时掌握的信息与时间压力，而不是用结果反推。这些决定都不是在信息完整的情况下做出的，而是在时间压力与不确定情报之间反复权衡的结果。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-nagumo-attack-timing-squeeze",
+            "claim-spruance-launch-timing",
+            "claim-spruance-reserve-hornets-bombers",
+            "claim-nimitz-carrier-commitment",
+            "claim-fletcher-flagship-transfer",
+            "claim-nagumo-defensive-maneuver-blocked-launch",
+            "claim-codebreaking-limit-not-omniscient"
+          ]
+        },
+        "results": {
+          "title": "结果与损失",
+          "body": "按 ONI 引用尼米兹报告的汇总：日军损失四艘航母、估计 275 架飞机与约 2,400 人（ONI 汇总中与航母损失相关的估计），总人员损失估计约 4,800 人；美军损失约克城号与哈曼号、约 150 架飞机、307 人。USSBS 第 5 章另记为约 250 架飞机与约 100 名一线飞行员；两套数字口径不同，本教材并列而不合并。数字口径来自战时与战后初期的统计，与后来的研究可能略有差异；但四艘航母与大量飞行员的损失是确定的。四艘航母与大量熟练飞行员的损失，是日本短期内难以弥补的（USSBS 记载日本此后把战列舰与水机母舰改装为航母，但弥补努力仍不足）；这也是中途岛被视为转折点的直接依据之一。四艘航母的损失不仅改变了当天的兵力对比，也使日本失去了其赖以扩张的打击力量（USSBS 语）。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-midway-japanese-losses",
+            "claim-midway-us-losses",
+            "claim-midway-yorktown-loss",
+            "claim-ussbs-midway-consequences"
+          ]
+        },
+        "aftermath": {
+          "title": "后续影响",
+          "body": "中途岛之后，日本失去了四艘大型航母与大量熟练飞行员，被迫转入防御；美国则保住了中途岛与航母兵力，开始把战略主动权握在手里。但战争并没有因此结束：USSBS 第 5 章指出，日本把战列舰与水机母舰从舰队抽出、匆忙改装为航母来补充损失，只是弥补努力仍不足以恢复原来的优势。中途岛是转折点之一，却不是单独决定战争结局的一战。从更长的时间看，USSBS 的评价是：中途岛使日本向东的扩张停止，此后太平洋的力量平衡持续向美国倾斜，中途岛也许就是这场战争的决定性海战。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-campaigns"
+          ],
+          "claimIds": [
+            "claim-midway-japanese-losses",
+            "claim-midway-failure-cause-disputed",
+            "claim-ussbs-midway-consequences"
+          ]
+        },
+        "controversies": {
+          "title": "历史争议",
+          "body": "争议集中在三处：第一，日本失败的主要原因究竟是情报劣势、侦察与整备的时间差，还是指挥判断；第二，中途岛是否真正改变了战略主动权，还是只是加速了日本已经开始的衰退；第三，双方损失数字与战果宣传的口径差异。本教材把可核实的事实（航母与飞机损失、日期、地点）与评价性判断分开，并在分歧处并列不同解释。本教材的写法是先列出可核实的事实与数字，再说明这些事实可以支持哪些不同解释，避免把评价写成结论。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway"
+          ],
+          "claimIds": [
+            "claim-midway-failure-cause-disputed",
+            "claim-midway-japanese-losses",
+            "claim-codebreaking-limit-not-omniscient",
+            "claim-nimitz-midway-assessment-quote"
+          ]
+        },
+        "furtherReading": {
+          "title": "延伸阅读",
+          "body": "延伸阅读可按入口串联：人物页读山本五十六、南云忠一、尼米兹、斯普鲁恩斯与弗莱彻，比较不同层级的决策与信息；专题页读航母、舰载机、雷达、密码分析与补给，理解搜索、整备与时间差；事件页沿第 5 部分导读读日本计划、美国情报、损失与战略争议；地图页按五个阶段回放搜索接触、中途岛空袭、美军航母攻击、飞龙反击与追击撤收。建议读者先读事件页与人物页建立时间线，再用地图阶段理解空间关系，最后回到来源日志核对每一条关键数字。",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-campaigns",
+            "source-dmn-king-nimitz"
+          ],
+          "claimIds": [
+            "claim-midway-codebreaking",
+            "claim-nagumo-kido-butai-command",
+            "claim-spruance-task-force-sugar",
+            "claim-midway-japanese-losses"
+          ]
+        }
+      },
+      "phases": [
+        {
+          "id": "phase-midway-1-contact",
+          "sequence": 1,
+          "title": "6 月 4 日黎明：搜索与接触（示意）",
+          "time": {
+            "start": "1942-06-04T04:15:00+12:00",
+            "end": "1942-06-04T05:54:00+12:00",
+            "display": "1942 年 6 月 4 日 04:15–05:54（当地时间）",
+            "uncertainty": "搜索起飞与接触时刻按 ONI 记载；舰位与航线为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军航母机动部队（示意位置）",
+              "description": "日军航母部队从西北方向接近中途岛，尚未被美军发现。",
+              "placeIds": [
+                "place-japan-mobile-force-area"
+              ],
+              "coordinates": {
+                "lat": 30,
+                "lng": -178
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 250,
+              "uncertaintyNote": "编队位置为示意，不表示精确航迹。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-june4-dawn-search",
+                "claim-midway-tf-positions"
+              ]
+            },
+            "allies": {
+              "label": "中途岛守备与巡逻（示意位置）",
+              "description": "中途岛岸基飞机与巡逻机起飞搜索，雷达准备迎击。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 28.21,
+                "lng": -177.37
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "中途岛为真实地理点，搜索航迹为示意。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-june4-dawn-search",
+                "claim-radar-midway-detected"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道中途岛有岸基飞机与雷达，但不知道美军航母已在附近。",
+            "allies": "美方巡逻机与雷达在黎明发现来袭机群，并确认日军航母的大致方位。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军航母的位置与数量。",
+            "allies": "美方尚未确认日军全部航母的数量与精确位置。"
+          },
+          "decision": {
+            "japan": "日军按计划在黎明后空袭中途岛，未预料到美军航母已在附近。",
+            "allies": "中途岛搜索机与雷达保持警戒，美军航母等待日军航母暴露。"
+          },
+          "consequence": {
+            "japan": "日机飞向中途岛，攻击即将开始。",
+            "allies": "美方获得来袭警报与日军航母方位，航母得以准备出击。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：只要按计划压制中途岛，就能引出美军航母并加以歼灭；他们没有发现美军航母已经在附近等待。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative",
+                "source-ussbs-pto-ch5"
+              ],
+              "claimIds": [
+                "claim-ussbs-midway-plan",
+                "claim-midway-june4-dawn-search"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：先由巡逻机与雷达确认来袭方向，再由航母在日军整备时出手。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-june4-dawn-search",
+                "claim-radar-midway-detected"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-dawn-search",
+              "side": "allies",
+              "label": "中途岛搜索机搜索日军编队（示意）",
+              "fromPlaceId": "place-midway",
+              "toPlaceId": "place-japan-mobile-force-area",
+              "path": [
+                {
+                  "lat": 28.2,
+                  "lng": -177.4
+                },
+                {
+                  "lat": 29,
+                  "lng": -177.8
+                },
+                {
+                  "lat": 29.6,
+                  "lng": -178.1
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示从中途岛起飞的美军搜索机向日方编队方向搜索，不代表真实航线。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-june4-dawn-search"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位、航线与时刻为示意；真实航迹无法逐点重建。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-midway-june4-dawn-search",
+            "claim-radar-midway-detected",
+            "claim-midway-tf-positions"
+          ]
+        },
+        {
+          "id": "phase-midway-2-midway-attack",
+          "sequence": 2,
+          "title": "6 月 4 日清晨：空袭中途岛（示意）",
+          "time": {
+            "start": "1942-06-04T05:55:00+12:00",
+            "end": "1942-06-04T07:15:00+12:00",
+            "display": "1942 年 6 月 4 日 05:55–07:15（当地时间）",
+            "uncertainty": "时刻按 ONI 记载；舰位与航线为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军航母机动部队（示意位置）",
+              "description": "四艘航母在西北方向放飞攻击队，随后回收飞机并准备下一波。",
+              "placeIds": [
+                "place-midway",
+                "place-japan-mobile-force-area"
+              ],
+              "coordinates": {
+                "lat": 29.5,
+                "lng": -179.5
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 200,
+              "uncertaintyNote": "航母位置为示意，不表示精确舰位。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-midway-attack",
+                "claim-coral-midway-carrier-list"
+              ]
+            },
+            "allies": {
+              "label": "中途岛守备（示意位置）",
+              "description": "中途岛雷达与岸基飞机迎击来袭日机。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 28.21,
+                "lng": -177.37
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 20,
+              "uncertaintyNote": "中途岛为真实地理点，防御部署为示意。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-midway-attack",
+                "claim-radar-midway-detected"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道中途岛有岸基飞机与雷达，但不清楚美军航母位置。",
+            "allies": "美方雷达发现来袭机群，并确认日军航母在西北方向。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军航母已经在附近等待。",
+            "allies": "美方不知道日军航母的确切位置与下一波攻击时间。"
+          },
+          "decision": {
+            "japan": "南云决定先压制中途岛，同时准备迎击可能出现的美国航母。",
+            "allies": "中途岛岸基飞机升空迎击，美军航母继续向日军航母接近。"
+          },
+          "consequence": {
+            "japan": "中途岛设施受损，但日军航母仍完好。",
+            "allies": "中途岛承受损失，但雷达与巡逻机确认了日军航母的大致方向。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：先打掉中途岛的航空力量，再回头对付美军航母。 日军认为只要先压制中途岛，就能掌握当天的主动权。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-midway-attack",
+                "claim-nagumo-attack-timing-squeeze"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：用岸基飞机拖住日军，同时让航母接近到攻击距离。 美方依靠雷达与巡逻机确认来袭方向，同时保护中途岛。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-midway-attack",
+                "claim-spruance-launch-timing"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-japan-air-attack",
+              "side": "japan",
+              "label": "日军舰载机空袭中途岛（示意）",
+              "fromPlaceId": "place-japan-mobile-force-area",
+              "toPlaceId": "place-midway",
+              "path": [
+                {
+                  "lat": 29.8,
+                  "lng": -178.2
+                },
+                {
+                  "lat": 29.2,
+                  "lng": -177.9
+                },
+                {
+                  "lat": 28.4,
+                  "lng": -177.5
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示大致来袭方向，不代表真实航线。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-midway-attack"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位与航线为示意；空袭时刻按 ONI 记载。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-midway-midway-attack",
+            "claim-radar-midway-detected",
+            "claim-nagumo-attack-timing-squeeze"
+          ]
+        },
+        {
+          "id": "phase-midway-3-carrier-attack",
+          "sequence": 3,
+          "title": "6 月 4 日：美军航母攻击（示意）",
+          "time": {
+            "start": "1942-06-04T07:20:00+12:00",
+            "end": "1942-06-04T12:00:00+12:00",
+            "display": "1942 年 6 月 4 日上午（当地时间）",
+            "uncertainty": "攻击时刻按 ONI 记载；舰位与航线为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军航母机动部队（示意位置）",
+              "description": "日军航母在回收与整备飞机时遭到美军俯冲轰炸机攻击。",
+              "placeIds": [
+                "place-midway",
+                "place-japan-mobile-force-area"
+              ],
+              "coordinates": {
+                "lat": 29.8,
+                "lng": -179
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "航母位置为示意，不表示精确舰位。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-nagumo-defensive-maneuver-blocked-launch",
+                "claim-nagumo-four-carriers-lost"
+              ]
+            },
+            "allies": {
+              "label": "美军航母攻击群（示意位置）",
+              "description": "企业号、大黄蜂号与约克城号的攻击群连续出击。",
+              "placeIds": [
+                "place-midway",
+                "place-us-tf-area"
+              ],
+              "coordinates": {
+                "lat": 28.6,
+                "lng": -176.8
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 200,
+              "uncertaintyNote": "航母位置为示意，实际不断机动。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-launch-timing",
+                "claim-nagumo-four-carriers-lost"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方已发现美军航母，但航母甲板正忙于整备与防御机动。",
+            "allies": "美方确认日军航母位置，并决定立即全力出击。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军攻击群的确切到达时间。",
+            "allies": "美方不知道日军还有多少可用的攻击机与战斗机。"
+          },
+          "decision": {
+            "japan": "南云在攻击中途岛与迎击美军航母之间调整，防御机动阻碍了甲板作业。",
+            "allies": "斯普鲁恩斯决定立即发动全力攻击，并保留部分飞机搜索。"
+          },
+          "consequence": {
+            "japan": "赤城、加贺、苍龙在短时间内被击中，日军航母力量遭到决定性损失。",
+            "allies": "美军以较大飞机损失换取了击沉三艘日军航母的战果。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：美军航母突然出现，必须一边规避一边准备反击。 日军航母在遭到攻击时仍试图维持反击能力。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-nagumo-defensive-maneuver-blocked-launch",
+                "claim-nagumo-no-visible-damage-at-contact"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：抓住日军航母整备的窗口，把俯冲轰炸机集中投下去。 美方抓住日军航母整备的窗口，集中俯冲轰炸机攻击。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-launch-timing",
+                "claim-spruance-search-turn"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-us-strike",
+              "side": "allies",
+              "label": "美军舰载机攻击日军航母（示意）",
+              "fromPlaceId": "place-us-tf-area",
+              "toPlaceId": "place-japan-mobile-force-area",
+              "path": [
+                {
+                  "lat": 28.7,
+                  "lng": -176.9
+                },
+                {
+                  "lat": 29.2,
+                  "lng": -177.4
+                },
+                {
+                  "lat": 29.8,
+                  "lng": -177.9
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示攻击群大致方向，不代表真实航线。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-nagumo-four-carriers-lost"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位与航线为示意；攻击时刻按 ONI 记载。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-nagumo-defensive-maneuver-blocked-launch",
+            "claim-nagumo-four-carriers-lost",
+            "claim-spruance-launch-timing",
+            "claim-spruance-search-turn"
+          ]
+        },
+        {
+          "id": "phase-midway-4-hiryu",
+          "sequence": 4,
+          "title": "6 月 4 日：飞龙反击与损失（示意）",
+          "time": {
+            "start": "1942-06-04T12:00:00+12:00",
+            "end": "1942-06-04T21:00:00+12:00",
+            "display": "1942 年 6 月 4 日下午至夜间（当地时间）",
+            "uncertainty": "时刻按 ONI 概括记载；舰位为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "飞龙号（示意位置）",
+              "description": "飞龙号是唯一幸存的日军航母，对美军航母发动两波反击。",
+              "placeIds": [
+                "place-japan-mobile-force-area"
+              ],
+              "coordinates": {
+                "lat": 30,
+                "lng": -178.5
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 120,
+              "uncertaintyNote": "航母位置为示意，不表示精确舰位。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-hiryu-retaliation"
+              ]
+            },
+            "allies": {
+              "label": "美军航母编队（示意位置）",
+              "description": "约克城号被日机重创，企业号与大黄蜂号继续作战。",
+              "placeIds": [
+                "place-us-tf-area"
+              ],
+              "coordinates": {
+                "lat": 28.6,
+                "lng": -176.8
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "航母位置为示意，实际不断机动。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-hiryu-retaliation",
+                "claim-midway-yorktown-loss"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "飞龙号确认美军航母位置，发动反击。",
+            "allies": "美方知道还有一艘日军航母未被击中，但位置需要搜索。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道其他三艘航母已经无法作战。",
+            "allies": "美方不知道飞龙号的确切位置，直到下午才发现并攻击。"
+          },
+          "decision": {
+            "japan": "飞龙号选择立即反击，而不是撤退。",
+            "allies": "美军继续搜索并攻击最后一艘日军航母。"
+          },
+          "consequence": {
+            "japan": "飞龙号重创约克城号，但自身随后被击中，日军四艘航母全部损失。",
+            "allies": "约克城号失去作战能力，但美军保住了另外两艘航母。"
+          },
+          "certainty": "documented",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：只要再打掉美军航母，交换就不算失败。 日军把最后的机会押在飞龙号的反击上。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-hiryu-retaliation",
+                "claim-nagumo-four-carriers-lost"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：先解决最后一艘日军航母，再处理受损的约克城号。 美方在约克城号受损后仍继续搜索并攻击最后一艘日军航母。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-hiryu-retaliation",
+                "claim-midway-yorktown-loss"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-hiryu-strike",
+              "side": "japan",
+              "label": "飞龙号反击美军航母（示意）",
+              "fromPlaceId": "place-japan-mobile-force-area",
+              "toPlaceId": "place-us-tf-area",
+              "path": [
+                {
+                  "lat": 29.8,
+                  "lng": -177.9
+                },
+                {
+                  "lat": 29.2,
+                  "lng": -177.4
+                },
+                {
+                  "lat": 28.7,
+                  "lng": -176.9
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示反击方向，不代表真实航迹。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-spruance-hiryu-retaliation"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位与航线为示意；时刻按 ONI 概括记载。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-spruance-hiryu-retaliation",
+            "claim-nagumo-four-carriers-lost",
+            "claim-midway-yorktown-loss"
+          ]
+        },
+        {
+          "id": "phase-midway-5-pursuit",
+          "sequence": 5,
+          "title": "6 月 5—7 日：追击与约克城号沉没（示意）",
+          "time": {
+            "start": "1942-06-05T00:00:00+12:00",
+            "end": "1942-06-07T05:01:00+12:00",
+            "display": "1942 年 6 月 5—7 日（当地时间）",
+            "uncertainty": "约克城号沉没时刻按 ONI 记载；追击舰位为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "日军撤退编队（示意位置）",
+              "description": "日军残余舰艇向西撤退，部分巡洋舰在避让中相撞受损。",
+              "placeIds": [
+                "place-japan-mobile-force-area"
+              ],
+              "coordinates": {
+                "lat": 30,
+                "lng": -178
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 300,
+              "uncertaintyNote": "撤退编队位置为示意，不表示精确航迹。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-japanese-losses",
+                "claim-ussbs-midway-retirement"
+              ]
+            },
+            "allies": {
+              "label": "美军追击与救援（示意位置）",
+              "description": "美军航母追击日军残余舰艇，同时抢救约克城号。",
+              "placeIds": [
+                "place-midway"
+              ],
+              "coordinates": {
+                "lat": 29,
+                "lng": -175
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 250,
+              "uncertaintyNote": "追击位置为示意，真实航迹无法逐点重建。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-yorktown-loss",
+                "claim-midway-us-losses"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道航母部队已遭重创，决定撤退保存残余兵力。",
+            "allies": "美方知道日军正在撤退，继续追击并确认战果。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军是否会继续追击到日本近海。",
+            "allies": "美方不知道日军残余航母是否还能反击。"
+          },
+          "decision": {
+            "japan": "日军决定撤退，不再尝试夺回中途岛。",
+            "allies": "美军在确认日军撤远后停止追击，集中处理约克城号。"
+          },
+          "consequence": {
+            "japan": "日军失去四艘航母与大量飞行员，中途岛作战失败。",
+            "allies": "约克城号最终沉没，但中途岛与制海权转入美军手中。"
+          },
+          "certainty": "estimated",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：继续留在战场只会损失更多舰艇，先撤回整备。 日军决定保存残余舰艇，不再争夺中途岛。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative",
+                "source-nww2m-battle-midway"
+              ],
+              "claimIds": [
+                "claim-midway-japanese-losses",
+                "claim-midway-failure-cause-disputed",
+                "claim-ussbs-midway-retirement"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：战果已经足够，接下来要保住剩余航母与中途岛。 美方确认日军撤退后停止追击，优先保住剩余航母与中途岛。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative"
+              ],
+              "claimIds": [
+                "claim-midway-us-losses",
+                "claim-midway-yorktown-loss"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-midway-japan-retreat",
+              "side": "japan",
+              "label": "日军残余编队向西撤退（示意）",
+              "fromPlaceId": "place-japan-mobile-force-area",
+              "toPlaceId": "place-japan-home-islands",
+              "path": [
+                {
+                  "lat": 30,
+                  "lng": -178
+                },
+                {
+                  "lat": 31,
+                  "lng": 175
+                },
+                {
+                  "lat": 33,
+                  "lng": 150
+                },
+                {
+                  "lat": 35.5,
+                  "lng": 140
+                },
+                {
+                  "lat": 36.2,
+                  "lng": 138.3
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示撤退大致方向，不代表真实航迹。",
+              "sourceIds": [
+                "source-oni-midway-combat-narrative",
+                "source-ussbs-pto-ch5"
+              ],
+              "claimIds": [
+                "claim-midway-japanese-losses",
+                "claim-ussbs-midway-retirement"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段舰位与航线为示意；追击与撤退的真实航迹没有逐点记录。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-ussbs-pto-ch5"
+          ],
+          "claimIds": [
+            "claim-midway-japanese-losses",
+            "claim-midway-us-losses",
+            "claim-midway-yorktown-loss",
+            "claim-ussbs-midway-retirement"
+          ]
+        }
+      ]
     }
   ],
   "people": [
@@ -5137,6 +6362,34 @@
             "claim-nimitz-coral-evaluation",
             "claim-radar-carriers-should-have-two"
           ]
+        },
+        {
+          "id": "decision-nimitz-commit-carriers-midway",
+          "title": "把三艘航母投入中途岛",
+          "context": "1942 年 5 月下旬，破译情报确认日军下一个大目标很可能是中途岛，并给出大致日期；但情报给出的是地点与大致日期（日期只能锁定在 6 月 4 日或 5 日两天的区间），不等于掌握日军的全部作战计划。美军只有企业号、大黄蜂号与刚在珊瑚海受损的约克城号三艘航母可用。",
+          "options": [
+            "把三艘航母集中到中途岛海域，接受以少打多的风险",
+            "把航母留在后方或分散使用，避免在不利条件下决战"
+          ],
+          "choice": "尼米兹决定把三艘航母投入中途岛，并让约克城号在三天抢修后参战。",
+          "constraints": [
+            "航母数量只有三艘",
+            "约克城号刚在珊瑚海受损，只经三天抢修就参战"
+          ],
+          "consequence": "美军把三艘航母集中用于中途岛；这一决定把情报优势转化成了战场上的兵力集中。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative",
+            "source-nww2m-battle-midway",
+            "source-ussbs-pto-ch5"
+          ],
+          "claimIds": [
+            "claim-nimitz-carrier-commitment",
+            "claim-midway-codebreaking",
+            "claim-coral-yorktown-repair",
+            "claim-coral-midway-shift",
+            "claim-codebreaking-limit-not-omniscient"
+          ]
         }
       ],
       "relatedPersonIds": [
@@ -5150,9 +6403,12 @@
         "place-washington-dc"
       ],
       "eventIds": [
-        "event-japan-war-decision-1941"
+        "event-japan-war-decision-1941",
+        "event-overview-part-5-midway"
       ],
-      "battleIds": [],
+      "battleIds": [
+        "battle-midway"
+      ],
       "conceptIds": [
         "concept-radar",
         "concept-codebreaking",
@@ -5161,7 +6417,8 @@
       "sourceIds": [
         "source-dmn-king-nimitz",
         "source-oni-midway-combat-narrative",
-        "source-oni-coral-sea-combat-narrative"
+        "source-oni-coral-sea-combat-narrative",
+        "source-ussbs-pto-ch5"
       ],
       "claimIds": [
         "claim-nimitz-cincpac-1941-12-31",
@@ -5169,7 +6426,12 @@
         "claim-nimitz-onsite-assessment",
         "claim-nimitz-midway-air-control",
         "claim-nimitz-coral-evaluation",
-        "claim-nimitz-decline-1941"
+        "claim-nimitz-decline-1941",
+        "claim-midway-codebreaking",
+        "claim-midway-failure-cause-disputed",
+        "claim-coral-yorktown-repair",
+        "claim-spruance-usn-cinpac-directive",
+        "claim-nimitz-carrier-commitment"
       ]
     },
     {
@@ -5249,6 +6511,32 @@
             "claim-spruance-hiryu-retaliation",
             "claim-spruance-reserve-hornets-bombers"
           ]
+        },
+        {
+          "id": "decision-spruance-turn-to-intercept",
+          "title": "第 16 特混舰队的西进与出击时机",
+          "context": "6 月 2 日两支持混编队在中途岛东北会合，由弗莱彻统一指挥；6 月 4 日清晨，巡逻机报告来袭日机与日军航母的位置后，第 16 特混舰队（企业号、大黄蜂号）向西接近日军，斯普鲁恩斯负责执行并组织起飞。",
+          "options": [
+            "向西接近，进入航程后立即出动攻击群",
+            "等待更完整情报或保留兵力，避免过早暴露"
+          ],
+          "choice": "第 16 特混舰队向西接近日军，约 07:00 开始出动攻击群；斯普鲁恩斯负责执行与组织起飞。",
+          "constraints": [
+            "日军航母在约 155 英里外，燃油与作战半径限制了可用时间",
+            "东南风很轻，航母必须背向敌人转向才能起飞，出动过程约需一小时"
+          ],
+          "consequence": "第 16 特混舰队得以在日军航母回收与整备飞机时进入攻击距离，为当天的俯冲轰炸攻击创造条件。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-oni-midway-combat-narrative"
+          ],
+          "claimIds": [
+            "claim-spruance-launch-timing",
+            "claim-fletcher-combined-command",
+            "claim-spruance-task-force-sugar",
+            "claim-midway-june4-dawn-search",
+            "claim-nagumo-attack-timing-squeeze"
+          ]
         }
       ],
       "relatedPersonIds": [
@@ -5260,9 +6548,12 @@
         "place-pearl-harbor"
       ],
       "eventIds": [
-        "event-japan-war-decision-1941"
+        "event-japan-war-decision-1941",
+        "event-overview-part-5-midway"
       ],
-      "battleIds": [],
+      "battleIds": [
+        "battle-midway"
+      ],
       "conceptIds": [
         "concept-carrier-aircraft",
         "concept-naval-aviation",
@@ -5279,8 +6570,7 @@
         "claim-spruance-reserve-hornets-bombers",
         "claim-spruance-hiryu-retaliation",
         "claim-spruance-usn-cinpac-directive",
-        "claim-spruance-photo-1944",
-        "claim-spruance-search-turn"
+        "claim-spruance-photo-1944"
       ]
     },
     {
@@ -7464,6 +8754,79 @@
       "claimIds": [
         "claim-coral-shoho-sunk"
       ]
+    },
+    {
+      "id": "place-midway",
+      "historicalName": "中途岛",
+      "modernName": "中途岛环礁（美国）",
+      "modernCountry": "美国",
+      "placeType": "atoll",
+      "summary": "北太平洋的环礁，距夏威夷约一千一百英里；1942 年 6 月 4—7 日美日航母编队在此海域交战（6 月 3 日为前一天的首次接触）。日军计划夺取该岛；美方金上将判断其计划可能意在诱歼部分美国舰队（这是美方评估，不是日军计划原文）。",
+      "coordinates": {
+        "lat": 28.21,
+        "lng": -177.37
+      },
+      "coordinateAccuracyKm": 5,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-pearl-harbor",
+        "place-japan-home-islands"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative",
+        "source-ussbs-pto-ch5"
+      ],
+      "claimIds": [
+        "claim-midway-june3-contact",
+        "claim-ussbs-midway-plan",
+        "claim-midway-king-trap"
+      ]
+    },
+    {
+      "id": "place-japan-mobile-force-area",
+      "historicalName": "日本机动部队作战海域（中途岛西北）",
+      "modernName": "中途岛西北海域",
+      "modernCountry": "太平洋（公海）",
+      "placeType": "sea",
+      "summary": "1942 年 6 月 4 日前后日本机动部队在中途岛西北方向活动的海域，约北纬 30 度、西经 178 度；此处以近似中心点表示，不代表精确航迹。",
+      "coordinates": {
+        "lat": 30,
+        "lng": -178
+      },
+      "coordinateAccuracyKm": 150,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-midway-tf-positions"
+      ]
+    },
+    {
+      "id": "place-us-tf-area",
+      "historicalName": "美国第 16、17 特混舰队作战海域",
+      "modernName": "中途岛东北海域",
+      "modernCountry": "太平洋（公海）",
+      "placeType": "sea",
+      "summary": "1942 年 6 月 3—4 日美国第 16、17 特混舰队在中途岛以北/东北活动的海域，约北纬 28.6 度、西经 176.8 度；此处以近似中心点表示，不代表精确航迹。",
+      "coordinates": {
+        "lat": 28.6,
+        "lng": -176.8
+      },
+      "coordinateAccuracyKm": 150,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "claimIds": [
+        "claim-midway-tf-positions"
+      ]
     }
   ],
   "units": [
@@ -7757,7 +9120,9 @@
         "unit-kido-butai",
         "unit-combined-fleet",
         "event-us-oil-embargo-1941",
-        "place-dutch-east-indies"
+        "place-dutch-east-indies",
+        "battle-midway",
+        "event-overview-part-5-midway"
       ],
       "sourceIds": [
         "source-ussbs-pto-ch2",
@@ -8385,6 +9750,19 @@
       "citation": "\"Takeo Takagi\", Wikipedia, The Free Encyclopedia, revision 1379846610.",
       "reliabilityNote": "低权重参考来源（LOW WEIGHT）。仅用于补充高木武雄的职务信息（第 5 航空战队司令、参与 MO 作战、为珊瑚海日方现场高级指挥官）以及生卒年份；不作为战斗过程、数字或因果判断的依据，这些一律以 ONI 官方战史为准。该条目自身带有来源不足警示。",
       "language": "en"
+    },
+    {
+      "id": "source-ussbs-pto-ch5",
+      "title": "Campaigns of the Pacific War, Chapter 5: The Battle of Midway",
+      "creator": "United States Strategic Bombing Survey",
+      "publisher": "United States Strategic Bombing Survey",
+      "year": 1946,
+      "sourceType": "official-history",
+      "url": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-5.html",
+      "accessedDate": "2026-11-05",
+      "citation": "United States Strategic Bombing Survey, Campaigns of the Pacific War, Chapter 5, \"The Battle of Midway\" (Washington, 1946), pp. 58-77.",
+      "reliabilityNote": "美方战后官方调查报告，基于对日方军官的访谈与日方文件；可支持日军中途岛计划、美军防御方针与战果评价。属战后整理材料，个别细节以后来的研究为准，但不影响本任务引用的计划层与战果层判断。",
+      "language": "en"
     }
   ],
   "media": [],
@@ -8545,6 +9923,31 @@
         "claim-coral-moresby-postponed",
         "claim-coral-midway-shift",
         "claim-coral-midway-carrier-list"
+      ]
+    },
+    {
+      "id": "question-did-midway-change-initiative",
+      "historicalPart": "part-5-midway",
+      "prompt": "中途岛海战是否真正改变了太平洋战争的战略主动权？",
+      "answer": "可以确认的是，中途岛之后日本损失了四艘大型航母、估计 275 架飞机与约 2,400 人（ONI 汇总中的估计），总人员损失估计约 4,800 人；美国只损失约克城号、哈曼号与约 150 架飞机、307 人，并保住了中途岛与另外两艘航母。从这个意义上说，日本由攻转守、美国开始能够选择战场，战略主动权确实发生了转移。但更谨慎的说法是：中途岛是这一转移的关键节点之一，而不是单独决定战争结局的一战。USSBS 第 5 章另记为约 250 架飞机与约 100 名一线飞行员（两套口径不同），并评价说：中途岛使日本向东的扩张停止，日本失去四艘精锐航母与一批一线飞行员，此后太平洋的力量平衡持续向美国倾斜，中途岛也许就是这场战争的决定性海战。既然该来源自己用的是「也许」，回答这个问题就需要先说明用哪把尺子：是 1942 年 6 月的航母兵力对比，还是整场战争的长期趋势。",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "person-nimitz-chester",
+        "person-spruance-raymond"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative",
+        "source-nww2m-battle-midway",
+        "source-ussbs-pto-ch5"
+      ],
+      "claimIds": [
+        "claim-midway-japanese-losses",
+        "claim-midway-us-losses",
+        "claim-midway-failure-cause-disputed",
+        "claim-midway-codebreaking",
+        "claim-nimitz-midway-assessment-quote",
+        "claim-ussbs-midway-consequences"
       ]
     }
   ],
@@ -9697,8 +11100,9 @@
       "text": "据国家二战博物馆，美国海军密码分析人员 1942 年初开始破译日军通信，中途岛基地用一则“淡水不足”的假情报诱使日方回电确认“AF”即中途岛，从而确认了攻击地点，并给出大致日期与战斗序列。",
       "claimType": "fact",
       "entityIds": [
-        "concept-logistics",
-        "event-japan-war-decision-1941"
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "concept-codebreaking"
       ],
       "sourceIds": [
         "source-nww2m-battle-midway"
@@ -9710,15 +11114,16 @@
           "locator": "Breaking the Code, paragraph 1"
         }
       ],
-      "note": "仅用于说明后续阶段的情报背景；本阶段正文不使用其细节。"
+      "note": "该 claim 用于 battle-midway 与第 5 部分导读的情报小节。"
     },
     {
       "id": "claim-radar-midway-detected",
       "text": "1942 年 6 月 4 日清晨，中途岛的雷达在接到巡逻机报告后五分钟，就在约九万米的距离上发现了来袭的日机编队，高度约一万英尺。",
       "claimType": "fact",
       "entityIds": [
-        "concept-radar",
-        "place-pearl-harbor"
+        "battle-midway",
+        "place-midway",
+        "concept-radar"
       ],
       "sourceIds": [
         "source-oni-midway-combat-narrative"
@@ -10225,7 +11630,7 @@
     },
     {
       "id": "claim-spruance-launch-timing",
-      "text": "官方战史记载，6 月 4 日斯普鲁恩斯的编队以二十五节航速西进，到早上七时估计日军航母在东北偏西南约二百五十公里（155 英里）处，随即开始出动飞机；由于东南风很轻，航母必须背向敌人转向才能起飞，整个出动过程'大约需要一小时'。",
+      "text": "官方战史记载，6 月 4 日斯普鲁恩斯的编队以二十五节航速西进，到早上七时估计日军航母在约二百五十公里（155 英里）外的方位 239° 上，随即开始出动飞机；由于东南风很轻，航母必须背向敌人转向才能起飞，整个出动过程'大约需要一小时'。",
       "claimType": "fact",
       "entityIds": [
         "person-spruance-raymond",
@@ -14042,6 +15447,382 @@
           "sourceId": "source-oni-coral-sea-combat-narrative",
           "locatorType": "chapter-section",
           "locator": "Our forces joined, pp. 3-4"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-june3-contact",
+      "text": "ONI 战史记载，1942 年 6 月 3 日中途岛的巡逻机在 09:04 首次发现日军水面舰艇（两艘货船），09:25 又报告“主力”6 艘大船；当天下午 B-17 轰炸机攻击了该编队，6 月 4 日凌晨 PBY 巡逻机又对其实施夜间鱼雷攻击。日军航母当天并未被发现。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "First contact with the enemy, June 3, pp. 9-11"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-midway-attack",
+      "text": "ONI 战史记载，6 月 4 日 05:45 巡逻机报告大批日机飞向中途岛，05:52 报告发现两艘日军航母；06:30 第一枚炸弹落在中途岛，岛上机库、发电站与油罐受损。美军 27 架战斗机中 15 架失踪、7 架重创，但声称击落日机 43 架，高射炮另击落 10 架。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The enemy attack on Midway, June 4, pp. 11-16"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-japanese-losses",
+      "text": "ONI 战史引用尼米兹的报告汇总日军损失：四艘航母（赤城、加贺、苍龙、飞龙）沉没，连同其全部飞机与大量人员，估计 275 架飞机、2,400 人；两至三艘战列舰受损；两艘最上级重巡洋舰沉没（第二艘是否沉没存疑）；三艘以上重巡洋舰受伤；一艘轻巡洋舰受伤；三艘驱逐舰沉没；估计总人员损失 4,800 人。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Summary of enemy losses in the Battle of Midway, p. 54"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-us-losses",
+      "text": "ONI 战史汇总美军损失：约克城号与哈曼号沉没；约 150 架飞机在战斗中损失或损坏到无法修复；人员损失为 92 名军官与 215 名士兵，共 307 人。约克城号于 6 月 7 日 05:01 沉没。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "End of the Yorktown, June 6-7, pp. 51-55"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-yorktown-loss",
+      "text": "ONI 战史记载，约克城号在 6 月 4 日被日机重创后弃舰；6 月 6 日拖带与抢救期间遭日军潜艇鱼雷命中，哈曼号同时被击沉；约克城号于 6 月 7 日 05:01 沉没。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "End of the Yorktown, June 6-7, pp. 51-53"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-failure-cause-disputed",
+      "text": "关于日本在中途岛失败的主要原因，不同解释各有侧重：一种强调美国破译日军通信并在中途岛设伏，使日军在不知情的情况下进入美军航母的攻击范围；另一种强调日军在回收、加油与重新挂弹之间反复调整，防御机动又阻碍了起飞，使美军俯冲轰炸机到达时日军航母处于最不利状态。两种解释并不互相排斥，但侧重不同；现有已读材料不能把失败归结为单一原因。",
+      "claimType": "disputed",
+      "entityIds": [
+        "battle-midway",
+        "person-nagumo-chuichi",
+        "person-nimitz-chester"
+      ],
+      "sourceIds": [
+        "source-nww2m-battle-midway",
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-battle-midway",
+          "locatorType": "section-paragraph",
+          "locator": "Breaking the Code, paragraph 1"
+        },
+        {
+          "sourceId": "source-nww2m-battle-midway",
+          "locatorType": "section-paragraph",
+          "locator": "The Battle, paragraphs 1-2"
+        },
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, pp. 20-23"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-midway-plan",
+      "text": "USSBS 第 5 章记载：日军第二阶段计划夺取中途岛与阿留申群岛，以建立本土以东与东北的外围防线，并计划从这些基地提供半径约 1,300 英里的空中掩护，范围包括夏威夷；日军把 1942 年 6 月 6 日定为占领中途岛的日期。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch5"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch5",
+          "locatorType": "chapter-section",
+          "locator": "Japanese Plans, p. 58"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-midway-us-defense",
+      "text": "USSBS 第 5 章记载：美军判断日军意图后，决定不投入水面舰艇，而是以三艘从珊瑚海赶来的航母实施远程空袭、在日军到达目标前削弱其舰队；同时加强中途岛防御、建立潜艇警戒线并集中岸基飞机。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch5"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch5",
+          "locatorType": "chapter-section",
+          "locator": "United States Defensive Efforts, p. 58"
+        }
+      ]
+    },
+    {
+      "id": "claim-ussbs-midway-consequences",
+      "text": "USSBS 第 5 章评价：中途岛使日本向东的扩张停止、中途岛作为美军前哨得以保存；日本损失四艘精锐航母、约 250 架飞机与约 100 名一线飞行员（该章称这剥夺了日本赖以扩张的打击力量），此后太平洋的力量平衡持续向美国倾斜，该章称中途岛也许就是这场战争的决定性海战。该章还记载，日本把战列舰与水机母舰从舰队抽出、匆忙改装为航母，但弥补损失的努力仍不够。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch5"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch5",
+          "locatorType": "chapter-section",
+          "locator": "Consequences of the Battle, p. 60"
+        }
+      ],
+      "note": "这是 USSBS 的战后评价，属该来源的判断；本教材以 interpretation 引用，不写成唯一结论。"
+    },
+    {
+      "id": "claim-ussbs-midway-retirement",
+      "text": "USSBS 第 5 章记载：四艘航母全部损失使入侵舰队失去空中支援，加上 6 月 4 日夜间重巡洋舰最上号与三隈号相撞，山本五十六下令放弃作战、全部舰艇撤退；6 月 5 日恶劣天气使美军航母编队无法找到撤向中途岛以北与以西的日军部队。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-japan-mobile-force-area",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch5"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch5",
+          "locatorType": "chapter-section",
+          "locator": "The Japanese Retirement, p. 59"
+        }
+      ],
+      "note": "撤退与放弃作战的记载，并说明 6 月 5 日天气妨碍美军追击；用于第 5 阶段撤退与航线。"
+    },
+    {
+      "id": "claim-midway-tf-positions",
+      "text": "ONI 战史记载，美军两支持混编队于 6 月 2 日在北纬 32°04′、西经 172°45′ 会合，随后南移到中途岛以北约 200 英里；6 月 4 日巡逻机报告日军航母位于中途岛方位 320°、距离约 180 英里处。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway",
+        "place-us-tf-area",
+        "place-japan-mobile-force-area"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our carrier attack on the enemy carriers, June 4, pp. 19-20"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-june4-dawn-search",
+      "text": "ONI 战史记载，6 月 4 日 04:15 中途岛搜索机起飞；05:45 巡逻机报告大批日机飞向中途岛；05:52 报告发现两艘日军航母；06:00 前后中途岛所有可飞行的飞机升空。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "place-midway",
+        "place-japan-mobile-force-area"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The enemy attack on Midway, June 4, pp. 11-12"
+        }
+      ]
+    },
+    {
+      "id": "claim-nimitz-carrier-commitment",
+      "text": "USSBS 第 5 章记载：美军决定不投入水面舰艇，而是用三艘从珊瑚海赶来的航母对日军舰队实施远程空袭、在日军到达中途岛前削弱其力量；ONI 战史记载，其中约克城号在珍珠港用三天抢修后于 5 月 30 日随弗莱彻出航参加中途岛。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "person-nimitz-chester",
+        "place-midway",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch5",
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch5",
+          "locatorType": "chapter-section",
+          "locator": "United States Defensive Efforts, p. 58"
+        },
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 3"
+        }
+      ]
+    },
+    {
+      "id": "claim-yamamoto-midway-command",
+      "text": "USSBS 第 5 章的部队编成表把山本五十六列为日本主力部队（Main Body）的指挥官，旗舰为大和号；中途岛作战中日本联合舰队的主力与航母机动部队都在他的统辖之下。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "person-yamamoto-isoroku",
+        "unit-combined-fleet",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch5"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch5",
+          "locatorType": "chapter-section",
+          "locator": "Appendix 24, Forces Involved, p. 76"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-aleutian-role",
+      "text": "ONI 战史记载，6 月 3 日日军攻击阿留申群岛的荷兰港等地；ONI 判断这次行动“可能是对中途岛作战的牵制，但更可能是掩护基斯卡与阿图岛的占领”。同一页还提到阿留申方向的后续行动被雾遮蔽。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 3"
+        }
+      ],
+      "note": "“可能是牵制、更可能是掩护占领”是 ONI 自己的判断；本教材照引，不把它升级为确定事实。"
+    },
+    {
+      "id": "claim-midway-king-trap",
+      "text": "ONI 记载，美国舰队总司令金上将认为日军计划意在诱歼一部分美国舰队，因此要求只采用消耗战术、不要让航母与巡洋舰过度冒险；这是当时美方的评估，不是日军计划原文。",
+      "claimType": "interpretation",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 5"
+        }
+      ]
+    },
+    {
+      "id": "claim-fletcher-flagship-transfer",
+      "text": "ONI 战史脚注记载：约克城号受损后，弗莱彻把旗舰转移到阿斯托里亚号。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "person-fletcher-frank-jack"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, p. 4, footnote 6"
+        }
+      ]
+    },
+    {
+      "id": "claim-midway-japanese-forces",
+      "text": "ONI 战史列出中途岛作战的日军编成：以赤城、加贺、苍龙、飞龙四艘航母为核心的打击部队，另有主力部队、占领部队（含运输船团）以及阿留申方向的部队；美军以企业号、大黄蜂号、约克城号三艘航母与中途岛岸基飞机应战。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-midway",
+        "event-overview-part-5-midway",
+        "place-midway"
+      ],
+      "sourceIds": [
+        "source-oni-midway-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-midway-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The Battle of Midway, background, pp. 1-4"
         }
       ]
     }
