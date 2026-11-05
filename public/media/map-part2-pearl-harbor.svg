@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">珍珠港：夏威夷与中太平洋位置（示意）</title>
+  <desc id="desc">日本本土—夏威夷—中途岛的相对位置，以及瓦胡岛与珍珠港的放大示意　—　不按精确比例</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">珍珠港：夏威夷与中太平洋位置（示意）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">日本本土—夏威夷—中途岛的相对位置，以及瓦胡岛与珍珠港的放大示意　—　不按精确比例</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <rect x="70" y="140" width="1060" height="455" rx="2" fill="#e9eef2" stroke="none" stroke-width="0" opacity="1"/>
+<rect x="110" y="235" width="122" height="72" rx="8" fill="#f3ddd2" stroke="#8b2c2c" stroke-width="2" opacity="1"/>
+<text x="171" y="278" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="16" font-weight="700" fill="#8b2c2c" text-anchor="middle" opacity="1">日本本土</text>
+<ellipse cx="640" cy="380" rx="46" ry="26" fill="#e8dcbf" stroke="#a8894f" stroke-width="2" opacity="1"/>
+<text x="640" y="430" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="16" font-weight="700" fill="#22303f" text-anchor="middle" opacity="1">夏威夷群岛</text>
+<circle cx="900" cy="205" r="14" fill="#e8dcbf" stroke="#22303f" stroke-width="2" opacity="1"/>
+<text x="900" y="245" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#22303f" text-anchor="middle" opacity="1">中途岛</text>
+<line x1="700" y1="352" x2="856" y2="232" stroke="#a8894f" stroke-width="2.5" opacity="1" stroke-dasharray="6 4" marker-end="url(#arrBrass)"/>
+<text x="806" y="286" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="start" opacity="1">约 1,100 英里</text>
+<line x1="242" y1="284" x2="590" y2="362" stroke="#8b2c2c" stroke-width="3" opacity="1" stroke-dasharray="10 6" marker-end="url(#arrRed)"/>
+<text x="316" y="330" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#8b2c2c" text-anchor="start" opacity="1">远程奔袭方向（示意）</text>
+<rect x="300" y="468" width="440" height="120" rx="8" fill="#fbf7ea" stroke="#a8894f" stroke-width="2" opacity="1"/>
+<text x="318" y="496" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="start" opacity="1">瓦胡岛 Oahu（放大示意）</text>
+<ellipse cx="404" cy="540" rx="54" ry="26" fill="#e6e0cc" stroke="#22303f" stroke-width="2" opacity="1"/>
+<rect x="392" y="546" width="36" height="10" rx="6" fill="#cfe0ea" stroke="#2f5d8a" stroke-width="1.5" opacity="1"/>
+<text x="452" y="548" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="600" fill="#2f5d8a" text-anchor="start" opacity="1">珍珠港</text>
+<text x="452" y="570" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">福特岛 / 战列舰排</text>
+<line x1="686" y1="396" x2="700" y2="470" stroke="#c9b995" stroke-width="1.5" opacity="1" stroke-dasharray="4 4"/>
+  <rect x="60" y="624" width="684" height="70" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><line x1="78" y1="645" x2="108" y2="645" stroke="#8b2c2c" stroke-width="4" opacity="1" marker-end="url(#arrRed)"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">日军远程奔袭方向（示意）</text><line x1="408" y1="645" x2="438" y2="645" stroke="#a8894f" stroke-width="4" opacity="1" marker-end="url(#arrBrass)"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">夏威夷—中途岛距离（约 1,100 英里）</text><rect x="78" y="664" width="26" height="14" rx="3" fill="#cfe0ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/><text x="116" y="676" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">港湾水域</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">位置与距离标注为教学示意，不按精确比例。“约 1,100 英里”与已接受内容中“中途岛距夏威夷约一千一百英里”一致。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">1941—1942 年日本的快速扩张方向（示意）</title>
+  <desc id="desc">香港、马来亚与新加坡、菲律宾、荷属东印度、威克岛、关岛、达尔文、印度洋　—　日期为大致时段</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">1941—1942 年日本的快速扩张方向（示意）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">香港、马来亚与新加坡、菲律宾、荷属东印度、威克岛、关岛、达尔文、印度洋　—　日期为大致时段</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <rect x="70" y="140" width="1060" height="455" rx="2" fill="#e9eef2" stroke="none" stroke-width="0" opacity="1"/>
+<rect x="858" y="172" width="140" height="74" rx="8" fill="#f3ddd2" stroke="#8b2c2c" stroke-width="2" opacity="1"/>
+<text x="928" y="206" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="16" font-weight="700" fill="#8b2c2c" text-anchor="middle" opacity="1">日本本土</text>
+<text x="928" y="228" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#8b2c2c" text-anchor="middle" opacity="1">扩张起点</text>
+<line x1="872" y1="214" x2="940" y2="214" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="842" y2="288" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="540" y2="416" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="686" y2="430" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="450" y2="494" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="576" y2="544" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="780" y2="548" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<line x1="872" y1="214" x2="302" y2="506" stroke="#8b2c2c" stroke-width="2.5" opacity="0.85" marker-end="url(#arrRed)"/>
+<circle cx="960" cy="222" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="974" y="227" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">威克岛 1941-12</text>
+<circle cx="862" cy="296" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="876" y="301" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">关岛 1941-12</text>
+<circle cx="560" cy="424" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="574" y="429" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">香港 1941-12</text>
+<circle cx="706" cy="438" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="720" y="443" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">菲律宾 1941-12—1942-05</text>
+<circle cx="470" cy="502" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="484" y="507" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">马来亚 / 新加坡 1941-12—1942-02</text>
+<circle cx="596" cy="552" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="610" y="557" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">荷属东印度 1942-01—03</text>
+<circle cx="800" cy="556" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="814" y="561" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">达尔文 1942-02-19</text>
+<circle cx="322" cy="514" r="7" fill="#8b2c2c" stroke="none" stroke-width="0" opacity="1"/><text x="336" y="519" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">印度洋 1942-04</text>
+<text x="200" y="560" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">箭头仅表示方向与先后，不代表精确航迹。</text>
+  <rect x="60" y="624" width="684" height="44" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><line x1="78" y1="645" x2="108" y2="645" stroke="#8b2c2c" stroke-width="4" opacity="1" marker-end="url(#arrRed)"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">日军进攻 / 占领方向（示意）</text><rect x="408" y="638" width="26" height="14" rx="3" fill="#8b2c2c" stroke="#8b2c2c" stroke-width="2" opacity="1"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">主要目标</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">各战役的日期与结果见已接受内容；本图只作方向与先后的空间示意，箭头不代表精确航线或兵力规模。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>

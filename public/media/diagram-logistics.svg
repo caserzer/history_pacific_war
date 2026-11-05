@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">补给与后勤：距离如何限制作战（原创）</title>
+  <desc id="desc">从后方基地到舰队的补给链条与主要约束　—　流程为教学简化</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">补给与后勤：距离如何限制作战（原创）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">从后方基地到舰队的补给链条与主要约束　—　流程为教学简化</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <rect x="120" y="250" width="220" height="90" rx="8" fill="#dbe6f0" stroke="#2f5d8a" stroke-width="2" opacity="1"/>
+<text x="230" y="290" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#2f5d8a" text-anchor="middle" opacity="1">本土 / 后方基地</text>
+<text x="230" y="314" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">工业、油料、弹药</text>
+<rect x="470" y="250" width="220" height="90" rx="8" fill="#e8dcbf" stroke="#a8894f" stroke-width="2" opacity="1"/>
+<text x="580" y="290" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#7a5f26" text-anchor="middle" opacity="1">油船 / 补给船</text>
+<text x="580" y="314" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">海上运输与加油</text>
+<rect x="820" y="250" width="220" height="90" rx="8" fill="#dfe6d3" stroke="#4f6b4a" stroke-width="2" opacity="1"/>
+<text x="930" y="290" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#4f6b4a" text-anchor="middle" opacity="1">前进基地</text>
+<text x="930" y="314" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">机场、码头、仓库</text>
+<line x1="342" y1="295" x2="468" y2="295" stroke="#2f5d8a" stroke-width="3" opacity="1" marker-end="url(#arrNavy)"/>
+<line x1="692" y1="295" x2="818" y2="295" stroke="#2f5d8a" stroke-width="3" opacity="1" marker-end="url(#arrNavy)"/>
+<rect x="470" y="400" width="220" height="78" rx="8" fill="#fbf7ea" stroke="#22303f" stroke-width="2" opacity="1"/>
+<text x="580" y="434" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#22303f" text-anchor="middle" opacity="1">舰队 / 航母编队</text>
+<text x="580" y="458" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">作战与消耗</text>
+<line x1="930" y1="342" x2="692" y2="430" stroke="#4f6b4a" stroke-width="2.5" opacity="1" stroke-dasharray="6 4" marker-end="url(#arrGreen)"/>
+<line x1="230" y1="400" x2="468" y2="400" stroke="#a8894f" stroke-width="2.5" opacity="1" stroke-dasharray="6 4" marker-end="url(#arrBrass)"/>
+<rect x="130" y="494" width="150" height="46" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="1"/><text x="205" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#6b604d" text-anchor="middle" opacity="1">燃油</text>
+<rect x="320" y="494" width="150" height="46" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="1"/><text x="395" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#6b604d" text-anchor="middle" opacity="1">弹药</text>
+<rect x="510" y="494" width="150" height="46" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="1"/><text x="585" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#6b604d" text-anchor="middle" opacity="1">备件</text>
+<rect x="700" y="494" width="150" height="46" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="1"/><text x="775" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#6b604d" text-anchor="middle" opacity="1">维修</text>
+<rect x="890" y="494" width="150" height="46" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="1"/><text x="965" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#6b604d" text-anchor="middle" opacity="1">航程</text>
+<text x="600" y="476" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">补给线越长，可用兵力与出击节奏越受限制（示意）</text>
+  <rect x="60" y="624" width="684" height="44" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><line x1="78" y1="645" x2="108" y2="645" stroke="#2f5d8a" stroke-width="4" opacity="1" marker-end="url(#arrNavy)"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">物资前送（示意）</text><line x1="408" y1="645" x2="438" y2="645" stroke="#a8894f" stroke-width="4" opacity="1" marker-end="url(#arrBrass)"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">油料 / 弹药补给（示意）</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">流程与约束为教学简化；补给限制与资源依赖的基本事实见 concept-logistics 正文与已接受来源。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>

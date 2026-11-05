@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">雷达如何扩大防空预警距离（原创）</title>
+  <desc id="desc">雷达波束、距离环与来袭目标的关系　—　几何为教学示意</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">雷达如何扩大防空预警距离（原创）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">雷达波束、距离环与来袭目标的关系　—　几何为教学示意</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <line x1="120" y1="540" x2="1080" y2="540" stroke="#9db4c4" stroke-width="2" opacity="1"/>
+<path d="M150,540 L210,470 L300,470 L360,540 Z" fill="#e8dcbf" stroke="#33414c" stroke-width="2"/>
+<line x1="255" y1="470" x2="255" y2="386" stroke="#33414c" stroke-width="4" opacity="1"/>
+<path d="M235,386 L275,386 L290,356 L220,356 Z" fill="#7d8790" stroke="#33414c" stroke-width="2"/>
+<path d="M 135,540 A 120,120 0 0 1 375,540" fill="none" stroke="#a8894f" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.7"/>
+<path d="M 35,540 A 220,220 0 0 1 475,540" fill="none" stroke="#a8894f" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.7"/>
+<path d="M -65,540 A 320,320 0 0 1 575,540" fill="none" stroke="#a8894f" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.7"/>
+<text x="370" y="500" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#a8894f" text-anchor="start" opacity="1">距离环（示意）</text>
+<path d="M255,380 L700,300 L700,360 Z" fill="#dbe6f0" opacity="0.55"/>
+<polygon points="690,250 674,266 706,266" fill="#8b2c2c"/>
+<polygon points="732,262 716,278 748,278" fill="#8b2c2c"/>
+<polygon points="774,274 758,290 790,290" fill="#8b2c2c"/>
+<text x="700" y="232" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="600" fill="#8b2c2c" text-anchor="start" opacity="1">来袭机群</text>
+<text x="120" y="360" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">雷达天线</text>
+<text x="430" y="400" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#2f5d8a" text-anchor="start" opacity="1">探测波束（示意）</text>
+<text x="120" y="584" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">雷达站</text>
+<rect x="120" y="168" width="460" height="96" rx="8" fill="#fbf7ea" stroke="#a8894f" stroke-width="1.5" opacity="1"/>
+<text x="140" y="196" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">雷达把“发现”提前</text>
+<text x="140" y="222" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">中途岛雷达在接到巡逻机报告后约五分钟、</text>
+<text x="140" y="244" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">约九万米距离上发现来袭日机编队。</text>
+  <rect x="60" y="624" width="684" height="44" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><rect x="78" y="638" width="26" height="14" rx="3" fill="#7d8790" stroke="#22303f" stroke-width="2" opacity="1"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">雷达站 / 天线</text><rect x="408" y="638" width="26" height="14" rx="3" fill="#8b2c2c" stroke="#8b2c2c" stroke-width="2" opacity="1"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">来袭机群（示意）</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">几何为教学示意，不按真实雷达参数；“约五分钟 / 约九万米”依据已接受 claim-radar-midway-detected，属当日具体记录。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>
