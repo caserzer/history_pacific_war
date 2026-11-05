@@ -6164,7 +6164,7 @@
       "role": "日本海军联合舰队司令长官",
       "service": "navy",
       "summary": "日本海军联合舰队司令长官。他清楚美国的工业潜力，却仍然提出并推动了袭击珍珠港的计划；他本人把这场战争看成胜算很低的赌博。",
-      "profile": "要理解山本五十六，得先理解他看到了什么。他长期在日本海军中服役，后来长年在美国任职，亲眼看过美国的工厂、油田和劳动力。因此，当日本国内讨论要不要对美开战时，他是少数从一开始就清楚双方力量差距有多大的人之一。据博物馆文章转述，当有人提出日本大约只能与美国打十八个月时，他的回答是：这与我自己的研究一致。他判断日本难以承受一场长期的消耗战。既然如此，他为什么还要支持和策划袭击珍珠港？答案要放回当时的处境去看。第一，日本的作战传统相信“决定性海战”：既然资源不足以长期消耗，就必须在开战之初用一次猛烈打击换取时间。第二，联合舰队面对的现实是：美国太平洋舰队的存在让日本在南进时始终要担心后背。第三，最初提出这个计划的正是他本人——美国战略轰炸调查处的报告明确写道，袭击由山本五十六提出。这里有一个必须讲清楚的区分：对山本判断的评价，不能只记住“他反对对美开战”这句话。他知道风险，却仍然把赌注下了下去，因为在他看来，既然战争已经难以避免，那么唯一的胜机就在开战之初。这个判断对不对，要看它是否建立在他当时能掌握的信息上——那一部分是对的。它的问题出在更远处：一次战术上的成功，能不能换来政治上的结果。1943 年 4 月 18 日，他在布干维尔上空被美军 P-38 击落身亡，没能看到这场战争的结局。还需要补一句容易被忽略的细节：他并不是不了解对手的人，而是一个了解对手、却仍然选择开战的人。正因为如此，他的档案既不能写成被迫应战的军人，也不能写成单纯策划偷袭的反派。把这两面都放进去，才是真实的历史人物。",
+      "profile": "要理解山本五十六，得先理解他看到了什么。他长期在日本海军中服役，后来长年在美国任职，亲眼看过美国的工厂、油田和劳动力。因此，当日本国内讨论要不要对美开战时，他是少数从一开始就清楚双方力量差距有多大的人之一。据博物馆文章转述，当有人提出日本大约只能与美国打十八个月时，他的回答是：这与我自己的研究一致。他判断日本难以承受一场长期的消耗战。既然如此，他为什么还要支持和策划袭击珍珠港？答案要放回当时的处境去看。第一，日本的作战传统相信“决定性海战”：既然资源不足以长期消耗，就必须在开战之初用一次猛烈打击换取时间。第二，联合舰队面对的现实是：美国太平洋舰队的存在让日本在南进时始终要担心后背。第三，最初提出这个计划的正是他本人——美国战略轰炸调查处的报告明确写道，袭击由山本五十六提出。这里有一个必须讲清楚的区分：对山本判断的评价，不能只记住“他反对对美开战”这句话。他知道风险，却仍然把赌注下了下去，因为在他看来，既然战争已经难以避免，那么唯一的胜机就在开战之初。这个判断对不对，要看它是否建立在他当时能掌握的信息上——那一部分是对的。它的问题出在更远处：一次战术上的成功，能不能换来政治上的结果。1943 年 4 月 18 日，他在布干维尔上空被美军 P-38 击落身亡，没能看到这场战争的结局。还需要补一句容易被忽略的细节：他并不是不了解对手的人，而是一个了解对手、却仍然选择开战的人。正因为如此，他的档案既不能写成被迫应战的军人，也不能写成单纯策划偷袭的反派。把这两面都放进去，才是真实的历史人物。还可以补上一个容易被忽略的问题：山本当时并不知道美国航母在哪里。美国战略轰炸调查处的报告记载，日方估计夏威夷海域有四到五艘美军航母，并把它们列为攻击目标；但攻击当天这些航母并不在锚地，机群只能把重点转向战列舰。同一报告在解释日军为何不继续搜索时也写道：美军航母位置不明，靠空中搜索找到它们的可能性很小。对山本来说，这意味着计划里最关键的目标之一带着无法消除的不确定性——他能确定的是必须让美国太平洋舰队失效，不能确定的是这一击能不能碰到对方真正的航母力量。把这一层写出来，才能解释为什么一场战术上成功的袭击，没有带来他真正想要的政治结果。",
       "decisions": [
         {
           "id": "decision-yamamoto-propose-pearl-harbor",
@@ -6282,7 +6282,8 @@
         "claim-ussbs-decision-1941-11-03",
         "claim-ussbs-carriers-absent",
         "claim-y-day-8-december-1941-11-07",
-        "claim-nagano-long-war-risk"
+        "claim-nagano-long-war-risk",
+        "claim-ussbs-why-no-second-attack"
       ]
     },
     {
@@ -8973,15 +8974,19 @@
         {
           "level": 3,
           "title": "第三层：为什么航母改变了舰队的作战方式",
-          "body": "在航母出现之前，海战的主角是战列舰，靠装甲和火炮在近距离对轰。航母把作战距离拉开了：双方舰队可能始终看不见彼此，战斗由各自的飞机完成。这对指挥员提出了全新的要求。第一，要先找到对方。谁先发现对方，谁就能先攻击；发现得晚的一方往往连还手的时机都没有。第二，要算准时间。飞机出去一趟需要几个小时，这段时间里指挥官不知道外面发生了什么，而对手可能已经改变了位置。第三，航母非常脆弱。一艘航母失去作战能力，往往只需要几枚炸弹命中甲板。1941 年 12 月 7 日的珍珠港就清楚地说明了这三点：日军当天找不到美国航母，于是把攻击重点转向了停泊的战列舰；而正因为美国航母不在港内，几个月后它们成了美国海军最要紧的力量。",
+          "body": "在航母出现之前，海战的主角是战列舰，靠装甲和火炮在近距离对轰。航母把作战距离拉开了：双方舰队可能始终看不见彼此，战斗由各自的飞机完成。这对指挥员提出了全新的要求。第一，要先找到对方。谁先发现对方，谁就能先攻击；发现得晚的一方往往连还手的时机都没有。第二，要算准时间。飞机出去一趟需要几个小时，这段时间里指挥官不知道外面发生了什么，而对手可能已经改变了位置。第三，航母非常脆弱。一艘航母失去作战能力，往往只需要几枚炸弹命中甲板。1941 年 12 月 7 日的珍珠港就清楚地说明了这三点：日军当天找不到美国航母，于是把攻击重点转向了停泊的战列舰；而正因为美国航母不在港内，几个月后它们成了美国海军最要紧的力量。把这三点放到 1942 年 6 月 4 日的中途岛，就能看出它们如何影响决策：美军航母在中途岛以北海域等待，希望先发现日军；日军则要在先压制中途岛与迎击可能出现的美国航母之间分配兵力，而当天击沉日军航母的正是舰载机的攻击。",
           "sourceIds": [
             "source-ussbs-pto-ch2",
-            "source-nww2m-pacific-strategy"
+            "source-nww2m-pacific-strategy",
+            "source-oni-midway-combat-narrative"
           ],
           "claimIds": [
             "claim-ussbs-carriers-absent",
             "claim-midway-codebreaking",
-            "claim-ussbs-attack-purpose"
+            "claim-ussbs-attack-purpose",
+            "claim-midway-tf-positions",
+            "claim-nagumo-attack-timing-squeeze",
+            "claim-nagumo-four-carriers-lost"
           ]
         }
       ],
@@ -8990,18 +8995,23 @@
         "equipment-akagi",
         "unit-kido-butai",
         "person-yamamoto-isoroku",
-        "event-japan-war-decision-1941"
+        "event-japan-war-decision-1941",
+        "battle-midway"
       ],
       "sourceIds": [
         "source-ussbs-pto-ch2",
         "source-jm-097",
-        "source-nww2m-pacific-strategy"
+        "source-nww2m-pacific-strategy",
+        "source-oni-midway-combat-narrative"
       ],
       "claimIds": [
         "claim-ussbs-carriers-absent",
         "claim-kido-butai-rearm-plan",
         "claim-ussbs-attack-purpose",
-        "claim-midway-codebreaking"
+        "claim-midway-codebreaking",
+        "claim-midway-tf-positions",
+        "claim-nagumo-attack-timing-squeeze",
+        "claim-nagumo-four-carriers-lost"
       ]
     },
     {
@@ -9038,15 +9048,18 @@
         {
           "level": 3,
           "title": "第三层：时间差如何影响决策",
-          "body": "一旦把整备时间算进来，就能理解许多指挥上的难题。日本海军在珍珠港的计划中预留了再次出击的准备，可指挥官在实际战斗中还必须考虑：侦察飞机报告发现了什么、报告可靠不可靠、派出去的机群什么时候回来、下一次攻击该打哪一类目标。这些判断要在时间压力下做出，而且一旦决定了就很难立刻反悔——飞机已经在甲板上，弹药已经挂好，换弹需要重新来过。因此，读战史时不要只看结果去问“他为什么不这样做”。更公平的问法是：在那几分钟里，他手上有哪些已经准备好的东西？要改变计划需要付出多少时间？这些时间他有没有？把这些问题想清楚，读者就能自己判断当时的选择为什么会有代价。",
+          "body": "一旦把整备时间算进来，就能理解许多指挥上的难题。日本海军在珍珠港的计划中预留了再次出击的准备，可指挥官在实际战斗中还必须考虑：侦察飞机报告发现了什么、报告可靠不可靠、派出去的机群什么时候回来、下一次攻击该打哪一类目标。这些判断要在时间压力下做出，而且一旦决定了就很难立刻反悔——飞机已经在甲板上，弹药已经挂好，换弹需要重新来过。因此，读战史时不要只看结果去问“他为什么不这样做”。更公平的问法是：在那几分钟里，他手上有哪些已经准备好的东西？要改变计划需要付出多少时间？这些时间他有没有？把这些问题想清楚，读者就能自己判断当时的选择为什么会有代价。中途岛当天，这个时间差直接改变了结果：美军鱼雷机损失惨重，却迫使日军航母不断规避、无法起飞自己的轰炸机，又把日军战斗机吸引到低空，为随后到达的俯冲轰炸机创造了窗口。",
           "sourceIds": [
             "source-jm-097",
-            "source-ussbs-pto-ch2"
+            "source-ussbs-pto-ch2",
+            "source-oni-midway-combat-narrative"
           ],
           "claimIds": [
             "claim-kido-butai-rearm-plan",
             "claim-deck-cycle-time-cost",
-            "claim-ussbs-why-no-second-attack"
+            "claim-ussbs-why-no-second-attack",
+            "claim-naval-aviation-torpedo-attack-indirect-effect",
+            "claim-nagumo-defensive-maneuver-blocked-launch"
           ]
         }
       ],
@@ -9055,17 +9068,21 @@
         "concept-aircraft-carrier",
         "equipment-type-97-carrier-attack-plane",
         "equipment-akagi",
-        "unit-kido-butai"
+        "unit-kido-butai",
+        "battle-midway"
       ],
       "sourceIds": [
         "source-jm-097",
-        "source-ussbs-pto-ch2"
+        "source-ussbs-pto-ch2",
+        "source-oni-midway-combat-narrative"
       ],
       "claimIds": [
         "claim-kido-butai-rearm-plan",
         "claim-ussbs-055-shallow-water",
         "claim-deck-cycle-time-cost",
-        "claim-aircraft-role-split"
+        "claim-aircraft-role-split",
+        "claim-naval-aviation-torpedo-attack-indirect-effect",
+        "claim-nagumo-defensive-maneuver-blocked-launch"
       ]
     },
     {
@@ -9101,17 +9118,21 @@
         {
           "level": 3,
           "title": "第三层：补给如何限制日本扩张与作战计划",
-          "body": "补给线一旦拉长，整个战争的性质就会改变。日本向南扩张，每占一个地方就要派兵驻守、修建航空基地，而驻军和基地本身又需要源源不断地运来补给。日方的作战方针写明，占领婆罗洲、西里伯斯与苏门答腊就是为了“建立航空基地”，再用这些基地进攻爪哇。这说明他们清楚：光拿到资源还不够，必须把它变成能用的基地和运输通道。可是路线越长，需要护航的油船与货船就越多，而那正是最容易被打掉的一环。同样的问题也决定了珍珠港袭击的规模：参与行动的补给单位包括八艘油船，舰队还必须在约定时间到达海上加油点，如果加油失败，护航舰队就得返回。所以航程与油料并不是战斗之外的背景，它们从一开始就写进了计划本身。读到这里，读者就能理解为什么“多占一些地方”并不总是好事。",
+          "body": "补给线一旦拉长，整个战争的性质就会改变。日本向南扩张，每占一个地方就要派兵驻守、修建航空基地，而驻军和基地本身又需要源源不断地运来补给。日方的作战方针写明，占领婆罗洲、西里伯斯与苏门答腊就是为了“建立航空基地”，再用这些基地进攻爪哇。这说明他们清楚：光拿到资源还不够，必须把它变成能用的基地和运输通道。可是路线越长，需要护航的油船与货船就越多，而那正是最容易被打掉的一环。同样的问题也决定了珍珠港袭击的规模：参与行动的补给单位包括八艘油船，舰队还必须在约定时间到达海上加油点，如果加油失败，护航舰队就得返回。所以航程与油料并不是战斗之外的背景，它们从一开始就写进了计划本身。读到这里，读者就能理解为什么“多占一些地方”并不总是好事。中途岛作战同样被补给与距离约束：日军要同时执行中途岛与阿留申方向的行动，兵力与时间因此分散；美军则依靠珍珠港的抢修能力，让受损的约克城号在三天内恢复作战状态，才凑出三艘航母投入决战。",
           "sourceIds": [
             "source-jm-097",
             "source-ussbs-pto-ch2",
-            "source-nww2m-pacific-strategy"
+            "source-nww2m-pacific-strategy",
+            "source-oni-midway-combat-narrative"
           ],
           "claimIds": [
             "claim-japan-southward-resources",
             "claim-us-fleet-trains-refuel",
             "claim-ussbs-norther-route-tradeoff",
-            "claim-japan-reserves-nine-months-to-year"
+            "claim-japan-reserves-nine-months-to-year",
+            "claim-midway-aleutian-role",
+            "claim-coral-yorktown-repair",
+            "claim-nimitz-carrier-commitment"
           ]
         }
       ],
@@ -9127,13 +9148,17 @@
       "sourceIds": [
         "source-ussbs-pto-ch2",
         "source-jm-097",
-        "source-frus-1941-v04-d602"
+        "source-frus-1941-v04-d602",
+        "source-oni-midway-combat-narrative"
       ],
       "claimIds": [
         "claim-ussbs-norther-route-tradeoff",
         "claim-ussbs-refuel-critical",
         "claim-japan-southward-resources",
-        "claim-japan-oil-essential-import"
+        "claim-japan-oil-essential-import",
+        "claim-midway-aleutian-role",
+        "claim-coral-yorktown-repair",
+        "claim-nimitz-carrier-commitment"
       ]
     },
     {
@@ -9172,7 +9197,7 @@
         {
           "level": 3,
           "title": "第三层：为什么雷达改变了舰队的决策",
-          "body": "有了雷达，指挥官第一次可以在看不见敌人的时候就做出反应，这改变了海战的节奏。但珊瑚海的实战说明了问题有多复杂。当时美军航母的战斗空中巡逻由雷达引导，雷达不断发现'目标'，战斗机就不断被派出去查看——结果大量精力被浪费，因为返回的多半是自己人。官方战史直白地记下了原因：约克城号的战斗机没有雷达识别手段，所以'大量精力被浪费'。另一边，舰队指挥官整夜都在根据雷达信息猜测日方主力在哪个方向，最后选择了保守方案。这场战斗之后，太平洋舰队司令部在总结里写了一句话：'所有航空母舰都应配备两部远程雷达。'这句话说明了当时指挥层的判断——雷达不是可有可无的附件，它直接决定了舰队能不能及时反应、能不能少犯错误。读这段历史时请记住：雷达提供的是'有机会反应'，而不是'自动知道答案'。",
+          "body": "有了雷达，指挥官第一次可以在看不见敌人的时候就做出反应，这改变了海战的节奏。但珊瑚海的实战说明了问题有多复杂。当时美军航母的战斗空中巡逻由雷达引导，雷达不断发现'目标'，战斗机就不断被派出去查看——结果大量精力被浪费，因为返回的多半是自己人。官方战史直白地记下了原因：约克城号的战斗机没有雷达识别手段，所以'大量精力被浪费'。另一边，舰队指挥官整夜都在根据雷达信息猜测日方主力在哪个方向，最后选择了保守方案。这场战斗之后，太平洋舰队司令部在总结里写了一句话：'所有航空母舰都应配备两部远程雷达。'这句话说明了当时指挥层的判断——雷达不是可有可无的附件，它直接决定了舰队能不能及时反应、能不能少犯错误。读这段历史时请记住：雷达提供的是'有机会反应'，而不是'自动知道答案'。中途岛当天也能看到雷达的作用与边界：雷达在接到巡逻机报告后约五分钟、约九万米外发现来袭编队，守备部队的逐时记录里留下了“许多不明飞机”这样的通报——雷达给出了距离与方位，但“不明”两个字说明，从发现到判断敌我、再到下令迎击，仍然要靠人和流程。",
           "sourceIds": [
             "source-oni-coral-sea-combat-narrative",
             "source-oni-midway-combat-narrative",
@@ -9181,7 +9206,9 @@
           "claimIds": [
             "claim-radar-carriers-should-have-two",
             "claim-radar-coral-bogey-problem",
-            "claim-radar-opana-chain-broke"
+            "claim-radar-opana-chain-broke",
+            "claim-radar-midway-detected",
+            "claim-radar-midway-plot-log"
           ]
         }
       ],
@@ -9193,7 +9220,8 @@
         "person-fletcher-frank-jack",
         "battle-coral-sea",
         "event-overview-part-4-turning-point",
-        "event-us-carrier-raids-early-1942"
+        "event-us-carrier-raids-early-1942",
+        "battle-midway"
       ],
       "sourceIds": [
         "source-oni-coral-sea-combat-narrative",
@@ -9261,7 +9289,8 @@
         "concept-aircraft-carrier",
         "battle-coral-sea",
         "event-overview-part-4-turning-point",
-        "event-us-carrier-raids-early-1942"
+        "event-us-carrier-raids-early-1942",
+        "battle-midway"
       ],
       "sourceIds": [
         "source-nww2m-battle-midway",
@@ -9328,7 +9357,8 @@
         "concept-codebreaking",
         "battle-coral-sea",
         "event-overview-part-4-turning-point",
-        "event-us-carrier-raids-early-1942"
+        "event-us-carrier-raids-early-1942",
+        "battle-midway"
       ],
       "sourceIds": [
         "source-oni-midway-combat-narrative",
