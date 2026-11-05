@@ -1,9 +1,9 @@
-# HIST-04 中途岛章节研究来源记录（attempt 3）
+# HIST-04 中途岛章节研究来源记录（attempt 4）
 
 状态：本文件是 HIST-04「中途岛深度档案、尼米兹/斯普鲁恩斯档案、第 5 部分问题与教材全量门禁」的来源与证据日志。它记录本任务**实际读取过**的来源与定位、每条来源支撑的 claims、失败检索、两份交付档案的要素、第 5 部分问题的 ID 与关联、其余三位指挥官的现状与归属（DOC-02），以及下游输入（QQUEST-01 / DOC-02 / MEDIA-02）。
 
-- 任务：HIST-04（模块 knowledge，角色 content_creator），attempt 3
-- 工作单：`.cache/orders/HIST-04-a1.md`，sha256 = `6fdd8fbe61edb56897d32668f84dd357c48bd5f2582b040fbde92e582140b15a`（只读输入，未编辑）
+- 任务：HIST-04（模块 knowledge，角色 content_creator），attempt 4
+- 工作单：`.cache/orders/HIST-04-a4.md`，sha256 = `1738a1d49e4c818e7c5f51f535643a59cbe8299e1b7e1cbe923f3ba391025aa3`（只读输入，未编辑；已核验哈希）
 - 候选：已接受集成（含 HIST-00..HIST-03）`f898fb5` + 本任务只在 `content/history.json` 与 `docs/research/midway-sources.md` 内的 delta
 - 记录检查：`node scripts/validate-content.mjs --stage full`（不读媒体，见 §7）
 
@@ -17,6 +17,8 @@
 | `source-ussbs-pto-ch5`（本任务新增） | Campaigns of the Pacific War, Chapter 5: The Battle of Midway | United States Strategic Bombing Survey | 1946 | https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-5.html | **READ**（HTTP 200：`Japanese Plans` p.58、`United States Defensive Efforts` p.58、`The Battle` p.59、`The Japanese Retirement` p.59、`Consequences of the Battle` p.60；`Appendix 24, Forces Involved` pp.74–76（其中 p.76 的主队表列出 Yamato 与山本五十六）；其余附录 pp.61–73、p.77 未逐页读取） |
 | `source-nww2m-battle-midway` | The Battle of Midway | The National WWII Museum | 2026 页 | https://www.nationalww2museum.org/war/articles/battle-midway | **READ**（HTTP 200；`Breaking the Code` 与 `The Battle` 小节，用于密码分析与战果概述） |
 
+attempt 4 重新抓取并在正文中核对了两处关键定位（均 HTTP 200）：ONI 第 7 章 `Our carrier attack on the enemy carriers, June 4` 的 p.20（`Rain squalls and low visibility made the search difficult` 只说明美军搜索困难；`Task Force SUGAR was at once directed to move westward` 支持第 16 特混舰队西进）与 USSBS 第 5 章 p.59 `The Japanese Retirement`（山本下令放弃作战与撤退、6 月 5 日天气妨碍美军追击）。
+
 复用的既有来源（此前任务已读并接受；本任务不声称重新抓取正文，只复用其 claims 与定位）：
 
 | ID | 来源 | 本任务使用方式 |
@@ -26,11 +28,11 @@
 | `source-ussbs-pto-ch2` | USSBS Pearl Harbor 章 | 复用山本五十六身份/计划 claims |
 | `source-dmn-king-nimitz` | Defense Media Network：King 与 Nimitz 特写 | 复用尼米兹接任与评估 claims（二手，已标注） |
 
-本任务新增 `place-midway`（中途岛环礁，真实地理坐标 28.21°N、177.37°W），并为它挂接 `claim-midway-june3-contact`（ONI 6 月 3 日首次接触的日期与方位记载）。
+本任务新增 `place-midway`（中途岛环礁，真实地理坐标 28.21°N、177.37°W）。其摘要现引用三条 claim：`claim-midway-june3-contact`（ONI 6 月 3 日首次接触的日期与方位）、`claim-ussbs-midway-plan`（日军夺取中途岛与阿留申群岛的计划）与 `claim-midway-king-trap`（金上将对“诱歼”的判断，明确标为美方评估）。
 
 ---
 
-## 2. 新增 claims 与来源定位（本任务新增 17 条）
+## 2. 新增 claims 与来源定位（本任务新增 18 条）
 
 | Claim ID | 类型 | 支撑来源与定位 | 支撑内容 |
 |---|---|---|---|
@@ -41,7 +43,7 @@
 | `claim-midway-yorktown-loss` | fact | ONI `End of the Yorktown, June 6-7, pp. 51-53` | 6 月 4 日重创弃舰、6 月 6 日被潜艇鱼雷命中、6 月 7 日 05:01 沉没；哈曼号同时被击沉 |
 | `claim-ussbs-midway-plan` | fact | USSBS 第 5 章 `Japanese Plans, p. 58` | 日军第二阶段夺取中途岛与阿留申群岛、建立外围防线、计划 1,300 英里空中掩护、6 月 6 日占领中途岛 |
 | `claim-ussbs-midway-us-defense` | fact | USSBS 第 5 章 `United States Defensive Efforts, p. 58` | 美军不投入水面舰艇、以三艘航母远程空袭削弱日军，并加强中途岛防御与潜艇警戒 |
-| `claim-ussbs-midway-consequences` | interpretation | USSBS 第 5 章 `Consequences of the Battle, p. 60` | 中途岛使日本东扩停止；日本损失四艘精锐航母、约 250 架飞机、约 100 名一线飞行员；力量平衡持续向美国倾斜（来源评价） |
+| `claim-ussbs-midway-consequences` | interpretation | USSBS 第 5 章 `Consequences of the Battle, p. 60` | 中途岛使日本东扩停止；日本损失四艘精锐航母、约 250 架飞机、约 100 名一线飞行员；力量平衡持续向美国倾斜（来源评价）；日本把战列舰与水机母舰改装为航母、弥补努力不足 |
 | `claim-midway-tf-positions` | fact | ONI `Our carrier attack on the enemy carriers, June 4, pp. 19-20` | 两支持混编队 6 月 2 日在 32°04′N、172°45′W 会合，随后移到中途岛以北约 200 英里；6 月 4 日航母在中途岛 320°、180 英里处 |
 | `claim-midway-june4-dawn-search` | fact | ONI `The enemy attack on Midway, June 4, pp. 11-12` | 6 月 4 日 04:15 搜索机起飞、05:45 报告来袭机群、05:52 报告两艘日军航母 |
 | `claim-nimitz-carrier-commitment` | fact | USSBS 第 5 章 `United States Defensive Efforts, p. 58`；ONI `The Battle of Midway, background, p. 3` | 美军决定不投入水面舰艇、以三艘从珊瑚海赶来的航母远程空袭削弱日军；约克城号三天抢修后参战 |
@@ -51,6 +53,7 @@
 | `claim-fletcher-flagship-transfer` | fact | ONI `The Battle of Midway, background, p. 4, footnote 6` | 约克城号受损后，弗莱彻把旗舰转移到阿斯托里亚号 |
 | `claim-midway-japanese-forces` | fact | ONI `The Battle of Midway, background, pp. 1-4` | 日军打击部队（四艘航母）、主力部队、占领部队与阿留申方向部队的编成；美军三艘航母与中途岛岸基飞机 |
 | `claim-midway-failure-cause-disputed` | **disputed** | NWW2M `Breaking the Code, paragraph 1`；ONI `Our carrier attack on the enemy carriers, June 4, pp. 20-23` | 日本失败主因的两种侧重：美国破译设伏 vs 日军回收/整备与防御机动阻碍起飞；不归结为单一原因 |
+| `claim-ussbs-midway-retirement` | fact | USSBS 第 5 章 `The Japanese Retirement, p. 59` | 四艘航母全失使入侵舰队失去空中支援，加上最上号与三隈号相撞，山本五十六下令放弃作战、全部舰艇撤退；6 月 5 日天气妨碍美军追击 |
 
 复用的既有 Midway claims（不重复列出文本）：`claim-midway-codebreaking`、`claim-codebreaking-af-confirmed`、`claim-codebreaking-station-hypo-scope`、`claim-codebreaking-limit-not-omniscient`、`claim-nimitz-midway-air-control`、`claim-nimitz-midway-assessment-quote`、`claim-spruance-task-force-sugar`、`claim-spruance-launch-timing`、`claim-spruance-search-turn`、`claim-spruance-reserve-hornets-bombers`、`claim-spruance-hiryu-retaliation`、`claim-spruance-usn-cinpac-directive`、`claim-radar-midway-detected`、`claim-radar-midway-plot-log`、`claim-nagumo-carriers-turned-north`、`claim-nagumo-defensive-maneuver-blocked-launch`、`claim-nagumo-no-visible-damage-at-contact`、`claim-nagumo-attack-timing-squeeze`、`claim-nagumo-four-carriers-lost`、`claim-nagumo-kido-butai-command`、`claim-yamamoto-us-industrial-might`、`claim-fletcher-combined-command`、`claim-aircraft-role-split`、`claim-coral-midway-carrier-list`、`claim-coral-midway-shift`、`claim-coral-yorktown-repair`。
 
@@ -65,7 +68,7 @@
 | 阶段 ID | sequence | 时间（当地时间 +12） | 内容 | certainty |
 |---|---:|---|---|---|
 | `phase-midway-1-contact` | 1 | 1942-06-04 04:15–05:54 | 6 月 4 日黎明搜索与接触（6 月 3 日的首次接触作为正文背景保留） | documented |
-| `phase-midway-2-midway-attack` | 2 | 1942-06-04 04:15–07:15 | 日军航母空袭中途岛 | documented |
+| `phase-midway-2-midway-attack` | 2 | 1942-06-04 05:55–07:15 | 日军航母空袭中途岛 | documented |
 | `phase-midway-3-carrier-attack` | 3 | 1942-06-04 07:20–12:00 | 美军航母攻击群攻击日军航母 | documented |
 | `phase-midway-4-hiryu` | 4 | 1942-06-04 12:00–21:00 | 飞龙号反击与四艘日军航母损失 | documented |
 | `phase-midway-5-pursuit` | 5 | 1942-06-05–06-07 05:01 | 追击、撤退与约克城号沉没 | estimated |
@@ -81,9 +84,9 @@
 | Question ID | `question-did-midway-change-initiative` |
 | historicalPart | `part-5-midway` |
 | prompt | 中途岛海战是否真正改变了太平洋战争的战略主动权？ |
-| answer | 271 汉字（≥160），基于损失与长期趋势的比较：1942 年 6 月的航母兵力对比 vs 整场战争的长期趋势；损失中包含哈曼号 |
+| answer | 291 汉字（≥160），基于损失与长期趋势的比较：1942 年 6 月的航母兵力对比 vs 整场战争的长期趋势；损失中包含哈曼号；评价部分只引 USSBS 的评价并用其“也许”措辞，不写无来源的“更深层原因”因果判断 |
 | 关联实体 entityIds | `battle-midway`、`event-overview-part-5-midway`、`person-nimitz-chester`、`person-spruance-raymond` |
-| 关联来源 sourceIds | `source-oni-midway-combat-narrative`、`source-nww2m-battle-midway` |
+| 关联来源 sourceIds | `source-oni-midway-combat-narrative`、`source-nww2m-battle-midway`、`source-ussbs-pto-ch5` |
 | 关联 claims claimIds | `claim-midway-japanese-losses`、`claim-midway-us-losses`、`claim-midway-failure-cause-disputed`、`claim-midway-codebreaking`、`claim-nimitz-midway-assessment-quote`、`claim-ussbs-midway-consequences` |
 
 验证器按 `question.historicalPart === 'part-5-midway'` 且 `questionMeetsCoverage()`（answer ≥160 汉字、≥2 个实体、≥1 来源、≥1 claim，且所引 ID 都存在）判定该部分已满足；`--stage full` 的真实输出见 §7。
@@ -95,13 +98,13 @@
 ### 5.1 `person-nimitz-chester`
 
 - 现有档案：525 汉字 profile、**4** 个决策卡、**4** 个独立来源、**11** 条 claims（最低 500/3/3/3，达标）。
-- 本任务新增第 4 张决策卡 `decision-nimitz-commit-carriers-midway`（把三艘航母投入中途岛）：写明当时**知道**什么（破译情报指向中途岛）、**不知道**什么（日军兵力与确切时间）、**可选方案**（集中设伏 vs 保留/分散）、**约束**（仅三艘航母、约克城号未完成大修、情报有不确定性）、**实际选择**与**后果**（得以在中途岛东北设伏），并附 claim/来源定位（`claim-nimitz-carrier-commitment`：USSBS Ch.V `United States Defensive Efforts, p. 58` + ONI `background, p. 3`）。**更正（P3 残留 R2）**：attempt 2 该卡曾引用 `claim-nimitz-midway-air-control`（讲中途岛统一空情指挥，不涉及航母投入）等不对题的 claim；本版已把卡片 claimIds 改为只引 `claim-nimitz-carrier-commitment`，并新增该 claim。
+- 本任务新增第 4 张决策卡 `decision-nimitz-commit-carriers-midway`（把三艘航母投入中途岛）：**可选方案**写为“集中到中途岛海域 / 留在后方或分散使用”；**约束**改写为可追溯的“航母数量只有三艘”“约克城号刚在珊瑚海受损，只经三天抢修就参战”；**实际选择**与**后果**写明把三艘航母集中用于中途岛。卡片 `claimIds` = `claim-nimitz-carrier-commitment`、`claim-midway-codebreaking`、`claim-coral-yorktown-repair`；attempt 4 删除了旧版中无 claim 支撑的“未完成大修、航速与舰载机受限”“情报不是完整战斗序列”等表述。
 - 同时把 `battle-midway`、`event-overview-part-5-midway` 加入关联，并把 `claim-midway-codebreaking`、`claim-midway-failure-cause-disputed` 等 claims 挂入；未删除或改写原有内容。
 
 ### 5.2 `person-spruance-raymond`
 
-- 现有档案：606 汉字 profile、**4** 个决策卡、3 个独立来源、7 条 claims（达标）。
-- 原有 3 张决策卡已覆盖“提前在远距离出动全部攻击兵力”“保留部分俯冲轰炸机等待第五艘敌航母确认”“下午对飞龙号发起决定性攻击”，均写出选项、约束、后果与来源。本任务新增第 4 张决策卡 `decision-spruance-turn-to-intercept`（第 16 特混舰队的西进与出击时机）：明确写出 6 月 2 日会合后由弗莱彻统一指挥、6 月 4 日 05:45 收到报告后弗莱彻命令第 16 特混舰队西进、斯普鲁恩斯负责执行并在约 07:00 下令起飞；同时写明当时知道/不知道、选项、约束与后果，并附 `claim-spruance-launch-timing`、`claim-fletcher-combined-command`、`claim-spruance-task-force-sugar` 定位。**更正**：attempt 1 曾把麦克拉斯基的转向误写成斯普鲁恩斯的决定，本版已删除该错误归因。
+- 现有档案：606 汉字 profile、**4** 个决策卡、3 个独立来源、**6** 条顶层 `claimIds`（达标；顶层 6 条，与决策卡并集 7 条）。
+- 原有 3 张决策卡已覆盖“提前在远距离出动全部攻击兵力”“保留部分俯冲轰炸机等待第五艘敌航母确认”“下午对飞龙号发起决定性攻击”，均写出选项、约束、后果与来源。本任务新增第 4 张决策卡 `decision-spruance-turn-to-intercept`（第 16 特混舰队的西进与出击时机）：写明 6 月 2 日两编队会合后由弗莱彻统一指挥、6 月 4 日清晨巡逻机报告后第 16 特混舰队向西接近日军、约 07:00 开始出动攻击群；**不再**写 `claim-fletcher-combined-command` 并不支持的“弗莱彻下令西进/05:45”，而由 `claim-spruance-launch-timing` 支撑“二十五节西进、约七时开始出动”与 `claim-midway-june4-dawn-search` 支撑巡逻机报告。卡片 `claimIds` = `claim-spruance-launch-timing`、`claim-fletcher-combined-command`、`claim-spruance-task-force-sugar`、`claim-midway-june4-dawn-search`、`claim-nagumo-attack-timing-squeeze`。**更正**：attempt 1 曾把麦克拉斯基的转向误写成斯普鲁恩斯的决定，本版已删除该错误归因。
 - 同时把 `battle-midway`、`event-overview-part-5-midway` 加入关联；未删除或改写原有内容。
 
 ### 5.3 其余三位指挥官（本任务不写、不改，只记录现状；归属 DOC-02）
@@ -135,7 +138,7 @@
 $ node scripts/validate-content.mjs --stage full
 阶段：full（最终硬门禁）
 提示：本次未运行 --media；发布前必须单独运行素材门禁。
-实体：93；来源：31；claim：281；问题：7；素材：0
+实体：93；来源：31；claim：282；问题：7；素材：0
 
 警告：
 - $.media: history.json 仍含空的 legacy media 数组（过渡窗口内仅警告）。迁移映射：把 history.json 顶层 media[] 原样搬到 content/media.json 的 { "version": 1, "media": [...] } 中（条目形状完全不变，articleIds 仍是文章关联），并删除 history.json 的 media 字段。 由 MEDIA-02 写入 content/media.json；HIST-04 不写；QA-01 运行 --media 校验；WEB-01/MAP-01 只读。
@@ -156,7 +159,9 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 
 ---
 
-### 7.1 attempt 2 的更正记录（本次提交）
+### 7.1 attempt 2 的更正记录
+
+> 阅读约定：§7.1/§7.2 是各 attempt 当时的记录；其中与 attempt 4 冲突或被再次改写的条目，以 §7.3 为准。
 
 1. **[P1a/P1b/P1c，已修正] 三条航线与地理节点不一致**：attempt 1 的 `route-midway-japan-air-attack` 从日本本土起飞、`route-midway-us-strike` 从珍珠港起飞、`route-midway-hiryu-strike` 却画向日本，均与航线路径和历史不符。本版新增两个真实地理海域节点 `place-japan-mobile-force-area`（中途岛西北约 30°N、178°W，`coordinateAccuracyKm: 150`）与 `place-us-tf-area`（中途岛东北约 28.6°N、176.8°W，`coordinateAccuracyKm: 150`），并把三条航线改为：日军舰载机从日本机动部队海域攻击中途岛；美军攻击群从第 16/17 特混舰队海域攻击日军机动部队海域；飞龙号从日本机动部队海域反击美军特混舰队海域。路径起止与 `fromPlaceId`/`toPlaceId` 的坐标一致，`schematic:true` 与 uncertainty notes 保留。
 2. **[P2，已修正] 斯普鲁恩斯决策卡错误归因**：attempt 1 说“斯普鲁恩斯选择转向迎击”，却引用描述麦克拉斯基转向的 `claim-spruance-search-turn`（该 claim 的 note 也明确说转向由现场机群指挥官作出）。本版重建该决策卡为“第 16 特混舰队的西进与出击时机”：明确 6 月 2 日会合后由弗莱彻统一指挥、6 月 4 日 05:45 报告后弗莱彻命令西进、斯普鲁恩斯执行并在约 07:00 下令起飞，改用 `claim-spruance-launch-timing`、`claim-fletcher-combined-command`、`claim-spruance-task-force-sugar` 支撑；不再把麦克拉斯基的决定写成斯普鲁恩斯的命令。
@@ -170,25 +175,40 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 9. **[P3 残留 R2，本次修正] 尼米兹“投入三艘航母”决策卡引用不对题 claim**：原卡引用 `claim-nimitz-midway-air-control`（中途岛统一空情指挥）、`claim-midway-codebreaking`、`claim-coral-yorktown-repair`，均不直接描述“把三艘航母投入中途岛”的决定。本版新增 `claim-nimitz-carrier-commitment`（USSBS 第 5 章 `United States Defensive Efforts, p. 58`：不投入水面舰艇、以三艘航母远程空袭；ONI `The Battle of Midway, background, p. 3`：约克城号三天抢修后参战），并把卡片 claimIds 改为只引该 claim。
 10. **[P3 残留 R3，本次修正] 中途岛 commanders 仍引珍珠港 claim**：原 `battle-midway.sections.commanders` 引用 `claim-yamamoto-us-industrial-might`（USSBS 第 2 章 `Introduction`，证明山本提出的是珍珠港袭击计划），不能支持其在中途岛的指挥角色。本版新增 `claim-yamamoto-midway-command`（USSBS 第 5 章 `Appendix 24, Forces Involved, p. 76`：山本为日本主力部队指挥官、旗舰大和号），并用它替换 commanders 与 battle claimIds 中的旧 claim。山本五十六的人物档案本身未改写（仍归 HIST-00/HIST-02 与 DOC-02）。
 
-### 7.2 attempt 3 的更正记录（本次提交）
+### 7.2 attempt 3 的更正记录
 
 1. **[#1，已修正] 日军计划/假设/约束仍无来源支撑**：新增 `claim-midway-aleutian-role`（ONI ch.1 p.3：阿留申行动“可能是牵制，但更可能是掩护基斯卡与阿图岛的占领”）、`claim-midway-king-trap`（ONI ch.1 p.5：金上将认为日军意在诱歼部分美国舰队、要求消耗战术——标为 interpretation，不是日军计划原文）。battle background/objectives/constraints/plan 与导读“日本的计划与内部假设”已改写：删除“计划核心是诱歼航母”“阿留申是牵制”等无来源断言；诱歼说法改为金上将的评估并注明；内部假设/搜索/天气断言已删除或改为有来源的表述。
 2. **[#2，已修正] decisions 引用错误的尼米兹 claim**：`battle-midway.sections.decisions` 已把 `claim-nimitz-midway-air-control` 换成 `claim-nimitz-carrier-commitment`；删除 `claim-spruance-search-turn`（麦克拉斯基的转向）并同步从斯普鲁恩斯 claim 列表与 battle claimIds 移除；新增 `claim-fletcher-flagship-transfer`（ONI ch.1 footnote 6）支撑该句。另把 `claim-nimitz-midway-air-control`（中途岛统一空情指挥）从 commanders/objectives/plan 等不支撑正文的引用中移除，该 claim 仅保留在尼米兹人物档案的统一空情决策中。
 3. **[#3，已修正] 撤退航线起点错误**：`route-midway-japan-retreat` 的 `fromPlaceId` 改为 `place-japan-mobile-force-area`，路径起点改为该节点的近似坐标（30.0N, 178.0W），终点仍为日本本土节点。
 4. **[#4，已修正] 长期影响小节漏引自己的 claim**：`claim-ussbs-midway-consequences` 已从“日本的计划与内部假设”移出，加入“长期影响”小节，并在该小节 `sourceIds` 加入 `source-ussbs-pto-ch5`。
-5. **[#5，已修正] 损失口径标注不一致**：全库“2,400 名舰载机人员”已改为“约 2,400 人（ONI 汇总中与航母损失相关的估计）”；并在 battle results、导读损失小节与问题答案中并列 USSBS Ch.V 的口径（约 250 架飞机、约 100 名一线飞行员），说明两套数字口径不同。
+5. **[#5，已修正] 损失口径标注不一致**：全库旧的人员估计标签已统一改为“约 2,400 人（ONI 汇总中与航母损失相关的估计）”；并在 battle results、导读损失小节与问题答案中并列 USSBS Ch.V 的口径（约 250 架飞机、约 100 名一线飞行员），说明两套数字口径不同。
 6. **[#6，已修正] disputed claim 的“重新挂弹”缺定位**：`claim-midway-failure-cause-disputed` 增加 NWW2M `The Battle, paragraphs 1-2` 定位（该节写明日机返航“to rearm and refuel”），ONI pp.20–23 继续支撑回收/加油与防御机动部分。
 7. **[#7，已修正] 日志矛盾与计数**：日志 §1/§6 记录已读 USSBS `Appendix 24` pp.74–76（p.76 主队表），与 `claim-yamamoto-midway-command` 的 locator 一致；Nimitz 计数改为 4 个来源/11 条 claims；battle 来源改为 5 个；页眉 attempt 标签改为 attempt 3。
 8. **[#8，已修正] 鱼雷机牺牲的判断未挂 claim**：导读“运气、情报、组织、指挥与战术”与 battle course 均加入 `claim-naval-aviation-torpedo-attack-indirect-effect`，并把句子改为与 claim 一致的“迫使日军航母规避并把战斗机吸引到低空，为俯冲轰炸机创造窗口”。
 
 **次要项**：(a) battle/overview 的 summary 已改为“6 月 4—7 日（6 月 3 日为前一天的首次接触）”；(b) `route-midway-dawn-search` 的 note 改为“从中途岛起飞的美军搜索机向日方编队方向搜索”；(c) `claim-spruance-launch-timing` 的“东北偏西南”改为“方位 239° 上”；(d) participants/forces 增加 `claim-midway-japanese-forces`、`claim-midway-aleutian-role` 等定位，“飞行员经验占优”等无直接来源的比较已删除。
 
+### 7.3 attempt 4 的更正记录（本次提交）
+
+**方法说明**：attempt 3 的日志曾把 lure/weather/claim-nimitz 等改动记为“已修正”，但文件里仍保留缺陷。attempt 4 对每条缺陷先用脚本断言定位、再改文件、再用脚本逐条复核（最终复核脚本 38 项断言全部 PASS：覆盖 8 条阻断、次要项、日志数字与航线起终点），下列修改均已落到 `content/history.json`。
+
+1. **[阻断 1，已修正] `place-midway.summary` 无来源的“诱歼”断言**：改为“日军计划夺取该岛；美方金上将判断其计划可能意在诱歼部分美国舰队（这是美方评估，不是日军计划原文）”；`claimIds` 增加 `claim-ussbs-midway-plan` 与 `claim-midway-king-trap`；日期窗口改为“6 月 4—7 日（6 月 3 日为前一天的首次接触）”。
+2. **[阻断 2，已修正] `geography` 的“坏天气掩护”断言**：删除该句，改为有来源的“日军航母在中途岛西北方向（约 320° 方位）活动”，并补引 `claim-midway-tf-positions`；ONI ch.7 p.20 的雨飑只用于说明美军搜索困难，不用于日军意图。
+3. **[阻断 3，已修正] “日军不知道美军设伏”无支撑**：`commanders` 补引 `claim-midway-failure-cause-disputed`、`claim-codebreaking-limit-not-omniscient`、`claim-midway-codebreaking`，并把该句改为“一种解释认为…使日军在不知情的情况下进入美军航母的攻击范围”；导读 §3 用 `claim-midway-failure-cause-disputed` 替换不相关的 `claim-nimitz-midway-air-control`；`battle-midway.claimIds` 与导读顶层 `claimIds` 删除 `claim-nimitz-midway-air-control`。该 claim 现只由尼米兹档案的“统一空情指挥”决策引用。
+4. **[阻断 4，已修正] 章节漏引 claim**：`background` 补引 `claim-nimitz-carrier-commitment`；`plan` 补引 `claim-nagumo-attack-timing-squeeze`。
+5. **[阻断 5，已修正] 决策卡约束/命令无支撑**：尼米兹卡删除无 claim 支撑的“未完成大修、航速与舰载机受限”“不是完整战斗序列”，改写为“航母数量只有三艘”“约克城号刚在珊瑚海受损，只经三天抢修就参战”，卡片补引 `claim-midway-codebreaking`、`claim-coral-yorktown-repair`；斯普鲁恩斯卡删除 `claim-fletcher-combined-command` 并不支持的“弗莱彻下令西进/05:45”，改写为“第 16 特混舰队向西接近日军，约 07:00 开始出动攻击群”，并补引 `claim-midway-june4-dawn-search`、`claim-nagumo-attack-timing-squeeze`。
+6. **[阻断 6，已修正] 第 5 部分答案的无来源判断**：删除“这种结构性损失难以补充，才是长期趋势的更深层原因”与“日本仍拥有其他航母与基地”“战争又持续了三年”；评价部分只引 `claim-ussbs-midway-consequences`，并用该来源自己的“也许”措辞；`sourceIds` 增加 `source-ussbs-pto-ch5`。`battle-midway.sections.aftermath` 与导读 §6 的同类表述一并改为有来源的“日本把战列舰与水机母舰改装为航母、弥补努力不足”。
+7. **[阻断 7，已修正] 地图阶段**：phase 5 日军位置改为 `place-japan-mobile-force-area`（30.0N, 178.0W），与撤退航线起点一致；新增有来源的 `claim-ussbs-midway-retirement`（USSBS `The Japanese Retirement, p. 59`）用于撤退位置、阶段、视角与航线；phase 1 日军位置标签由“运输与掩护编队”改为“日军航母机动部队”。
+8. **[阻断 8，已修正] 研究日志准确性**：按文件重新计数的真实值为——斯普鲁恩斯顶层 `claimIds` **6** 条、第 5 部分答案 **291** 汉字、`battle-midway` 十四节 **171–256** 汉字、导读合计 **1378** 汉字、`battle-midway.claimIds` **40** 条、全库 claim **282** 条；删除过时的人员估计标签；并如实记录 attempt 3 日志的“已修正”条目当时并未全部落到文件。
+
+**次要项**：(a) `results` 删除不对题的 `claim-naval-aviation-torpedo-attack-indirect-effect`；(b) `participants`/`forces` 与 `battle-midway.claimIds` 删除与中途岛无关的 `claim-aircraft-role-split`；(c) `place-midway` 摘要日期改为 6 月 4—7 日；(d) 第 5 部分问题 `sourceIds` 增加 `source-ussbs-pto-ch5`；(e) 日志 §7.1/§7.2 的“本次提交”标签改为“attempt 2”/“attempt 3”。
+
 ## 8. 交付内容与本任务边界
 
-- 新增 `battle-midway`：14 个固定小节（每节 ≥160 汉字，实际 160–222 汉字），**5** 个地图阶段，5 位人物、5 个地点（含两个新增海域节点）、**5 个来源**、**41 条 claims**（本次以 `claim-yamamoto-midway-command` 替换了不对题的 `claim-yamamoto-us-industrial-might`，数量不变；含 1 条 disputed：`claim-midway-failure-cause-disputed`）。
-- 新增 `event-overview-part-5-midway`：**8** 个精确标题小节（每节 ≥100 汉字，实际 127–220；合计 1312 汉字），5 个来源、23 条 claims、3 个 placeIds。
+- 新增 `battle-midway`：14 个固定小节（每节 ≥160 汉字，实际 **171–256** 汉字），**5** 个地图阶段，5 位人物、5 个地点（含两个新增海域节点）、**5 个来源**、**40 条**顶层 `claimIds`（小节与阶段并集 42 条；含 1 条 disputed：`claim-midway-failure-cause-disputed`）。
+- 新增 `event-overview-part-5-midway`：**8** 个精确标题小节（每节 ≥100 汉字，实际 127–242；合计 **1378** 汉字），5 个来源、**22 条**顶层 `claimIds`（小节并集 24 条）、3 个 placeIds。
 - 新增 `question-did-midway-change-initiative`（part-5，见 §4）。
-- 新增地点 `place-midway`、`place-us-tf-area`、`place-japan-mobile-force-area`；新增 **17 条 claims** 与 `source-ussbs-pto-ch5` 来源记录；交付/加强尼米兹与斯普鲁恩斯档案（见 §5）；`concept-logistics` 仅追加关联。
+- 新增地点 `place-midway`、`place-us-tf-area`、`place-japan-mobile-force-area`；新增 **18 条 claims**（含 attempt 4 的 `claim-ussbs-midway-retirement`）与 `source-ussbs-pto-ch5` 来源记录；交付/加强尼米兹与斯普鲁恩斯档案（见 §5）；`concept-logistics` 仅追加关联。
 - 新增来源记录：`source-ussbs-pto-ch5`（USSBS *Campaigns of the Pacific War* 第 5 章）。ONI 中途岛、NWW2M 中途岛、DMN 等均已在既有注册表中。
 - **未**修改契约、验证器、`src`、`tests`、`public`、`content/media.json` 或 `history` 的媒体字段；**未**改写第 1—4 部分既有问题与既有正文；**未** commit/merge/push。
 
@@ -206,7 +226,7 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 
 ## 10. 已知限制
 
-1. 损失数字采用 ONI 战时/战后初期统计口径（日军估计 275 架飞机、2,400 名舰载机人员、总人员损失约 4,800 人；美军约 150 架飞机、307 人）；本教材明确标注为估计/当时统计，不与后来的研究合并成精确数字。
+1. 损失数字采用 ONI 战时/战后初期统计口径（日军估计 275 架飞机、约 2,400 人、总人员损失约 4,800 人；美军约 150 架飞机、307 人）；本教材明确标注为估计/当时统计，不与后来的研究合并成精确数字。
 2. 中途岛是否“真正改变战略主动权”是评价问题：本教材把它作为第 5 部分问题呈现，列出短期航母兵力对比与长期战争趋势两种尺子，不给出单一结论。
 3. 日本失败主因是历史争议；`claim-midway-failure-cause-disputed` 并列情报设伏与回收/整备、防御机动的时间差两种侧重，不静默选边。
 4. 第 5 部分地图阶段全部为示意；真实航迹无法逐点重建，本教材不把示意数据包装成精确轨迹。
