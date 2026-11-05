@@ -1,9 +1,9 @@
-# HIST-04 中途岛章节研究来源记录（attempt 4）
+# HIST-04 中途岛章节研究来源记录（attempt 5）
 
 状态：本文件是 HIST-04「中途岛深度档案、尼米兹/斯普鲁恩斯档案、第 5 部分问题与教材全量门禁」的来源与证据日志。它记录本任务**实际读取过**的来源与定位、每条来源支撑的 claims、失败检索、两份交付档案的要素、第 5 部分问题的 ID 与关联、其余三位指挥官的现状与归属（DOC-02），以及下游输入（QQUEST-01 / DOC-02 / MEDIA-02）。
 
-- 任务：HIST-04（模块 knowledge，角色 content_creator），attempt 4
-- 工作单：`.cache/orders/HIST-04-a4.md`，sha256 = `1738a1d49e4c818e7c5f51f535643a59cbe8299e1b7e1cbe923f3ba391025aa3`（只读输入，未编辑；已核验哈希）
+- 任务：HIST-04（模块 knowledge，角色 content_creator），attempt 5
+- 工作单：`.cache/orders/HIST-04-a5.md`，sha256 = `502b6b4f1a9f866349947a50ee19fadfc4d1be34bf8dec299318585e7ef56edb`（只读输入，未编辑；已核验哈希）
 - 候选：已接受集成（含 HIST-00..HIST-03）`f898fb5` + 本任务只在 `content/history.json` 与 `docs/research/midway-sources.md` 内的 delta
 - 记录检查：`node scripts/validate-content.mjs --stage full`（不读媒体，见 §7）
 
@@ -98,24 +98,28 @@ attempt 4 重新抓取并在正文中核对了两处关键定位（均 HTTP 200�
 ### 5.1 `person-nimitz-chester`
 
 - 现有档案：525 汉字 profile、**4** 个决策卡、**4** 个独立来源、**11** 条 claims（最低 500/3/3/3，达标）。
-- 本任务新增第 4 张决策卡 `decision-nimitz-commit-carriers-midway`（把三艘航母投入中途岛）：**可选方案**写为“集中到中途岛海域 / 留在后方或分散使用”；**约束**改写为可追溯的“航母数量只有三艘”“约克城号刚在珊瑚海受损，只经三天抢修就参战”；**实际选择**与**后果**写明把三艘航母集中用于中途岛。卡片 `claimIds` = `claim-nimitz-carrier-commitment`、`claim-midway-codebreaking`、`claim-coral-yorktown-repair`；attempt 4 删除了旧版中无 claim 支撑的“未完成大修、航速与舰载机受限”“情报不是完整战斗序列”等表述。
+- 本任务第 4 张决策卡 `decision-nimitz-commit-carriers-midway`（把三艘航母投入中途岛）现完整交付五要素：**已知**（破译情报确认日军下一个大目标很可能是中途岛，并给出大致日期）、**未知**（“情报给出的是地点与大致日期（日期只能锁定在 6 月 4 日或 5 日两天的区间），不等于掌握日军的全部作战计划”）、**可选方案**（“集中到中途岛海域 / 留在后方或分散使用”）、**约束**（“航母数量只有三艘”“约克城号刚在珊瑚海受损，只经三天抢修就参战”）、**实际选择**与**后果**（把三艘航母集中用于中途岛）。
+- 卡片 `claimIds` 共 **5** 条，与判断逐项对应：三艘航母投入 ← `claim-nimitz-carrier-commitment`；攻击地点与大致日期 ← `claim-midway-codebreaking`；约克城号经三天抢修参战 ← `claim-coral-yorktown-repair`；“刚在珊瑚海受损” ← `claim-coral-midway-shift`；“不等于掌握全部作战计划”的未知要素 ← `claim-codebreaking-limit-not-omniscient`。因此该卡的重要判断均有其 `claimIds` 中的 claim 支撑，§5.1 不再出现无 claim 覆盖的“可追溯”表述。
+- **更正记录**：attempt 4 曾把“未知”要素整段删除（只留已知情报），attempt 5 已恢复并挂 claim；attempt 4 的“约克城号刚在珊瑚海受损”当时无已挂 claim 支撑（`claim-coral-yorktown-repair` 只记抢修与出航），attempt 5 已补入 `claim-coral-midway-shift`。
 - 同时把 `battle-midway`、`event-overview-part-5-midway` 加入关联，并把 `claim-midway-codebreaking`、`claim-midway-failure-cause-disputed` 等 claims 挂入；未删除或改写原有内容。
 
 ### 5.2 `person-spruance-raymond`
 
-- 现有档案：606 汉字 profile、**4** 个决策卡、3 个独立来源、**6** 条顶层 `claimIds`（达标；顶层 6 条，与决策卡并集 7 条）。
+- 现有档案：606 汉字 profile、**4** 个决策卡、3 个独立来源、**6** 条顶层 `claimIds`（达标；顶层 6 条，与决策卡并集 **9** 条）。
 - 原有 3 张决策卡已覆盖“提前在远距离出动全部攻击兵力”“保留部分俯冲轰炸机等待第五艘敌航母确认”“下午对飞龙号发起决定性攻击”，均写出选项、约束、后果与来源。本任务新增第 4 张决策卡 `decision-spruance-turn-to-intercept`（第 16 特混舰队的西进与出击时机）：写明 6 月 2 日两编队会合后由弗莱彻统一指挥、6 月 4 日清晨巡逻机报告后第 16 特混舰队向西接近日军、约 07:00 开始出动攻击群；**不再**写 `claim-fletcher-combined-command` 并不支持的“弗莱彻下令西进/05:45”，而由 `claim-spruance-launch-timing` 支撑“二十五节西进、约七时开始出动”与 `claim-midway-june4-dawn-search` 支撑巡逻机报告。卡片 `claimIds` = `claim-spruance-launch-timing`、`claim-fletcher-combined-command`、`claim-spruance-task-force-sugar`、`claim-midway-june4-dawn-search`、`claim-nagumo-attack-timing-squeeze`。**更正**：attempt 1 曾把麦克拉斯基的转向误写成斯普鲁恩斯的决定，本版已删除该错误归因。
 - 同时把 `battle-midway`、`event-overview-part-5-midway` 加入关联；未删除或改写原有内容。
 
 ### 5.3 其余三位指挥官（本任务不写、不改，只记录现状；归属 DOC-02）
 
-| 人物 | 当前要素状态（实测） | 归属 |
-|---|---|---|
-| `person-yamamoto-isoroku` | 573 汉字 profile、3 个决策卡、4 个来源、8 条 claims；HIST-00 交付，HIST-02 审计时删除了一条无定位支撑的旧 claim（对马负伤细节） | 既有档案由 HIST-00/HIST-02 所有；后续以 content-rubric 复核的缺口归 **DOC-02** |
-| `person-nagumo-chuichi` | 666 汉字 profile、3 个决策卡、4 个来源、9 条 claims；HIST-00 交付、HIST-02 审计 | 同上，归 **DOC-02** |
-| `person-fletcher-frank-jack` | 609 汉字 profile、4 个决策卡、3 个来源、13 条 claims；HIST-00 交付、HIST-03 审计并补充第 4 张决策卡 | 同上，归 **DOC-02** |
+逐位核对五要素（当时知道/不知道什么、可选方案、约束、实际选择、后果与来源定位），结果如下（实测）：
 
-本任务**没有**补写、改写或删除上述三份档案；也未新增任何关于这三位人物的 claims。
+| 人物 | 五要素状态（实测） | 归属 |
+|---|---|---|
+| `person-yamamoto-isoroku` | 573 汉字 profile、3 个决策卡、4 个来源、8 条 claims。可选方案 / 约束 / 实际选择 / 后果与来源定位：**已具备**（每卡均有 options/constraints/choice/consequence 与 sourceIds、claimIds）。“当时知道什么”：**已具备**（对美工业实力与长期战风险的判断）。“当时不知道什么”：**仍缺**——三张卡均未写出具体的未知项（仅 consequence 有一句“让读者明白当时的决策者知道什么、不知道什么”的说明性文字，不是具体的未知事实），该项归 **DOC-02** 复核补写。 | 既有档案由 HIST-00/HIST-02 所有；缺口归 **DOC-02** |
+| `person-nagumo-chuichi` | 666 汉字 profile、3 个决策卡、4 个来源、9 条 claims。五要素均**已具备**：`decision-nagumo-no-visible-damage-turn` 写出“从南云这一侧看去，编队并没有出现可从外部察觉的重创”（已知）与“敌航母位置仍存在不确定性”（未知），并有 options/constraints/choice/consequence 与 sourceIds、claimIds；另两张卡同样要素齐全。 | HIST-00/HIST-02 所有；后续深度复核归 **DOC-02** |
+| `person-fletcher-frank-jack` | 609 汉字 profile、4 个决策卡、3 个来源、13 条 claims。五要素均**已具备**：`decision-fletcher-night-retirement` 写出雷达发现敌机并“判断东北方向可能有敌方航母”（已知）与“夜间没有可靠的航空侦察”“夜间判断敌主力位置更加困难”（未知），并有 options/constraints/choice/consequence 与 sourceIds、claimIds；其余卡要素齐全。 | HIST-00/HIST-03 所有；后续深度复核归 **DOC-02** |
+
+本任务**没有**补写、改写或删除上述三份档案；也未新增任何关于这三位人物的 claims。上表唯一的“仍缺”项（山本档案的“当时不知道什么”）按边界归 **DOC-02**，本任务不修改该档案。
 
 ### 5.4 `concept-logistics`
 
@@ -188,7 +192,7 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 
 **次要项**：(a) battle/overview 的 summary 已改为“6 月 4—7 日（6 月 3 日为前一天的首次接触）”；(b) `route-midway-dawn-search` 的 note 改为“从中途岛起飞的美军搜索机向日方编队方向搜索”；(c) `claim-spruance-launch-timing` 的“东北偏西南”改为“方位 239° 上”；(d) participants/forces 增加 `claim-midway-japanese-forces`、`claim-midway-aleutian-role` 等定位，“飞行员经验占优”等无直接来源的比较已删除。
 
-### 7.3 attempt 4 的更正记录（本次提交）
+### 7.3 attempt 4 的更正记录
 
 **方法说明**：attempt 3 的日志曾把 lure/weather/claim-nimitz 等改动记为“已修正”，但文件里仍保留缺陷。attempt 4 对每条缺陷先用脚本断言定位、再改文件、再用脚本逐条复核（最终复核脚本 38 项断言全部 PASS：覆盖 8 条阻断、次要项、日志数字与航线起终点），下列修改均已落到 `content/history.json`。
 
@@ -203,9 +207,17 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 
 **次要项**：(a) `results` 删除不对题的 `claim-naval-aviation-torpedo-attack-indirect-effect`；(b) `participants`/`forces` 与 `battle-midway.claimIds` 删除与中途岛无关的 `claim-aircraft-role-split`；(c) `place-midway` 摘要日期改为 6 月 4—7 日；(d) 第 5 部分问题 `sourceIds` 增加 `source-ussbs-pto-ch5`；(e) 日志 §7.1/§7.2 的“本次提交”标签改为“attempt 2”/“attempt 3”。
 
+### 7.4 attempt 5 的更正记录（本次提交）
+
+1. **[阻断 1，已修正] 尼米兹卡缺少“当时不知道什么”**：`decision-nimitz-commit-carriers-midway.context` 现同时写出已知（破译情报确认目标很可能是中途岛并给出大致日期）与未知（“情报给出的是地点与大致日期（日期只能锁定在 6 月 4 日或 5 日两天的区间），不等于掌握日军的全部作战计划”），并把 `claim-codebreaking-limit-not-omniscient` 加入卡片 `claimIds`。§5.1 已记录该“已知/未知”要素。
+2. **[阻断 2，已修正] “约克城号刚在珊瑚海受损”无已挂 claim 支撑**：把 `claim-coral-midway-shift`（明确写到“列克星敦与约克城在珊瑚海受损”）加入卡片 `claimIds`；`claim-coral-yorktown-repair` 继续支撑“只经三天抢修就参战”。§5.1 不再虚报，逐项列出卡片 claim 与判断的对应关系。
+3. **[阻断 3，已修正] 日志计数与要素状态**：按候选实际数据重算 `battle-midway` 的 claim 集合——顶层 **40**、`sections` **34**、`phases` **14**、**小节与阶段并集 37**、顶层 + sections + phases 合计 **42**；§8 已改为该口径。§5.3 改为逐位列出山本五十六、南云忠一、弗莱彻的五要素状态（已具备 / 仍缺哪一要素及其归属 DOC-02），不再只列计数。自查时另发现并修正 §5.2 的旧计数：斯普鲁恩斯顶层 6 条、与决策卡并集应为 **9**（旧记 7）。
+
+**次要项（顺手修正，仅 claimIds 层面，未改正文）**：`sections.results` 删除不直接支撑损失叙述的 `claim-coral-midway-carrier-list`；`sections.aftermath` 删除不支撑战后影响叙述的 `claim-coral-midway-shift`；导读“日本的计划与内部假设”小节删除未在该节使用的 `claim-coral-midway-shift` 与 `claim-coral-midway-carrier-list`。`--stage full` 仍为退出码 0（见 §7）。
+
 ## 8. 交付内容与本任务边界
 
-- 新增 `battle-midway`：14 个固定小节（每节 ≥160 汉字，实际 **171–256** 汉字），**5** 个地图阶段，5 位人物、5 个地点（含两个新增海域节点）、**5 个来源**、**40 条**顶层 `claimIds`（小节与阶段并集 42 条；含 1 条 disputed：`claim-midway-failure-cause-disputed`）。
+- 新增 `battle-midway`：14 个固定小节（每节 ≥160 汉字，实际 **171–256** 汉字），**5** 个地图阶段，5 位人物、5 个地点（含两个新增海域节点）、**5 个来源**、**40 条**顶层 `claimIds`；`sections` **34** 条、`phases` **14** 条，**小节与阶段并集 37 条**，顶层 + sections + phases 合计 **42** 条（含 1 条 disputed：`claim-midway-failure-cause-disputed`）。
 - 新增 `event-overview-part-5-midway`：**8** 个精确标题小节（每节 ≥100 汉字，实际 127–242；合计 **1378** 汉字），5 个来源、**22 条**顶层 `claimIds`（小节并集 24 条）、3 个 placeIds。
 - 新增 `question-did-midway-change-initiative`（part-5，见 §4）。
 - 新增地点 `place-midway`、`place-us-tf-area`、`place-japan-mobile-force-area`；新增 **18 条 claims**（含 attempt 4 的 `claim-ussbs-midway-retirement`）与 `source-ussbs-pto-ch5` 来源记录；交付/加强尼米兹与斯普鲁恩斯档案（见 §5）；`concept-logistics` 仅追加关联。

@@ -3242,8 +3242,6 @@
             "source-ussbs-pto-ch5"
           ],
           "claimIds": [
-            "claim-coral-midway-shift",
-            "claim-coral-midway-carrier-list",
             "claim-midway-codebreaking",
             "claim-ussbs-midway-plan",
             "claim-midway-aleutian-role",
@@ -5401,7 +5399,6 @@
           "claimIds": [
             "claim-midway-japanese-losses",
             "claim-midway-us-losses",
-            "claim-coral-midway-carrier-list",
             "claim-midway-yorktown-loss",
             "claim-ussbs-midway-consequences"
           ]
@@ -5417,7 +5414,6 @@
           "claimIds": [
             "claim-midway-japanese-losses",
             "claim-midway-failure-cause-disputed",
-            "claim-coral-midway-shift",
             "claim-ussbs-midway-consequences"
           ]
         },
@@ -6370,7 +6366,7 @@
         {
           "id": "decision-nimitz-commit-carriers-midway",
           "title": "把三艘航母投入中途岛",
-          "context": "1942 年 5 月下旬，破译情报确认日军下一个大目标很可能是中途岛，并给出大致日期；美军只有企业号、大黄蜂号与刚在珊瑚海受损的约克城号三艘航母可用。",
+          "context": "1942 年 5 月下旬，破译情报确认日军下一个大目标很可能是中途岛，并给出大致日期；但情报给出的是地点与大致日期（日期只能锁定在 6 月 4 日或 5 日两天的区间），不等于掌握日军的全部作战计划。美军只有企业号、大黄蜂号与刚在珊瑚海受损的约克城号三艘航母可用。",
           "options": [
             "把三艘航母集中到中途岛海域，接受以少打多的风险",
             "把航母留在后方或分散使用，避免在不利条件下决战"
@@ -6390,7 +6386,9 @@
           "claimIds": [
             "claim-nimitz-carrier-commitment",
             "claim-midway-codebreaking",
-            "claim-coral-yorktown-repair"
+            "claim-coral-yorktown-repair",
+            "claim-coral-midway-shift",
+            "claim-codebreaking-limit-not-omniscient"
           ]
         }
       ],
