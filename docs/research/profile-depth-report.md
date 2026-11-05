@@ -143,7 +143,7 @@ rubric §2.1 要求每个重要决策回答五问：(1) 当时知道/不知道�
 | `concept-codebreaking` | ✅ | 中途岛 | 中途岛（已达标，未改层） | 926 → 926 | 3 → 3 | +`battle-midway`（task-34） |
 | `concept-logistics` | ✅ | 珍珠港/日本扩张 | 珍珠港/扩张 + **中途岛决策** | 894 → 1008 | 4 → 7 | 无（已有 `battle-midway`） |
 
-**追加文本与依据**（均只追加，不删改原句）：
+**追加文本与依据**（以下四段均为追加；另见第 3 条对 `concept-radar` 第 2、3 层既有距离表述的事实更正，不改变原句结构）：
 
 1. `concept-aircraft-carrier` 第 3 层追加：*“把这三点放到 1942 年 6 月 4 日的中途岛，就能看出它们如何影响决策：美军航母在中途岛以北海域等待，希望先发现日军；日军则要在先压制中途岛与迎击可能出现的美国航母之间分配兵力，而当天给日军航母以致命打击的正是舰载机的攻击。”*（attempt 3 更正：末句原先的表述强于 `claim-nagumo-four-carriers-lost` 的“最终沉没／失去作战能力”，已改为“以致命打击”。）
    - 新挂 claims：`claim-midway-tf-positions`、`claim-nagumo-attack-timing-squeeze`、`claim-nagumo-four-carriers-lost`；source：`source-oni-midway-combat-narrative`。
@@ -154,7 +154,7 @@ rubric §2.1 要求每个重要决策回答五问：(1) 当时知道/不知道�
 4. `concept-logistics` 第 3 层追加：*“中途岛作战也能看到后勤与多线行动的影响：日军在同一时期还发动了阿留申方向的行动，ONI 判断这次行动可能是对中途岛作战的牵制、更可能是掩护基斯卡与阿图岛的占领；美军则依靠珍珠港的抢修能力，让受损的约克城号在三天内恢复作战状态，才凑出三艘航母投入决战。”*（attempt 2 更正：删去无 claim 支撑的“兵力与时间因此分散”，按 `claim-midway-aleutian-role` 的谨慎措辞改写为“可能是牵制、更可能是掩护占领”。）
    - 新挂 claims：`claim-midway-aleutian-role`、`claim-coral-yorktown-repair`、`claim-nimitz-carrier-commitment`；source：`source-oni-midway-combat-narrative`。
 
-**互链**：`concept-aircraft-carrier`、`concept-carrier-aircraft`、`concept-radar` 在 `relatedEntityIds` 增加 `battle-midway`（`concept-logistics` 原本已有）；后续 task-34 又为 `concept-codebreaking`、`concept-naval-aviation` 追加（见下方更正）。现在六个专题都链到中途岛战役。各专题的 `claimIds` / `sourceIds` / `relatedEntityIds` 只做追加（30 个新增数组元素，0 删除）；第 1、2 层的既有正文未动，既有正文与既有 claim 的唯一事实更正是 `concept-radar` 第 2 层与 `claim-radar-midway-detected.text` 的同一处距离换算（见 §5.2 第 3 条）。
+**互链**：`concept-aircraft-carrier`、`concept-carrier-aircraft`、`concept-radar` 在 `relatedEntityIds` 增加 `battle-midway`（`concept-logistics` 原本已有）；后续 task-34 又为 `concept-codebreaking`、`concept-naval-aviation` 追加（见下方更正）。现在六个专题都链到中途岛战役。各专题的 `claimIds` / `sourceIds` / `relatedEntityIds` 只做追加（30 个新增数组元素，0 删除）；除 `concept-radar` 第 2 层外，第 1 层及其余专题第 2 层的既有正文未动；既有正文与既有 claim 的唯一事实更正是 `concept-radar` 第 2 层与 `claim-radar-midway-detected.text` 的同一处距离换算（见 §5.2 第 3 条）。
 
 **互链一致性更正（task-34 后续小修）**：事后核对发现，第三层**已经**落到中途岛决策的两篇专题——`concept-codebreaking` 与 `concept-naval-aviation`——此前却没有任何中途岛内容链接，形成“最直接讲中途岛的专题反而没连到中途岛”的图内不一致。本任务在不改动正文、层、claim 与 source 的前提下，仅向这两个 `relatedEntityIds` **追加** `battle-midway`（未删除任何既有链接）：
 
