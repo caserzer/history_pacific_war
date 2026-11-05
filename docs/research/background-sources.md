@@ -14,13 +14,18 @@
 2. **把检索失败写进了正文**。曾把「某页面 404／无法解析域名」写成一条历史论断。那是检索状态，不是历史事实。现全部集中到 §3。
 3. **定位约定的说明不准确**。现按实际操作写明，见 §8。
 
-### 0.2 本次同步（attempt 4）做了什么、没做什么
+### 0.2 本次提交（attempt 5）实际改动了什么
 
-本次是**同步（synchronization）任务**，不是内容重写。原因是模块基线与 `matrix/integration` 出现分歧后需要合并，`content/history.json` 与 `docs/research/background-sources.md` 曾是未提交的工作树改动。
+本次不是纯记录任务，而是**实质内容修订**。上一版（attempt 4）是一次纯同步尝试，只改了本文件；本次则改动了 `content/history.json` 本身。这里如实列出本次的全部改动，避免与上一版混淆：
 
-- **没有改动任何历史内容**：本次未新增、删除或改写任何事件、人物、地点、单位、装备、专题、问题、来源或 claim 的正文与数量。实体与 claim 计数在本次前后一致（见 §6.1）。
-- **没有修改** `src/`、`scripts/`、`contracts/`、`package.json`、`vite.config.ts`。
-- **只做了一件事**：更新本文件的记录，使其与合并后的仓库状态一致（新增 §6.1 关于内容同时被站点构建消费的说明，并重申未交付范围）。
+1. **契约迁移（影响最大）**：契约任务 ARCH-02 已并入主线，旧的五键 `earlyCampaignAnalysis` 在门禁中被停用（`legacyAnalysis.enforcement=off`，`legacyDisabledBy=HIST-01`）。因此把 **8 个早期战役事件**全部迁移到新的十键 `analysisProfiles`：background / geography / participants / objectivesAndForces / constraints / course / options / resultsAndLosses / impact / uncertainty。每个键都满足 `minHanCharsPerKey`（80 汉字）与 `requiredElements` 标记，并各自带 `sourceIds` 与 `claimIds`。同时为每个事件声明了 `researchStatus` 字段。
+2. **新增事件**：补上阶段归属要求的 `event-doolittle-raid-1942`（杜立特空袭），来源与取材见 §1.6。
+3. **补齐 D1 的实质内容**：迁移过程中为每个战役真正写出了「可选方案与被排除它的约束」（`options`）与「不确定性」（`uncertainty`），而不是把旧五键原样搬家。
+4. **达尔文机种争议改写**：把此前当作确定事实的「十八架重型轰炸机」改为开放分歧（详见 §4.2）。
+5. **移除研究过程措辞**：正文、摘要与 claim 文本中此前出现的「本教材未取得……」一类收集过程叙述已全部移除，只保留「已知／仍有争议」的边界与证据状态；过程说明集中在本文件 §3。
+6. **补充中国侵略与平民受难**：在第 1 部分导读的「日本扩张与资源依赖」一节内增写一段关于 1931 年侵占东北、1937 年全面侵华与南京暴行的叙述（§5.1）。
+
+本次**未**新增人物档案、未新增专题、未新增媒体、未创建任何战役条目（`battles` 仍为 0）。计数变化见 §6.1。
 
 ## 0.3 内容与站点构建的关系（合并后）
 
@@ -114,6 +119,59 @@
 
 **统计口径**：该文的伤亡与战俘数字**只统计澳大利亚一方**。教材在 claim 的 `note` 与正文中均已声明，不得外推为全部盟军损失。
 
+### 1.6 杜立特空袭（本次新增事件）的来源
+
+| ID | 标题 | 作者/发布机构 | 年份 | URL | 访问状态 |
+|---|---|---|---|---|---|
+| `source-doolittle-after-action-report` | General Doolittle's Report on Japanese Raid（Halsey-Doolittle Raid, April 1942） | Col. James H. Doolittle；War Department, Headquarters of the Army Air Forces 印发 | 1942 | https://www.ibiblio.org/hyperwar/AAF/rep/Doolittle/Report.html | **READ**（全文） |
+| 复用 | USSBS *Campaigns of the Pacific War* 第 3 章 | United States Strategic Bombing Survey | 1946 | 见 §1 | **READ**（本次重读） |
+
+**为什么用一手报告而不是二手概述**：这份文件是杜立特本人呈交的战斗报告，由陆军航空队情报处印发（1942-07-09），是这次行动最直接的原始记录。内容支撑的 claim：
+
+- 单程飞行的由来、航母降落困难、苏联符拉迪沃斯托克方案因交涉未果被放弃（`claim-doolittle-purpose-and-plan`）。
+- 二十四架准备、十六架装舰；加装油箱至 1,141 加仑、拆除下炮塔与诺顿瞄准具、机尾木质假机枪（`claim-doolittle-aircraft-modification`）。
+- 提前一天、提前近十小时起飞的原因：03:10 发现第一艘巡逻艇，天亮后又被第三艘发现并判断已发出无线电（`claim-doolittle-forced-early-launch`）。
+- 起飞位置北纬 35°43′、东经 153°25′，东京以东约 824 英里（`claim-doolittle-launch-position`）。
+- 08:20 至 09:19 的起飞序列（`claim-doolittle-takeoff-seq`）。
+- 目标分配与五十英里正面展开、名古屋/大阪/神户小队（`claim-doolittle-targets-and-damage`）。
+- 日本本土约五百架作战飞机、集中东京湾、飞行员缺乏经验（`claim-doolittle-japanese-home-defence`）。
+- 中方未获通知、衢州无归航台与灯标、天气恶劣导致无法在预定机场降落（`claim-doolittle-china-landings`）。
+- 各机去向：一架飞西伯利亚被苏方羁押、两架机组被日军俘获、一名机枪手跳伞后死亡（`claim-doolittle-crew-fates`）。
+
+USSBS 第 3 章 p.31 提供**独立的日期印证**：日本航母打击部队于 1942 年 4 月 18 日、即「美军 B-25 空袭东京的当天」返回本土海域（`claim-doolittle-ussbs-carrier-return`）。
+
+**本次尝试但未取得的杜立特相关来源**（属于检索状况，不是历史论断）：
+
+| 目标 | URL | 结果 |
+|---|---|---|
+| National WWII Museum · Doolittle 专题页 | `nationalww2museum.org/war/articles/doolittle-raid` | **404** |
+| U.S. Army 官方文章 | `army.mil/article/36934/from_shangri_la_to_tokyo_the_doolittle_raid_april_18_1942` | **DNS 解析失败**（`EAI_AGAIN`） |
+| National Museum of the U.S. Air Force | `nationalmuseum.af.mil/Upcoming/Doolittle-Tokyo-Raid-75th-Anniversary/` | **403**（Akamai Access Denied） |
+| *The Army Air Forces in WWII* Vol. I ch.6 / ch.12（HyperWar） | `ibiblio.org/hyperwar/AAF/I/AAF-I-6.html`、`AAF-I-12.html` | 返回 200 并读取，但**内容不涉及杜立特空袭**，故未用于本事件的实质叙述 |
+
+因此杜立特事件的实质内容只依赖上表两份已读来源；没有用检索摘要或二手转述补写细节。
+
+### 1.7 本次新增的地理节点
+
+两处新地点，均为真实地理节点、`schematic: false`：
+
+| place | 类型 | 精度 | 说明 |
+|---|---|---|---|
+| `place-hornet-carrier` | 海域节点（sea） | `coordinateAccuracyKm: 120` | 1942-04-18 起飞海域，位于东京以东约八百余英里。报告给出的是**当时的航位坐标**；本教材只把它标为约一百二十公里精度的海域节点，**不绘制精确航迹**（架构政策禁止编造精确航迹）。 |
+| `place-chuchow` | 城市 | `coordinateAccuracyKm: 25` | 中国浙江衢州，多数机组跳伞或迫降后的主要着陆与集结区域。 |
+
+`place-tokyo` 在 HIST-00 已建立，本次复用，未重复创建。
+
+### 1.8 各事件的 researchStatus 取值
+
+ARCH-02 规定：早期战役事件必须在事件级声明 `researchStatus`，枚举为 `not-started | sources-identified | sources-retrieved | cross-checked | final`；研究/检索过程状态**只能**写在这个字段里，正文、摘要与 claim 文本不得出现过程措辞。
+
+本次 9 个事件**全部取值为 `sources-retrieved`**。含义与理由：
+
+- `sources-retrieved` = 已经实际取得并读取了支撑该事件的来源正文，据此建立了带定位的 claim；但尚未完成逐条交叉核对，也未经人工评审确认，因此不取 `cross-checked` 或 `final`。
+- 为什么不取 `cross-checked`：多数战役存在只有单一来源支撑的关键数字（例如关岛只有计划层来源、印度洋两次打击没有逐次战果），达不到「每条论断都有两个以上来源互证」的程度。
+- 为什么不取 `final`：`final` 需与人工评审结论一致，而 `tests/evidence/pedagogy.md` 尚不存在。
+
 ## 2. HIST-00 期间读过、本轮未重新打开的来源
 
 以下来源在 HIST-00 中实际读取并建立了 claim 与定位，**本轮没有重新打开**。记录在此以免被误认为本轮复核过：`previously verified in HIST-00, NOT re-verified this attempt`。
@@ -164,6 +222,27 @@
 8. **ONI 1943 年战史叙事是战时出版物**，前言自述「因资料仓促征集，个别细节可能不准确」；USSBS 编者注明内容源于战后访谈。两者适合说明计划逻辑与行动序列，不适合逐分钟时间线。
 9. **USSBS「四艘战列舰、六艘大型航空母舰」是对整支支援部队的描述**，不等于对锡兰两天打击的出击兵力；**南海支队的编成表**同样覆盖关岛与俾斯麦两个方向，不等于关岛登陆兵力。这两处口径提示已分别写进对应 claim 的 `note` 与正文。
 
+### 4.2 达尔文机种归属的来源分歧（本次改写的内容之一）
+
+此前版本把「十八架重型轰炸机」当作确定事实写入正文。这一表述掩盖了官方来源之间的分歧，本次已改为开放争议。可以确认的分歧形态：
+
+| 来源 | 对该批十八架飞机的表述 | 本次是否直接读取 |
+|---|---|---|
+| ONI 战史叙事《爪哇海战役》p.38 | 09:55 出现的编队是**第一波高空水平轰炸机**；同一段落又写这批飞机的「体型表明它们以航母或水上飞机母舰为基地」 | 是，已读 |
+| ONI 同章 p.36 | 提到 2 月 16 日攻击船队的飞机「据称是舰载机，但别处又被描述为重型轰炸机」——**该来源自己就记录了描述不一致** | 是，已读 |
+| USSBS 第 3 章 p.30 | 称这次空袭使用了**四艘航母的舰载机** | 是，已读 |
+
+**处理方式**：`claim-darwin-carrier-identity-disputed` 登记为 `claimType: disputed`，并列不同说法并注明各自出处；`claim-darwin-no-warning` 收窄为可以确认的事实（首轮编队无预警到达），不再断言机种。正文、`course` 与 `uncertainty` 三个位置均已同步改写，全库不再出现把「重型轰炸机」当定论的说法。
+
+**一处必须说明的核对边界（后续任务请勿重新引入）**：审查意见提到「USAF Historical Study 109 (1948) 把这十八架归入俯冲轰炸机大队」。**本任务从未取得该研究原文，从未读过它，也没有它的页码。**
+
+因此本教材确认的只有一件更有把握的事：**已读的两份官方来源对这批飞机的机种与平台存在实质分歧**——ONI p.38 称之为第一波高空水平轰炸机（同段又说其体型「表明以航母或水上飞机母舰为基地」），ONI p.36 自己记录了「别处又被描述为重型轰炸机」，USSBS p.30 则称使用四艘航母的舰载机。这是有据可查的分歧。
+
+关于那份 1948 年研究：正文只以「另一份战后航空研究」这种**不点名**的说法概括，**没有为它建立 claim、没有引用页码、没有写进 `sources[]`**。`content/history.json` 中已确认不再出现 `109`、`HS-109`、`Historical Study`、`USAF` 或「空军历史研究」任何字样（本次已逐项 grep 核实为 0 处）。
+
+**如果后续任务想点名称引那份研究**：必须先取得其正文并建立带真实页码的 `source` 记录，否则不得写回内容。审查意见中出现过的来源名称，其本身不能当作已核实的依据。
+
+
 ## 5. 五位指挥官档案的取材说明
 
 本轮为四位在早期扩张战役中实际做决定的盟军指挥官与一位香港守军指挥官建立了决策型档案。**取材厚薄不同，本记录如实说明**：
@@ -178,29 +257,31 @@
 
 五点共同说明：
 
-- **全部只有 2 个独立来源，不是 3 个。** 本任务没有取得 NHHC／USNI 的官方传记或本人回忆录（见 §3），因此没有第三份可独立引用的来源。教材选择写短并在档案内明说「未取得本人回忆录」，而不是用无法定位的材料凑数。
+- **全部只有 2 个独立来源，不是 3 个。** 本任务没有取得 NHHC／USNI 的官方传记或本人回忆录（见 §3），因此没有第三份可独立引用的来源。教材选择写短并在档案正文里明说「未取得本人回忆录」，而不是用无法定位的材料凑数。
 - 三份档案（Percival 496、Macarthur 433、Hart 401）**低于 500 汉字**的惯例长度，原因是可核实的决策情境只支持到这个程度。
 - 这些实体不在 `coverage.json` 的重点文章清单内，因此验证器不对其强制 500 汉字深度；但教材仍按同一标准要求每一项事实有 claim 与定位。
-- 每份档案的 `reliabilityNote` 都写明了来源限制，供后续审查复核。
+- **这 10 个 person 记录都没有 `reliabilityNote` 字段，而且不存在这个字段**：`contracts/content.schema.json` 的 `person` 定义是 `additionalProperties: false`，其 `properties` 中没有 `reliabilityNote`（只有 `sources[]` 记录才有该字段）。因此来源限制只能写在档案正文与本文件此处，无法写成 person 级字段。上一版声称「每份档案的 reliabilityNote 都写明了来源限制」是**错误记录**，本版已更正。
 
 ## 6. 本阶段未交付的内容（明确声明）
 
 ### 6.1 本次同步时的实际内容状态
 
-以下计数是本次同步时对 `content/history.json` 的实测值，用于与后续任务的增量对比：
+以下计数是本次（attempt 5）完成后的实测值：
 
 | 集合 | 数量 | 说明 |
 |---|---:|---|
-| events | 13 | 4 篇第 1 部分（战略背景）+ 1 篇第 3 部分导读 + 8 个早期扩张事件 |
+| events | 14 | 4 篇第 1 部分（战略背景）+ 1 篇第 3 部分导读 + 8 个早期扩张战役 + 1 个杜立特空袭 |
 | **battles** | **0** | **三场重点战役均未创建**，详见 6.2 |
-| places | 35 | 均为真实地理节点（`schematic: false`） |
+| places | 37 | 均为真实地理节点（`schematic: false`） |
 | units / equipment | 2 / 3 | 联合舰队、机动部队；赤城号、九七式舰攻、欧帕纳雷达 |
-| people | 10 | 5 位重点人物（HIST-00）+ 5 位早期扩张战役指挥官（本次） |
+| people | 10 | 5 位重点人物（HIST-00）+ 5 位早期扩张战役指挥官（HIST-01 前次提交） |
 | concepts | 6 | 航母、舰载机、海军航空作战、雷达、密码分析、补给 |
-| sources | 27 | 每条均有 URL 与访问日期 |
-| claims | 217 | 分 fact / interpretation / disputed 三类，每条均有精确定位 |
+| sources | 28 | 每条均有 URL 与访问日期 |
+| claims | 228 | 分 fact / interpretation / disputed 三类，每条均有精确定位 |
 | questions | 4 | 第 1 部分 2 个、第 3 部分 2 个 |
 | **media** | **0** | **未登记任何素材**，详见 6.2 |
+
+与 attempt 4 相比：events 13→14、places 35→37、sources 27→28、claims 217→228；people / concepts / questions 未变。
 
 ### 6.2 尚未交付的内容
 
@@ -209,15 +290,19 @@
 - **后续阶段的导读与问题**：part 2、part 4、part 5 的导读与五部分问题中的其余部分属于后续 HIST 任务。
 - **本文件不声称站点或三场战役已完成**。合并后的站点能够构建并通过其自身检查，不等于教材内容已经完整交付。
 
-## 7. 结构性验证不等于可读性评审
+## 7. 各门禁实际强制什么（准确表述）
 
-`--stage background`、`--stage strategy` 与 `--check-contracts` 的 PASS 只证明结构、覆盖、引用完整性与最低篇幅。它**不能**证明：
+此处刻意写准，因为上一版曾夸大本阶段的门禁深度：
 
-- 文章对 11 岁读者真的可读、通顺、有吸引力；
-- 文字确实回答了「盟军为何连续失败」「日本补给压力何在」，而不只是达到了字数；
-- 术语分层、敏感内容（侵略、平民苦难、战争罪行）的表述达到 rubric 要求。
+| 命令 | 实际强制的检查 |
+|---|---|
+| `--stage strategy` | 第 1 部分导读、三个战略基础事件、第 1 部分问题；以及全部结构性检查（ID 唯一、引用无断链、来源定位精确、claim 类型合法等）。 |
+| `--stage background` | 在 strategy 的全部检查之上，**只额外**要求：第 3 部分导读、`stageOwnership.background.events` 中的 9 个事件（含杜立特）、第 3 部分问题，以及早期战役的十键 `analysisProfiles` + `researchStatus` 规则。 |
+| `--check-contracts` | 只检查契约文件之间的一致性（coverage / schema / requirements / 文档声明），**不读取** `content/history.json`。 |
 
-可读性必须由人工评审并记录在 `tests/evidence/pedagogy.md`；该文件是后续中央交付物。在它存在且经审阅之前，**不得声称内容已达到可读性标准**。
+**需要明确指出的一点**：`--stage background` 并**没有**引入比 `--stage strategy` 更高的篇幅门槛。两个阶段对同一批实体检查的是同一组 `minimumDepth` 与结构规则——`--stage strategy` 在当前内容上同样 PASS，正是这一点的直接证据。本阶段新增的强制项只有「哪些实体必须存在」与「早期战役必须用十键结构」，而不是「写得更长」。
+
+同样，这些门禁只证明结构、覆盖与引用完整性。它们**不能**证明文章对 11 岁读者可读、通顺、有吸引力，也不能证明「盟军为何连续失败」「日本补给压力何在」两节真的回答了问题而不只是达到了字数，更不能证明侵略、平民苦难与战争罪行的表述达到 rubric 要求的克制与准确。可读性必须由人工评审并记录在 `tests/evidence/pedagogy.md`；**该文件目前不存在，是后续中央交付物**。在它存在且经审阅之前，不得声称内容已达到可读性标准。
 
 ## 8. 定位约定（本轮实际操作）
 
