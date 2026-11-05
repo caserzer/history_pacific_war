@@ -322,13 +322,14 @@ export function AtlasMapEngine({
   return (
     <div className="pw-map" data-atlas-engine="">
       <div className="pw-maptoolbar" role="toolbar" aria-label="地图视口控制">
-        <button type="button" className="pw-btn" onClick={() => zoomBy(1.5)} aria-label="放大地图" data-map-action="zoom-in">
+        <button type="button" className="pw-btn" onClick={() => zoomBy(1.5)} /* R1：可见文字「＋」不足以独立表意，因此让**可访问名包含可见文字**。 */
+          aria-label="放大地图 ＋" data-map-action="zoom-in">
           ＋
         </button>
-        <button type="button" className="pw-btn" onClick={() => zoomBy(1 / 1.5)} aria-label="缩小地图" data-map-action="zoom-out">
+        <button type="button" className="pw-btn" onClick={() => zoomBy(1 / 1.5)} aria-label="缩小地图 －" data-map-action="zoom-out">
           －
         </button>
-        <button type="button" className="pw-btn" onClick={() => setTransform(resetView())} aria-label="复位视图" data-map-action="reset">
+        <button type="button" className="pw-btn" onClick={() => setTransform(resetView())} aria-label="复位视图 复位" data-map-action="reset">
           复位
         </button>
         <span className="pw-map__zoom" data-map-zoom={transform.zoom.toFixed(2)}>

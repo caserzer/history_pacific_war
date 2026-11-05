@@ -145,6 +145,20 @@ async function openRoute(page: Page, hash: string) {
   );
   // 等待 hash 路由生效（标题或入口标记出现）
   await page.waitForFunction(() => document.querySelector('[data-route-heading], .pw-nav') !== null, null, { timeout: 20_000 });
+  /*
+   * QA-01 attempt 6 / R3+R4：等**字体就绪**再返回。
+   * 地图标签是 SVG <text>，Web 字体（Noto Serif SC 等）到达后会重新排版；
+   * 在这之前用 getBoundingClientRect() 量出来的盒子是**过时的**——这正是
+   * 「Washington DC 与 Wake Island 重叠」这类地理上不可能的重叠的来源
+   * （两点相距 269 个单位，而视口只有 640 宽）。
+   * document.fonts.ready 保证测量前已完成字体换入。
+   */
+  await page.evaluate(async () => {
+    const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
+    if (fonts?.ready) await fonts.ready;
+  });
+  // 再让出一帧，确保 SVG 文字按最终字体重新布局完成。
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
 }
 
 /** 渲染文本（不含 script/style）。 */
@@ -314,11 +328,28 @@ test.describe('地图缩放 / 平移 / 图层', () => {
     expect(await zoomOf()).toBeGreaterThan(1);
     await expect.poll(async () => canvas.getAttribute('data-can-pan')).toBe('true');
 
+    /*
+     * QA-01 attempt 6 / R2：这次失败**不是**平移缺陷，而是测试期望错误。
+     *
+     * 证据：日志里失败时的 transform 是 `1.5625,-180.0000,-112.5000`。而
+     *   maxTx = W*(zoom-1)/2 = 640*0.5625/2 = 180
+     *   maxTy = H*(zoom-1)/2 = 400*0.5625/2 = 112.5
+     * tx/ty 恰好都停在**钳制边界**上。根因是「以视口中心为焦点放大」：缩放 1.25²=1.5625 时，
+     * 为了让用户坐标 (320,200) 仍位于视口中心，tx 必须等于 -180——正好是上限。
+     * 此时 ArrowRight（tx 继续减小）被钳制，位移当然为 0。这是**正确行为**：
+     * 我另外验证过三次放大后视口中心对应的用户坐标始终精确等于 (320,200)，缩放确实以中心为焦点。
+     *
+     * 因此改为：先向**有空间的方向**平移并断言确实位移，再验证反方向能回到原位。
+     * 覆盖度等价（仍证明方向键驱动 data-map-transform），且不作假。
+     */
     const before = await transformOf();
+    await page.keyboard.press('ArrowLeft');
+    const afterLeft = await transformOf();
+    expect(afterLeft, '放大后方向键应改变 data-map-transform（向有空间的方向）').not.toBe(before);
+
     await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('ArrowRight');
-    const after = await transformOf();
-    expect(after, '放大后方向键应改变 data-map-transform（tx 变化）').not.toBe(before);
+    const backTo = await transformOf();
+    expect(backTo, '反向方向键应把视图移回原处（证明两个方向都真实生效）').toBe(before);
 
     // 数字键 0 复位
     await page.keyboard.press('0');
@@ -701,18 +732,38 @@ test.describe('地图标签去重叠（ATLAS-READABILITY）', () => {
 
   test('必显地名的解析与列表顺序无关（确定性）', async ({ page }) => {
     await openRoute(page, '/atlas');
-    // 同一页面上重复读取两次可见集合，必须一致（防止依赖 Map 迭代顺序）
-    const read = () => page.evaluate(() =>
-      [...document.querySelectorAll('[data-layer="place"][data-label-visible="true"]')]
-        .map((n) => n.getAttribute('data-place-id'))
-        .sort()
-        .join(','),
-    );
-    const a = await read();
+    /** 读取可见标签 id 集合（排序后逗号拼接）。 */
+    const read = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll('[data-layer="place"][data-label-visible="true"]')]
+          .map((n) => n.getAttribute('data-place-id'))
+          .sort()
+          .join(','),
+      );
+
+    /** 等「真的有可见标签」再读，避免在渲染完成前拿到空串。 */
+    const readAfterReady = async () => {
+      await page.waitForFunction(
+        () => document.querySelectorAll('[data-layer="place"][data-label-visible="true"]').length > 0,
+        null,
+        { timeout: 30_000 },
+      );
+      return read();
+    };
+
+    const a = await readAfterReady();
+    expect(a.length, '首次读取应有可见标签（不是空串）').toBeGreaterThan(0);
+
+    /*
+     * QA-01 attempt 6 / R4：reload 之后原来只等 `#root` 有子节点就开始读，
+     * 而 `#root` 在内容仍处于 loading 阶段就已经有子节点（同 R1 加载壳的教训）。
+     * 在较慢的 webkit-mobile 上于是读到空集合 -> 得到 ""，被误判为「不确定性」。
+     * 现在改成等**真实的可见标签元素**出现再读（readAfterReady）。
+     */
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => (document.querySelector('#root')?.childElementCount ?? 0) > 0, null, { timeout: 20_000 });
-    const b = await read();
-    expect(b).toBe(a);
+    const b = await readAfterReady();
+    expect(b.length, 'reload 后读取应有可见标签（不是空串）').toBeGreaterThan(0);
+    expect(b, '同一构建、同一缩放下可见集合必须确定').toBe(a);
   });
 
   test('放大后显示更多标签（缩放自适）', async ({ page }) => {

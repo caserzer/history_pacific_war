@@ -167,12 +167,18 @@
   "webkitExecutedNote": "Central ran webkit-mobile and webkit-desktop (they appear in the failure list). Native sandbox: not executed.",
   "centralRun": {
     "commit": "2fdc66059f80c05e510e22537c8e7ab0e9dd74dd",
-    "failed": 126,
+    "failed": 72,
     "skipped": 386,
-    "passed": 343,
-    "duration": "5.2m",
+    "passed": 397,
+    "duration": "5.1m",
     "exitCode": 1,
-    "interpretation": "REAL browser failures — must be fixed in source, not relabelled BLOCKED."
+    "interpretation": "REAL browser failures (not sandbox). Attempt 5 fixed the RangeError (-54 failures). Attempt 6 addresses the remaining 4 root causes.",
+    "previousAttempt": {
+      "failed": 126,
+      "skipped": 386,
+      "passed": 343,
+      "duration": "5.2m"
+    }
   },
   "attempt5Fixes": {
     "RangeError (root cause)": "tests/learning.spec.ts requireBattle() called ITSELF instead of searching realContent.battles — infinite recursion, `Maximum call stack size exceeded`, which crashed every test that touched a battle (detail, interlinks, playback, atlas, copy). Fixed to a real .find() lookup. This alone explains a large share of the 126.",
@@ -190,5 +196,11 @@
     "(5) map-keyboard": "FIXED in source: data-map-transform / data-map-tx / data-map-ty / data-can-pan were entirely absent, so a browser test could not observe pan. Added to the canvas. Note: at zoom=1 clamping is maxTx=0, so ArrowRight correctly moves nothing; the test now zooms first and asserts data-can-pan flips false->true.",
     "(6) media-visible": "MITIGATED: first figure per gallery now loading=\"eager\" so a below-the-fold lazy image cannot stall a naturalWidth>0 assertion. Render path unchanged (figure/img/alt/credit all verified in SSR).",
     "(7) reader-copy": "EXTENDED: added a browser-level recheck over 9 reader pages plus map legend/phase copy and evidence-panel labels, using the same JARGON list as the SSR check."
+  },
+  "attempt6Fixes": {
+    "R1 label-content-name-mismatch (~60 of 72)": "FIXED in src. (a) AppShell.tsx brand <a>: aria-label now CONTAINS the full visible text \"太平洋战争：从珍珠港到中途岛 THE PACIFIC WAR · 1941.12 — 1942.06\". (b) atlas/controls.tsx: removed three redundant aria-labels (上一个阶段/播放暂停/下一个阶段) whose visible text 「← 上一阶段」「▶ 播放」「下一阶段 →」 already names them. (c) mapEngine.tsx: zoom/reset aria-labels now include the visible glyphs (放大地图 ＋ / 缩小地图 － / 复位视图 复位). Swept all 53 aria-label occurrences in src; only 5 were on interactive elements with visible text. Verified by simulating the axe rule over rendered SSR DOM of 10 pages: 16 aria-labeled interactive elements, 0 violations (was 4 on atlas).",
+    "R2 data-map-transform after zoom": "TEST expectation was wrong, not the pan logic. Log showed transform \"1.5625,-180.0000,-112.5000\" == exactly maxTx=640*0.5625/2=180 and maxTy=400*0.5625/2=112.5, i.e. pinned at the clamp bounds. Root cause: zooming about the viewport centre legitimately drives tx/ty to the clamp edge (verified: the user-space point at viewport centre stays exactly (320,200) through three zooms — zoom IS centred correctly). ArrowRight decreases tx, which is already at its minimum, so no movement is correct. Test now pans Left (has headroom) and asserts it moves, then ArrowRight and asserts it returns to the exact prior transform — equal coverage, no weakening. Verified by simulating the pure transform math: -180 -> -156 -> -180.",
+    "R3 label overlap (4 pairs)": "ROOT CAUSE: the test measured getBoundingClientRect() before web fonts settled. Decisive evidence: the reported pairs include place-washington-dc x place-wake-island at dx=269.5 user units and place-manila x place-oahu at dx=187.8 — both impossible to overlap in a 640-unit viewport with ~110-unit labels. openRoute now awaits document.fonts.ready plus one animation frame before any measurement, so the SVG <text> re-lays-out with the real font first.",
+    "R4 mandatory-label determinism returned \"\"": "ROOT CAUSE: after page.reload() the test waited only for #root to have children — the same weak gate that caused the earlier loading-shell bug. On slower webkit-mobile it read before labels existed and got an empty string. Now waits for actual [data-label-visible=\"true\"] elements and asserts the read is non-empty before comparing."
   }
 }

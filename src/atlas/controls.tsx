@@ -83,7 +83,9 @@ export function PhaseControls({
           type="button"
           className="pw-btn"
           onClick={() => onStep(-1)}
-          aria-label="上一个阶段"
+          /* QA-01 attempt 6 / R1：可见文字「← 上一阶段」本身就是可访问名。
+             多余的 aria-label="上一个阶段" 不含可见文字（缺箭头），触发 axe
+             label-content-name-mismatch；删除后由可见文字提供名称。 */
           data-phase-action="prev"
           disabled={activeIndex <= 0}
         >
@@ -94,8 +96,9 @@ export function PhaseControls({
           className="pw-btn"
           onClick={onTogglePlay}
           aria-pressed={playing}
+          /* R1：可见文字 {playing ? '⏸ 暂停' : '▶ 播放'} 已是名称；aria-pressed 表达状态。
+             原 aria-label 不含可见文字 → label-content-name-mismatch。 */
           data-phase-action="playpause"
-          aria-label={playing ? '暂停阶段播放' : '播放阶段'}
         >
           {playing ? '⏸ 暂停' : '▶ 播放'}
         </button>
@@ -103,7 +106,7 @@ export function PhaseControls({
           type="button"
           className="pw-btn"
           onClick={() => onStep(1)}
-          aria-label="下一个阶段"
+          /* R1：同上，可见文字「下一阶段 →」即名称。 */
           data-phase-action="next"
           disabled={activeIndex >= phases.length - 1}
         >

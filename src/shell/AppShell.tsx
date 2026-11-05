@@ -53,7 +53,10 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
           <a
             className="pw-brand"
             href={buildHref('overview')}
-            aria-label="返回总览：太平洋战争：从珍珠港到中途岛"
+            /* QA-01 attempt 6 / R1：axe label-content-name-mismatch 要求**可见文字包含在
+               可访问名里**。可见文字是「太平洋战争：从珍珠港到中途岛」+「THE PACIFIC WAR ·
+               1941.12 — 1942.06」；这里让 aria-label 完整包含两段可见文字，并前置动作说明。 */
+            aria-label="返回总览：太平洋战争：从珍珠港到中途岛 THE PACIFIC WAR · 1941.12 — 1942.06"
           >
             <BrandMark />
             <span className="pw-brand__text">
