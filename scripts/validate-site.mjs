@@ -2,46 +2,180 @@
 /**
  * 站点验证器 —— node scripts/validate-site.mjs
  *
- * 零 npm 依赖，Node 24 标准库 + React/`react-dom/server`（项目自身依赖）。
+ * 零 npm 依赖，Node 24 标准库 + React/react-dom/server（项目自身依赖）。
  *
  * 它检查的不是「内容是否好」，而是「站点是否把契约数据正确地呈现为可用页面」：
- *
- * A. 契约数据来源
- *    A1 content/history.json（若存在）通过 contracts 验证器 --file 检查；
- *    A2 缺失内容时为「诚实的未加载状态」—— 六个入口仍全部渲染。
- * B. 六入口与互跳（用 contracts/fixtures/*.json）
- *    B1 六个入口在 fixture 下都能渲染出非空标题；
- *    B2 同一批实体 ID 在多个入口之间可互跳（时间线→战役→人物→专题→地图→问题）；
- *    B3 详情路由 #/<view>/<id> 可直接深链渲染。
- * C. 证据组件
- *    C1 fact / interpretation / disputed / schematic 四类标签都能渲染；
- *    C2 claim 引用（文本 + claimType 标签）与来源（机构/标题/年份/链接）可见；
- *    C3 每条 claim 的来源定位（locator）可见。
- * D. 诚实状态
- *    D1 fixtureOnly=true 必须显示「测试样本」状态；
- *    D2 内容缺失必须显示「未加载」状态，且不得出现文档里的历史句子；
- *    D3 结构非法的根节点必须被拒绝并说明原因。
- * E. 构建产物（--dist）
- *    E1 子路径 base、资源文件真实存在、index.html 引用正确；
- *    E2 所有站内链接是 hash 路由（可在 GitHub Pages 子路径下工作）；
- *    E3 无外部 CDN 字体/脚本、无外部瓦片依赖。
+ *   A. 契约数据来源（content/history.json 经契约验证器；缺失时为诚实未加载状态）
+ *   B. 六入口与互跳（fixture 下六入口、互链、深链；B4 早期战役十键渲染回归）
+ *   C. 证据组件（claimType 标签、引用、来源定位）
+ *   D. 诚实状态（fixture 标注、未加载、结构非法拒绝）
+ *   E. 构建产物（--dist：子路径、资源、hash 路由、无 CDN/瓦片依赖、gzip 体积）
+ *   F. 合成契约样本（mapEngine/phase 等真实 fixture 未覆盖的渲染路径）
+ *   G. 负例（证明检查本身有效）
+ *   MAP-00 地图引擎与阶段控件（M1-M10 + R3 可观察交互）
+ *   D2/D3/D4、R2 阶段契约复验、R3、GRAPH 渲染图治理、NAV-01 fixture 泄露回归、S1/Z 自检
  *
  * 本文件没有 SKIP 状态：每条检查要么 PASS 要么 FAIL。任何前置条件缺失（输出目录
  * 不可写、已接受夹具缺失、渲染运行时构建失败）都判 FAIL 并以非零退出码说明原因；
- * 检查项计数等于实际执行的断言数（见 Z-accounting）。GRAPH 组对渲染运行时模块图
- * 做断言，证明 B4 的渲染路径只由业务模块构成（不含 index.html / react-dom/client）。
+ * 检查项计数等于实际执行的断言数（见 Z-accounting）。
  *
- * 每个检查都打印 PASS/FAIL；任何一条 FAIL 都让进程以退出码 1 结束。
- * 负例检查（negative case）是刻意构造的错误输入，用来证明检查本身有效。
+ * ═══════════════════════════════════════════════════════════════════════════
+ * NAV-01 第 0 步基线（只读核对；基线 = 已接受集成 HEAD 2263112、本任务 delta 之前
+ * 的 scripts/validate-site.mjs）
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 文件基线（实测）：git blob 152,113 B / 3,067 行（LF）；工作树 CRLF 检出 155,180 B
+ * （与派发 manifest 记录的 155,180 B 一致；行数以 git blob 换行符数为准）。
+ *
+ * 一、基线分段结构（行号为基线文件实测；本任务交付后行号已变化，见「交付后映射」）
+ * ---------------------------------------------------------------------------
+ *   骨架  61-91     结果记录 record/pass/fail/check（只有 PASS/FAIL，无 SKIP）
+ *   骨架  93-472    站点组件加载：输出目录治理、渲染图记录、模块装载
+ *   骨架  474-517   React 实例统一（唯一 React → h / renderStatic）
+ *   骨架  519-577   渲染入口 renderApp、fixture 读取 loadFixture、
+ *                   missingState / invalidState / countOf
+ *   渲染  A   579-664   契约数据来源 checkContentFile（A1 / A1-coverage / A2）
+ *   渲染  B   666-814   六入口与互跳 checkEntries（B1/B2/B3/B5/B6），并调用 B4
+ *   渲染  B4  816-1125  早期战役 analysisProfiles 十键渲染回归（详见三）
+ *   自检  S1  1127-1246 空洞断言形状自检 checkNoVacuousAssertions
+ *   渲染  C   1248-1323 证据组件
+ *   渲染  D   1325-1376 诚实状态（D2-2：内容缺失页不得出现 valid-min fixture 句子）
+ *   渲染  E   1378-1450 构建产物 --dist（E0-E4）
+ *   渲染  F   1452-1542 合成契约样本（src/testing/syntheticContractSample.mjs）
+ *   渲染  G   1544-1624 负例
+ *   渲染  MAP-00 1626-2149 地图引擎 checkAtlas（M1-M10 + R3 可观察交互）
+ *   渲染  D2  2151-2241 用 valid-min 驱动地图引擎
+ *   渲染  D3  2243-2358 状态机交互（无条件运行）
+ *   渲染  D4  2360-2419 标签/字形单一来源 + 全图视野平移语义
+ *   渲染  R2  2421-2712 阶段契约复验：磁盘 map-phases.json + 内存阶段对象
+ *   渲染  R3  2714-2872 可观察交互（图层/播放/前后阶段）
+ *   骨架  2874-2876 「主流程」标注（GRAPH 段前的位置标记，无代码）
+ *   渲染  GRAPH 2878-2940 渲染图治理
+ *   自检  Z   2942-2959 检查项计数自证 verifyCheckAccounting
+ *   骨架  main/summarize 2961-3067（main 2961 / summarize 3032 / 入口调用 3060-3067）
+ *
+ * 二、各段依赖的契约夹具（基线实测代码行）
+ * ---------------------------------------------------------------------------
+ *   - contracts/fixtures/map-phases.json
+ *       仅 R2-A 段（checkAtlasPhaseContractReverification，基线 L2592；读取行
+ *       L2596-2597）消费；R2-B 用纯内存阶段对象。**map-phases 夹具的消费方只有这一处。**
+ *   - contracts/fixtures/map-phases-analysis.json
+ *       **不存在**（已接受契约如此）：基线真实代码 0 处引用。本脚本不创建、不引用、
+ *       不要求其存在；阶段分析字段由 ARCH-02 的 analysisProfiles 契约 +
+ *       map-phases.json 承载（NAV-3-no-map-analysis-ref 对该事实做机器断言）。
+ *   - contracts/fixtures/valid-min.json
+ *       B（基线 L672/734）、C（L1263）、D（L1330）、G（L1558-1599）、D2（L2160）。
+ *   - contracts/fixtures/valid-early-campaign.json
+ *       B（L673）、B4（L1001-1006）。
+ *   - content/history.json（真实内容，不是夹具）
+ *       A（L619/632）、M4（L1745）。
+ *
+ * 三、已接受 MAP-00 的 B4 当前形态（基线 HEAD 2263112）
+ * ---------------------------------------------------------------------------
+ *   已改写为 analysisProfiles 十键严格断言；不存在旧五键断言，也不存在 SKIP 分支。
+ *   基线断言名：B4 / B4-fixture-present / B4-load / B4-event / B4-count / B4-keys /
+ *   B4-order / B4-no-legacy / B4-no-undefined / B4-<key>-heading|body|evidence（逐节）/
+ *   B4-research-status / B4-adapter-{count,keys,evidence,evidence-blocks,no-legacy} /
+ *   B4-M-{load,only-profiles,section,count,keys,order,no-legacy,no-undefined,
+ *   <key>-heading|body|evidence} / B4-legacy-not-rendered；另有 GRAPH-1..4。
+ *
+ * 四、checkAtlas 的唯一归属
+ * ---------------------------------------------------------------------------
+ *   function checkAtlas(M)（基线 L1646，MAP-00 段）：M1 投影数学、M2 缩放/平移、
+ *   M3 阶段排序/摘要、M4 真实内容诚实空状态、M5-M9 阶段控件/图例/负例、M10 控件接线。
+ *   本文件没有第二个 checkAtlas 定义；地图阶段契约复验属 R2 段专用函数
+ *   （checkAtlasPhaseContractReverification）。
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * NAV-01 交付后映射：两部分职责与契约归属（本文件现行结构）
+ * ═══════════════════════════════════════════════════════════════════════════
+ * PART 1「夹具解析/派生」——契约来源：ARCH 知识模块契约（只读；不渲染页面）
+ *   - 唯一读取入口：readJsonFile / loadFixtureDocument / loadRealContentDocument /
+ *     loadMapPhaseFixtureDocument；ARCH 契约键：loadAnalysisProfileContract()。
+ *   - **早期战役分析块字段的唯一解析/派生函数**：
+ *       parseEarlyCampaignAnalysisBlocks(rawEvent, contract) → { kind, blocks, legacyKeys }
+ *     渲染断言只消费它返回的 blocks，不得再写第二份解析（NAV-1 / NAV-5 机器断言）。
+ *   - 契约来源：contracts/content.schema.json 的 $defs.analysisProfiles.required
+ *     与 contracts/coverage.json 的 earlyCampaign.analysisProfiles.keys（键/序/标题）。
+ *   - 内存构造器（不读磁盘夹具）：makeInMemoryPhase / makeInMemoryScenario /
+ *     builtinMapPhaseFixture / makeInMemoryAnalysisEvent / makeInMemoryAnalysisEvidence。
+ *   - fixture 专属事实派生：collectFixtureOnlyFacts(realDoc)（供 PART 2 泄露回归）。
+ *
+ * PART 2「渲染图/展示断言」——契约来源：WEB 站点渲染契约
+ *   - 使用真实加载器 M.loadContent + renderApp（AppShell + 六入口视图）渲染并断言展示。
+ *   - 包含段：A、B、B4（渲染部分）、C、D、E、F、G、MAP-00、D2/D3/D4、R2（渲染部分）、
+ *     R3、GRAPH、NAV-01 fixture 泄露回归、S1/Z 自检。
+ *   - 渲染断言不解析契约字段；B4 渲染断言只消费 PART 1 的 parsed.blocks。
+ *
+ * 共享骨架（不属于上述任一方的纯基础设施，不含业务解析/展示断言）：
+ *   结果记录（PASS/FAIL，无 SKIP）、渲染运行时构建与模块图记录、输出目录治理
+ *   （--out-dir / DSH_SITE_OUT_DIR，默认工作树 .cache）、React 统一、renderApp / h /
+ *   renderStatic、启动与 summarize。
+ *
+ * 本文件内置的分段/单一属主自检（PART 2 · 自检段，全部真实参与 PASS/FAIL）：
+ *   NAV-1 解析函数唯一 / NAV-2 夹具集合 / NAV-3 不引用不存在的 map-phases-analysis /
+ *   NAV-4 PART 归属标注存在 / NAV-5 渲染断言不直接读契约字段 / NAV-6 PART 1 无断言。
+ *   Z-accounting 下限取基线断言数 401：删除既有断言会直接 FAIL。
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * NAV-01 交付：B4 处理结果（断言名 before → after；唯一收敛在本文件）
+ * ═══════════════════════════════════════════════════════════════════════════
+ *   保留（严格度不变或更强；语义按括号更新，断言源改为 PART 1 parsed.blocks）：
+ *     B4 / B4-fixture-present / B4-load / B4-event /
+ *     B4-count（= PART 1 解析块数 == 渲染小节数）/ B4-keys / B4-order /
+ *     B4-no-legacy / B4-no-undefined / B4-<key>-heading|body|evidence（逐节）/
+ *     B4-research-status / B4-adapter-{count,keys,evidence,evidence-blocks,no-legacy} /
+ *     B4-M-{load,only-profiles,section} / B4-legacy-not-rendered
+ *   新增（等价加强，全部计入检查项）：
+ *     B4-parse-contract（ARCH 两处契约键一致）/ B4-parse-blocks / B4-parse-missing /
+ *     B4-parse-legacy / B4-strict-keys（严格模式：全部契约键 10/10 且顺序=契约）/
+ *     B4-view-parity（PART 1 解析结果 == src/data 适配层，证明无平行解析）/
+ *     B4-M-parse-blocks / B4-M-strict-keys / B4-M-view-parity
+ *   旧五键断言：基线即无；本任务只在负例中构造 legacy 事件，断言 legacyKeys=5 且
+ *     派生 0 个渲染块、页面不渲染分析区（B4-legacy-not-rendered）。
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * NAV-01 交付：六入口 fixture 泄露回归断言名
+ * ═══════════════════════════════════════════════════════════════════════════
+ *   LEAK-0-content / LEAK-real-status / LEAK-facts / LEAK-fixture-inputs
+ *   LEAK-control-{min,early,map}：正向对照 —— 用已接受夹具渲染同一路由必须检出
+ *     fixture 专属事实，证明泄露检测器不是恒真。
+ *   LEAK-<entry>-{list,detail,match}，entry ∈ {timeline, battles, people, atlas,
+ *     concepts, questions}：
+ *       -list / -detail：真实内容渲染 + fixture 专属事实泄露 0 条；
+ *       -match：同一详情路由换夹具内容渲染，输出必须不同（渲染随加载内容变化）。
+ *   六入口详情路由各一项渲染断言：LEAK-timeline-detail / LEAK-battles-detail /
+ *   LEAK-people-detail / LEAK-atlas-detail / LEAK-concepts-detail / LEAK-questions-detail。
+ *   （真实内容 battles=0，因此 LEAK-battles-detail 断言「诚实空状态 + 不渲染夹具战役条目」。）
+ *   「页面横幅标注测试样本」不参与通过判定；断言对象是正文级泄露与真实内容一致性。
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 扩展约定（解析段与渲染段不得平行维护）
+ * ═══════════════════════════════════════════════════════════════════════════
+ *   1) 新增内容字段（ARCH 契约字段）：
+ *      a. 先在 ARCH 契约（contracts/content.schema.json + contracts/coverage.json）
+ *         定义字段、键名与顺序；
+ *      b. 再在 PART 1 增加/扩展解析函数（如 parseEarlyCampaignAnalysisBlocks）；
+ *      c. PART 2 的渲染断言遍历解析函数结果自动覆盖，**不追加逐字段断言**。
+ *   2) 新增渲染展示：
+ *      a. 只在 PART 2 增加/扩展渲染断言；
+ *      b. 不复制契约解析逻辑，不直接读取契约字段；
+ *      c. 需要新数据时回 PART 1 扩展解析函数，并让渲染断言消费其结果。
+ *   3) 本任务作用域只有 scripts/validate-site.mjs：不写 docs/acceptance/
+ *      （属 SHIP-01 / EVID-01 / ACCEPT-01）、不写 src/（渲染修复由 MAP-00 承接）、
+ *      不改 contracts/、content/、public/、tests/、.github/ 或 package.json。
+ *   4) 本任务不运行内容门禁（--stage/--media），不补写内容缺陷；内容问题只记录交回。
+ *
+ * 每个检查都打印 PASS/FAIL；本文件没有 SKIP 状态。负例检查（negative case）是刻意
+ * 构造的错误输入，用来证明检查本身有效。
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
+import zlib from 'node:zlib';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import * as ReactJsxRuntime from 'react/jsx-runtime';
-
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
@@ -49,6 +183,14 @@ const SRC = path.join(ROOT, 'src');
 const FIXTURE_MIN = path.join(ROOT, 'contracts', 'fixtures', 'valid-min.json');
 const FIXTURE_EARLY = path.join(ROOT, 'contracts', 'fixtures', 'valid-early-campaign.json');
 const FIXTURE_MAP_PHASES = path.join(ROOT, 'contracts', 'fixtures', 'map-phases.json');
+const CONTRACT_SCHEMA = path.join(ROOT, 'contracts', 'content.schema.json');
+const CONTRACT_COVERAGE = path.join(ROOT, 'contracts', 'coverage.json');
+/** PART 1 消费的契约夹具清单（唯一来源；不包含不存在的 map-phases-analysis.json）。 */
+const FIXTURE_FILES = [
+  { rel: 'contracts/fixtures/valid-min.json', file: FIXTURE_MIN },
+  { rel: 'contracts/fixtures/valid-early-campaign.json', file: FIXTURE_EARLY },
+  { rel: 'contracts/fixtures/map-phases.json', file: FIXTURE_MAP_PHASES },
+];
 const CONTENT_FILE = path.join(ROOT, 'content', 'history.json');
 const CONTENT_VALIDATOR = path.join(ROOT, 'scripts', 'validate-content.mjs');
 
@@ -59,7 +201,7 @@ const DIST_ARG_INDEX = args.indexOf('--dist');
 const DIST_DIR = DIST_ARG_INDEX >= 0 && args[DIST_ARG_INDEX + 1] ? path.resolve(ROOT, args[DIST_ARG_INDEX + 1]) : null;
 
 // ---------------------------------------------------------------------------
-// 结果记录
+// 结果记录　【共享骨架 · 结果记录（PASS/FAIL，无 SKIP）】
 // ---------------------------------------------------------------------------
 
 const results = [];
@@ -91,7 +233,7 @@ function check(id, condition, message, detail) {
 }
 
 // ---------------------------------------------------------------------------
-// 站点组件加载
+// 站点组件加载　【共享骨架 · 渲染运行时构建】
 // ---------------------------------------------------------------------------
 //
 // 站点代码是 TS/TSX，Node 不能直接 import。两条路径：
@@ -436,8 +578,6 @@ function rewriteReactImportsPlugin() {
   };
 }
 
-
-
 /**
  * 加载站点组件用于渲染测试。
  *
@@ -472,7 +612,7 @@ async function loadSiteModules() {
 }
 
 // ---------------------------------------------------------------------------
-// React 实例统一（重要）
+// React 实例统一（重要）　【共享骨架】
 // ---------------------------------------------------------------------------
 //
 // 运行时 bundle 位于工作树 `.cache/site-validate/run-*`，它 external 的 'react'
@@ -515,9 +655,8 @@ function renderStatic(element) {
   return out;
 }
 
-
 // ---------------------------------------------------------------------------
-// 渲染一个完整页面（外壳 + 视图），与站点真实结构一致。
+// 渲染一个完整页面（外壳 + 视图），与站点真实结构一致。　【共享骨架 · PART 2 渲染入口】
 // ---------------------------------------------------------------------------
 
 function renderApp(M, { content, route }) {
@@ -560,12 +699,6 @@ function renderApp(M, { content, route }) {
   return { html, index, state };
 }
 
-function loadFixture(file) {
-  const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const state = { status: raw.fixtureOnly ? 'fixture' : 'available', doc: raw, issues: [], sourceKey: file };
-  return state;
-}
-
 function missingState(M) {
   return M.loadContent({});
 }
@@ -576,8 +709,361 @@ function invalidState(M) {
 
 const countOf = (haystack, needle) => haystack.split(needle).length - 1;
 
+// ===========================================================================
+// PART 1 — 夹具解析/派生（契约来源：ARCH 知识模块契约）
+// ===========================================================================
+//
+// 职责边界：本段只把「契约文件 / 契约夹具 / 内存构造对象」解析、派生为可消费数据，
+// **不渲染任何页面、不断言展示结果**（渲染断言全部在 PART 2）。契约字段一律以
+// ARCH 契约为准，本段不新增或改写契约规则：
+//   - contracts/content.schema.json → $defs.analysisProfiles.required（键名与顺序）
+//   - contracts/coverage.json       → earlyCampaign.analysisProfiles.keys（键名与标题）
+// 两处键名不一致属契约错误，由 PART 2 的 B4-parse-contract 断言。
+//
+// 早期战役分析块字段的**唯一**解析/派生函数（PART 2 渲染断言只消费它的返回值，
+// 不得再写第二份解析逻辑）：
+//   parseEarlyCampaignAnalysisBlocks(rawEvent, contract) → { kind, blocks, legacyKeys }
+//
+// 本段消费的夹具（第 0 步基线核对结论）：
+//   contracts/fixtures/valid-min.json            最小契约样本（B/C/D/G/D2 渲染测试入口）
+//   contracts/fixtures/valid-early-campaign.json 已接受早期战役样本（B4 十键回归）
+//   contracts/fixtures/map-phases.json           仅 R2-A 阶段契约复验读取（磁盘夹具；缺失时
+//                                                用代码内内置等价结构夹具 builtinMapPhaseFixture）
+//   contracts/fixtures/map-phases-analysis.json  **不存在**（已接受契约如此）：本脚本不创建、
+//                                                不引用、不要求其存在；阶段分析字段由
+//                                                analysisProfiles 契约 + map-phases.json 承载。
+//
+// 内存构造器（不读磁盘夹具，供 PART 2 做「不依赖磁盘」的复验）：
+//   makeInMemoryPhase / makeInMemoryScenario / builtinMapPhaseFixture /
+//   makeInMemoryAnalysisEvent / makeInMemoryAnalysisEvidence
+
+/** 读取 JSON 文件：PART 1 内所有契约/夹具读取的唯一入口（便于审计）。 */
+function readJsonFile(file) {
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+/** 读取已接受的契约夹具文档（valid-min 等）；调用方负责存在性判断。 */
+function loadFixtureDocument(file) {
+  return readJsonFile(file);
+}
+
+/** 只读读取真实内容文档；缺失时返回 null（绝不用 fixture 顶替真实内容）。 */
+function loadRealContentDocument() {
+  return fs.existsSync(CONTENT_FILE) ? readJsonFile(CONTENT_FILE) : null;
+}
+
+/** 只读读取已接受阶段夹具 map-phases.json；缺失时返回 null（由内置等价夹具兜底）。 */
+function loadMapPhaseFixtureDocument() {
+  return fs.existsSync(FIXTURE_MAP_PHASES) ? readJsonFile(FIXTURE_MAP_PHASES) : null;
+}
+
+/** ARCH 契约：analysisProfiles 的具名键、顺序与标题（唯一契约来源）。 */
+function loadAnalysisProfileContract() {
+  const schema = readJsonFile(CONTRACT_SCHEMA);
+  const coverage = readJsonFile(CONTRACT_COVERAGE);
+  const schemaKeys = Array.isArray(schema?.$defs?.analysisProfiles?.required) ? schema.$defs.analysisProfiles.required : [];
+  const coverageEntries = Array.isArray(coverage?.earlyCampaign?.analysisProfiles?.keys)
+    ? coverage.earlyCampaign.analysisProfiles.keys
+    : [];
+  const coverageKeys = coverageEntries.map((entry) => entry?.key).filter((key) => typeof key === 'string');
+  const titles = new Map(
+    coverageEntries
+      .filter((entry) => typeof entry?.key === 'string')
+      .map((entry) => [entry.key, typeof entry.title === 'string' ? entry.title : '']),
+  );
+  return { schemaKeys, coverageKeys, keys: schemaKeys, titles };
+}
+
+/** 把任意值归一为 string[]（契约允许缺省/空数组，UI 不得因此崩溃）。 */
+function normalizeStringList(value) {
+  return Array.isArray(value) ? value.filter((item) => typeof item === 'string') : [];
+}
+
+/**
+ * PART 1 唯一共享函数：早期战役分析块字段的解析与派生。
+ *
+ * - 遍历 **ARCH 契约具名键**（contract.keys），不硬编码任何具体键名；
+ * - 「存在即渲染」：小节有标题与正文才派生为渲染块；缺字段的键不返回，因此 UI 不会
+ *   出现「空洞小节 / undefined 标题」；
+ * - 保留每节自己的 sourceIds / claimIds（小节级证据面板的数据来源）；
+ * - legacyKeys 只用于**记录**旧五键是否存在，绝不作为渲染条件（PART 2 断言其不渲染）。
+ *
+ * @returns {{ kind: 'profiles'|'none', blocks: Array<{key:string,title:string,body:string,sourceIds:string[],claimIds:string[]}>, legacyKeys: string[] }}
+ */
+function parseEarlyCampaignAnalysisBlocks(rawEvent, contract) {
+  const legacyKeys =
+    rawEvent && typeof rawEvent === 'object' && rawEvent.earlyCampaignAnalysis && typeof rawEvent.earlyCampaignAnalysis === 'object'
+      ? Object.keys(rawEvent.earlyCampaignAnalysis)
+      : [];
+  const profiles = rawEvent && typeof rawEvent === 'object' ? rawEvent.analysisProfiles : undefined;
+  if (!profiles || typeof profiles !== 'object') return { kind: 'none', blocks: [], legacyKeys };
+  const blocks = [];
+  for (const key of contract.keys) {
+    const section = profiles[key];
+    if (!section || typeof section !== 'object') continue;
+    const title = typeof section.title === 'string' ? section.title.trim() : '';
+    const body = typeof section.body === 'string' ? section.body : '';
+    if (title.length === 0 || body.trim().length === 0) continue;
+    blocks.push({
+      key,
+      title,
+      body,
+      sourceIds: normalizeStringList(section.sourceIds),
+      claimIds: normalizeStringList(section.claimIds),
+    });
+  }
+  return { kind: 'profiles', blocks, legacyKeys };
+}
+
+/** 递归收集 JSON 中所有字符串值（fixture 事实清单的原始输入）。 */
+function collectStringValues(value, out = []) {
+  if (typeof value === 'string') out.push(value);
+  else if (Array.isArray(value)) for (const item of value) collectStringValues(item, out);
+  else if (value && typeof value === 'object') for (const item of Object.values(value)) collectStringValues(item, out);
+  return out;
+}
+
+/** fixture 专属事实的特征词（测试样本/占位/示意等显式标记）。 */
+const FIXTURE_FACT_MARKER = /合成|测试样本|测试占位|夹具|示意|样本|占位|不可作为史实/;
+/** 纯机器标识（id / 枚举 / 字段名）不算「事实正文」，避免与结构性 data-* 输出误撞。 */
+const STRUCTURAL_TOKEN = /^[A-Za-z0-9_.:-]+$/;
+
+/**
+ * PART 1：派生「fixture 专属事实」清单，供 PART 2 的发布路由泄露回归消费。
+ *
+ * 规则（可审计）：
+ * 1. 归一化空白；
+ * 2. 排除纯机器标识（id/枚举，比如 part-3-expansion 会合法出现在标题 id 里）；
+ * 3. 显式 fixture 标记（测试样本/占位/示意…）任何长度都收录；否则要求长度 ≥ 12，
+ *    避免把契约词汇（如「背景」）误当正文事实；
+ * 4. 真实内容里已经出现过的文字不算 fixture 专属事实（真实内容与夹具共享的措辞）。
+ */
+function collectFixtureOnlyFacts(realDoc) {
+  const realStrings = collectStringValues(realDoc).map((item) => item.replace(/\s+/g, ' ').trim());
+  const realJsonText = JSON.stringify(realDoc ?? {}).replace(/\s+/g, ' ');
+  const facts = new Map();
+  for (const fixture of FIXTURE_FILES) {
+    if (!fs.existsSync(fixture.file)) continue;
+    const doc = readJsonFile(fixture.file);
+    for (const raw of collectStringValues(doc)) {
+      const text = String(raw).replace(/\s+/g, ' ').trim();
+      if (text.length === 0) continue;
+      if (STRUCTURAL_TOKEN.test(text)) continue;
+      const marked = FIXTURE_FACT_MARKER.test(text);
+      if (!marked && text.length < 12) continue;
+      if (realJsonText.includes(text)) continue;
+      if (realStrings.some((real) => real.includes(text))) continue;
+      if (!facts.has(text)) facts.set(text, fixture.rel);
+    }
+  }
+  return [...facts.entries()].map(([text, fixture]) => ({ text, fixture }));
+}
+
+function loadFixture(file) {
+  const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const state = { status: raw.fixtureOnly ? 'fixture' : 'available', doc: raw, issues: [], sourceKey: file };
+  return state;
+}
+
+/** 载入合成契约样本（含 battles + phases）。 */
+async function loadSyntheticDocument() {
+  const { buildSyntheticDocument } = await import(pathToFileUrl(path.join(SRC, 'testing', 'syntheticContractSample.mjs')));
+  return buildSyntheticDocument();
+}
+
+/** 构造一个 fixtureOnly 状态，供 renderApp 使用。 */
+function fixtureStateFrom(doc, label) {
+  return { status: doc.fixtureOnly ? 'fixture' : 'available', doc, issues: [], sourceKey: label };
+}
+
+/**
+ * 内存构造：只含 analysisProfiles 全部具名键的早期战役事件（不含真实战役正文）。
+ *
+ * 键与标题来自 PART 1 的 ARCH 契约（loadAnalysisProfileContract），**不逐字段硬编码**：
+ * 未来契约新增具名键时，本构造器与 PART 2 的渲染断言自动覆盖，无需改本文件。
+ */
+function makeInMemoryAnalysisEvent(contract) {
+  const keys = [...contract.keys];
+  const analysisProfiles = {};
+  keys.forEach((key, index) => {
+    const title = contract.titles.get(key) || key;
+    analysisProfiles[key] = {
+      title,
+      body:
+        `内存构造正文 ${index + 1}/${keys.length}（键 ${key}）：本节仅用于验证 analysisProfiles 具名键的渲染结构，` +
+        `不代表任何真实历史事实，也不含真实战役正文。` +
+        `每个分析小节都必须独立渲染标题与正文，并携带本节自己的来源与 claim 证据。`.repeat(2),
+      sourceIds: ['source-mem-analysis'],
+      claimIds: [`claim-mem-${key}`],
+    };
+  });
+  return {
+    id: 'event-memory-analysis',
+    title: '内存构造早期战役事件',
+    historicalPart: 'part-3-expansion',
+    eventType: 'campaign',
+    startDate: '1941-12-08',
+    summary: '内存构造事件：只提供 analysisProfiles 全部具名键，用于验证适配层与渲染层。',
+    article: [],
+    placeIds: [],
+    personIds: [],
+    unitIds: [],
+    equipmentIds: [],
+    conceptIds: [],
+    relatedEventIds: [],
+    analysisProfiles,
+    researchStatus: 'cross-checked',
+    sourceIds: ['source-mem-analysis'],
+    claimIds: keys.map((key) => `claim-mem-${key}`),
+  };
+}
+
+/** 内存构造的来源与 claim（只服务证据面板渲染，不是历史内容）。键来自 ARCH 契约。 */
+function makeInMemoryAnalysisEvidence(contract) {
+  const keys = [...contract.keys];
+  const source = {
+    id: 'source-mem-analysis',
+    title: '内存构造来源（测试用）',
+    creator: '站点验证器',
+    publisher: 'MAP-00 自测',
+    year: 1942,
+    sourceType: 'reference',
+    url: 'https://example.invalid/memory-source',
+    accessedDate: '1942-06-04',
+    citation: '站点验证器内存构造来源，仅用于渲染结构测试。',
+    reliabilityNote: '不是历史来源，不能支持任何史实结论。',
+  };
+  const claims = keys.map((key) => ({
+    id: `claim-mem-${key}`,
+    text: `内存构造 claim（${key}）：用于验证该分析小节的证据面板渲染。`,
+    claimType: 'fact',
+    entityIds: ['event-memory-analysis'],
+    sourceIds: ['source-mem-analysis'],
+    locators: [{ sourceId: 'source-mem-analysis', locatorType: 'section-paragraph', locator: `内存构造定位 ${key}` }],
+  }));
+  return { source, claims };
+}
+
+/** 内存阶段对象构造器（不读取任何文件）。刻意只使用**基础契约字段**。 */
+function makeInMemoryPhase(overrides = {}) {
+  const base = {
+    id: 'phase-mem-1',
+    sequence: 1,
+    title: '内存阶段一',
+    time: { start: '1942-06-04T00:00Z', display: '内存阶段时间显示一', uncertainty: '内存阶段时间不确定说明。' },
+    positions: {
+      japan: {
+        label: '内存日方位置',
+        description: '内存日方位置说明。',
+        placeIds: ['place-mem-a'],
+        coordinates: { lat: 30, lng: 170 },
+        schematic: true,
+        uncertaintyRadiusKm: 100,
+        uncertaintyNote: '内存位置为教学示意。',
+        sourceIds: ['source-mem'],
+        claimIds: ['claim-mem'],
+      },
+      allies: {
+        label: '内存盟军位置',
+        description: '内存盟军位置说明。',
+        placeIds: ['place-mem-b'],
+        coordinates: { lat: 25, lng: -160 },
+        schematic: true,
+        uncertaintyRadiusKm: 150,
+        uncertaintyNote: '内存位置为教学示意。',
+        sourceIds: ['source-mem'],
+        claimIds: ['claim-mem'],
+      },
+    },
+    knownEnemy: { japan: '内存：日方已知敌情。', allies: '内存：盟军已知敌情。' },
+    unknownEnemy: { japan: '内存：日方未知敌情。', allies: '内存：盟军未知敌情。' },
+    decision: { japan: '内存：日方决策。', allies: '内存：盟军决策。' },
+    consequence: { japan: '内存：日方后果。', allies: '内存：盟军后果。' },
+    certainty: 'schematic',
+    viewpoints: {
+      japan: { perspective: '内存：日方视角描述文字。', sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+      allies: { perspective: '内存：盟军视角描述文字。', sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+    },
+    routes: [],
+    schematic: true,
+    uncertaintyNote: '内存阶段整体为教学示意。',
+    eventIds: [],
+    sourceIds: ['source-mem'],
+    claimIds: ['claim-mem'],
+    ...overrides,
+  };
+  return base;
+}
+
+/** 用内存阶段对象构造一个最小战役 + 地点集合（不读磁盘）。 */
+function makeInMemoryScenario(phases) {
+  const battle = {
+    id: 'battle-mem',
+    title: '内存战役',
+    historicalPart: 'part-5-midway',
+    battleType: 'carrier-battle',
+    theater: 'pacific',
+    startDate: '1942-06-04',
+    endDate: '1942-06-05',
+    summary: '内存构造的战役，仅用于验证阶段控件与情报面板的结构映射。',
+    belligerents: { japan: '甲', allies: '乙' },
+    outcome: { summary: '内存结果说明。', winner: 'inconclusive', certainty: 'disputed' },
+    placeIds: ['place-mem-a'],
+    personIds: [],
+    commanderIds: { japan: [], allies: [] },
+    unitIds: [],
+    equipmentIds: [],
+    conceptIds: [],
+    sourceIds: ['source-mem'],
+    claimIds: ['claim-mem'],
+    sections: {},
+    phases,
+  };
+  const places = [
+    { id: 'place-mem-a', historicalName: '内存地点甲', modernName: '内存地点甲今名', modernCountry: '内存国', placeType: 'island', summary: '内存地点说明。', coordinates: { lat: 30, lng: 170 }, coordinateAccuracyKm: 5, schematic: false, relatedPlaceIds: [], sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+    { id: 'place-mem-b', historicalName: '内存地点乙', modernName: '内存地点乙今名', modernCountry: '内存国', placeType: 'atoll', summary: '内存地点说明。', coordinates: { lat: 25, lng: -160 }, coordinateAccuracyKm: 5, schematic: false, relatedPlaceIds: [], sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
+  ];
+  return { battle, places };
+}
+
+/** 代码内等价阶段夹具（磁盘夹具缺失时使用；验收 L542 明确允许）。不读取任何文件。 */
+function builtinMapPhaseFixture() {
+  const phases = [makeInMemoryPhase(), makeInMemoryPhase({ id: 'phase-mem-2', sequence: 2, title: '内存阶段二' })];
+  const { battle, places } = makeInMemoryScenario(phases);
+  return {
+    schemaVersion: '1.0.0',
+    fixtureOnly: true,
+    events: [],
+    battles: [battle],
+    people: [],
+    places,
+    units: [],
+    equipment: [],
+    concepts: [],
+    sources: [],
+    media: [],
+    questions: [],
+    claims: [],
+  };
+}
+
+
+
+// ===========================================================================
+// PART 2 — 渲染图/展示断言（契约来源：WEB 站点渲染契约）
+// ===========================================================================
+//
+// 职责边界：本段用**真实加载器**（M.loadContent）+ renderApp（AppShell + 六入口视图）
+// 渲染页面并断言展示结果；不直接解析契约字段（解析/派生一律消费 PART 1 的函数结果）。
+// 本段包含的段：A 契约数据来源、B 六入口互跳、B4 早期战役十键渲染、C 证据组件、
+// D 诚实状态、E 构建产物、F 合成样本、G 负例、MAP-00 地图/阶段、D2/D3/D4、
+// MAP-00R2 阶段契约复验（消费 PART 1 夹具解析/内存构造）、MAP-00R3 可观察交互、
+// GRAPH 渲染图治理、NAV 夹具泄露回归、S1/Z 自检。
+//
+// 断言一律 PASS/FAIL，没有 SKIP：前置条件缺失（夹具缺失、输出目录不可写等）即 FAIL。
+
 // ---------------------------------------------------------------------------
-// A. 契约数据来源
+// A. 契约数据来源　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 /** 运行 fn 期间暂时静音 stdout/stderr（用于 import 会自执行的模块）。 */
@@ -628,14 +1114,15 @@ async function checkContentFile(M) {
   // 在进程内调用验证器的公开 API（validateDocument），而不是 spawn 子进程：
   // 受限环境下 spawn 会被拒绝（EPERM），那样得到的不是「内容失败」而是「没跑成」。
   let result;
+  let coverageDoc = null;
   try {
-    const doc = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-    const coverage = JSON.parse(fs.readFileSync(path.join(ROOT, 'contracts', 'coverage.json'), 'utf8'));
+    const doc = readJsonFile(CONTENT_FILE);
+    coverageDoc = readJsonFile(CONTRACT_COVERAGE);
     // validate-content.mjs 在被 import 时会执行自己的 CLI main()（对 content/history.json
     // 跑默认 full 阶段并打印结果）。那段输出属于内容任务的视角，会与本验证器的
     // 结论混淆，因此在 import 期间暂时静音 stdout/stderr，只取其导出的 validateDocument。
     const contentValidator = await withSuppressedOutput(() => import(`${pathToFileUrl(CONTENT_VALIDATOR)}?v=${Date.now()}`));
-    result = contentValidator.validateDocument(doc, { coverage, stage: SITE_CONTENT_STAGE, rootDir: ROOT });
+    result = contentValidator.validateDocument(doc, { coverage: coverageDoc, stage: SITE_CONTENT_STAGE, rootDir: ROOT });
   } catch (error) {
     fail('A1', `无法运行内容契约验证器：${error?.message ?? error}`);
     return false;
@@ -653,18 +1140,25 @@ async function checkContentFile(M) {
   }
   pass('A1', `content/history.json 通过契约验证器（stage=${SITE_CONTENT_STAGE}；${stats}）`);
   // 覆盖缺口单独报告：它们属于内容任务的交付范围，不是站点缺陷，但必须显式可见。
+  // 这是一条**真实断言**（不是恒真报告）：
+  //   1) 错误分类完备：coverageGaps + realErrors 恰好覆盖 result.errors（无丢弃/重复）；
+  //   2) 脚本声明的 SITE_CONTENT_STAGE 必须是 contracts/coverage.json 声明的阶段之一，
+  //      否则「按内容当前交付阶段验证」这一前提失效，必须失败而不是静默通过。
+  const stageIds = Array.isArray(coverageDoc?.stages) ? coverageDoc.stages.map((stage) => stage?.id) : [];
+  const partitionComplete = result.errors.length === coverageGaps.length + realErrors.length;
+  const stageDeclared = stageIds.includes(SITE_CONTENT_STAGE);
   check(
     'A1-coverage',
-    true,
+    partitionComplete && stageDeclared,
     coverageGaps.length === 0
-      ? `stage=${SITE_CONTENT_STAGE} 的累积覆盖要求已全部满足`
-      : `更后续阶段的覆盖尚未交付（${coverageGaps.length} 项，属内容任务范围，不是站点缺陷）`,
+      ? `stage=${SITE_CONTENT_STAGE} 的累积覆盖要求已全部满足（错误分类完备：${result.errors.length} = 覆盖缺口 ${coverageGaps.length} + 非覆盖错误 ${realErrors.length}；声明阶段存在于 coverage.json stages[${stageIds.join(', ')}]）`
+      : `更后续阶段的覆盖尚未交付（${coverageGaps.length} 项，属内容任务范围，不是站点缺陷；错误分类完备：${result.errors.length} = 覆盖缺口 ${coverageGaps.length} + 非覆盖错误 ${realErrors.length}；声明阶段存在于 coverage.json stages[${stageIds.join(', ')}]）`,
   );
   return true;
 }
 
 // ---------------------------------------------------------------------------
-// B. 六入口与互跳
+// B. 六入口与互跳　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 function checkEntries(M) {
@@ -814,7 +1308,7 @@ function checkEntries(M) {
 }
 
 // ---------------------------------------------------------------------------
-// B4 / B4-M. 早期扩张战役 analysisProfiles 十键渲染回归（验收 L534/L536/L537）
+// B4 / B4-M. 早期扩张战役 analysisProfiles 十键渲染回归（ARCH 十键；渲染断言）　【PART 2 · WEB；解析/派生来自 PART 1】
 // ---------------------------------------------------------------------------
 //
 // 根因（本任务）：时间线视图曾读取 ARCH-02 之前的 legacy 字段，而契约已改为
@@ -872,26 +1366,40 @@ function splitAnalysisSections(html) {
   return sections;
 }
 
-/** 断言一个事件按契约十键渲染出标题、正文与**每节自己的**来源/claim 证据。 */
-function assertAnalysisProfilesRendered(M, label, event, html) {
-  const keys = [...M.ANALYSIS_PROFILE_KEYS];
+/**
+ * 渲染断言（PART 2）：**只消费 PART 1 解析结果 parsed.blocks**，不读取
+ * event.analysisProfiles（解析/派生只有 PART 1 的 parseEarlyCampaignAnalysisBlocks 一处）。
+ *
+ * 「存在即渲染」的通用遍历：按 PART 1 派生的 blocks 逐节断言标题、正文与每节自己的
+ * 证据面板 —— 契约未来新增具名键时，本函数自动覆盖，无需逐字段追加断言。
+ * `requiredKeyCount` 用于严格回归（B4/B4-M：必须等于 ARCH 契约全部具名键数）。
+ */
+function assertAnalysisProfilesRendered(label, contract, parsed, html, requiredKeyCount) {
+  const blocks = parsed.blocks;
   const sections = splitAnalysisSections(html);
   check(
     `${label}-count`,
-    sections.size === keys.length,
-    `${label}：渲染出 ${sections.size} 个具名分析小节（契约要求 ${keys.length} 个）`,
+    sections.size === blocks.length,
+    `${label}：渲染出 ${sections.size} 个具名分析小节（PART 1 解析出 ${blocks.length} 个，ARCH 契约键 ${contract.keys.length} 个）`,
   );
-  const missingKeys = keys.filter((key) => !sections.has(key));
+  const missingBlocks = blocks.filter((block) => !sections.has(block.key));
   check(
     `${label}-keys`,
-    missingKeys.length === 0,
-    `${label}：契约十键全部出现（${keys.join(' / ')}${missingKeys.length > 0 ? `；缺失 ${missingKeys.join('、')}` : ''}）`,
+    missingBlocks.length === 0,
+    `${label}：PART 1 解析出的具名键全部出现在渲染结果（${blocks.map((block) => block.key).join(' / ')}${missingBlocks.length > 0 ? `；缺失 ${missingBlocks.map((block) => block.key).join('、')}` : ''}）`,
   );
-  const positions = keys.map((key) => String(html).indexOf(`data-analysis-profile="${key}"`));
+  if (typeof requiredKeyCount === 'number') {
+    check(
+      `${label}-strict-keys`,
+      blocks.length === requiredKeyCount && blocks.every((block, index) => block.key === contract.keys[index]),
+      `${label}：严格模式要求全部 ARCH 契约具名键都解析并渲染（${blocks.length}/${requiredKeyCount}，顺序与契约一致）`,
+    );
+  }
+  const positions = blocks.map((block) => String(html).indexOf(`data-analysis-profile="${block.key}"`));
   check(
     `${label}-order`,
     positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])),
-    `${label}：十个分析小节按契约 ANALYSIS_PROFILE_KEYS 顺序渲染（不折叠成一段）`,
+    `${label}：${blocks.length} 个分析小节按 ARCH 契约键顺序渲染（不折叠成一段）`,
   );
   check(
     `${label}-no-legacy`,
@@ -905,105 +1413,78 @@ function assertAnalysisProfilesRendered(M, label, event, html) {
     `${label}：界面没有 "undefined"/"未定义" 之类的空洞文本`,
   );
 
-  for (const key of keys) {
-    const fragment = sections.get(key) ?? '';
+  for (const block of blocks) {
+    const fragment = sections.get(block.key) ?? '';
     const fragmentText = htmlToPlainText(fragment);
-    const section = (event.analysisProfiles ?? {})[key] ?? {};
-    const title = normalizePlain(section.title);
-    const body = normalizePlain(section.body);
+    const title = normalizePlain(block.title);
+    const body = normalizePlain(block.body);
     check(
-      `${label}-${key}-heading`,
-      fragment.includes(`data-analysis-heading="${key}"`) && title.length > 0 && fragmentText.includes(title),
-      `${label}/${key}：小节标题「${title}」以 h3(data-analysis-heading) 渲染在该小节内`,
+      `${label}-${block.key}-heading`,
+      fragment.includes(`data-analysis-heading="${block.key}"`) && title.length > 0 && fragmentText.includes(title),
+      `${label}/${block.key}：小节标题「${title}」以 h3(data-analysis-heading) 渲染在该小节内`,
     );
     check(
-      `${label}-${key}-body`,
+      `${label}-${block.key}-body`,
       body.length > 0 && fragmentText.includes(body),
-      `${label}/${key}：小节正文完整渲染在该小节内（${body.length} 字）`,
+      `${label}/${block.key}：小节正文完整渲染在该小节内（${body.length} 字）`,
     );
-    const claimIds = Array.isArray(section.claimIds) ? section.claimIds : [];
-    const sourceIds = Array.isArray(section.sourceIds) ? section.sourceIds : [];
-    const claimsRendered = claimIds.every((id) => fragment.includes(`data-claim-id="${id}"`));
-    const sourcesRendered = sourceIds.every((id) => fragment.includes(`data-source-id="${id}"`));
+    const claimsRendered = block.claimIds.every((id) => fragment.includes(`data-claim-id="${id}"`));
+    const sourcesRendered = block.sourceIds.every((id) => fragment.includes(`data-source-id="${id}"`));
     check(
-      `${label}-${key}-evidence`,
-      fragment.includes('data-evidence-panel') && claimIds.length > 0 && sourceIds.length > 0 && claimsRendered && sourcesRendered,
-      `${label}/${key}：小节自带来源与 claim 证据面板（${claimIds.length} claim / ${sourceIds.length} 来源）`,
+      `${label}-${block.key}-evidence`,
+      fragment.includes('data-evidence-panel') && block.claimIds.length > 0 && block.sourceIds.length > 0 && claimsRendered && sourcesRendered,
+      `${label}/${block.key}：小节自带来源与 claim 证据面板（${block.claimIds.length} claim / ${block.sourceIds.length} 来源）`,
     );
   }
 }
 
-/** 内存构造：只含 analysisProfiles 全部具名键的早期战役事件（不含真实战役正文）。 */
-function makeInMemoryAnalysisEvent(M) {
-  const keys = [...M.ANALYSIS_PROFILE_KEYS];
-  const titles = ['背景', '地理环境', '参与方与指挥', '双方目标与军力', '约束条件', '阶段经过', '可选方案与被排除它的约束', '结果与损失口径', '后续影响', '不确定性'];
-  const analysisProfiles = {};
-  keys.forEach((key, index) => {
-    analysisProfiles[key] = {
-      title: titles[index],
-      body:
-        `内存构造正文 ${index + 1}/${keys.length}（键 ${key}）：本节仅用于验证 analysisProfiles 具名键的渲染结构，` +
-        `不代表任何真实历史事实，也不含真实战役正文。` +
-        `每个分析小节都必须独立渲染标题与正文，并携带本节自己的来源与 claim 证据。`.repeat(2),
-      sourceIds: ['source-mem-analysis'],
-      claimIds: [`claim-mem-${key}`],
-    };
-  });
-  return {
-    id: 'event-memory-analysis',
-    title: '内存构造早期战役事件',
-    historicalPart: 'part-3-expansion',
-    eventType: 'campaign',
-    startDate: '1941-12-08',
-    summary: '内存构造事件：只提供 analysisProfiles 十键，用于验证适配层与渲染层。',
-    article: [],
-    placeIds: [],
-    personIds: [],
-    unitIds: [],
-    equipmentIds: [],
-    conceptIds: [],
-    relatedEventIds: [],
-    analysisProfiles,
-    researchStatus: 'cross-checked',
-    sourceIds: ['source-mem-analysis'],
-    claimIds: keys.map((key) => `claim-mem-${key}`),
-  };
+/**
+ * 断言 PART 1 解析结果与 src/data 适配层暴露的数据完全一致。
+ *
+ * 这是「单一派生」的证据：站点视图（经适配层）与验证器（经 PART 1 解析器）对同一
+ * 契约字段得到同一份 blocks；若两处各自平行维护解析逻辑，本断言会立刻失败。
+ */
+function assertParsedMatchesSiteAdapter(label, parsed, viewBlocks) {
+  const view = Array.isArray(viewBlocks) ? viewBlocks : [];
+  const sameLength = view.length === parsed.blocks.length;
+  const sameKeys = sameLength && view.every((block, index) => block.key === parsed.blocks[index].key);
+  const sameFields =
+    sameLength &&
+    view.every((block, index) => {
+      const expected = parsed.blocks[index];
+      return (
+        block.title === expected.title &&
+        block.body === expected.body &&
+        JSON.stringify(block.sourceIds) === JSON.stringify(expected.sourceIds) &&
+        JSON.stringify(block.claimIds) === JSON.stringify(expected.claimIds)
+      );
+    });
+  check(
+    `${label}-view-parity`,
+    sameLength && sameKeys && sameFields,
+    `${label}：PART 1 解析结果与 src/data 适配层 analysisProfileBlocks() 完全一致（${view.length} 节同键同序同字段）—— 渲染断言只消费 PART 1 结果，不存在平行解析`,
+  );
 }
 
-/** 内存构造的来源与 claim（只服务证据面板渲染，不是历史内容）。 */
-function makeInMemoryAnalysisEvidence(M) {
-  const keys = [...M.ANALYSIS_PROFILE_KEYS];
-  const source = {
-    id: 'source-mem-analysis',
-    title: '内存构造来源（测试用）',
-    creator: '站点验证器',
-    publisher: 'MAP-00 自测',
-    year: 1942,
-    sourceType: 'reference',
-    url: 'https://example.invalid/memory-source',
-    accessedDate: '1942-06-04',
-    citation: '站点验证器内存构造来源，仅用于渲染结构测试。',
-    reliabilityNote: '不是历史来源，不能支持任何史实结论。',
-  };
-  const claims = keys.map((key) => ({
-    id: `claim-mem-${key}`,
-    text: `内存构造 claim（${key}）：用于验证该分析小节的证据面板渲染。`,
-    claimType: 'fact',
-    entityIds: ['event-memory-analysis'],
-    sourceIds: ['source-mem-analysis'],
-    locators: [{ sourceId: 'source-mem-analysis', locatorType: 'section-paragraph', locator: `内存构造定位 ${key}` }],
-  }));
-  return { source, claims };
-}
-
+/** B4 严格回归：已接受夹具 + 内存构造两条路径，均经 PART 1 唯一解析函数。 */
 function checkEarlyCampaignAnalysisRegression(M) {
+  // ---- PART 1：ARCH 契约（analysisProfiles 具名键）是唯一契约来源
+  const contract = loadAnalysisProfileContract();
+  check(
+    'B4-parse-contract',
+    contract.keys.length > 0 &&
+      contract.schemaKeys.length === contract.coverageKeys.length &&
+      contract.schemaKeys.every((key, index) => key === contract.coverageKeys[index]),
+    `ARCH 契约 analysisProfiles 具名键一致：content.schema.json $defs.analysisProfiles.required（${contract.schemaKeys.length} 键）与 coverage.json earlyCampaign.analysisProfiles.keys（${contract.coverageKeys.length} 键）键名/顺序相同`,
+  );
+
   // ---------------------------------------------------------------- (a) 已接受夹具
   check('B4-fixture-present', fs.existsSync(FIXTURE_EARLY), '已接受契约夹具 contracts/fixtures/valid-early-campaign.json 存在');
   if (!fs.existsSync(FIXTURE_EARLY)) {
     fail('B4', '无法运行十键渲染回归：已接受夹具缺失（这是前置条件缺失，必须失败而不是跳过）');
     return;
   }
-  const fixtureRaw = JSON.parse(fs.readFileSync(FIXTURE_EARLY, 'utf8'));
+  const fixtureRaw = loadFixtureDocument(FIXTURE_EARLY);
   // 真实加载路径：站点运行时调用的就是 loadContent(glob 模块表)。
   const fixtureState = M.loadContent({ '/virtual/content/history.json': fixtureRaw });
   check(
@@ -1017,41 +1498,60 @@ function checkEarlyCampaignAnalysisRegression(M) {
     fail('B4', '无法运行十键渲染回归：夹具缺少 event-hong-kong-1941（必须失败而不是跳过）');
     return;
   }
+  // PART 1 唯一共享解析/派生函数；PART 2 只消费 parsed.blocks。
+  const parsed = parseEarlyCampaignAnalysisBlocks(fixtureEvent, contract);
+  check(
+    'B4-parse-blocks',
+    parsed.kind === 'profiles' && parsed.blocks.length === contract.keys.length,
+    `PART 1 解析器从已接受夹具派生 ${parsed.blocks.length} 个分析块（ARCH 契约 ${contract.keys.length} 键）`,
+  );
+  const missingProfiles = contract.keys.filter((key) => !parsed.blocks.some((block) => block.key === key));
+  check(
+    'B4-parse-missing',
+    missingProfiles.length === 0,
+    `PART 1 解析器未丢失任何契约具名键（缺失 ${missingProfiles.length === 0 ? '无' : missingProfiles.join('、')}）`,
+  );
+  check(
+    'B4-parse-legacy',
+    parsed.legacyKeys.length === 0,
+    '已接受夹具不含 legacy earlyCampaignAnalysis 字段（解析器 legacyKeys=0，旧五键不是渲染输入）',
+  );
   const fixtureHtml = renderApp(M, { content: fixtureState, route: { view: 'timeline', id: fixtureEvent.id, query: '' } }).html;
   check(
     'B4',
     fixtureHtml.includes('data-analysis-section'),
     `event-hong-kong-1941 经真实加载 + 渲染路径渲染出早期战役分析区（ARCH-02 analysisProfiles）`,
   );
-  assertAnalysisProfilesRendered(M, 'B4', fixtureEvent, fixtureHtml);
+  assertAnalysisProfilesRendered('B4', contract, parsed, fixtureHtml, contract.keys.length);
   check(
     'B4-research-status',
     Boolean(fixtureEvent.researchStatus) && fixtureHtml.includes(`data-research-status="${fixtureEvent.researchStatus}"`),
     `研究状态 ${fixtureEvent.researchStatus} 显示在分析区（ARCH-02 要求）`,
   );
 
-  // ---- 适配层（src/data）也必须接受并按十键暴露数据，而不是只有视图认识它
-  const blocks = M.analysisProfileBlocks(fixtureEvent);
+  // ---- 适配层（src/data）也必须接受并按契约键暴露数据，而不是只有视图认识它
+  const viewBlocks = M.analysisProfileBlocks(fixtureEvent);
+  assertParsedMatchesSiteAdapter('B4', parsed, viewBlocks);
   check(
     'B4-adapter-count',
-    Array.isArray(blocks) && blocks.length === M.ANALYSIS_PROFILE_KEYS.length,
-    `src/data 适配层 analysisProfileBlocks() 返回 ${Array.isArray(blocks) ? blocks.length : 'null'} 个具名小节（契约十键）`,
+    Array.isArray(viewBlocks) && viewBlocks.length === parsed.blocks.length,
+    `src/data 适配层 analysisProfileBlocks() 返回 ${Array.isArray(viewBlocks) ? viewBlocks.length : 'null'} 个具名小节（与 PART 1 解析结果一致）`,
   );
   check(
     'B4-adapter-keys',
-    Array.isArray(blocks) && blocks.every((block, index) => block.key === M.ANALYSIS_PROFILE_KEYS[index]),
-    '适配层返回的小节键与契约 ANALYSIS_PROFILE_KEYS 顺序完全一致（十键全部暴露）',
+    Array.isArray(viewBlocks) && viewBlocks.every((block, index) => block.key === parsed.blocks[index]?.key),
+    '适配层返回的小节键与 PART 1 解析器的契约键顺序完全一致（全部具名键暴露）',
   );
   check(
     'B4-adapter-evidence',
-    Array.isArray(blocks) && blocks.every((block) => block.sourceIds.length > 0 && block.claimIds.length > 0),
+    Array.isArray(viewBlocks) && viewBlocks.every((block) => block.sourceIds.length > 0 && block.claimIds.length > 0),
     '适配层为每个分析小节保留各自的 sourceIds 与 claimIds（不是只传标题）',
   );
   const profileEvidence = M.collectEvidenceBlocks(fixtureEvent).filter((block) => block.key.startsWith('profile-'));
   check(
     'B4-adapter-evidence-blocks',
-    profileEvidence.length === M.ANALYSIS_PROFILE_KEYS.length && profileEvidence.every((block) => block.sourceIds.length > 0 && block.claimIds.length > 0),
-    `collectEvidenceBlocks() 为十个分析小节各登记一份小节级证据（${profileEvidence.length} 份）`,
+    profileEvidence.length === contract.keys.length && profileEvidence.every((block) => block.sourceIds.length > 0 && block.claimIds.length > 0),
+    `collectEvidenceBlocks() 为 ${contract.keys.length} 个分析小节各登记一份小节级证据（${profileEvidence.length} 份）`,
   );
   check(
     'B4-adapter-no-legacy',
@@ -1060,8 +1560,8 @@ function checkEarlyCampaignAnalysisRegression(M) {
   );
 
   // ---------------------------------------------------------------- (b) 内存构造
-  const { source, claims } = makeInMemoryAnalysisEvidence(M);
-  const inMemoryEvent = makeInMemoryAnalysisEvent(M);
+  const { source, claims } = makeInMemoryAnalysisEvidence(contract);
+  const inMemoryEvent = makeInMemoryAnalysisEvent(contract);
   const inMemoryDoc = {
     schemaVersion: '1.0.0',
     fixtureOnly: true,
@@ -1087,19 +1587,27 @@ function checkEarlyCampaignAnalysisRegression(M) {
     'B4-M-only-profiles',
     inMemoryEvent.article.length === 0 &&
       !('earlyCampaignAnalysis' in inMemoryEvent) &&
-      Object.keys(inMemoryEvent.analysisProfiles).length === M.ANALYSIS_PROFILE_KEYS.length,
-    '内存对象只含 analysisProfiles 全部具名键（无 article 正文、无 legacy 字段）',
+      Object.keys(inMemoryEvent.analysisProfiles).length === contract.keys.length,
+    `内存对象只含 ARCH 契约全部具名键（${contract.keys.length} 键；无 article 正文、无 legacy 字段）`,
+  );
+  const inMemoryParsed = parseEarlyCampaignAnalysisBlocks(inMemoryEvent, contract);
+  check(
+    'B4-M-parse-blocks',
+    inMemoryParsed.kind === 'profiles' && inMemoryParsed.blocks.length === contract.keys.length,
+    `PART 1 解析器从内存对象派生 ${inMemoryParsed.blocks.length} 个分析块（同一函数，不是测试副本）`,
   );
   if (inMemoryState.doc) {
     // 与 (a) 使用**同一个**渲染函数（renderApp → AppShell + TimelineView）。
     const inMemoryHtml = renderApp(M, { content: inMemoryState, route: { view: 'timeline', id: inMemoryEvent.id, query: '' } }).html;
     check('B4-M-section', inMemoryHtml.includes('data-analysis-section'), '内存构造事件渲染出早期战役分析区（同一渲染函数）');
-    assertAnalysisProfilesRendered(M, 'B4-M', inMemoryEvent, inMemoryHtml);
+    assertAnalysisProfilesRendered('B4-M', contract, inMemoryParsed, inMemoryHtml, contract.keys.length);
+    assertParsedMatchesSiteAdapter('B4-M', inMemoryParsed, M.analysisProfileBlocks(inMemoryEvent));
   } else {
     fail('B4-M-render', '内存构造事件无法加载，无法执行十键渲染回归');
   }
 
   // ---------------------------------------------------------------- (c) legacy 负例
+  // 旧五键形状只作为**负例输入**出现在这里（历史形状，不是渲染契约）。
   const legacyProfiles = {};
   for (const key of ['background', 'course', 'constraints', 'results', 'impact']) {
     legacyProfiles[key] = {
@@ -1114,18 +1622,22 @@ function checkEarlyCampaignAnalysisRegression(M) {
   const legacyHtml = legacyState.doc
     ? renderApp(M, { content: legacyState, route: { view: 'timeline', id: 'event-memory-legacy', query: '' } }).html
     : '';
+  const legacyParsed = parseEarlyCampaignAnalysisBlocks(legacyEvent, contract);
   check(
     'B4-legacy-not-rendered',
     Boolean(legacyState.doc) &&
+      legacyParsed.kind === 'none' &&
+      legacyParsed.blocks.length === 0 &&
+      legacyParsed.legacyKeys.length === 5 &&
       !legacyHtml.includes('data-analysis-section') &&
       !legacyHtml.includes('data-analysis-profile') &&
       !legacyHtml.includes('旧五键正文标记'),
-    '负例：只带 legacy 五键 earlyCampaignAnalysis 的事件不再渲染分析小节（旧字段不是渲染条件，也不显示旧五键正文）',
+    '负例：只带 legacy 五键 earlyCampaignAnalysis 的事件被解析为 legacyKeys=5 但派生 0 个渲染块，页面不渲染分析小节（旧字段不是渲染条件）',
   );
 }
 
 // ---------------------------------------------------------------------------
-// B7 / S1. 自检：禁止「空洞断言」形状（D5 同类缺陷的防回归）
+// B7 / S1. 自检：禁止「空洞断言」形状（D5 同类缺陷的防回归）　【PART 2 · 自检】
 // ---------------------------------------------------------------------------
 //
 // 背景：评审两次都抓到同一个缺陷类 —— 断言写成 `条件 ? 某检查 : true`，
@@ -1246,7 +1758,7 @@ function checkNoVacuousAssertions() {
 }
 
 // ---------------------------------------------------------------------------
-// C. 证据组件（fixture 测试）
+// C. 证据组件（fixture 测试）　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 function checkEvidenceComponents(M) {
@@ -1323,7 +1835,7 @@ function checkEvidenceComponents(M) {
 }
 
 // ---------------------------------------------------------------------------
-// D. 诚实状态
+// D. 诚实状态　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 function checkHonestStates(M) {
@@ -1376,7 +1888,268 @@ function checkHonestStates(M) {
 }
 
 // ---------------------------------------------------------------------------
-// E. 构建产物
+// NAV-01. 发布路由 fixture 泄露回归（六入口 + 详情路由）　【PART 2 · WEB 渲染图/展示断言】
+// ---------------------------------------------------------------------------
+//
+// 验收要求（L408）：在发布路由（时间线 / 战役 / 人物 / 地图 / 知识专题 / 历史问题
+// 六入口及其详情）的渲染断言中，fixture 专属事实不得作为正文出现，且渲染结果必须与
+// 真实内容加载一致；六个入口的详情路由各至少一项渲染断言。
+// **「页面横幅标注测试样本」不算满足** —— 这里断言的是正文级泄露与真实内容一致性。
+//
+// 输入：
+//   - fixture 专属事实清单：PART 1 collectFixtureOnlyFacts()（来自三份已接受夹具，
+//     已排除 id/枚举等结构值，以及真实内容里也出现的措辞）；
+//   - 真实内容：PART 1 loadRealContentDocument() + 真实加载器 M.loadContent()；
+//   - 夹具内容：真实加载器 + 已接受夹具（用于**正向对照**，证明泄露检测器不是恒真）。
+//
+// 断言 ID：LEAK-0-content / LEAK-real-status / LEAK-facts / LEAK-control-{min,early,map} /
+//          LEAK-<entry>-{list,detail,match}（entry = timeline/battles/people/atlas/concepts/questions）
+
+/** 六个发布入口的规格：路由、真实内容集合、真实条目的正文文本字段。 */
+const PUBLISHED_ROUTES = [
+  { view: 'timeline', label: '时间线', collection: 'events', textOf: (item) => item?.title },
+  { view: 'battles', label: '战役', collection: 'battles', textOf: (item) => item?.title },
+  { view: 'people', label: '人物', collection: 'people', textOf: (item) => item?.name },
+  { view: 'atlas', label: '地图', collection: 'places', textOf: (item) => item?.historicalName },
+  { view: 'concepts', label: '知识专题', collection: 'concepts', textOf: (item) => item?.title },
+  { view: 'questions', label: '历史问题', collection: 'questions', textOf: (item) => item?.prompt },
+];
+
+/**
+ * 夹具内容 → 渲染状态（PART 2 专用；不解析字段，只选取已接受的加载路径）。
+ *
+ * - 完整根文档（valid-min / valid-early-campaign，含全部 11 个顶层数组）走**真实加载器**
+ *   M.loadContent（与站点运行时同一入口）；
+ * - map-phases.json 是**阶段契约夹具**（不声明 media 根数组），不属于可发布根文档；
+ *   按已接受 R2-A 段同一路径 fixtureStateFrom() 渲染，用于正向对照。
+ */
+function fixtureRenderState(M, doc, label) {
+  if (doc && Array.isArray(doc.media)) {
+    return M.loadContent({ '/virtual/content/history.json': doc });
+  }
+  return fixtureStateFrom(doc, label);
+}
+
+/** 页面（去标签后的纯文本）中命中的 fixture 专属事实；返回命中清单。 */
+function findFixtureLeaks(html, facts) {
+  const text = htmlToPlainText(html);
+  return facts.filter((fact) => text.includes(fact.text));
+}
+
+function checkPublishedRouteFixtureLeakage(M) {
+  // ---------------------------------------------------------------- 输入（真实内容）
+  const realDoc = loadRealContentDocument();
+  check(
+    'LEAK-0-content',
+    Boolean(realDoc) && realDoc.fixtureOnly === false,
+    '真实内容 content/history.json 存在且 fixtureOnly=false —— 发布路由的输入不是任何夹具',
+  );
+  if (!realDoc) {
+    fail('LEAK-real', '真实内容缺失：无法执行发布路由泄露回归（前置条件缺失必须失败，不得跳过）');
+    return;
+  }
+  const realState = M.loadContent({ '/virtual/content/history.json': realDoc });
+  check(
+    'LEAK-real-status',
+    realState.status === 'available' && realState.doc !== null && realState.doc.fixtureOnly === false,
+    `真实内容经真实加载器 loadContent 得到发布状态（状态 ${realState.status}，fixtureOnly=${realState.doc?.fixtureOnly}；不是 fixture）`,
+  );
+
+  // ---------------------------------------------------------------- PART 1：fixture 事实清单
+  const facts = collectFixtureOnlyFacts(realDoc);
+  const fixtureRelSet = new Set(facts.map((fact) => fact.fixture));
+  check(
+    'LEAK-facts',
+    facts.length >= 50 && FIXTURE_FILES.every((fixture) => fixtureRelSet.has(fixture.rel)),
+    `fixture 专属事实清单 ${facts.length} 条，来自 ${fixtureRelSet.size}/${FIXTURE_FILES.length} 份已接受夹具（${[...fixtureRelSet]
+      .map((rel) => path.basename(rel))
+      .join('、')}）；已排除 id/枚举结构值与真实内容共用措辞`,
+  );
+
+  // 夹具内容与内存/磁盘输入（正向对照用；真实加载路径一致）
+  const minFixtureDoc = loadFixtureDocument(FIXTURE_MIN);
+  const minFixtureState = M.loadContent({ '/virtual/content/history.json': minFixtureDoc });
+  const earlyDoc = loadFixtureDocument(FIXTURE_EARLY);
+  const earlyState = M.loadContent({ '/virtual/content/history.json': earlyDoc });
+  const mapPhaseDoc = loadMapPhaseFixtureDocument();
+  check(
+    'LEAK-fixture-inputs',
+    Boolean(mapPhaseDoc) && Array.isArray(mapPhaseDoc.battles) && mapPhaseDoc.battles.length > 0 && minFixtureState.doc !== null && earlyState.doc !== null,
+    `正向对照输入齐备：valid-min（${minFixtureDoc.events?.length ?? 0} 事件）/ valid-early-campaign（${earlyDoc.events?.length ?? 0} 事件）/ map-phases（${mapPhaseDoc?.battles?.length ?? 0} 战役）均经真实加载器可用`,
+  );
+
+  // ---------------------------------------------------------------- 正向对照：检测器灵敏度
+  const minEvent = minFixtureDoc.events?.[0];
+  const minTimelineHtml = minEvent
+    ? renderApp(M, { content: minFixtureState, route: { view: 'timeline', id: minEvent.id, query: '' } }).html
+    : '';
+  const minTimelineLeaks = findFixtureLeaks(minTimelineHtml, facts);
+  check(
+    'LEAK-control-min',
+    minTimelineHtml.length > 0 && minTimelineLeaks.length > 0,
+    `正向对照：用 valid-min 夹具渲染时间线详情 event ${minEvent?.id ?? '—'} → 检出 ${minTimelineLeaks.length} 条 fixture 专属事实（检测器不是恒真）`,
+  );
+  const earlyEvent = earlyDoc.events?.find((item) => item.id === 'event-hong-kong-1941') ?? earlyDoc.events?.[0];
+  const earlyTimelineHtml = earlyEvent
+    ? renderApp(M, { content: earlyState, route: { view: 'timeline', id: earlyEvent.id, query: '' } }).html
+    : '';
+  const earlyTimelineLeaks = findFixtureLeaks(earlyTimelineHtml, facts);
+  check(
+    'LEAK-control-early',
+    earlyTimelineHtml.length > 0 && earlyTimelineLeaks.length > 0,
+    `正向对照：用 valid-early-campaign 夹具渲染十键分析事件 ${earlyEvent?.id ?? '—'} → 检出 ${earlyTimelineLeaks.length} 条 fixture 专属事实`,
+  );
+  const mapBattle = mapPhaseDoc?.battles?.[0];
+  const mapState = fixtureRenderState(M, mapPhaseDoc, 'map-phases.json');
+  const mapBattlesHtml = mapBattle
+    ? renderApp(M, { content: mapState, route: { view: 'battles', id: mapBattle.id, query: '' } }).html
+    : '';
+  const mapBattlesLeaks = findFixtureLeaks(mapBattlesHtml, facts);
+  check(
+    'LEAK-control-map',
+    mapBattlesHtml.length > 0 && mapBattlesLeaks.length > 0,
+    `正向对照：用 map-phases 夹具渲染战役详情 ${mapBattle?.id ?? '—'} → 检出 ${mapBattlesLeaks.length} 条 fixture 专属事实`,
+  );
+
+  // ---------------------------------------------------------------- 六入口：列表 + 详情 + 渲染一致性
+  for (const spec of PUBLISHED_ROUTES) {
+    const items = Array.isArray(realDoc[spec.collection]) ? realDoc[spec.collection] : [];
+    const firstReal = items[0] ?? null;
+    const realText = firstReal ? String(spec.textOf(firstReal) ?? '') : '';
+
+    // ---- 列表路由：真实内容与渲染一致 + 无 fixture 事实
+    const listHtml = renderApp(M, { content: realState, route: { view: spec.view, id: null, query: '' } }).html;
+    const listLeaks = findFixtureLeaks(listHtml, facts);
+    let listMatchesReal = false;
+    if (items.length > 0) {
+      listMatchesReal = realText.length > 0 && listHtml.includes(realText);
+    } else {
+      listMatchesReal = listHtml.includes('data-empty-state=""');
+    }
+    check(
+      `LEAK-${spec.view}-list`,
+      listLeaks.length === 0 && listMatchesReal,
+      `发布路由 ${spec.label} 列表（#/${spec.view}）：真实内容 ${spec.collection}=${items.length}，${items.length > 0 ? `渲染首条真实内容「${realText.slice(0, 24)}」` : '渲染诚实空状态（真实内容该集合为空）'}；fixture 专属事实泄露 ${listLeaks.length} 条`,
+    );
+
+    // ---- 详情路由：真实有数据用真实 id；真实无数据（战役）用夹具 id 断言不渲染夹具内容
+    const fixtureItems = Array.isArray(mapPhaseDoc?.[spec.collection])
+      ? mapPhaseDoc[spec.collection]
+      : Array.isArray(minFixtureDoc?.[spec.collection])
+        ? minFixtureDoc[spec.collection]
+        : [];
+    const fixtureDetailItem = fixtureItems[0] ?? null;
+    const detailId = firstReal?.id ?? fixtureDetailItem?.id ?? null;
+    const detailHtml = renderApp(M, { content: realState, route: { view: spec.view, id: detailId, query: '' } }).html;
+    const detailLeaks = findFixtureLeaks(detailHtml, facts);
+    let detailMatchesReal = false;
+    if (items.length > 0) {
+      detailMatchesReal = realText.length > 0 && detailHtml.includes(realText);
+    } else {
+      detailMatchesReal = detailHtml.includes('data-empty-state=""');
+      if (fixtureDetailItem) {
+        const fixtureText = String(spec.textOf(fixtureDetailItem) ?? '');
+        detailMatchesReal = detailMatchesReal && fixtureText.length > 0 && !detailHtml.includes(fixtureText);
+      }
+    }
+    check(
+      `LEAK-${spec.view}-detail`,
+      typeof detailId === 'string' && detailLeaks.length === 0 && detailMatchesReal,
+      `发布路由 ${spec.label} 详情（#/${spec.view}/${detailId ?? '—'}）：${
+        items.length > 0 ? `渲染真实内容「${realText.slice(0, 24)}」` : '真实内容无此集合 → 渲染诚实空状态且不渲染夹具条目'
+      }；fixture 专属事实泄露 ${detailLeaks.length} 条`,
+    );
+
+    // ---- 渲染与加载内容一致：同一详情路由换夹具内容渲染，结果必须不同
+    const fixtureDocForRoute = spec.collection === 'battles' || spec.collection === 'people' ? mapPhaseDoc : minFixtureDoc;
+    const fixtureStateForRoute = fixtureRenderState(
+      M,
+      fixtureDocForRoute,
+      spec.collection === 'battles' || spec.collection === 'people' ? 'map-phases.json' : 'valid-min.json',
+    );
+    const fixtureDetailHtml = renderApp(M, {
+      content: fixtureStateForRoute,
+      route: { view: spec.view, id: detailId, query: '' },
+    }).html;
+    let realRenderOk = false;
+    if (items.length > 0) {
+      realRenderOk = realText.length > 0 && detailHtml.includes(realText);
+    } else {
+      realRenderOk = detailHtml.includes('data-empty-state=""');
+    }
+    check(
+      `LEAK-${spec.view}-match`,
+      realRenderOk && detailHtml !== fixtureDetailHtml,
+      `发布路由 ${spec.label} 详情渲染与真实内容加载一致：真实内容渲染 ${detailHtml.length} 字节，夹具内容渲染同一路由 ${fixtureDetailHtml.length} 字节（输出随加载内容变化，不是固定/夹具输出）`,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// NAV-01. 分段基线与单一属主自检　【PART 2 · 自检】
+// ---------------------------------------------------------------------------
+//
+// 把脚本头部记录的分段基线里「可机器验证」的部分变成真实断言（不是文档声明）：
+//  - 夹具集合固定为三份已接受夹具，且真实代码不引用不存在的 map-phases-analysis.json；
+//  - 早期战役分析块解析/派生在真实代码中只有一个共享函数（单一属主）；
+//  - PART 1 / PART 2 显式分段与契约归属标注确实存在；
+//  - 渲染断言不直接读取 event.analysisProfiles（只消费 PART 1 的 blocks）。
+
+function checkSegmentationBaseline() {
+  const rawSource = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+  const code = stripCommentsAndStrings(rawSource);
+
+  const parseDefinitions = (code.match(/function parseEarlyCampaignAnalysisBlocks\(/g) ?? []).length;
+  check(
+    'NAV-1-single-parser',
+    parseDefinitions === 1,
+    `早期战役分析块的解析/派生在真实代码中只有 1 处共享函数定义（parseEarlyCampaignAnalysisBlocks；实际 ${parseDefinitions} 处）`,
+  );
+
+  check(
+    'NAV-2-fixture-set',
+    FIXTURE_FILES.length === 3 && FIXTURE_FILES.every((fixture) => fs.existsSync(fixture.file)),
+    `PART 1 只消费 ${FIXTURE_FILES.length} 份已接受契约夹具（${FIXTURE_FILES.map((fixture) => path.basename(fixture.rel)).join('、')}）`,
+  );
+
+  // 动态拼接被检查的夹具名：避免自检的正则/字符串字面量本身出现在被扫描的真实代码里。
+  const absentFixtureName = ['map-phases', 'analysis'].join('-');
+  const mapAnalysisRefs = code.split(absentFixtureName).length - 1;
+  check(
+    'NAV-3-no-map-analysis-ref',
+    mapAnalysisRefs === 0,
+    `真实代码不引用 ${absentFixtureName}.json（该夹具在已接受契约中不存在；真实代码引用 ${mapAnalysisRefs} 处）—— 本脚本不创建、不引用、不要求其存在，阶段分析字段由 analysisProfiles 契约 + map-phases.json 承载`,
+  );
+
+  check(
+    'NAV-4-part-labels',
+    rawSource.includes('PART 1 — 夹具解析/派生（契约来源：ARCH') && rawSource.includes('PART 2 — 渲染图/展示断言（契约来源：WEB'),
+    '脚本显式划分为 PART 1（夹具解析/派生，契约来源 ARCH）与 PART 2（渲染图/展示断言，契约来源 WEB）并各自标注',
+  );
+
+  const renderFnMatch = rawSource.match(/\nfunction assertAnalysisProfilesRendered\([\s\S]*?\n\}\n/);
+  const renderFnBody = renderFnMatch ? renderFnMatch[0] : '';
+  const readsContractFields = renderFnBody.includes('.analysisProfiles');
+  check(
+    'NAV-5-render-consumes-parse',
+    renderFnBody.length > 0 && !readsContractFields,
+    '渲染断言 assertAnalysisProfilesRendered 只消费 PART 1 解析出的 blocks，不直接读取 event.analysisProfiles（无平行解析）',
+  );
+
+  // PART 1 区块内不得出现任何结果断言（解析段只解析；断言一律在 PART 2）。
+  const part1Start = rawSource.indexOf('// PART 1 — 夹具解析/派生（契约来源：ARCH');
+  const part2Start = rawSource.indexOf('// PART 2 — 渲染图/展示断言（契约来源：WEB');
+  const part1Slice = part1Start >= 0 && part2Start > part1Start ? rawSource.slice(part1Start, part2Start) : '';
+  const part1CheckCalls = (stripCommentsAndStrings(part1Slice).match(/\b(?:check|pass|fail)\(/g) ?? []).length;
+  check(
+    'NAV-6-part1-no-assertions',
+    part1Start >= 0 && part2Start > part1Start && part1CheckCalls === 0,
+    `PART 1（夹具解析/派生）区块只做解析，不含任何 check/pass/fail 结果断言（实际 ${part1CheckCalls} 处）；断言全部在 PART 2`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// E. 构建产物　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 function checkDist() {
@@ -1419,7 +2192,18 @@ function checkDist() {
     }
   };
   walk(dist);
-  pass('E1-5', `产物总大小 ${(totalBytes / 1024).toFixed(1)} KiB（PERFORMANCE 上限：JS/CSS gzip ≤500KiB）`);
+  // E1-5 是**真实性能断言**（不是「只报告大小」）：JS+CSS 的 gzip 总体积必须 ≤ 500 KiB。
+  const gzipBytes = zlib.gzipSync(
+    Buffer.concat([
+      ...jsFiles.map((file) => fs.readFileSync(path.join(dist, 'assets', file))),
+      ...cssFiles.map((file) => fs.readFileSync(path.join(dist, 'assets', file))),
+    ]),
+  ).length;
+  check(
+    'E1-5',
+    gzipBytes <= 500 * 1024,
+    `产物 JS+CSS gzip 合计 ${(gzipBytes / 1024).toFixed(1)} KiB（PERFORMANCE 上限 500 KiB；产物原始合计 ${(totalBytes / 1024).toFixed(1)} KiB）`,
+  );
 
   // E2：站内链接只允许 hash 路由 + 子路径资源 + 外部 http(s)。
   // 注意：构建产物经过压缩，链接由模板字符串生成（`#/${view}`），因此按
@@ -1450,7 +2234,7 @@ function checkDist() {
 }
 
 // ---------------------------------------------------------------------------
-// F. 合成契约样本：战役 / 人物 / 专题 / 阶段 / 双方对称（真实 fixture 未覆盖的渲染路径）
+// F. 合成契约样本：战役 / 人物 / 专题 / 阶段 / 双方对称（真实 fixture 未覆盖的渲染路径）　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 async function checkSynthetic(M) {
@@ -1542,7 +2326,7 @@ async function checkSynthetic(M) {
 }
 
 // ---------------------------------------------------------------------------
-// G. 负例：证明检查本身有效（刻意构造错误，期望被拦下）
+// G. 负例：证明检查本身有效（刻意构造错误，期望被拦下）　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 async function checkNegatives(M) {
@@ -1596,7 +2380,7 @@ async function checkNegatives(M) {
   // G7：glob 返回「模块命名空间」/「默认导出」形态时必须仍能识别为内容。
   //     （回归测试：生产构建把 JSON 拆成独立 chunk 时，glob 值可能是
   //       { default: doc } 或 { default: doc, events, battles, ... }。）
-  const doc = JSON.parse(fs.readFileSync(FIXTURE_MIN, 'utf8'));
+  const doc = loadFixtureDocument(FIXTURE_MIN);
   const shapes = [
     ['直接对象', doc],
     ['命名空间只有 default', { default: doc }],
@@ -1624,24 +2408,13 @@ async function checkNegatives(M) {
 }
 
 // ---------------------------------------------------------------------------
-// MAP-00. Atlas 地图引擎与阶段控件
+// MAP-00. Atlas 地图引擎与阶段控件　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 //
 // 用 fixtures.valid-min（真实契约 fixture，battles 为空）+ syntheticContractSample
 // （fixtureOnly=true，含 phases[]）作为**唯二**测试输入。
 // 断言的是结构能力（引擎渲染、缩放/平移数学、图层、阶段字段、certainty、键盘/触摸
 // 事件接线），不依赖任何真实历史内容；fixture 的历史句子不得出现在真实内容页面上（见 D2-2）。
-
-/** 载入合成契约样本（含 battles + phases）。 */
-async function loadSyntheticDocument() {
-  const { buildSyntheticDocument } = await import(pathToFileUrl(path.join(SRC, 'testing', 'syntheticContractSample.mjs')));
-  return buildSyntheticDocument();
-}
-
-/** 构造一个 fixtureOnly 状态，供 renderApp 使用。 */
-function fixtureStateFrom(doc, label) {
-  return { status: doc.fixtureOnly ? 'fixture' : 'available', doc, issues: [], sourceKey: label };
-}
 
 async function checkAtlas(M) {
   const synthetic = await loadSyntheticDocument();
@@ -1742,8 +2515,9 @@ async function checkAtlas(M) {
   check('M3-4', M.phasesUsable(undefined).length === 0 && M.phasesUsable([]).length === 0, '无阶段数据时 phasesUsable 安全返回空数组（负例）');
 
   // ---------------------------------------------------------------- M4 真实内容：无战役 → 诚实空状态
-  const realDoc = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-  const realState = fixtureStateFrom(realDoc, 'content/history.json');
+  const realDoc = loadRealContentDocument();
+  check('M4-0', Boolean(realDoc), '真实内容 content/history.json 可读取（M4 段渲染真实地图的数据来源）');
+  const realState = fixtureStateFrom(realDoc ?? M.emptyDocument(), 'content/history.json');
   const realAtlasHtml = renderApp(M, { content: realState, route: { view: 'atlas', id: null, query: '' } }).html;
   check(
     'M4-1',
@@ -2149,7 +2923,7 @@ function checkControlWiring(M, synthetic) {
 }
 
 // ---------------------------------------------------------------------------
-// D2. 用**真实契约 fixture** `contracts/fixtures/valid-min.json` 驱动地图引擎检查
+// D2. 用**真实契约 fixture** `contracts/fixtures/valid-min.json` 驱动地图引擎检查　【PART 2 · WEB；夹具解析来自 PART 1】
 // ---------------------------------------------------------------------------
 //
 // 评审意见：order 要求「用 valid-min.json 验证地图引擎」，但 checkAtlas 从未加载它
@@ -2157,7 +2931,13 @@ function checkControlWiring(M, synthetic) {
 // 驱动引擎，并引用 fixture 内的真实 ID，避免「用合成数据冒充 fixture 验证」。
 
 function checkAtlasAgainstValidMinFixture(M) {
-  const fixture = JSON.parse(fs.readFileSync(FIXTURE_MIN, 'utf8'));
+  // 夹具解析来自 PART 1：loadFixtureDocument()（唯一读取入口）；缺失即失败，不跳过。
+  check('D2-fixture-present', fs.existsSync(FIXTURE_MIN), '已接受契约夹具 contracts/fixtures/valid-min.json 存在');
+  if (!fs.existsSync(FIXTURE_MIN)) {
+    fail('D2-0', '无法执行 valid-min 地图引擎检查：已接受夹具缺失（前置条件缺失必须失败）');
+    return;
+  }
+  const fixture = loadFixtureDocument(FIXTURE_MIN);
   const fixturePlaces = Array.isArray(fixture.places) ? fixture.places : [];
   const fixtureBattles = Array.isArray(fixture.battles) ? fixture.battles : [];
 
@@ -2241,7 +3021,7 @@ function checkAtlasAgainstValidMinFixture(M) {
 }
 
 // ---------------------------------------------------------------------------
-// D3. 交互行为测试 —— **无条件运行**（不依赖 jsdom / 浏览器）
+// D3. 交互行为测试 —— **无条件运行**（不依赖 jsdom / 浏览器）　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 //
 // 评审意见：缩放/平移/图层/播放只有 grep 或静态标记检查，真实事件路径从未执行；
@@ -2356,9 +3136,8 @@ function checkInteractionStateMachines(M, synthetic) {
   }
 }
 
-
 // ---------------------------------------------------------------------------
-// D4. 标签/字形单一来源 + 全图视野下的平移语义
+// D4. 标签/字形单一来源 + 全图视野下的平移语义　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 
 function checkLabelsAndPanSemantics(M) {
@@ -2419,7 +3198,7 @@ function checkLabelsAndPanSemantics(M) {
   }
 }
 // ---------------------------------------------------------------------------
-// MAP-00R2. 契约阶段夹具复验 + 纯内存阶段用例
+// MAP-00R2. 契约阶段夹具复验 + 纯内存阶段用例　【PART 2 · WEB；阶段夹具解析/内存构造来自 PART 1】
 // ---------------------------------------------------------------------------
 //
 // 验收要求「不硬编码夹具中的战役事实」：map-phases.json 的字段值明确标注为占位
@@ -2432,88 +3211,6 @@ function checkLabelsAndPanSemantics(M) {
 //         磁盘夹具缺失时用**代码内等价结构夹具**跑同一批断言（验收 L542），
 //         不存在「夹具缺失 → SKIP / 恒真 PASS」的路径。
 //   R2-B  完全由内存构造的阶段对象 → 证明复验不依赖磁盘夹具或 ARCH-02 新增字段。
-
-/** 内存阶段对象构造器（不读取任何文件）。刻意只使用**基础契约字段**。 */
-function makeInMemoryPhase(overrides = {}) {
-  const base = {
-    id: 'phase-mem-1',
-    sequence: 1,
-    title: '内存阶段一',
-    time: { start: '1942-06-04T00:00Z', display: '内存阶段时间显示一', uncertainty: '内存阶段时间不确定说明。' },
-    positions: {
-      japan: {
-        label: '内存日方位置',
-        description: '内存日方位置说明。',
-        placeIds: ['place-mem-a'],
-        coordinates: { lat: 30, lng: 170 },
-        schematic: true,
-        uncertaintyRadiusKm: 100,
-        uncertaintyNote: '内存位置为教学示意。',
-        sourceIds: ['source-mem'],
-        claimIds: ['claim-mem'],
-      },
-      allies: {
-        label: '内存盟军位置',
-        description: '内存盟军位置说明。',
-        placeIds: ['place-mem-b'],
-        coordinates: { lat: 25, lng: -160 },
-        schematic: true,
-        uncertaintyRadiusKm: 150,
-        uncertaintyNote: '内存位置为教学示意。',
-        sourceIds: ['source-mem'],
-        claimIds: ['claim-mem'],
-      },
-    },
-    knownEnemy: { japan: '内存：日方已知敌情。', allies: '内存：盟军已知敌情。' },
-    unknownEnemy: { japan: '内存：日方未知敌情。', allies: '内存：盟军未知敌情。' },
-    decision: { japan: '内存：日方决策。', allies: '内存：盟军决策。' },
-    consequence: { japan: '内存：日方后果。', allies: '内存：盟军后果。' },
-    certainty: 'schematic',
-    viewpoints: {
-      japan: { perspective: '内存：日方视角描述文字。', sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
-      allies: { perspective: '内存：盟军视角描述文字。', sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
-    },
-    routes: [],
-    schematic: true,
-    uncertaintyNote: '内存阶段整体为教学示意。',
-    eventIds: [],
-    sourceIds: ['source-mem'],
-    claimIds: ['claim-mem'],
-    ...overrides,
-  };
-  return base;
-}
-
-/** 用内存阶段对象构造一个最小战役 + 地点集合（不读磁盘）。 */
-function makeInMemoryScenario(phases) {
-  const battle = {
-    id: 'battle-mem',
-    title: '内存战役',
-    historicalPart: 'part-5-midway',
-    battleType: 'carrier-battle',
-    theater: 'pacific',
-    startDate: '1942-06-04',
-    endDate: '1942-06-05',
-    summary: '内存构造的战役，仅用于验证阶段控件与情报面板的结构映射。',
-    belligerents: { japan: '甲', allies: '乙' },
-    outcome: { summary: '内存结果说明。', winner: 'inconclusive', certainty: 'disputed' },
-    placeIds: ['place-mem-a'],
-    personIds: [],
-    commanderIds: { japan: [], allies: [] },
-    unitIds: [],
-    equipmentIds: [],
-    conceptIds: [],
-    sourceIds: ['source-mem'],
-    claimIds: ['claim-mem'],
-    sections: {},
-    phases,
-  };
-  const places = [
-    { id: 'place-mem-a', historicalName: '内存地点甲', modernName: '内存地点甲今名', modernCountry: '内存国', placeType: 'island', summary: '内存地点说明。', coordinates: { lat: 30, lng: 170 }, coordinateAccuracyKm: 5, schematic: false, relatedPlaceIds: [], sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
-    { id: 'place-mem-b', historicalName: '内存地点乙', modernName: '内存地点乙今名', modernCountry: '内存国', placeType: 'atoll', summary: '内存地点说明。', coordinates: { lat: 25, lng: -160 }, coordinateAccuracyKm: 5, schematic: false, relatedPlaceIds: [], sourceIds: ['source-mem'], claimIds: ['claim-mem'] },
-  ];
-  return { battle, places };
-}
 
 /** 断言一个阶段的契约字段到 UI 的映射（磁盘夹具与内存用例共用同一函数）。 */
 function assertPhaseContractMapping(M, labelPrefix, phase, html) {
@@ -2568,33 +3265,15 @@ function assertPhaseContractMapping(M, labelPrefix, phase, html) {
   }
 }
 
-/** 代码内等价阶段夹具（磁盘夹具缺失时使用；验收 L542 明确允许）。不读取任何文件。 */
-function builtinMapPhaseFixture() {
-  const phases = [makeInMemoryPhase(), makeInMemoryPhase({ id: 'phase-mem-2', sequence: 2, title: '内存阶段二' })];
-  const { battle, places } = makeInMemoryScenario(phases);
-  return {
-    schemaVersion: '1.0.0',
-    fixtureOnly: true,
-    events: [],
-    battles: [battle],
-    people: [],
-    places,
-    units: [],
-    equipment: [],
-    concepts: [],
-    sources: [],
-    media: [],
-    questions: [],
-    claims: [],
-  };
-}
-
 function checkAtlasPhaseContractReverification(M) {
   // ---------------------------------------------------------------- R2-A：契约阶段夹具
   // 优先读取已接受的磁盘夹具；缺失时使用**代码内等价结构夹具**跑**同一批断言**
   // （验收 L542 明确允许），绝不出现「夹具缺失 → SKIP / 恒真 PASS」的路径。
-  const fixtureFromDisk = fs.existsSync(FIXTURE_MAP_PHASES);
-  const fixture = fixtureFromDisk ? JSON.parse(fs.readFileSync(FIXTURE_MAP_PHASES, 'utf8')) : builtinMapPhaseFixture();
+  // 阶段夹具解析来自 PART 1：loadMapPhaseFixtureDocument()（唯一读取入口）；
+  // 磁盘夹具缺失时用代码内等价结构夹具 builtinMapPhaseFixture()（验收 L542 允许）。
+  const mapPhaseFixtureDoc = loadMapPhaseFixtureDocument();
+  const fixtureFromDisk = mapPhaseFixtureDoc !== null;
+  const fixture = mapPhaseFixtureDoc ?? builtinMapPhaseFixture();
   const fixtureLabel = fixtureFromDisk ? 'contracts/fixtures/map-phases.json（已接受磁盘夹具）' : '代码内等价阶段夹具（磁盘夹具缺失，按 L542 使用内置结构）';
   {
     const battles = Array.isArray(fixture.battles) ? fixture.battles : [];
@@ -2712,7 +3391,7 @@ function checkAtlasPhaseContractReverification(M) {
 }
 
 // ---------------------------------------------------------------------------
-// MAP-00R3. 可观察交互：图层切换 / 播放暂停 / 前后阶段
+// MAP-00R3. 可观察交互：图层切换 / 播放暂停 / 前后阶段　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 //
 // 要求：不新增测试执行器，在现有脚本内至少一次**真实驱动**图层切换与
@@ -2876,7 +3555,7 @@ function checkObservableInteraction(M) {
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// GRAPH. 渲染图治理（验收 L538）
+// GRAPH. 渲染图治理（验收 L538）　【PART 2 · WEB 渲染图/展示断言】
 // ---------------------------------------------------------------------------
 //
 // 要求：B4 及其派生逻辑不得把 index.html / react-dom/client 拉进 validate-site 的
@@ -2940,11 +3619,17 @@ function checkRenderGraph() {
 }
 
 // ---------------------------------------------------------------------------
-// Z. 收尾自检：检查项计数 = 实际执行断言数；不存在 SKIP / 空跑 PASS（验收 L541）
+// Z. 收尾自检：检查项计数 = 实际执行断言数；不存在 SKIP / 空跑 PASS（验收 L541）　【PART 2 · 自检】
 // ---------------------------------------------------------------------------
 
-/** 允许的最小断言数：低于此值说明检查大面积未执行，不能报告通过。 */
-const MIN_EXPECTED_CHECKS = 250;
+/**
+ * 允许的最小断言数（MAP-00 基线保护 + NAV-01 不删断言要求）。
+ *
+ * NAV-01 第 0 步实测：已接受基线 node --run check 执行 401 条断言、0 条 SKIP。
+ * 本任务要求「不删除任何真实断言」，因此把下限设为基线值 401：任何既有断言被删除
+ * 或整段被屏蔽，本自检都会直接 FAIL（低于基线即失败），而不是只报告数量。
+ */
+const MIN_EXPECTED_CHECKS = 401;
 
 function verifyCheckAccounting() {
   const total = results.length;
@@ -2954,7 +3639,7 @@ function verifyCheckAccounting() {
   check(
     'Z-accounting',
     notExecuted === 0 && total === passed + failed && total >= MIN_EXPECTED_CHECKS,
-    `检查项计数自证：本自检之前已执行断言 ${total} 条 = PASS ${passed} + FAIL ${failed}（本自检为第 ${total + 1} 条）；未执行/SKIP ${notExecuted} 条；且 ≥ ${MIN_EXPECTED_CHECKS} 条（不存在「0 项检查仍 PASS」或「前置条件缺失即 SKIP 计入 PASS」的路径）`,
+    `检查项计数自证：本自检之前已执行断言 ${total} 条 = PASS ${passed} + FAIL ${failed}（本自检为第 ${total + 1} 条）；未执行/SKIP ${notExecuted} 条；且 ≥ 基线 ${MIN_EXPECTED_CHECKS} 条（不删除既有断言、不存在「0 项检查仍 PASS」或「前置条件缺失即 SKIP 计入 PASS」的路径）`,
   );
 }
 
@@ -3002,6 +3687,7 @@ async function main() {
   try {
     await checkContentFile(M);
     checkEntries(M);
+    checkPublishedRouteFixtureLeakage(M);
     await checkSynthetic(M);
     await checkAtlas(M);
     checkAtlasAgainstValidMinFixture(M);
@@ -3010,6 +3696,7 @@ async function main() {
     checkObservableInteraction(M);
     checkRenderGraph();
     checkNoVacuousAssertions();
+    checkSegmentationBaseline();
     checkInteractionStateMachines(M, await loadSyntheticDocument());
     checkEvidenceComponents(M);
     checkHonestStates(M);
