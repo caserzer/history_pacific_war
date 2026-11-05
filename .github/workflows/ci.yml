@@ -1,0 +1,79 @@
+# CI-BOOT-01：bootstrap PR 的早期 GitHub CI 门禁
+#
+# 职责边界（重要）：
+# - 本工作流只做「早期 ci 门禁」：内容门禁 + 站点 check + 站点 build + 条件 e2e。
+# - 不做任何 Pages build/deploy、发布或验收产物；Pages 工作流由后续 SHIP-01 单独负责。
+# - 推送、PR、CI 运行与合并不由本仓库的 worker 执行，由中央集成服务在获得授权后执行。
+#
+# 检查名称：单个 job，job id = ci，job name = ci → GitHub 上的 github-actions 检查名为 ci。
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# 最小权限：只需要读仓库内容（不写 PR、不写 Pages、不取 OIDC token）。
+permissions:
+  contents: read
+
+# 同一分支/PR 的新运行会取消旧运行，避免重复占用 runner。
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          # Node 24（与 package.json engines.node >= 24 对应）。不引导时也能被工具按字符串读取。
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      # 已接受集成中的内容门禁：全阶段 + 媒体验证。
+      - name: Content gate (full stage + media)
+        run: node scripts/validate-content.mjs --stage full --media
+
+      # 已接受集成中的站点校验与构建脚本，原样调用，不增加中间转发脚本。
+      - name: Site check
+        run: node --run check
+
+      - name: Site build
+        run: node --run build
+
+      # 条件 e2e：检测 package.json 是否登记 test:e2e。
+      # 当前候选没有 test:e2e（QA-01 合并后会登记）；检测在每次运行时重新执行，
+      # 因此后续 QA-01 合并 test:e2e 后，下面的浏览器安装与套件运行步骤会自动生效。
+      - name: Detect e2e suite from package.json
+        id: e2e
+        run: |
+          node -e "const fs = require('fs'); const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8')); const has = Boolean(pkg.scripts && pkg.scripts['test:e2e']); console.log('has_test_e2e=' + has); fs.appendFileSync(process.env.GITHUB_OUTPUT, 'has_test_e2e=' + has + '\n');"
+
+      - name: Install Playwright Chromium and WebKit (e2e present)
+        if: steps.e2e.outputs.has_test_e2e == 'true'
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Run e2e suite (e2e present)
+        if: steps.e2e.outputs.has_test_e2e == 'true'
+        run: npm run test:e2e
+
+      # e2e 缺失时必须显式、可审计地说明，不得静默跳过。
+      - name: E2E suite not present (explicit, auditable notice)
+        if: steps.e2e.outputs.has_test_e2e != 'true'
+        run: |
+          echo "::notice title=Conditional e2e gate inactive::package.json has no test:e2e script at this commit; the e2e gate is intentionally not run."
+          echo "This is an explicit skip, not a silent one: the condition is re-evaluated from package.json on every run."
+          echo "Once QA-01 merges a test:e2e script, the Chromium+WebKit Playwright steps activate automatically and their failure fails this ci job."
+          echo "No e2e result is claimed while the suite is absent."

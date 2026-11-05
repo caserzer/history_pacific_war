@@ -17,3 +17,11 @@ Thumbs.db
 *.log
 .vscode/
 .idea/
+
+# CI 工作流必须可提交（CI-BOOT-01）。
+# 现状：当前没有任何规则忽略 .github（git check-ignore -v .github/workflows/ci.yml 无输出/退出码 1），
+# 但 bootstrap PR 的 ci 检查依赖工作流文件真实存在于仓库中，因此加入**防御性否定式**：
+# 若未来有人添加通配的点文件/目录忽略规则（例如 `.*`）而忘记排除 .github，下面两行仍能保证
+# .github/ 与其 workflows 不被连带忽略。否定式本身不会制造忽略；它只用于锁定这一可提交性。
+!.github/
+!.github/workflows/
