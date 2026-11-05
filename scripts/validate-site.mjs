@@ -228,6 +228,23 @@
  *          越界样本（/etc/passwd、scripts/、content/notes.txt、public/、vite.config.ts、
  *          index.html、node_modules/）仍判 unexpected —— 证明放宽白名单后判据仍有牙齿。
  *
+ *   - MAP-01 attempt 3（chief-architect 驳回修正）：比例尺几何错误。旧实现把
+ *     `scaleBarKm(110, projection)` 返回的**公里数**当 user unit 用（`x2 = scaleKm/zoom`），
+ *     真实内容下 zoom=1 会画出约 4000 user units 的线（视口仅 640），且旧断言只查
+ *     `data-layer="scalebar"` 与 `≈ N km` 文本 → 把坏元素认证为通过。修正：
+ *       1) src/atlas/projection.ts 新增 scaleBarGeometry(projection, zoom, targetPx) →
+ *          { km, screenLength, ... }，线长与标签由**同一个** km 派生（单位链：
+ *          1 屏幕 user unit = KM_PER_DEGREE / (projection.scale * zoom) km）；
+ *          scaleBarKm 增加可选 zoom 参数（默认 1，兼容旧调用）；
+ *       2) src/atlas/mapEngine.tsx 的比例尺 `<line x2>` 直接使用 screenLength、标签用
+ *          未除 zoom 的 km，并暴露 data-scalebar-{km,length,zoom,projection-scale}；
+ *       3) MAP1-atlas-scalebar 改为**几何断言**：解析 SSR 输出的线端点/标签，断言
+ *          对应性（反推 km ≈ 标签 km）与尺寸合理（屏幕线长 60–160 user units）；
+ *       4) MAP1-atlas-scalebar-zoom：受控 transform=4 再渲染一次，断言同一判据；
+ *       5) MAP1-atlas-scalebar-negative：把旧缺陷几何喂给同一判据，断言必须 FAIL。
+ *      `uncertaintyRadius` 的维度审计：`(radiusKm / KM_PER_DEGREE) * projection.scale`
+ *      是 km→度→user unit 的正确换算（且位于缩放组内，随 zoom 一起缩放），无同类错误。
+ *
  * 扩展约定补充（MAP-01）：地图/时间线的**稳定 data-* 控件属性**属于 WEB 展示契约；
  * 新增地图展示只在 PART 2 增加渲染断言，字段来源仍是同一份 content/history.json，
  * 不得为地图另建数据源或手写 URL（一律 buildHref）。
@@ -407,6 +424,7 @@ const RUNTIME_EXPORTS = {
     'svgTransform',
     'uncertaintyRadius',
     'scaleBarKm',
+    'scaleBarGeometry',
     'toUserSpace',
   ],
   'atlas/mapEngine.tsx': ['AtlasMapEngine'],
@@ -2173,6 +2191,9 @@ function checkPublishedRouteFixtureLeakage(M) {
 //   MAP1-phase-fields / MAP1-routes（内容 JSON 结构 gate，消息注明「非渲染」并由 -intel/-routes 覆盖呈现）
 //   MAP1-atlas-*（engine / selector / default-battle / date / legend / scalebar / graticule /
 //                uncertainty / keyboard-touch / place-clickable / stable-selectors）
+//   MAP1-atlas-scalebar（几何断言：解析 SSR 的线端点与标签，断言 线长↔标签对应性 + 尺寸合理）
+//   MAP1-atlas-scalebar-zoom（受控 transform=4 再渲染，断言同一几何判据）
+//   MAP1-atlas-scalebar-negative（旧缺陷几何喂同一判据必须 FAIL —— 证明判据有牙齿）
 //   MAP1-node-<标签> 与 MAP1-node-<标签>-detail（验收要求的八个重点标签：断言**字面标签**
 //                出现在渲染输出中，并写明由地点标签第一/二行还是区域标注层承载）
 //   MAP1-region-layer（SVG 区域标注层渲染字面区域名「澳大利亚北部」）
@@ -2226,6 +2247,54 @@ const MAP1_ENTRIES = [
   ['concepts', '知识专题', 'concepts'],
   ['questions', '历史问题', 'questions'],
 ];
+
+/**
+ * 从 SSR 输出解析比例尺几何（线端点 + 标签 + data-* 审计属性；解析失败返回 null）。
+ *
+ * 比例尺 `<g data-layer="scalebar">` 内只有 rect/line/text、无嵌套 `<g>`，因此可按首个
+ * `</g>` 安全截取；线端点取 `<line>` 的 x1/x2，标签取文本 `≈ N km`。
+ */
+function parseRenderedScaleBar(html) {
+  const source = String(html);
+  const groupMatch = source.match(/<g[^>]*data-layer="scalebar"[^>]*>[\s\S]*?<\/g>/);
+  if (!groupMatch) return null;
+  const group = groupMatch[0];
+  const attr = (name) => {
+    const match = group.match(new RegExp(`${name}="([^"]+)"`));
+    return match ? Number(match[1]) : null;
+  };
+  const lineMatch = group.match(/<line[^>]*x1="([-\d.]+)"[^>]*y1="[-\d.]+"[^>]*x2="([-\d.]+)"/);
+  const labelMatch = group.match(/≈\s*([\d.]+)\s*km/);
+  return {
+    x1: lineMatch ? Number(lineMatch[1]) : null,
+    x2: lineMatch ? Number(lineMatch[2]) : null,
+    labelKm: labelMatch ? Number(labelMatch[1]) : null,
+    dataKm: attr('data-scalebar-km'),
+    dataLength: attr('data-scalebar-length'),
+    zoom: attr('data-scalebar-zoom'),
+    projectionScale: attr('data-scalebar-projection-scale'),
+    targetPx: attr('data-scalebar-target-px'),
+  };
+}
+
+/**
+ * 比例尺几何判据（MAP1-atlas-scalebar* 的唯一判定）—— MAP-01 attempt 3 修正。
+ *
+ * 比例尺位于缩放组之外（`<svg>` 直接子节点），所以**屏幕线长 = |x2 - x1|（不再乘 zoom）**；
+ * 屏幕 user unit → km：`KM_PER_DEGREE / (projection.scale * zoom)`。
+ * 判据（任一不满足即 FAIL）：
+ *   1) 对应性：线长反推的 km 与标签 km 一致（容差 max(1 km, 1%)）；
+ *   2) 尺寸合理：屏幕线长在 60–160 user units（不是旧缺陷的 4000），且不超过视口宽度。
+ * 该函数同时被 MAP1-atlas-scalebar-negative 用来喂**旧的错误几何**，证明判据有牙齿。
+ */
+function evaluateScaleBarGeometry({ x1, x2, zoom, projectionScale, labelKm, kmPerDegree, viewportWidth }) {
+  const screenLength = Math.abs(x2 - x1);
+  const impliedKm = (screenLength * kmPerDegree) / (projectionScale * zoom);
+  const tolerance = Math.max(1, labelKm * 0.01);
+  const correspondence = Math.abs(impliedKm - labelKm) <= tolerance;
+  const sanity = screenLength >= 60 && screenLength <= 160 && screenLength <= viewportWidth;
+  return { ok: correspondence && sanity, screenLength, impliedKm, correspondence, sanity, tolerance };
+}
 
 function checkRealContentMapIntegration(M) {
   // ---------------------------------------------------------------- 真实内容输入
@@ -2328,10 +2397,101 @@ function checkRealContentMapIntegration(M) {
       atlasList.includes('示意'),
     '图例齐全：certainty 图例 + 双方不同视觉编码（形状/线型，不只靠颜色）+ 示意说明',
   );
+  // ---- 近似比例尺（MAP-01 attempt 3 修正：断言几何，而不是「元素存在」）--------
+  // 真实内容 places 与 AtlasView 传入的同一批地点（排序不影响 boundsForPlaces）。
+  const realPlaces = [...doc.places];
+  const realBounds = M.boundsForPlaces(realPlaces);
+  const realProjection = M.createProjection(realBounds);
+  const renderedScaleBar = parseRenderedScaleBar(atlasList);
+  const evaluatedScaleBar =
+    renderedScaleBar === null
+      ? null
+      : evaluateScaleBarGeometry({
+          x1: renderedScaleBar.x1,
+          x2: renderedScaleBar.x2,
+          zoom: renderedScaleBar.zoom,
+          projectionScale: renderedScaleBar.projectionScale,
+          labelKm: renderedScaleBar.labelKm,
+          kmPerDegree: M.KM_PER_DEGREE,
+          viewportWidth: M.VIEW_WIDTH,
+        });
+  const expectedScaleBarZoom1 = M.scaleBarGeometry(realProjection, 1, 110);
   check(
     'MAP1-atlas-scalebar',
-    atlasList.includes('data-layer="scalebar"') && /≈ \d+ km/.test(atlasList),
-    '近似比例尺可见（随缩放换算 km）',
+    Boolean(renderedScaleBar && evaluatedScaleBar) &&
+      renderedScaleBar.x1 === 0 &&
+      Math.abs((renderedScaleBar.zoom ?? -1) - 1) < 1e-6 &&
+      Math.abs((renderedScaleBar.x2 ?? -1) - expectedScaleBarZoom1.screenLength) < 1e-6 &&
+      (renderedScaleBar.labelKm ?? -1) === expectedScaleBarZoom1.km &&
+      (renderedScaleBar.dataKm ?? -1) === expectedScaleBarZoom1.km &&
+      Math.abs((renderedScaleBar.dataLength ?? -1) - expectedScaleBarZoom1.screenLength) < 0.01 &&
+      Math.abs((renderedScaleBar.projectionScale ?? -1) - realProjection.scale) < 1e-6 &&
+      evaluatedScaleBar.ok,
+    `近似比例尺几何（zoom=1）：屏幕线长 ${evaluatedScaleBar?.screenLength.toFixed(1)} user units ↔ 标签 ≈${renderedScaleBar?.labelKm} km；按投影反推 ${evaluatedScaleBar?.impliedKm.toFixed(1)} km（对应性 ${evaluatedScaleBar?.correspondence}，容差 ±${evaluatedScaleBar?.tolerance.toFixed(2)} km；尺寸合理 ${evaluatedScaleBar?.sanity}，60–160 units）；与 scaleBarGeometry() 期望一致（km=${expectedScaleBarZoom1.km}，length=${expectedScaleBarZoom1.screenLength.toFixed(1)}，projection.scale=${realProjection.scale.toFixed(4)}）`,
+  );
+
+  // 第二个缩放：直接渲染引擎的受控 transform=4，证明同一几何在其它 zoom 下仍成立。
+  const scaleZoom = 4;
+  const scaleZoomHtml = renderStatic(
+    h(M.AtlasMapEngine, {
+      places: realPlaces,
+      bounds: realBounds,
+      phase: null,
+      battleTitle: undefined,
+      selectedPlaceId: null,
+      onSelectPlace: () => {},
+      layers: M.DEFAULT_LAYERS,
+      onLayersChange: () => {},
+      transform: M.zoomByFactor(M.IDENTITY_TRANSFORM, scaleZoom),
+      label: '比例尺几何断言（zoom=4）',
+    }),
+  );
+  const renderedScaleBarZoom = parseRenderedScaleBar(scaleZoomHtml);
+  const evaluatedScaleBarZoom =
+    renderedScaleBarZoom === null
+      ? null
+      : evaluateScaleBarGeometry({
+          x1: renderedScaleBarZoom.x1,
+          x2: renderedScaleBarZoom.x2,
+          zoom: renderedScaleBarZoom.zoom,
+          projectionScale: renderedScaleBarZoom.projectionScale,
+          labelKm: renderedScaleBarZoom.labelKm,
+          kmPerDegree: M.KM_PER_DEGREE,
+          viewportWidth: M.VIEW_WIDTH,
+        });
+  const expectedScaleBarZoom4 = M.scaleBarGeometry(realProjection, scaleZoom, 110);
+  check(
+    'MAP1-atlas-scalebar-zoom',
+    Boolean(renderedScaleBarZoom && evaluatedScaleBarZoom) &&
+      Math.abs((renderedScaleBarZoom?.zoom ?? -1) - scaleZoom) < 1e-6 &&
+      Math.abs((renderedScaleBarZoom?.x2 ?? -1) - expectedScaleBarZoom4.screenLength) < 1e-6 &&
+      (renderedScaleBarZoom?.labelKm ?? -1) === expectedScaleBarZoom4.km &&
+      evaluatedScaleBarZoom.ok,
+    `近似比例尺几何（zoom=${scaleZoom}）：屏幕线长 ${evaluatedScaleBarZoom?.screenLength.toFixed(1)} user units ↔ 标签 ≈${renderedScaleBarZoom?.labelKm} km；按投影反推 ${evaluatedScaleBarZoom?.impliedKm.toFixed(1)} km（对应性 ${evaluatedScaleBarZoom?.correspondence}，容差 ±${evaluatedScaleBarZoom?.tolerance.toFixed(2)} km；尺寸合理 ${evaluatedScaleBarZoom?.sanity}）；与 scaleBarGeometry() 期望一致（km=${expectedScaleBarZoom4.km}，length=${expectedScaleBarZoom4.screenLength.toFixed(1)}）`,
+  );
+
+  // 判据反向自证：旧的缺陷几何（x2 = 旧 km/zoom，标签也被除 zoom）用同一判据必须 FAIL。
+  const oldScaleBarKm = M.scaleBarKm(110, realProjection, 1);
+  const oldScaleBar = {
+    x1: 0,
+    x2: oldScaleBarKm / 1,
+    zoom: 1,
+    projectionScale: realProjection.scale,
+    labelKm: Math.round(oldScaleBarKm / 1),
+  };
+  const evaluatedOldScaleBar = evaluateScaleBarGeometry({
+    ...oldScaleBar,
+    kmPerDegree: M.KM_PER_DEGREE,
+    viewportWidth: M.VIEW_WIDTH,
+  });
+  check(
+    'MAP1-atlas-scalebar-negative',
+    evaluatedOldScaleBar.ok === false &&
+      evaluatedScaleBar !== null &&
+      evaluatedScaleBar.ok === true &&
+      evaluatedScaleBarZoom !== null &&
+      evaluatedScaleBarZoom.ok === true,
+    `比例尺判据反向自证：旧缺陷公式（x2 = 旧 scaleKm/zoom，标签也除 zoom）在同一判据下 FAIL —— 屏幕线长 ${evaluatedOldScaleBar.screenLength.toFixed(1)} user units、标签 ≈${oldScaleBar.labelKm} km、反推 ${evaluatedOldScaleBar.impliedKm.toFixed(0)} km（对应性 ${evaluatedOldScaleBar.correspondence} / 尺寸合理 ${evaluatedOldScaleBar.sanity}）；修正后的真实输出（zoom=1 与 zoom=${scaleZoom}）均通过同一判据 —— 判据不是「元素存在」`,
   );
   check(
     'MAP1-atlas-graticule',
