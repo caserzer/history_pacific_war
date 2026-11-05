@@ -113,8 +113,18 @@
  *
  * 本文件内置的分段/单一属主自检（PART 2 · 自检段，全部真实参与 PASS/FAIL）：
  *   NAV-1 解析函数唯一 / NAV-2 夹具集合 / NAV-3 不引用不存在的 map-phases-analysis /
- *   NAV-4 PART 归属标注存在 / NAV-5 渲染断言不直接读契约字段 / NAV-6 PART 1 无断言。
+ *   NAV-4 PART 归属标注存在 / NAV-5 渲染断言不直接读契约字段 / NAV-6 PART 1 无断言 /
+ *   NAV-7 行尾无关（CRLF 变体与 LF 变体结果一致）。
  *   Z-accounting 下限取基线断言数 401：删除既有断言会直接 FAIL。
+ *
+ * ── NAV-01 attempt 2 修正（post-merge check failure）───────────────────────
+ *   a1 在中央 project worktree（core.autocrlf → CRLF 检出）失败于唯一一项
+ *   NAV-5：其函数体提取用 `\n}\n` 锚定，CRLF 下匹配不到 → bodyLen=0 → FAIL。
+ *   本版修正（同一失败类的系统性治理，不是单点补丁）：
+ *   - 所有读取本文件源码的自检（S1、NAV-*）先 `.replace(/\r\n/g, '\n')` 归一化；
+ *   - 函数体提取收敛为唯一实现 extractFunctionSource()，内部再次归一化；
+ *   - 新增 NAV-7：把归一化源码转成 CRLF 变体，重跑函数体提取 / PART 切片 / S1 扫描，
+ *     断言结果与 LF 变体一致（在任何检出环境下都会真实执行）。
  *
  * ═══════════════════════════════════════════════════════════════════════════
  * NAV-01 交付：B4 处理结果（断言名 before → after；唯一收敛在本文件）
@@ -164,6 +174,11 @@
  *      （属 SHIP-01 / EVID-01 / ACCEPT-01）、不写 src/（渲染修复由 MAP-00 承接）、
  *      不改 contracts/、content/、public/、tests/、.github/ 或 package.json。
  *   4) 本任务不运行内容门禁（--stage/--media），不补写内容缺陷；内容问题只记录交回。
+ *   5) 行尾无关（NAV-01 attempt 2 修正，必须遵守）：任何读取本脚本源码做自检的代码
+ *      （S1 / NAV-*）都必须先 `.replace(/\r\n/g, '\n')` 归一化，再使用 `\n` 锚定模式、
+ *      `split('\n')` 行号或区间切片；中央 project worktree 用 core.autocrlf 检出（CRLF），
+ *      本机 worktree 是 LF，同一自检必须在两种检出下给出相同结果。函数体提取只允许
+ *      使用 extractFunctionSource()（内部已归一化）。NAV-7 用 CRLF 变体做真实断言。
  *
  * 每个检查都打印 PASS/FAIL；本文件没有 SKIP 状态。负例检查（negative case）是刻意
  * 构造的错误输入，用来证明检查本身有效。
@@ -1718,7 +1733,10 @@ function findVacuousAssertions(source) {
 
 function checkNoVacuousAssertions() {
   const selfPath = fileURLToPath(import.meta.url);
-  const source = fs.readFileSync(selfPath, 'utf8');
+  // 行尾无关（NAV-01 a2）：中央 project worktree 用 core.autocrlf 检出，可能是 CRLF；
+  // 本机 worktree 是 LF。逐行扫描/注释剥离前先归一化为 LF，否则同一断言在不同检出
+  // 环境下会得出不同结果（a1 的 NAV-5 失败即此缺陷类）。
+  const source = fs.readFileSync(selfPath, 'utf8').replace(/\r\n/g, '\n');
   const hits = findVacuousAssertions(source);
   check(
     'S1',
@@ -2095,8 +2113,24 @@ function checkPublishedRouteFixtureLeakage(M) {
 //  - PART 1 / PART 2 显式分段与契约归属标注确实存在；
 //  - 渲染断言不直接读取 event.analysisProfiles（只消费 PART 1 的 blocks）。
 
+/**
+ * 从源码中提取一个顶层函数的完整源码（函数体提取的**唯一**实现）。
+ *
+ * 函数体提取本质上是**行尾敏感**的：`\n}\n` 只在 LF 下成立，CRLF 检出（中央
+ * project worktree 的 core.autocrlf）会匹配失败。因此本函数先归一化 `\r\n` → `\n`
+ * 再匹配；NAV-5 与 NAV-7（CRLF 变体自检）共用它，防止该类缺陷再次回归。
+ */
+function extractFunctionSource(source, name) {
+  const normalized = String(source).replace(/\r\n/g, '\n');
+  const match = normalized.match(new RegExp(`\\n(?:async )?function ${name}\\([\\s\\S]*?\\n\\}\\n`));
+  return match ? match[0].slice(1) : '';
+}
+
 function checkSegmentationBaseline() {
-  const rawSource = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8');
+  // 行尾无关（NAV-01 a2 修正）：先把源码归一化为 LF，再做所有基于换行的自检
+  // （函数体提取、PART 区块切片、逐行扫描）。中央 worktree 是 CRLF 检出，
+  // 若直接拿原始文本匹配 `\n}\n` 会在那边失败 —— 这正是 a1 被回滚的唯一 FAIL。
+  const rawSource = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   const code = stripCommentsAndStrings(rawSource);
 
   const parseDefinitions = (code.match(/function parseEarlyCampaignAnalysisBlocks\(/g) ?? []).length;
@@ -2127,13 +2161,12 @@ function checkSegmentationBaseline() {
     '脚本显式划分为 PART 1（夹具解析/派生，契约来源 ARCH）与 PART 2（渲染图/展示断言，契约来源 WEB）并各自标注',
   );
 
-  const renderFnMatch = rawSource.match(/\nfunction assertAnalysisProfilesRendered\([\s\S]*?\n\}\n/);
-  const renderFnBody = renderFnMatch ? renderFnMatch[0] : '';
+  const renderFnBody = extractFunctionSource(rawSource, 'assertAnalysisProfilesRendered');
   const readsContractFields = renderFnBody.includes('.analysisProfiles');
   check(
     'NAV-5-render-consumes-parse',
     renderFnBody.length > 0 && !readsContractFields,
-    '渲染断言 assertAnalysisProfilesRendered 只消费 PART 1 解析出的 blocks，不直接读取 event.analysisProfiles（无平行解析）',
+    '渲染断言 assertAnalysisProfilesRendered 只消费 PART 1 解析出的 blocks，不直接读取 event.analysisProfiles（无平行解析；行尾无关提取）',
   );
 
   // PART 1 区块内不得出现任何结果断言（解析段只解析；断言一律在 PART 2）。
@@ -2145,6 +2178,28 @@ function checkSegmentationBaseline() {
     'NAV-6-part1-no-assertions',
     part1Start >= 0 && part2Start > part1Start && part1CheckCalls === 0,
     `PART 1（夹具解析/派生）区块只做解析，不含任何 check/pass/fail 结果断言（实际 ${part1CheckCalls} 处）；断言全部在 PART 2`,
+  );
+
+  // 行尾无关自检（NAV-01 a2 修正）：把同一份源码转成 CRLF 变体，重新执行上面用到的
+  // 函数体提取 / PART 区块切片 / S1 逐行扫描，结果必须与 LF 变体完全一致。
+  // 这直接覆盖 a1 的失败机理（CRLF 下 `\n}\n` 不匹配 → NAV-5 失败），且在任何检出
+  // 环境下都会真实执行（不依赖本机文件的行尾）。
+  const crlfSource = rawSource.replace(/\n/g, '\r\n');
+  const crlfRenderFnBody = extractFunctionSource(crlfSource, 'assertAnalysisProfilesRendered');
+  const crlfPart1Start = crlfSource.indexOf('// PART 1 — 夹具解析/派生（契约来源：ARCH');
+  const crlfPart2Start = crlfSource.indexOf('// PART 2 — 渲染图/展示断言（契约来源：WEB');
+  const crlfPart1Slice = crlfPart1Start >= 0 && crlfPart2Start > crlfPart1Start ? crlfSource.slice(crlfPart1Start, crlfPart2Start) : '';
+  const crlfPart1CheckCalls = (stripCommentsAndStrings(crlfPart1Slice).match(/\b(?:check|pass|fail)\(/g) ?? []).length;
+  const crlfVacuousHits = findVacuousAssertions(crlfSource).length;
+  const lfVacuousHits = findVacuousAssertions(rawSource).length;
+  check(
+    'NAV-7-eol-agnostic',
+    crlfSource.includes('\r\n') &&
+      crlfRenderFnBody.length > 0 &&
+      crlfRenderFnBody.length === renderFnBody.length &&
+      crlfPart1CheckCalls === part1CheckCalls &&
+      crlfVacuousHits === lfVacuousHits,
+    `行尾无关自检：同一源码的 CRLF 变体与 LF 变体结果一致（函数体 ${crlfRenderFnBody.length}/${renderFnBody.length} 字符；PART 1 断言数 ${crlfPart1CheckCalls}/${part1CheckCalls}；S1 空洞命中 ${crlfVacuousHits}/${lfVacuousHits} 处）`,
   );
 }
 
