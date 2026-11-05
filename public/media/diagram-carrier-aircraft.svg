@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">舰载机按任务分工（原创）</title>
+  <desc id="desc">战斗机 / 俯冲轰炸机 / 鱼雷机在航母作战中的不同角色　—　机形为符号化示意</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">舰载机按任务分工（原创）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">战斗机 / 俯冲轰炸机 / 鱼雷机在航母作战中的不同角色　—　机形为符号化示意</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <rect x="110" y="180" width="300" height="330" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/>
+<rect x="450" y="180" width="300" height="330" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/>
+<rect x="790" y="180" width="300" height="330" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/>
+<text x="260" y="216" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="20" font-weight="700" fill="#1f3a5f" text-anchor="middle" opacity="1">战斗机</text>
+<text x="600" y="216" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="20" font-weight="700" fill="#1f3a5f" text-anchor="middle" opacity="1">俯冲轰炸机</text>
+<text x="940" y="216" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="20" font-weight="700" fill="#1f3a5f" text-anchor="middle" opacity="1">鱼雷机</text>
+<g><ellipse cx="260" cy="300" rx="58" ry="12" fill="#2f5d8a"/><polygon points="190,300 238,290 238,310" fill="#2f5d8a"/><rect x="242" y="266" width="12" height="26" fill="#2f5d8a"/><rect x="242" y="308" width="12" height="26" fill="#2f5d8a"/><polygon points="318,300 334,290 334,310" fill="#2f5d8a"/></g>
+<g><ellipse cx="600" cy="300" rx="58" ry="12" fill="#2f5d8a"/><polygon points="530,300 578,290 578,310" fill="#2f5d8a"/><rect x="582" y="266" width="12" height="26" fill="#2f5d8a"/><rect x="582" y="308" width="12" height="26" fill="#2f5d8a"/><polygon points="658,300 674,290 674,310" fill="#2f5d8a"/></g>
+<g><ellipse cx="940" cy="300" rx="58" ry="12" fill="#2f5d8a"/><polygon points="870,300 918,290 918,310" fill="#2f5d8a"/><rect x="922" y="266" width="12" height="26" fill="#2f5d8a"/><rect x="922" y="308" width="12" height="26" fill="#2f5d8a"/><polygon points="998,300 1014,290 1014,310" fill="#2f5d8a"/></g>
+<polygon points="600,352 588,376 612,376" fill="#8b2c2c"/>
+<rect x="922" y="352" width="36" height="10" rx="5" fill="#8b2c2c"/>
+<text x="260" y="400" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#22303f" text-anchor="middle" opacity="1">制空 · 护航</text>
+<text x="260" y="426" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">争夺空中优势，保护攻击机群</text>
+<text x="600" y="400" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#22303f" text-anchor="middle" opacity="1">垂直俯冲 · 精确投弹</text>
+<text x="600" y="426" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">从高空俯冲，攻击舰船甲板</text>
+<text x="940" y="400" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#22303f" text-anchor="middle" opacity="1">低空雷击 · 水平轰炸</text>
+<text x="940" y="426" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">贴海面投雷，或执行水平轰炸</text>
+<rect x="140" y="470" width="920" height="60" rx="8" fill="#f7f1e2" stroke="#a8894f" stroke-width="1.5" opacity="1"/>
+<text x="160" y="500" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">同一艘航母按任务搭载不同机种；珍珠港攻击编组即按水平轰炸、鱼雷、俯冲与制空分工。</text>
+<text x="160" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">机种与任务的分工见已接受 claim-aircraft-role-split 与 concept-carrier-aircraft 正文。</text>
+  <rect x="60" y="624" width="684" height="44" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><rect x="78" y="638" width="26" height="14" rx="3" fill="#2f5d8a" stroke="#2f5d8a" stroke-width="2" opacity="1"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">机种符号（示意）</text><rect x="408" y="638" width="26" height="14" rx="3" fill="#8b2c2c" stroke="#8b2c2c" stroke-width="2" opacity="1"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">任务载荷符号（炸弹 / 鱼雷）</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">机形与载荷为教学符号，不代表真实机型的精确外形；任务分工的事实依据见 concept-carrier-aircraft 与其 claims。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>

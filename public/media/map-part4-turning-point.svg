@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">战局开始变化：珊瑚海与中途岛（示意）</title>
+  <desc id="desc">1942 年 5—6 月，美军航母兵力投入两个关键方向　—　位置与箭头均为教学示意</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">战局开始变化：珊瑚海与中途岛（示意）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">1942 年 5—6 月，美军航母兵力投入两个关键方向　—　位置与箭头均为教学示意</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <rect x="70" y="140" width="1060" height="455" rx="2" fill="#e9eef2" stroke="none" stroke-width="0" opacity="1"/>
+<rect x="940" y="178" width="140" height="70" rx="8" fill="#f3ddd2" stroke="#8b2c2c" stroke-width="2" opacity="1"/>
+<text x="1010" y="210" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#8b2c2c" text-anchor="middle" opacity="1">日本本土</text>
+<circle cx="850" cy="396" r="9" fill="#6b604d" stroke="none" stroke-width="0" opacity="1"/>
+<text x="866" y="402" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">拉包尔</text>
+<circle cx="722" cy="516" r="9" fill="#a8894f" stroke="none" stroke-width="0" opacity="1"/>
+<text x="738" y="522" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">莫尔兹比港</text>
+<circle cx="140" cy="380" r="9" fill="#2f5d8a" stroke="none" stroke-width="0" opacity="1"/>
+<text x="156" y="386" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#2f5d8a" text-anchor="start" opacity="1">夏威夷</text>
+<circle cx="300" cy="210" r="9" fill="#22303f" stroke="none" stroke-width="0" opacity="1"/>
+<text x="316" y="216" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">中途岛</text>
+<circle cx="626" cy="470" r="10" fill="#2f5d8a" stroke="none" stroke-width="0" opacity="1"/>
+<text x="642" y="470" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#2f5d8a" text-anchor="start" opacity="1">珊瑚海</text>
+<line x1="940" y1="226" x2="866" y2="386" stroke="#8b2c2c" stroke-width="3" opacity="1" marker-end="url(#arrRed)"/>
+<line x1="842" y1="410" x2="740" y2="508" stroke="#8b2c2c" stroke-width="3" opacity="1" stroke-dasharray="7 5" marker-end="url(#arrRed)"/>
+<line x1="770" y1="452" x2="800" y2="486" stroke="#8b2c2c" stroke-width="3" opacity="1"/>
+<line x1="800" y1="452" x2="770" y2="486" stroke="#8b2c2c" stroke-width="3" opacity="1"/>
+<text x="806" y="476" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#8b2c2c" text-anchor="start" opacity="1">进攻受阻</text>
+<line x1="936" y1="206" x2="322" y2="206" stroke="#8b2c2c" stroke-width="3" opacity="1" stroke-dasharray="9 6" marker-end="url(#arrRed)"/>
+<text x="600" y="192" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#8b2c2c" text-anchor="start" opacity="1">日军进攻中途岛方向（示意）</text>
+<line x1="190" y1="372" x2="600" y2="460" stroke="#2f5d8a" stroke-width="3" opacity="1" stroke-dasharray="8 5" marker-end="url(#arrNavy)"/>
+<text x="340" y="448" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#2f5d8a" text-anchor="start" opacity="1">美军航母兵力投入（示意）</text>
+<rect x="560" y="540" width="420" height="46" rx="6" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="1.5" opacity="1"/>
+<text x="578" y="568" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#2f5d8a" text-anchor="start" opacity="1">珊瑚海 1942-05：日军海上进攻被阻止</text>
+<rect x="150" y="460" width="330" height="46" rx="6" fill="#fbf7ea" stroke="#22303f" stroke-width="1.5" opacity="1"/>
+<text x="168" y="488" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">中途岛 1942-06：日军损失四艘航母</text>
+  <rect x="60" y="624" width="684" height="70" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><line x1="78" y1="645" x2="108" y2="645" stroke="#8b2c2c" stroke-width="4" opacity="1" marker-end="url(#arrRed)"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">日军进攻方向（示意）</text><line x1="408" y1="645" x2="438" y2="645" stroke="#2f5d8a" stroke-width="4" opacity="1" marker-end="url(#arrNavy)"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">美军航母兵力投入（示意）</text><rect x="78" y="664" width="26" height="14" rx="3" fill="#a8894f" stroke="#a8894f" stroke-width="2" opacity="1"/><text x="116" y="676" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">关键港口</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">本图只表示两条战略方向的相对位置与先后，不表示精确航迹、兵力或时间。战役经过与损失见已接受内容。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>
