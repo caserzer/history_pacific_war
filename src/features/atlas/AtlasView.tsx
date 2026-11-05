@@ -1,13 +1,15 @@
 /**
  * 地图入口（Atlas）
  *
- * WEB-01 的职责：提供**契约稳定**的挂载点与地点数据展示，交互式地图由 MAP-01 实现。
+ * 实现状态（MAP-00 更新）：交互式地图**已实现**，由 `src/Atlas.tsx`（入口组件，内部使用
+ * `src/atlas/mapEngine` 的 SVG 引擎与 `src/atlas/controls` 控件）渲染；
+ * 本视图负责页面级排版、地点列表与地点详情。
  * 挂载契约见 ./mountApi.ts（含硬性规则：无外部瓦片依赖、示意必须可见、双方对称等）。
  *
- * 本视图在 MAP-01 交付前提供：
+ * 本视图提供：
  * - 地点列表（真实地理节点，历史地名 + 现代地名 + 国家 + 坐标精度）；
  * - 选中地点详情，并展示「这个地点出现在哪些事件/战役/问题中」；
- * - 一个语义化的地图挂载容器（`data-atlas-mount`），MAP-01 直接在其中渲染画布。
+ * - 交互式 SVG 地图（由 `src/Atlas.tsx` 渲染，替代早期的 `data-atlas-mount` 占位容器）。
  */
 
 import { useMemo } from 'react';
@@ -17,7 +19,7 @@ import { EmptyState, MetaRow, PageHead, RelatedLinks } from '../../components/pr
 import type { PlaceEntity } from '../../data/types';
 import { buildHref } from '../../router/route';
 import { PLACE_TYPE_LABELS, SIDE_LABELS } from '../../content/labels';
-import { ATLAS_LEGEND, type AtlasMountProps } from './mountApi';
+import { Atlas } from '../../Atlas';
 import { useReadingProgress } from '../../a11y/readingProgress';
 
 export function AtlasView({ placeId }: { placeId: string | null }) {
@@ -26,39 +28,12 @@ export function AtlasView({ placeId }: { placeId: string | null }) {
     () => [...index.places.values()].sort((a, b) => a.historicalName.localeCompare(b.historicalName, 'zh-Hans-CN')),
     [index],
   );
+  const battles = useMemo(() => [...index.battles.values()], [index]);
   const selected = placeId ? index.places.get(placeId) ?? null : null;
 
-  if (places.length === 0) {
-    return (
-      <div>
-        <PageHead
-          eyebrow="入口 04 / Atlas"
-          title="地图"
-          description="从地理空间理解行动：历史地名与现代地名并列，坐标精度与示意标记可见。"
-        />
-        <EmptyState
-          title="地理节点尚未加载"
-          body="本入口已经就绪，但共享内容文件 content/history.json 还没有交付任何真实地理节点。地图与地点不会用虚构坐标或外部瓦片服务填充 —— 核心功能必须离线可用。"
-          details={[
-            { text: '契约要求：places 只存真实地点，schematic 必须为 false，并给出坐标精度', contract: 'contracts/README.md §4.4' },
-            { text: '地图阶段位置来自 battles[].phases[].positions 且必须标记 schematic', contract: 'contracts/README.md §4.2' },
-            { text: '不得依赖外部瓦片或商业 Key', contract: '架构政策 v1 / 需求 MAP-OFFLINE' },
-          ]}
-        />
-      </div>
-    );
-  }
-
-  // 给 MAP-01 的挂载 props（编译期校验字段完整性；MAP-01 直接消费）。
-  const mountProps: AtlasMountProps = {
-    view: 'places',
-    places,
-    selectedPlaceId: selected?.id ?? null,
-    onSelectPlace: (nextPlaceId: string) => {
-      window.location.hash = buildHref('atlas', { id: nextPlaceId }).slice(1);
-    },
+  const navigateToPlace = (nextPlaceId: string) => {
+    window.location.hash = buildHref('atlas', { id: nextPlaceId }).slice(1);
   };
-  void mountProps;
 
   return (
     <div>
@@ -68,62 +43,52 @@ export function AtlasView({ placeId }: { placeId: string | null }) {
         description="从地理空间理解行动：历史地名与现代地名并列，坐标精度与示意标记可见。地点是真实已知的地理节点，舰队位置与航线只出现在战役的地图阶段里，并且一律标记为示意。"
       />
 
-      <div className="pw-atlas">
-        <div
-          className="pw-atlas__mount"
-          data-atlas-mount="places"
-          role="region"
-          aria-label="地图挂载区域（交互式地图由 MAP-01 实现）"
-        >
-          <p style={{ margin: '0 0 var(--pw-space-2)', fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', letterSpacing: '0.1em', color: 'var(--pw-brass-text)' }}>
-            地图挂载点 · ATLAS-MOUNT
-          </p>
-          <p style={{ margin: '0 0 var(--pw-space-3)', fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
-            交互式地图（缩放、平移、图层切换、阶段联动）由后续地图任务（MAP-01）在此容器中实现，
-            使用同一份 places 与 battles[].phases 数据。当前任务只保证挂载契约、数据与图例一致。
-          </p>
-          <ul className="pw-table" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {ATLAS_LEGEND.map((entry) => (
-              <li key={entry.kind} style={{ display: 'flex', gap: 'var(--pw-space-3)', padding: 'var(--pw-space-2) 0', borderBottom: '1px dashed color-mix(in srgb, var(--pw-ink) 20%, transparent)' }}>
-                <span style={{ fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', color: 'var(--pw-brass-text)', minWidth: '6em' }}>{entry.kind}</span>
-                <span style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)' }}>
-                  {entry.label}
-                  <span style={{ display: 'block', color: 'var(--pw-ink-muted)', fontSize: 'var(--pw-size-xs)' }}>编码方式：{entry.style}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* 交互式 SVG 地图引擎（离线自绘，无瓦片依赖）。数据来自同一份 content/history.json。 */}
+      <Atlas
+        places={places}
+        battles={battles}
+        selectedPlaceId={selected?.id ?? null}
+        onSelectPlace={navigateToPlace}
+      />
 
-        <aside aria-label="地点列表" className="pw-card" style={{ padding: 'var(--pw-space-3)' }}>
-          <p style={{ margin: '0 0 var(--pw-space-2)', fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', letterSpacing: '0.1em', color: 'var(--pw-brass-text)' }}>
-            地点（{places.length}）
-          </p>
-          <ul className="pw-list" style={{ borderTop: 0 }}>
+      <div style={{ marginTop: 'var(--pw-space-5)' }}>
+        <h2 className="pw-section__heading">地点列表（{places.length}）</h2>
+        {places.length === 0 ? (
+          <EmptyState
+            title="地理节点尚未加载"
+            body="共享内容文件 content/history.json 还没有交付真实地理节点。地图不会用虚构坐标或外部瓦片服务填充 —— 核心功能必须离线可用。"
+            details={[
+              { text: '契约要求：places 只存真实地点，schematic 必须为 false，并给出坐标精度', contract: 'contracts/README.md §4.4' },
+            ]}
+          />
+        ) : (
+          <ul className="pw-list">
             {places.map((place) => (
               <li className="pw-list__item" key={place.id}>
                 <a
                   className="pw-list__link"
                   href={buildHref('atlas', { id: place.id })}
                   aria-current={selected?.id === place.id ? 'true' : undefined}
-                  style={{ gridTemplateColumns: '1fr' }}
                 >
+                  <span className="pw-list__date">
+                    {place.coordinates.lat.toFixed(2)}, {place.coordinates.lng.toFixed(2)}
+                  </span>
                   <span>
-                    <span className="pw-list__title" style={{ fontSize: 'var(--pw-size-base)' }}>{place.historicalName}</span>
-                    <span style={{ display: 'block', fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', color: 'var(--pw-ink-muted)' }}>
-                      {place.modernName} · {place.modernCountry}
+                    <span className="pw-list__title">{place.historicalName}</span>
+                    <span className="pw-list__summary">
+                      {place.modernName} · {place.modernCountry} · {PLACE_TYPE_LABELS[place.placeType] ?? place.placeType}
                     </span>
                   </span>
                 </a>
               </li>
             ))}
           </ul>
-        </aside>
+        )}
       </div>
 
       {selected ? <PlaceDetail place={selected} /> : (
         <p style={{ marginTop: 'var(--pw-space-4)', fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
-          从左侧列表选择一个地点，查看它的历史地名、现代地名、坐标精度，以及出现在哪些事件、战役与问题中。
+          在地图上点选一个地点，或从上面的列表选择，查看它的历史地名、现代地名、坐标精度，以及出现在哪些事件、战役与问题中。
         </p>
       )}
     </div>
