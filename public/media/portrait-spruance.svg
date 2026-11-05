@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">雷蒙德·斯普鲁恩斯</title>
+  <desc id="desc">Raymond A. Spruance · 第 16 特混舰队司令</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">雷蒙德·斯普鲁恩斯</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">Raymond A. Spruance · 第 16 特混舰队司令</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <ellipse cx="600" cy="352" rx="205" ry="235" fill="#efe4cb" stroke="#a8894f" stroke-width="3" opacity="1"/>
+<ellipse cx="600" cy="352" rx="182" ry="212" fill="#f7f1e2" stroke="#c9b995" stroke-width="1.5" opacity="1" stroke-dasharray="6 6"/>
+<circle cx="600" cy="300" r="74" fill="#2f5d8a" stroke="none" stroke-width="0" opacity="1"/>
+<path d="M468,568 C472,472 520,420 600,420 C680,420 728,472 732,568 Z" fill="#2f5d8a"/>
+<path d="M526,262 Q600,220 674,262 L678,282 Q600,244 522,282 Z" fill="#1f3a5f"/>
+<line x1="522" y1="282" x2="678" y2="282" stroke="#23303a" stroke-width="2" opacity="1"/>
+<rect x="556" y="590" width="88" height="9" rx="2" fill="#a8894f" stroke="none" stroke-width="0" opacity="1"/>
+<text x="600" y="636" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="18" font-weight="700" fill="#2f5d8a" text-anchor="middle" opacity="1">美国海军</text>
+<text x="600" y="670" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="16" font-weight="400" fill="#22303f" text-anchor="middle" opacity="1">第 16 特混舰队司令</text>
+<text x="600" y="702" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">在上级保守指令与起飞时间约束下决定出击时机</text>
+  
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">原创矢量人物示意：面部与服饰为符号化图形，不是历史照片、画像扫描或真实容貌复原。依据已接受的人物档案与来源绘制；决策要素见人物档案正文。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创肖像示意 · 示意性标注</text>
+</svg>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">航空母舰结构示意（原创）</title>
+  <desc id="desc">飞行甲板、舰岛、升降机、机库、弹射器与拦阻索　—　侧视示意，不按真实比例</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">航空母舰结构示意（原创）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">飞行甲板、舰岛、升降机、机库、弹射器与拦阻索　—　侧视示意，不按真实比例</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <line x1="120" y1="566" x2="1080" y2="566" stroke="#9db4c4" stroke-width="2" opacity="1"/>
+<path d="M180,432 L1000,432 L958,522 L242,522 Z" fill="#5b6b78" stroke="#33414c" stroke-width="3"/>
+<rect x="158" y="406" width="864" height="24" rx="3" fill="#8a9099" stroke="#33414c" stroke-width="2" opacity="1"/>
+<rect x="286" y="452" width="616" height="36" rx="2" fill="#c9d3da" stroke="#33414c" stroke-width="1.5" opacity="1"/>
+<rect x="762" y="336" width="92" height="68" rx="3" fill="#7d8790" stroke="#33414c" stroke-width="2" opacity="1"/>
+<line x1="808" y1="336" x2="808" y2="288" stroke="#33414c" stroke-width="3" opacity="1"/>
+<rect x="360" y="396" width="56" height="12" rx="1" fill="#f2d98d" stroke="#8a6d1f" stroke-width="1.5" opacity="1"/>
+<rect x="636" y="396" width="56" height="12" rx="1" fill="#f2d98d" stroke="#8a6d1f" stroke-width="1.5" opacity="1"/>
+<line x1="186" y1="412" x2="256" y2="412" stroke="#8a6d1f" stroke-width="5" opacity="1"/>
+<line x1="896" y1="406" x2="896" y2="430" stroke="#8a6d1f" stroke-width="1.5" opacity="1"/>
+<line x1="870" y1="406" x2="870" y2="430" stroke="#8a6d1f" stroke-width="1.5" opacity="1"/>
+<line x1="844" y1="406" x2="844" y2="430" stroke="#8a6d1f" stroke-width="1.5" opacity="1"/>
+<line x1="386" y1="396" x2="386" y2="360" stroke="#c9b995" stroke-width="1.5" opacity="1"/>
+<text x="360" y="352" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#8a6d1f" text-anchor="start" opacity="1">升降机</text>
+<line x1="808" y1="336" x2="808" y2="316" stroke="#c9b995" stroke-width="1.5" opacity="1"/>
+<text x="824" y="312" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">舰岛</text>
+<line x1="156" y1="418" x2="120" y2="380" stroke="#c9b995" stroke-width="1.5" opacity="1"/>
+<text x="74" y="376" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">飞行甲板</text>
+<line x1="186" y1="412" x2="130" y2="470" stroke="#c9b995" stroke-width="1.5" opacity="1"/>
+<text x="70" y="492" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#8a6d1f" text-anchor="start" opacity="1">弹射器</text>
+<line x1="896" y1="424" x2="960" y2="470" stroke="#c9b995" stroke-width="1.5" opacity="1"/>
+<text x="966" y="476" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#8a6d1f" text-anchor="start" opacity="1">拦阻索</text>
+<line x1="500" y1="470" x2="500" y2="510" stroke="#c9b995" stroke-width="1.5" opacity="1"/>
+<text x="510" y="506" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">机库甲板</text>
+<text x="250" y="546" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">舰体 / 防空炮位 / 护航舰艇</text>
+<rect x="120" y="168" width="380" height="104" rx="8" fill="#fbf7ea" stroke="#a8894f" stroke-width="1.5" opacity="1"/>
+<text x="140" y="196" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">甲板循环决定战斗节奏</text>
+<text x="140" y="222" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">飞机起飞、回收、加油、挂弹都在同一条</text>
+<text x="140" y="244" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">甲板上完成；甲板被占用时，航母的打击</text>
+<text x="140" y="266" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">能力会暂时归零。</text>
+  <rect x="60" y="624" width="684" height="44" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><rect x="78" y="638" width="26" height="14" rx="3" fill="#8a9099" stroke="#22303f" stroke-width="2" opacity="1"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">飞行甲板</text><rect x="408" y="638" width="26" height="14" rx="3" fill="#f2d98d" stroke="#a8894f" stroke-width="2" opacity="1"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">升降机 / 作业面</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">结构为教学示意，不按真实舰型比例；概念解释见 concept-aircraft-carrier 正文。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>
