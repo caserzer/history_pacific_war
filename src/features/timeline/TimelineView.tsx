@@ -27,12 +27,43 @@ import { HISTORICAL_PART_META } from '../../content/labels';
 import { buildHref } from '../../router/route';
 import { readProgress, useReadingProgress } from '../../a11y/readingProgress';
 
-export function TimelineView({ eventId }: { eventId: string | null }) {
+/**
+ * MAP-01：时间线日期筛选。
+ *
+ * 日期选择只做「截至某日」的累积筛选（历史时间线的自然读法），并写回
+ * `#/timeline?date=YYYY-MM-DD`，因此可深链、可后退，页面上暴露稳定属性供浏览器测试观察：
+ *   [data-timeline-date-filter]  筛选器容器（含 data-timeline-date / data-timeline-date-count）
+ *   [data-timeline-date-range]   滑块（aria-valuetext 带当前日期与事件数）
+ *   [data-timeline-date-display] 当前日期与计数文案
+ *   [data-timeline-date-reset]   「全部日期」按钮
+ *   [data-timeline-event="<id>"] 每个被渲染的事件条目
+ */
+export function TimelineView({ eventId, initialDate = null }: { eventId: string | null; initialDate?: string | null }) {
   const { index } = useApp();
   const events = useMemo(() => sortEvents([...index.events.values()]), [index]);
-  const groups = useMemo(() => groupByPart(events, ['part-1-why-war', 'part-2-pearl-harbor', 'part-3-expansion', 'part-4-turning-point', 'part-5-midway']), [events]);
+  const eventDates = useMemo(() => [...new Set(events.map((event) => event.startDate))].sort(), [events]);
   const selected = eventId ? index.events.get(eventId) ?? null : null;
   const [filter, setFilter] = useState<string>('all');
+  // null = 不过滤（全部日期）；否则是 eventDates 的下标（截至该日期）。
+  const [dateIndex, setDateIndex] = useState<number | null>(() => {
+    if (!initialDate) return null;
+    // 找到「不晚于 initialDate」的最后一个事件日期（避免依赖 ES2023 findLastIndex）。
+    for (let i = eventDates.length - 1; i >= 0; i -= 1) {
+      const date = eventDates[i];
+      if (date !== undefined && date <= initialDate) return i;
+    }
+    return 0;
+  });
+  const activeDate = dateIndex === null ? null : eventDates[dateIndex] ?? null;
+  const dateFiltered = useMemo(
+    () => (activeDate ? events.filter((event) => event.startDate <= activeDate) : events),
+    [events, activeDate],
+  );
+
+  const groups = useMemo(
+    () => groupByPart(dateFiltered, ['part-1-why-war', 'part-2-pearl-harbor', 'part-3-expansion', 'part-4-turning-point', 'part-5-midway']),
+    [dateFiltered],
+  );
 
   const filteredGroups = useMemo(() => {
     if (filter === 'all') return groups;
@@ -40,7 +71,7 @@ export function TimelineView({ eventId }: { eventId: string | null }) {
       .map((group) => ({ ...group, items: group.items.filter((event) => event.eventType === filter) }))
       .filter((group) => group.items.length > 0);
   }, [groups, filter]);
-  const eventTypes = useMemo(() => [...new Set(events.map((event) => event.eventType))].sort(), [events]);
+  const eventTypes = useMemo(() => [...new Set(dateFiltered.map((event) => event.eventType))].sort(), [dateFiltered]);
 
   if (events.length === 0) {
     return (
@@ -73,19 +104,61 @@ export function TimelineView({ eventId }: { eventId: string | null }) {
         <EventDetail event={selected} />
       ) : (
         <>
+          {eventDates.length > 1 ? (
+            <div
+              className="pw-filters"
+              role="group"
+              aria-label="按日期筛选时间线"
+              data-timeline-date-filter=""
+              data-timeline-date={activeDate ?? 'all'}
+              data-timeline-date-count={dateFiltered.length}
+              data-timeline-date-total={events.length}
+            >
+              <label className="pw-filters__label" htmlFor="pw-timeline-date-range">
+                日期
+              </label>
+              <input
+                id="pw-timeline-date-range"
+                type="range"
+                min={0}
+                max={eventDates.length - 1}
+                step={1}
+                value={dateIndex ?? eventDates.length - 1}
+                onChange={(event) => {
+                  const next = Number(event.target.value);
+                  setDateIndex(next >= eventDates.length - 1 ? null : next);
+                }}
+                aria-valuetext={activeDate ? `显示截至 ${activeDate} 的 ${dateFiltered.length} 个事件（共 ${events.length} 个）` : `显示全部 ${events.length} 个事件`}
+                data-timeline-date-range=""
+                style={{ minWidth: '12rem', flex: '1 1 12rem' }}
+              />
+              <span data-timeline-date-display="">
+                {activeDate ? `截至 ${activeDate}：${dateFiltered.length} / ${events.length} 个事件` : `全部 ${events.length} 个事件`}
+              </span>
+              <button
+                type="button"
+                className="pw-btn"
+                aria-pressed={dateIndex === null}
+                data-timeline-date-reset=""
+                onClick={() => setDateIndex(null)}
+              >
+                全部日期
+              </button>
+            </div>
+          ) : null}
           <div className="pw-filters" role="group" aria-label="按事件类型筛选">
             <span className="pw-filters__label">事件类型</span>
             <button type="button" className="pw-btn" aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>
-              全部 {events.length}
+              全部 {dateFiltered.length}
             </button>
             {eventTypes.map((type) => (
               <button key={type} type="button" className="pw-btn" aria-pressed={filter === type} onClick={() => setFilter(type)}>
-                {EVENT_TYPE_LABELS[type] ?? type} {events.filter((event) => event.eventType === type).length}
+                {EVENT_TYPE_LABELS[type] ?? type} {dateFiltered.filter((event) => event.eventType === type).length}
               </button>
             ))}
           </div>
           {filteredGroups.length === 0 ? (
-            <EmptyState title="当前筛选没有事件" body="请选择其他事件类型，或选择「全部」。" />
+            <EmptyState title="当前筛选没有事件" body="请调整日期或事件类型筛选，或选择「全部」。" />
           ) : (
             filteredGroups.map((group) => (
               <section key={group.part} className="pw-section" aria-labelledby={`part-${group.part}`}>
@@ -95,7 +168,12 @@ export function TimelineView({ eventId }: { eventId: string | null }) {
                 </h2>
                 <ol className="pw-timeline">
                   {group.items.map((event) => (
-                    <li key={event.id} className={`pw-timeline__item${event.battleId ? ' pw-timeline__item--battle' : ''}`}>
+                    <li
+                      key={event.id}
+                      className={`pw-timeline__item${event.battleId ? ' pw-timeline__item--battle' : ''}`}
+                      data-timeline-event={event.id}
+                      data-timeline-event-date={event.startDate}
+                    >
                       <span className="pw-timeline__date">{formatEventDate(event)}</span>
                       <h3 className="pw-timeline__title">
                         <a href={buildHref('timeline', { id: event.id })}>{event.title}</a>

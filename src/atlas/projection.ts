@@ -222,11 +222,53 @@ export function uncertaintyRadius(radiusKm: number, projection: Projection): num
   return (radiusKm / KM_PER_DEGREE) * projection.scale;
 }
 
-/** 比例尺：给定目标像素宽度，返回覆盖的公里数（用当前投影的纬度比例）。 */
-export function scaleBarKm(targetPx: number, projection: Projection): number {
-  const rawKm = (targetPx / projection.scale) * KM_PER_DEGREE;
+/**
+ * 比例尺：给定**屏幕**目标宽度与当前缩放，返回该宽度覆盖的公里数（等距圆柱，纬度比例）。
+ *
+ * MAP-01 attempt 3 修正：旧实现只按 zoom=1 计算，组件再错误地把公里数当 user unit 用。
+ * 现在把 zoom 纳入计算（`zoom` 默认 1，兼容旧调用），供 scaleBarGeometry() 统一使用。
+ */
+export function scaleBarKm(targetPx: number, projection: Projection, zoom = 1): number {
+  const safeZoom = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
+  const rawKm = (targetPx / (projection.scale * safeZoom)) * KM_PER_DEGREE;
   const nice = [50, 100, 200, 250, 500, 1000, 2000, 4000];
   return nice.reduce((best, candidate) => (Math.abs(candidate - rawKm) < Math.abs(best - rawKm) ? candidate : best), nice[0]!);
+}
+
+/** 比例尺几何：标签（km）与屏幕线段长度（user unit）**成对**返回，保证二者永远描述同一距离。 */
+export interface ScaleBarGeometry {
+  /** 比例尺代表的公里数（「好读」值：50/100/…/4000）。 */
+  km: number;
+  /** 屏幕上的线段长度（SVG user unit）。比例尺位于缩放组之外，故不再乘 zoom。 */
+  screenLength: number;
+  /** 计算所用的缩放（审计用）。 */
+  zoom: number;
+  /** 每公里对应的屏幕 user unit（含 zoom；只用于审计/断言，不用于渲染决策）。 */
+  screenUnitsPerKm: number;
+}
+
+/**
+ * 比例尺几何（MAP-01 attempt 3 修正）—— 线长与标签的**唯一**来源。
+ *
+ * 单位链（比例尺位于 `<svg>` 直接子节点、在缩放组之外）：
+ *   屏幕 user unit → 度：1 / (projection.scale * zoom)
+ *   度 → 公里：× KM_PER_DEGREE
+ * 因此 1 个屏幕 user unit = KM_PER_DEGREE / (projection.scale * zoom) km。
+ *
+ * 做法：以 targetPx（默认 110）为期望屏幕长度 → 反算公里数 → 取「好读」的 km →
+ * 再反算**精确** screenLength = km * projection.scale * zoom / KM_PER_DEGREE。
+ * 于是 x2 与标签由同一个 km 派生：屏幕上 x2 长度恰好代表标签的 km；取整「好读」值
+ * 带来的误差被吸收到线段长度上（≈targetPx 附近），而不是让标签与长度互相矛盾。
+ *
+ * 例（真实内容，projection.scale≈2.56，zoom=1）：km=4000 → screenLength≈92；
+ * zoom=4 时 km=1000 → screenLength≈92；zoom=8 时 km=500 → screenLength≈92。
+ */
+export function scaleBarGeometry(projection: Projection, zoom = 1, targetPx = 110): ScaleBarGeometry {
+  const safeZoom = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
+  const safeTarget = Number.isFinite(targetPx) && targetPx > 0 ? targetPx : 110;
+  const screenUnitsPerKm = (projection.scale * safeZoom) / KM_PER_DEGREE;
+  const km = scaleBarKm(safeTarget, projection, safeZoom);
+  return { km, screenLength: km * screenUnitsPerKm, zoom: safeZoom, screenUnitsPerKm };
 }
 
 export const SIDES: readonly Side[] = ['japan', 'allies'];

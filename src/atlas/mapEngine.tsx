@@ -17,6 +17,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Phase, PlaceEntity } from '../data/types';
+import { MAP_REGION_LABELS } from './regions';
 import {
   LAYER_LABELS,
   panView,
@@ -36,7 +37,7 @@ import {
   clampTransform,
   createProjection,
   project,
-  scaleBarKm,
+  scaleBarGeometry,
   svgTransform,
   toUserSpace,
   uncertaintyRadius,
@@ -233,6 +234,7 @@ export function AtlasMapEngine({
         .map((place) => ({ place, point: project(place.coordinates, projection) })),
     [places, projection],
   );
+  const projectedById = useMemo(() => new Map(projectedPlaces.map(({ place, point }) => [place.id, point])), [projectedPlaces]);
 
   const sideGeometry = useMemo(() => {
     if (!phase) return null;
@@ -259,7 +261,9 @@ export function AtlasMapEngine({
   }, [phase, projection]);
 
   // 外接框缩放到视野时不裁切：stage 区域可滚动（窄屏友好）
-  const scaleKm = scaleBarKm(110, projection);
+  // 比例尺几何（MAP-01 attempt 3 修正）：线长与标签由同一个 km 派生，随 zoom 一致换算。
+  const scaleBar = useMemo(() => scaleBarGeometry(projection, transform.zoom), [projection, transform.zoom]);
+  const scaleBarKmLabel = scaleBar.km >= 1 ? String(Math.round(scaleBar.km)) : scaleBar.km.toFixed(2);
 
   return (
     <div className="pw-map" data-atlas-engine="">
@@ -410,6 +414,30 @@ export function AtlasMapEngine({
               })
             : null}
 
+          {/* 区域标注（MAP-01 地理标注层）：区域名锚定到真实地点，不新增坐标/史实 */}
+          {layers.places
+            ? MAP_REGION_LABELS.map((region) => {
+                const point = projectedById.get(region.anchorPlaceId);
+                // 锚点地点不在当前内容里 → 不渲染该区域标签（绝不兜造坐标）。
+                if (!point) return null;
+                return (
+                  <g
+                    key={region.id}
+                    data-layer="region"
+                    data-region-id={region.id}
+                    data-region-label={region.label}
+                    data-anchor-place={region.anchorPlaceId}
+                    transform={`translate(${point.x} ${point.y - 26})`}
+                  >
+                    <text x={0} y={0} fontSize="12.5" fontWeight="700" textAnchor="middle" fill="#7a4a1f" aria-hidden="true">
+                      {region.label}
+                    </text>
+                    <title>{region.description}</title>
+                  </g>
+                );
+              })
+            : null}
+
           {/* 阶段双方位置（示意） */}
           {layers.positions && sideGeometry
             ? sideGeometry.positions.map(({ side, point, position }) => {
@@ -437,12 +465,22 @@ export function AtlasMapEngine({
             : null}
         </g>
 
-        {/* 比例尺（不随缩放变化的地理比例，故随 transform 显示对应 km） */}
-        <g transform={`translate(16 ${VIEW_HEIGHT - 22})`} data-layer="scalebar" aria-hidden="true">
-          <rect x={-6} y={-14} width={132} height={24} fill="#f2e8d5" fillOpacity="0.85" stroke="#1c2530" strokeOpacity="0.3" />
-          <line x1={0} y1={-6} x2={scaleKm / transform.zoom} y2={-6} stroke="#1c2530" strokeWidth="2" />
+        {/* 比例尺（位于缩放组之外：线长按屏幕 user unit 绘制；km 标签由同一几何派生） */}
+        <g
+          transform={`translate(16 ${VIEW_HEIGHT - 22})`}
+          data-layer="scalebar"
+          role="img"
+          aria-label={`比例尺：约 ${scaleBarKmLabel} 公里`}
+          data-scalebar-km={scaleBar.km}
+          data-scalebar-length={scaleBar.screenLength.toFixed(3)}
+          data-scalebar-zoom={scaleBar.zoom.toFixed(3)}
+          data-scalebar-projection-scale={projection.scale.toFixed(6)}
+          data-scalebar-target-px={110}
+        >
+          <rect x={-6} y={-14} width={Math.max(132, scaleBar.screenLength + 24)} height={24} fill="#f2e8d5" fillOpacity="0.85" stroke="#1c2530" strokeOpacity="0.3" />
+          <line x1={0} y1={-6} x2={scaleBar.screenLength} y2={-6} stroke="#1c2530" strokeWidth="2" />
           <text x={0} y={4} fontSize="10" fill="#1c2530">
-            ≈ {Math.round(scaleKm / transform.zoom)} km
+            ≈ {scaleBarKmLabel} km
           </text>
         </g>
       </svg>
