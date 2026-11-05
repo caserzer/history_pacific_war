@@ -4804,6 +4804,34 @@ function checkAtlasLabelReadability(M) {
   }
 }
 
+/**
+ * 加载并执行 QA-01 的隔离候选验证器扩展 `tests/validate-site.qa.mjs`。
+ *
+ * 工单要求：扩展必须**由现有记录检查实际加载执行**，且**不新增第五个 check**。
+ * 因此这里把宿主验证器的 `check` 作为回调注入扩展的 `run({ check })`，
+ * 扩展的 4 条断言直接计入宿主的结果集、计数与退出码——既不复制断言，
+ * 也不会出现「写了一个没人跑的测试文件」。
+ *
+ * 扩展文件缺失时**判为失败**（不能静默跳过：那是工单明令禁止的降级）。
+ */
+async function runQaExtension() {
+  const qaPath = path.join(ROOT, 'tests', 'validate-site.qa.mjs');
+  if (!fs.existsSync(qaPath)) {
+    fail('QA-EXT', `缺少隔离验证器扩展 ${path.relative(ROOT, qaPath)}（记录检查必须实际加载它）`);
+    return;
+  }
+  try {
+    const qa = await import(`${pathToFileUrl(qaPath)}?v=${Date.now()}`);
+    if (typeof qa.runQaChecks !== 'function') {
+      fail('QA-EXT', 'tests/validate-site.qa.mjs 未导出 runQaChecks({ check })；无法由记录检查执行');
+      return;
+    }
+    await qa.runQaChecks({ check, distDir: DIST_DIR ?? path.join(ROOT, 'dist'), root: ROOT });
+  } catch (error) {
+    fail('QA-EXT', `隔离验证器扩展执行失败：${String(error?.message ?? error)}`);
+  }
+}
+
 function verifyCheckAccounting() {
   const total = results.length;
   const passed = results.filter((item) => item.status === 'PASS').length;
@@ -4884,6 +4912,10 @@ async function main() {
       // 既不记录 SKIP，也不参与检查项计数（计数只统计真实执行的断言）。
       checkDist();
     }
+    // QA-01：隔离候选口径的验证器扩展（tests/validate-site.qa.mjs）。
+    // 工单要求它**必须由现有记录检查实际加载执行**，不得成为第五个 check。
+    // 做法：把宿主验证器的 `check` 注入扩展，让扩展的断言计入同一份结果与退出码。
+    await runQaExtension();
     verifyCheckAccounting();
   } finally {
     // 无论成功失败都清理本次在输出根下创建的 run-* 目录（不写工作树源树）。

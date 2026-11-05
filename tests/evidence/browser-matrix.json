@@ -88,13 +88,11 @@
     "staticSubpathServing": "VERIFIED: tests/support/serve-dist.mjs serves /history_pacific_war/* from dist and 404s outside the base."
   },
   "testCounts": {
-    "total": 795,
-    "perProject": 159,
+    "total": 855,
+    "perProject": 171,
     "projects": 5,
-    "totalBeforeCoverageRevision": 250,
-    "totalAtAttempt1": 755,
-    "note": "attempt 3 added 2 browser-level tests/project: all 8 order-mandated labels visible at default zoom, and mandatory resolution determinism across reloads.",
-    "totalAtAttempt2": 785
+    "previousAttempt": 795,
+    "note": "attempt 4 added timeline deep-link (mounted navigation), reader-copy browser recheck (9 pages + legend + evidence labels), and replaced the overlap assertion with real getBoundingClientRect per-place boxes."
   },
   "leakCoverage": {
     "strategy": "exhaustive-on-one-project",
@@ -134,5 +132,30 @@
       "status": "hardened",
       "detail": "The `: 100` width fallback in QA-ATLAS-no-overlap was replaced with an explicit fail() so the check can never silently degrade to a constant again."
     }
+  },
+  "matrix": {
+    "workers": 2,
+    "workersNote": "workers=2 so the full test:e2e fits inside the 1,200,000ms check budget; no projects or assertions were removed. Overridable via PW_WORKERS.",
+    "projects": [
+      "chromium-desktop",
+      "chromium-tablet",
+      "chromium-mobile",
+      "webkit-desktop",
+      "webkit-mobile"
+    ],
+    "exhaustiveDetailRoutesOn": "chromium-desktop",
+    "detailSamplingElsewhere": "first entity per entry",
+    "recordedDurationMs": null,
+    "recordedExitCode": 1,
+    "recordedExitCodeNote": "local run exits 1 with a sandbox EPERM / missing CLI, not a test failure — see attempt4Failures"
+  },
+  "attempt4Findings": {
+    "(1) timeline-deep-link": "FIXED in source: TimelineView resolved dateIndex only in a useState initialiser, which never re-runs because the view is not remounted on hash change. Extracted to useCallback(resolveDateIndex) + useEffect syncing on initialDate. SSR: date=1942-01-11 -> data-timeline-date-count=14 (content truth 14/19); no date -> 19. Browser test navigates while mounted and computes the expectation from content/history.json.",
+    "(2) questions-empty": "FIXED in tests+source: root cause was test timing, not view logic — AppShell renders .pw-nav while content is still status=loading, so the test asserted before data arrived. main.tsx now exposes [data-content-status] and openRoute waits until it leaves \"loading\".",
+    "(3) a11y": "FIXED in source: --pw-brass-text #8a5a14 -> #7d4f0c (4.35:1 -> 5.16:1 on --pw-paper-2, 6.12:1 on --pw-paper); brand link aria-label now contains the visible title (label-content-name-mismatch).",
+    "(4) map-label-overlap": "PARTIALLY PROVEN: estimateLabelWidth was optimistic (CJK assumed 1.0em, no letter-spacing) which is why SSR said 0 pairs while Chromium measured 17. Now conservative (CJK 1.15em, Latin 0.62em, +6 padding) and the browser test measures real getBoundingClientRect boxes per place. SSR after fix: 12 visible labels, 0 geometric overlaps, all 8 mandated labels still visible.",
+    "(5) map-keyboard": "FIXED in source: data-map-transform / data-map-tx / data-map-ty / data-can-pan were entirely absent, so a browser test could not observe pan. Added to the canvas. Note: at zoom=1 clamping is maxTx=0, so ArrowRight correctly moves nothing; the test now zooms first and asserts data-can-pan flips false->true.",
+    "(6) media-visible": "MITIGATED: first figure per gallery now loading=\"eager\" so a below-the-fold lazy image cannot stall a naturalWidth>0 assertion. Render path unchanged (figure/img/alt/credit all verified in SSR).",
+    "(7) reader-copy": "EXTENDED: added a browser-level recheck over 9 reader pages plus map legend/phase copy and evidence-panel labels, using the same JARGON list as the SSR check."
   }
 }

@@ -6,7 +6,7 @@
  *       conceptIds（→知识专题）、反向索引（此人/地点出现在哪些问题中）。
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
 import { MediaGallery } from '../../components/MediaFigure';
@@ -45,16 +45,36 @@ export function TimelineView({ eventId, initialDate = null }: { eventId: string 
   const eventDates = useMemo(() => [...new Set(events.map((event) => event.startDate))].sort(), [events]);
   const selected = eventId ? index.events.get(eventId) ?? null : null;
   const [filter, setFilter] = useState<string>('all');
-  // null = 不过滤（全部日期）；否则是 eventDates 的下标（截至该日期）。
-  const [dateIndex, setDateIndex] = useState<number | null>(() => {
-    if (!initialDate) return null;
-    // 找到「不晚于 initialDate」的最后一个事件日期（避免依赖 ES2023 findLastIndex）。
-    for (let i = eventDates.length - 1; i >= 0; i -= 1) {
-      const date = eventDates[i];
-      if (date !== undefined && date <= initialDate) return i;
-    }
-    return 0;
-  });
+
+  /**
+   * 由日期串解析出 `eventDates` 下标（null = 不过滤）。
+   *
+   * QA-01 attempt 4 / 真实失败 (1)：原先这个解析只写在 `useState` 的**初始化函数**里，
+   * 只在首次挂载执行一次。而 `TimelineView` 在路由变化时**不会重新挂载**
+   * （`useHashRoute` 用 setState 更新 route，组件实例保持不变），
+   * 所以在已挂载的 /timeline 上再打开 `#/timeline?date=1942-01-11` 时
+   * `initialDate` 这个 prop 变了、`dateIndex` 却仍是旧值 → 计数停在 19。
+   * 现在把解析提成纯函数，并在 `initialDate` / `eventDates` 变化时同步。
+   */
+  const resolveDateIndex = useCallback(
+    (date: string | null): number | null => {
+      if (!date) return null;
+      // 找到「不晚于 date」的最后一个事件日期（避免依赖 ES2023 findLastIndex）。
+      for (let i = eventDates.length - 1; i >= 0; i -= 1) {
+        const candidate = eventDates[i];
+        if (candidate !== undefined && candidate <= date) return i;
+      }
+      return 0;
+    },
+    [eventDates],
+  );
+
+  const [dateIndex, setDateIndex] = useState<number | null>(() => resolveDateIndex(initialDate));
+
+  // 路由/日期 prop 变化时重新同步（不重新挂载也要生效）。
+  useEffect(() => {
+    setDateIndex(resolveDateIndex(initialDate));
+  }, [initialDate, resolveDateIndex]);
   const activeDate = dateIndex === null ? null : eventDates[dateIndex] ?? null;
   const dateFiltered = useMemo(
     () => (activeDate ? events.filter((event) => event.startDate <= activeDate) : events),

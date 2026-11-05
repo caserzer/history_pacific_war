@@ -27,7 +27,13 @@
   --pw-map-green-tint: #dfe9df;
 
   --pw-brass: #7a4e0c;
-  --pw-brass-text: #8a5a14;
+  /*
+   * QA-01 attempt 4 / 真实失败 (3)：原先 #8a5a14 在 --pw-paper-2 (#e8dcc3) 上的对比度是
+   * 4.35:1，低于 WCAG AA 正文所需的 4.5:1（axe 报 color-contrast critical）。
+   * 加深到 #7d4f0c 后：对 paper-2 = 5.16:1、对 paper (#f2e8d5) = 6.12:1，
+   * 仍在黄铜色域内，不改变档案馆配色性格。
+   */
+  --pw-brass-text: #7d4f0c;
   --pw-brass-light: #d9b45a;
   --pw-brass-tint: #efe0bc;
 

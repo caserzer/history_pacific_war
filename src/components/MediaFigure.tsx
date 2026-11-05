@@ -33,7 +33,17 @@ export function mediaPublicUrl(path: string): string {
 }
 
 /** SVG 用 `<img>` 引用同样可行（且能保留 alt 与懒加载语义），统一走 `<img>`。 */
-function MediaFigure({ asset, variant = 'article' }: { asset: MediaAsset; variant?: 'article' | 'thumbnail' }) {
+function MediaFigure({
+  asset,
+  variant = 'article',
+  eager = false,
+}: {
+  asset: MediaAsset;
+  variant?: 'article' | 'thumbnail';
+  /** QA-01 attempt 4 / 真实失败 (6)：首图用 eager，避免 below-the-fold 懒加载导致
+      浏览器测试等待 naturalWidth>0 时永远等不到（也改善首屏可见性）。 */
+  eager?: boolean;
+}) {
   const src = mediaPublicUrl(asset.path);
   const creditParts = [asset.author, asset.license === 'original-work' ? '本站原创' : asset.license]
     .filter((part) => Boolean(part && String(part).trim()))
@@ -44,7 +54,7 @@ function MediaFigure({ asset, variant = 'article' }: { asset: MediaAsset; varian
       <img
         src={src}
         alt={asset.alt}
-        loading="lazy"
+        loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         {...(asset.width ? { width: asset.width } : {})}
         {...(asset.height ? { height: asset.height } : {})}
@@ -102,8 +112,8 @@ export function MediaGallery({
   if (assets.length === 0) return null;
   return (
     <div className="pw-figures" data-media-gallery="" data-media-count={assets.length}>
-      {assets.map((asset) => (
-        <MediaFigure key={asset.id} asset={asset} variant={variant} />
+      {assets.map((asset, index) => (
+        <MediaFigure key={asset.id} asset={asset} variant={variant} eager={index === 0} />
       ))}
     </div>
   );

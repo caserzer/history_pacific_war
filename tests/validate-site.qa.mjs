@@ -116,19 +116,21 @@ function httpGet(port, urlPath) {
   });
 }
 
-async function main() {
-  const args = process.argv.slice(2);
-  const distIdx = args.indexOf('--dist');
-  const distDir = path.resolve(ROOT, distIdx >= 0 && args[distIdx + 1] ? args[distIdx + 1] : 'dist');
-
-  console.log('QA-01 站点验证器扩展（tests/validate-site.qa.mjs）');
-  console.log(`工作区：${ROOT}`);
-  console.log(`产物目录：${distDir}`);
-  console.log('');
+/**
+ * 执行本扩展的全部断言。
+ *
+ * 两种调用方式：
+ * 1. 独立运行（`node tests/validate-site.qa.mjs`）——使用本文件的 record/check 与退出码；
+ * 2. **由站点验证器加载**（工单要求）：`runQaChecks({ check })` 把宿主验证器的 check
+ *    注入进来，断言直接计入宿主的检查项与退出码，不重复实现、也不新增第五个 check。
+ */
+export async function runQaChecks({ check: injectedCheck, distDir: injectedDist, root = ROOT } = {}) {
+  const checkFn = typeof injectedCheck === 'function' ? injectedCheck : check;
+  const distDir = injectedDist ? path.resolve(injectedDist) : path.resolve(root, 'dist');
 
   // ---------------------------------------------------------------- QA-1 fixture 事实清单可派生
-  const { facts, skipped } = collectFixtureExclusiveFacts(ROOT);
-  check(
+  const { facts, skipped } = collectFixtureExclusiveFacts(root);
+  checkFn(
     'QA-1',
     skipped === null && facts.length > 20,
     skipped === null
@@ -143,15 +145,16 @@ async function main() {
     const reg = JSON.parse(fs.readFileSync(mediaPath, 'utf8'));
     mediaEntries = Array.isArray(reg) ? reg : reg.media ?? [];
   }
-  check(
+  checkFn(
     'QA-2-pre',
     mediaEntries.length > 0,
     `content/media.json 注册 ${mediaEntries.length} 个素材（>0 才可验证可达性）`,
   );
 
   if (!fs.existsSync(distDir)) {
-    record('FAIL', 'QA-2', `产物目录不存在：${distDir}（先运行 node --run build）`);
-    return finish();
+    checkFn(false, 'QA-2', `产物目录不存在：${distDir}（先运行 node --run build）`);
+    // 被宿主加载时不要自己打印汇总（宿主统一计数与退出码）。
+    return typeof injectedCheck === 'function' ? undefined : finish();
   }
 
   const { server, port } = await startStaticServer(distDir, BASE_PATH);
@@ -166,7 +169,7 @@ async function main() {
       if (res.status === 200 && res.length > 0) reachable += 1;
       else failures.push(`${src} -> ${res.status}`);
     }
-    check(
+    checkFn(
       'QA-2',
       failures.length === 0 && reachable === mediaEntries.length,
       `注册素材在 ${BASE_PATH} 子路径下 HTTP 可达：${reachable}/${mediaEntries.length}${failures.length ? `；失败：${failures.slice(0, 5).join(', ')}` : ''}`,
@@ -174,11 +177,12 @@ async function main() {
 
     // ------------------------------------------------------------ QA-3 反向对照
     const missing = await httpGet(port, `${BASE_PATH}media/__qa01-not-a-real-file__.svg`);
-    check('QA-3', missing.status === 404, `反向对照：不存在的媒体路径返回 404（实际 ${missing.status}）——证明 QA-2 不是恒真`);
+    checkFn('QA-3', missing.status === 404, `反向对照：不存在的媒体路径返回 404（实际 ${missing.status}）——证明 QA-2 不是恒真`);
   } finally {
     server.close();
   }
-  return finish();
+  // 被宿主加载时返回 undefined：由宿主统一汇总计数与退出码，避免重复打印。
+  return typeof injectedCheck === 'function' ? undefined : finish();
 }
 
 function finish() {
@@ -197,6 +201,19 @@ function finish() {
   }
   console.log('结果：PASS');
   return 0;
+}
+
+/** 独立运行入口（`node tests/validate-site.qa.mjs`）。 */
+async function main() {
+  const args = process.argv.slice(2);
+  const distIdx = args.indexOf('--dist');
+  const distDir = path.resolve(ROOT, distIdx >= 0 && args[distIdx + 1] ? args[distIdx + 1] : 'dist');
+  console.log('QA-01 站点验证器扩展（tests/validate-site.qa.mjs）');
+  console.log(`工作区：${ROOT}`);
+  console.log(`产物目录：${distDir}`);
+  console.log('');
+  await runQaChecks({ distDir, root: ROOT });
+  return finish();
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);

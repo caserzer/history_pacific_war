@@ -69,6 +69,13 @@ function App() {
   return (
     <AppContextProvider value={contextValue}>
       <AppShell route={route}>
+        {/*
+          QA-01 attempt 4 / 真实失败 (2)：内容加载是异步的（首次渲染 status='loading'）。
+          此前页面**没有**任何属性表明「内容已经就绪」，浏览器测试看到 .pw-nav 出现就
+          开始断言，命中 loading 阶段，于是 Questions 等入口读到空索引 → 误报「空状态」。
+          这里给出稳定的就绪标记，测试据此等待，而不是靠猜。
+        */}
+        <div data-content-status={contentState.status} hidden />
         {contentState.status === 'loading' ? <ContentLoading /> : <RouteView route={route} />}
       </AppShell>
     </AppContextProvider>

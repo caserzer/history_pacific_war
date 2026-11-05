@@ -42,6 +42,8 @@ interface Entity {
 }
 interface Phase {
   id: string;
+  /** 阶段时间（契约字段；F7 文案复查需要核对时间文本确实渲染出来）。 */
+  time: { start: string; end?: string; display: string; uncertainty: string };
   knownEnemy: Record<string, string>;
   unknownEnemy: Record<string, string>;
   decision: Record<string, string>;
@@ -123,6 +125,19 @@ const LEAK_FACTS = fixtureExclusiveFacts();
 async function openRoute(page: Page, hash: string) {
   await page.goto(`${BASE}index.html#${hash}`, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => (document.querySelector('#root')?.childElementCount ?? 0) > 0, null, { timeout: 20_000 });
+  // QA-01 attempt 4 / 真实失败 (2)：内容加载是**异步**的。此前这里只等 .pw-nav 出现——
+  // 但外壳在 status='loading' 时就已渲染完毕，于是测试在 loading 阶段就开始断言，
+  // 读到空索引并误报「Questions 显示空状态」。必须等内容状态离开 loading。
+  await page.waitForFunction(
+    () => {
+      const marker = document.querySelector('[data-content-status]');
+      if (marker === null) return false;
+      const status = marker.getAttribute('data-content-status');
+      return status !== null && status !== 'loading';
+    },
+    null,
+    { timeout: 30_000 },
+  );
   // 等待 hash 路由生效（标题或入口标记出现）
   await page.waitForFunction(() => document.querySelector('[data-route-heading], .pw-nav') !== null, null, { timeout: 20_000 });
 }
@@ -267,13 +282,34 @@ test.describe('地图缩放 / 平移 / 图层', () => {
   test('方向键平移在地图内生效（键盘可达）', async ({ page }) => {
     await openRoute(page, '/atlas');
     const canvas = page.locator('[data-atlas-canvas]').first();
-    await canvas.focus();
     const transformOf = async () => await canvas.getAttribute('data-map-transform');
+    const zoomOf = async () => Number(await canvas.getAttribute('data-map-zoom'));
+
+    // QA-01 attempt 4 / 真实失败 (5)：
+    // 全图视野（zoom=1）下 clampTransform 的 maxTx = W*(zoom-1)/2 = 0，平移到不了任何
+    // 地方——这是**正确设计**（不偷偷改缩放）。因此在 zoom=1 期望位移本身是错误期望。
+    // 正确做法：先放大到可平移的缩放，再按方向键；并验证 data-can-pan 明确告知读者。
+    expect(await canvas.getAttribute('data-can-pan')).toBe('false');
+    const atFit = await transformOf();
+    await canvas.focus();
+    await page.keyboard.press('ArrowRight');
+    expect(await transformOf(), '全图视野下平移应被正确钳制（不改 zoom、不偷偷位移）').toBe(atFit);
+
+    // 放大到可平移（方向键「+」也是键盘路径的一部分）
+    await page.keyboard.press('+');
+    await page.keyboard.press('+');
+    expect(await zoomOf()).toBeGreaterThan(1);
+    await expect.poll(async () => canvas.getAttribute('data-can-pan')).toBe('true');
+
     const before = await transformOf();
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     const after = await transformOf();
-    expect(after).not.toBe(before);
+    expect(after, '放大后方向键应改变 data-map-transform（tx 变化）').not.toBe(before);
+
+    // 数字键 0 复位
+    await page.keyboard.press('0');
+    await expect.poll(async () => zoomOf()).toBeCloseTo(1, 1);
   });
 
   test('图层开关真实改变渲染节点', async ({ page }) => {
@@ -591,21 +627,36 @@ test.describe('地图标签去重叠（ATLAS-READABILITY）', () => {
     expect(visibleCount).toBeGreaterThan(0);
     expect(visibleCount).toBeLessThan(total);
 
+    // QA-01 attempt 4 / 真实失败 (4)：必须用**真实字体排布**的包围盒，不能只靠服务端几何估算
+    // ——估算曾得出「0 重叠」，而 Chromium 实测 17 对重叠。
+    // 按「每个地点一个合并盒」比较（把该地点两行文字的并集当作它的标签盒），
+    // 否则同一标签的上下两行会被误判为互相重叠。
     const boxes = await visible.evaluateAll((nodes) =>
-      nodes.map((n) => {
-        const texts = [...n.querySelectorAll('[data-place-label]')].map((t) => t.getBoundingClientRect());
-        return texts.map((r) => ({ left: r.left, right: r.right, top: r.top, bottom: r.bottom }));
-      }).flat(),
+      nodes
+        .map((n) => {
+          const rects = [...n.querySelectorAll('[data-place-label]')].map((t) => t.getBoundingClientRect());
+          if (rects.length === 0) return null;
+          return {
+            id: n.getAttribute('data-place-id') ?? '',
+            left: Math.min(...rects.map((r) => r.left)),
+            right: Math.max(...rects.map((r) => r.right)),
+            top: Math.min(...rects.map((r) => r.top)),
+            bottom: Math.max(...rects.map((r) => r.bottom)),
+          };
+        })
+        .filter((b): b is { id: string; left: number; right: number; top: number; bottom: number } => b !== null),
     );
-    let overlaps = 0;
+    const overlapping: string[] = [];
     for (let i = 0; i < boxes.length; i += 1) {
       for (let j = i + 1; j < boxes.length; j += 1) {
-        const a = boxes[i];
-        const b = boxes[j];
-        if (!(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top)) overlaps += 1;
+        const a = boxes[i]!;
+        const b = boxes[j]!;
+        if (!(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top)) {
+          overlapping.push(`${a.id}×${b.id}`);
+        }
       }
     }
-    expect(overlaps, '可见标签在真实浏览器中不得重叠').toBe(0);
+    expect(overlapping, `真实浏览器中可见标签重叠对：${overlapping.slice(0, 6).join(', ')}`).toHaveLength(0);
   });
 
   test('工单要求的 8 个地名在默认缩放下全部可见（ATLAS-READABILITY）', async ({ page }) => {
@@ -669,6 +720,102 @@ test.describe('地图标签去重叠（ATLAS-READABILITY）', () => {
     const title = await first.locator('title').textContent();
     expect(title ?? '').toContain('现代');
     expect((title ?? '').length).toBeGreaterThan(10);
+  });
+});
+
+// ================================================================ 时间线深链（F1 真实失败 (1)）
+test.describe('时间线深链（已挂载后导航）', () => {
+  test('在已挂载的 /timeline 上导航到 #/timeline?date=... 会重新筛选', async ({ page }) => {
+    // 期望值必须从 content/history.json 计算，**禁止写死 14 或改成 19**。
+    const cutoffs = [...new Set(realContent.events.map((e) => e.startDate))]
+      .filter((d): d is string => typeof d === 'string')
+      .sort();
+    const cutoff = cutoffs[Math.floor(cutoffs.length / 2)] as string;
+    const expected = realContent.events.filter((e) => typeof e.startDate === 'string' && e.startDate <= cutoff).length;
+    const total = realContent.events.length;
+    expect(expected).toBeLessThan(total);
+
+    // 1) 先挂载（不带 date）
+    await openRoute(page, '/timeline');
+    const countOf = async () =>
+      Number(await page.locator('[data-timeline-date-filter]').first().getAttribute('data-timeline-date-count'));
+    expect(await countOf(), '初始应为全部事件').toBe(total);
+
+    // 2) **不重新加载**，仅改 hash（这正是真实失败场景：组件已挂载，prop 变了）
+    await page.evaluate((date) => { window.location.hash = `/timeline?date=${date}`; }, cutoff);
+    await page.waitForFunction(
+      (d) => (document.querySelector('[data-timeline-date-filter]')?.getAttribute('data-timeline-date') ?? 'all') === d,
+      cutoff,
+      { timeout: 10_000 },
+    );
+    expect(await countOf(), `已挂载后导航到 date=${cutoff} 应筛选到 ${expected}/${total}`).toBe(expected);
+    // 渲染出的事件条目数也应等于期望值
+    expect(await page.locator('[data-timeline-event]').count()).toBe(expected);
+
+    // 3) 再回到无 date，应恢复全部
+    await page.evaluate(() => { window.location.hash = '/timeline'; });
+    await page.waitForFunction(
+      () => (document.querySelector('[data-timeline-date-filter]')?.getAttribute('data-timeline-date') ?? 'all') === 'all',
+      null,
+      { timeout: 10_000 },
+    );
+    expect(await countOf(), '移除 date 后应恢复全部事件').toBe(total);
+  });
+});
+
+// ================================================================ 读者文案（F7 READER-COPY 真实浏览器复查）
+test.describe('读者文案：真实浏览器复查（READER-COPY）', () => {
+  /** 工程词汇：出现在读者页正文里即为缺陷（与服务端 QA-COPY 同一份清单）。 */
+  const JARGON = ['schemaVersion', 'fixtureOnly', '稳定 ID', '按契约', '契约要求', '顶层数组', '十四个固定键', 'content/history.json'];
+
+  const ROUTES = [
+    ['overview', '/'],
+    ['timeline', '/timeline'],
+    ['battles', '/battles'],
+    ['battle-detail', '/battles/battle-pearl-harbor'],
+    ['people', '/people'],
+    ['atlas', '/atlas'],
+    ['concepts', '/concepts'],
+    ['questions', '/questions'],
+    ['sources', '/sources'],
+  ] as const;
+
+  for (const [label, route] of ROUTES) {
+    test(`入口/页面「${label}」不含工程词汇与占位文案`, async ({ page }) => {
+      await openRoute(page, route);
+      const text = await page.evaluate(() => document.body.innerText ?? '');
+      expect(text.length, '页面应有实际内容（不是空白）').toBeGreaterThan(200);
+      const hits = JARGON.filter((term) => text.includes(term));
+      expect(hits, `${label} 页面出现工程词汇：${hits.join('、')}`).toHaveLength(0);
+      // 已交付内容下不应出现「尚未加载 / 未交付」这类占位状态
+      for (const placeholder of ['内容尚未加载', '尚未交付', '测试样本']) {
+        expect(text, `${label} 出现占位/未加载文案：${placeholder}`).not.toContain(placeholder);
+      }
+    });
+  }
+
+  test('地图图例与阶段文案可读且无占位', async ({ page }) => {
+    const battle = requireBattle('battle-midway');
+    await openRoute(page, `/atlas?battle=${battle.id}&phase=${battle.phases[0].id}`);
+    const text = await page.evaluate(() => document.body.innerText ?? '');
+    // 图例要素（证据把握、双方编码、不确定说明）
+    expect(text).toContain('证据把握');
+    expect(text).toContain('不确定说明');
+    // 阶段面板必须给出时间与双方情报，而不是占位
+    expect(text).toContain(battle.phases[0].time.display);
+    expect(text).toContain(battle.phases[0].knownEnemy.japan.slice(0, 16));
+    expect(text).not.toContain('地图阶段数据尚未交付');
+  });
+
+  test('证据面板标签面向读者（claim 类型用中文标签，不暴露原始枚举）', async ({ page }) => {
+    await openRoute(page, '/battles/battle-pearl-harbor');
+    const text = await page.evaluate(() => document.body.innerText ?? '');
+    // 证据面板应有中文的证据类型标签
+    expect(text).toMatch(/事实|解释|争议|示意/);
+    // 不应把 claimType 原始值直接当正文
+    for (const raw of ['interpretation', 'claimType']) {
+      expect(text, `正文出现原始枚举 ${raw}`).not.toContain(raw);
+    }
   });
 });
 

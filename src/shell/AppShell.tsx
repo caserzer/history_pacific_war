@@ -47,7 +47,14 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
       </a>
       <header className="pw-header">
         <div className="pw-header__inner">
-          <a className="pw-brand" href={buildHref('overview')} aria-label="返回总览">
+          {/* QA-01 attempt 4 / 真实失败 (3)：axe 的 label-content-name-mismatch 要求
+              aria-label 必须包含可见文本。原先只写「返回总览」，与可见书名不一致。
+              现在保留动作提示，同时包含可见标题文字。 */}
+          <a
+            className="pw-brand"
+            href={buildHref('overview')}
+            aria-label="返回总览：太平洋战争：从珍珠港到中途岛"
+          >
             <BrandMark />
             <span className="pw-brand__text">
               <span className="pw-brand__title">太平洋战争：从珍珠港到中途岛</span>

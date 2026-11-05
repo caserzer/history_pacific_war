@@ -30,14 +30,37 @@ export const LABEL_BOX = {
 /** 超过这个缩放就认为空间充足，全部标签直接显示。 */
 export const LABEL_ALWAYS_ZOOM = 3;
 
-/** 标签所需宽度：中文字宽近似 1 个字 = 字号；两行取较长者。 */
+/**
+ * 中文字形的**保守**宽度系数（相对字号）。
+ *
+ * QA-01 attempt 4 / 真实失败 (4)：原先按「1 个汉字 = 1 个字号的宽度」估算，
+ * 服务端算术得出「14 个标签 0 重叠」；但中央在真实 Chromium 里用实际字体排布
+ * 测得 **17 对重叠**。原因是估算过于乐观：
+ *   - 站点用的是 `Noto Serif SC / Source Han Serif SC / SimSun` 衬线栈，
+ *     全角汉字实际占位约 1.0em 以上，且行内还有 letter-spacing；
+ *   - 估算完全没算字距。
+ * 与其假装能精确预测字体度量，不如**故意高估**：宁可少放几个普通标签，
+ * 也不能让读者看到压字的标签。
+ */
+const CJK_WIDTH_FACTOR = 1.15;
+/** 拉丁字符相对字号的宽度（同样按保守取整）。 */
+const LATIN_WIDTH_FACTOR = 0.62;
+/** 每行额外的字距/内边距余量（user unit）。 */
+const LINE_PADDING = 6;
+
+/**
+ * 标签所需宽度（**保守上界**）。两行取较长者。
+ *
+ * 注意：这是给「去重叠判定」用的安全边界，不是像素级测量。真实浏览器里的最终
+ * 校验由 `tests/learning.spec.ts` 用 `getBoundingClientRect()` 完成。
+ */
 export function estimateLabelWidth(historicalName: string, modernLine: string): number {
   const cjk = (s: string) => (s.match(/[\u3400-\u9fff]/g) ?? []).length;
   const other = (s: string) => s.length - cjk(s);
-  // 第一行 11px、第二行 9px；中文字宽≈字号，拉丁字符宽≈0.55 字号。
-  const first = cjk(historicalName) * 11 + other(historicalName) * 11 * 0.55;
-  const second = cjk(modernLine) * 9 + other(modernLine) * 9 * 0.55;
-  return Math.ceil(Math.max(first, second));
+  // 第一行 11px、第二行 9px。
+  const first = cjk(historicalName) * 11 * CJK_WIDTH_FACTOR + other(historicalName) * 11 * LATIN_WIDTH_FACTOR;
+  const second = cjk(modernLine) * 9 * CJK_WIDTH_FACTOR + other(modernLine) * 9 * LATIN_WIDTH_FACTOR;
+  return Math.ceil(Math.max(first, second) + LINE_PADDING);
 }
 
 export interface LabelCandidate {
@@ -111,6 +134,14 @@ const MANDATED_PLACEMENTS: { placement: LabelPlacement; pad: number }[] = [
   { placement: { mode: 'left' }, pad: 48 },
   { placement: { mode: 'above' }, pad: 44 },
   { placement: { mode: 'below' }, pad: 44 },
+  // 更外圈：标签宽度按真实字体保守上界估算后，密集区（新加坡/马来亚仅相距 7 个单位）
+  // 需要更大的外移半径才能同时放下。引线负责把文字连回它所属的节点。
+  { placement: { mode: 'right' }, pad: 72 },
+  { placement: { mode: 'left' }, pad: 72 },
+  { placement: { mode: 'above' }, pad: 66 },
+  { placement: { mode: 'below' }, pad: 66 },
+  { placement: { mode: 'right' }, pad: 96 },
+  { placement: { mode: 'left' }, pad: 96 },
 ];
 
 function boxFor(candidate: LabelCandidate, placement: LabelPlacement, width: number, pad = 0): { box: Box; dx: number; dy: number } {

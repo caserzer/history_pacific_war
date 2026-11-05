@@ -228,6 +228,14 @@ export function AtlasMapEngine({
     event.preventDefault();
   };
 
+  /**
+   * QA-01 attempt 4 / 真实失败 (5)：全图视野（zoom=1）下平移到不了任何地方
+   * （`clampTransform` 的 maxTx = W*(zoom-1)/2 = 0），所以按方向键**理应没有位移**。
+   * 此前这件事既没有 UI 提示、也没有可观察属性，于是浏览器测试与读者都以为「键盘坏了」。
+   * 这里显式暴露「当前能否平移」+ 给出可读提示，行为本身保持不变（不偷偷改 zoom）。
+   */
+  const canPan = transform.zoom > MIN_ZOOM;
+
   // ---------------------------------------------------------------- 投影后的节点
   const projectedPlaces = useMemo(
     () =>
@@ -338,8 +346,15 @@ export function AtlasMapEngine({
         role="application"
         aria-label={`${label}。使用方向键平移，加号减号缩放，数字键 0 复位。`}
         tabIndex={0}
+        // QA-01 attempt 4 / 真实失败 (5)：把当前视图变换暴露成可观察属性。
+        // 此前源码里**没有任何** data-map-transform，浏览器测试无法判断方向键是否真的
+        // 平移了地图（只能看到 zoom 没变）。
+        data-can-pan={canPan ? 'true' : 'false'}
         data-atlas-canvas=""
         data-map-zoom={transform.zoom.toFixed(2)}
+        data-map-transform={`${transform.zoom.toFixed(4)},${transform.tx.toFixed(4)},${transform.ty.toFixed(4)}`}
+        data-map-tx={transform.tx.toFixed(4)}
+        data-map-ty={transform.ty.toFixed(4)}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endPointer}

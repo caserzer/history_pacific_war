@@ -37,7 +37,12 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
-  workers: 1,
+  /**
+   * QA-01 attempt 4：checks 对单条命令有 1,200,000ms 上限，完整 test:e2e（5 个项目、数百条
+   * 用例）必须在该窗口内跑完。`workers: 2` 在**不减少任何项目或断言**的前提下摊薄墙钟时间。
+   * 可用 PW_WORKERS 覆盖；但不得靠删项目/删断言换时间。
+   */
+  workers: Number(process.env.PW_WORKERS ?? 2),
   timeout: 60_000,
   expect: { timeout: 10_000 },
   reporter: [
