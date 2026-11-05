@@ -2838,9 +2838,984 @@
         "claim-doolittle-ussbs-carrier-return",
         "claim-doolittle-significance-limits"
       ]
+    },
+    {
+      "id": "event-overview-part-2-pearl-harbor",
+      "title": "珍珠港与战争爆发：导读",
+      "historicalPart": "part-2-pearl-harbor",
+      "eventType": "analysis",
+      "startDate": "1941-12-07",
+      "endDate": "1941-12-08",
+      "summary": "从 1941 年 12 月 7 日空袭珍珠港到 12 月 8 日美国对日宣战：日本为什么选择突然打击、袭击怎样展开、哪些目标没有被摧毁，以及美国参战怎样改变了战争。",
+      "article": [
+        {
+          "heading": "战略目标与准备",
+          "body": "日本袭击珍珠港的目标不是占领夏威夷，而是让美国太平洋舰队暂时失去行动能力，为日本在菲律宾与荷属东印度等地的作战争取时间。这个计划由联合舰队司令长官山本五十六提出，核心是航母机动部队的突然袭击。为了不被发现，机动部队选择天气恶劣但商船与巡逻机较少的北方航线，在海上完成加油，并把攻击日期定在周日清晨。突然性与海上加油被日方视为行动的两个支柱，任何一项失败都会使整个计划无法执行。计划还规定，若在 X 日前两天以上被发现，机动部队应返航而不执行攻击；若更晚被发现，则由部队指挥官决定。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-ussbs-norther-route-tradeoff",
+            "claim-ussbs-date-choice",
+            "claim-yamamoto-us-industrial-might"
+          ]
+        },
+        {
+          "heading": "袭击经过、损失与未毁设施",
+          "body": "12 月 7 日清晨，两波日机从瓦胡岛以北约二百英里处起飞，先压制机场、再以鱼雷与炸弹攻击港内战列舰。美军战列舰与飞机损失惨重，亚利桑那号一千一百七十七名舰员中九百余人死亡。但攻击计划的首选目标是战列舰与航母，油库、船坞与潜艇基地不在首要目标清单上；据尼米兹后来的评估，包括约四百五十万桶燃油在内的港口设施没有受损；几艘航空母舰当天也不在港内。损失数字存在口径差异：USSBS 依据飞行员报告与照片给出当时的估计，NPS 提供的是单舰可核实的数字；本教材把它们分开呈现，不合并成一个看似精确的总数。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nps-uss-arizona"
+          ],
+          "claimIds": [
+            "claim-pearl-us-damage-estimate",
+            "claim-arizona-crew-losses",
+            "claim-ussbs-carriers-absent",
+            "claim-pearl-air-organization",
+            "claim-nimitz-onsite-assessment"
+          ]
+        },
+        {
+          "heading": "南云的决策限制",
+          "body": "海上指挥由第一航空舰队司令长官南云忠一承担。两波攻击之后，他选择不再发动第三波，按计划撤收返航。USSBS 记录的理由包括：既定目标只是削弱美国太平洋舰队主力舰、美军航母位置不明、以及夏威夷仍可能留有五十架以上大型陆基飞机可以反击。反过来，攻击计划没有把油库与船坞列为首要目标、而它们后来被认为基本完好，也让后人批评撤收过早。把这些理由放回当时的信息条件看，南云面对的是一组真实的不确定性，而不是事后才知道的答案。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-why-no-second-attack",
+            "claim-pearl-third-wave-assessment-disputed",
+            "claim-nagumo-strike-doctrine-order",
+            "claim-pearl-air-organization",
+            "claim-nimitz-onsite-assessment"
+          ]
+        },
+        {
+          "heading": "航母与战列舰的不同作用",
+          "body": "这次袭击最容易被误读的地方，是把它看成“战列舰时代结束、航母时代开始”的简单分界。事实上，1941 年的日本海军仍把战列舰视为决战主力，珍珠港的目标也是美国战列舰；航母在这里首先是能把飞机送到远处的平台。真正改变判断的是结果：美军航母当天不在港内，因而没有受损，而战列舰在港内被集中打击。此后美国海军不得不更多依靠航母与舰载机作战，但这是在损失之后被逼出来的调整，而不是战前就已经想清楚的结论。因此，把这次袭击直接说成航母取代战列舰的起点，会忽略当时双方真实的资源与判断。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-ussbs-carriers-absent",
+            "claim-aircraft-role-split",
+            "claim-ussbs-attack-purpose"
+          ]
+        },
+        {
+          "heading": "美国参战及其后果",
+          "body": "袭击的第二天，罗斯福在国会发表演说，美国当天对日宣战。对日本来说，战术上的成功没有带来预期的战略结果：美国没有因为舰队受挫而放弃作战，反而迅速转入全面动员，并把一场地区冲突扩大为太平洋战争。珍珠港的航母不在港内而未受损；据尼米兹后来的评估，包括约四百五十万桶燃油在内的港口设施也未受损，使美国仍能把夏威夷作为反攻基地。正因如此，'战术成功、战略失败'成为评价这次袭击时最常见的概括，但它需要与当时的决策条件一起理解，而不是一句口号。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nara-infamy"
+          ],
+          "claimIds": [
+            "claim-us-declares-war-1941-12-08",
+            "claim-roosevelt-draft-first-line",
+            "claim-ussbs-carriers-absent",
+            "claim-nimitz-onsite-assessment"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-pearl-harbor",
+        "place-oahu",
+        "place-washington-dc"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku",
+        "person-nagumo-chuichi",
+        "person-kimmel-husband",
+        "person-short-walter"
+      ],
+      "unitIds": [
+        "unit-kido-butai"
+      ],
+      "equipmentIds": [
+        "equipment-akagi",
+        "equipment-type-97-carrier-attack-plane"
+      ],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-radar"
+      ],
+      "battleId": "battle-pearl-harbor",
+      "relatedEventIds": [
+        "event-us-declares-war-1941"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097",
+        "source-nww2m-pearl-missed-warnings",
+        "source-nara-infamy",
+        "source-nps-opana-radar",
+        "source-nps-uss-arizona"
+      ],
+      "claimIds": [
+        "claim-ussbs-attack-purpose",
+        "claim-ussbs-norther-route-tradeoff",
+        "claim-ussbs-date-choice",
+        "claim-ussbs-why-no-second-attack",
+        "claim-pearl-third-wave-assessment-disputed",
+        "claim-aircraft-role-split",
+        "claim-ussbs-carriers-absent",
+        "claim-arizona-crew-losses",
+        "claim-pearl-us-damage-estimate",
+        "claim-us-declares-war-1941-12-08",
+        "claim-roosevelt-draft-first-line",
+        "claim-yamamoto-us-industrial-might",
+        "claim-nagumo-strike-doctrine-order",
+        "claim-pearl-air-organization",
+        "claim-nimitz-onsite-assessment"
+      ],
+      "researchStatus": "sources-retrieved"
+    },
+    {
+      "id": "event-us-declares-war-1941",
+      "title": "美国对日宣战",
+      "historicalPart": "part-2-pearl-harbor",
+      "eventType": "diplomacy",
+      "startDate": "1941-12-08",
+      "endDate": "1941-12-08",
+      "summary": "珍珠港袭击次日，罗斯福在国会发表演说，美国当天对日宣战，太平洋战争全面爆发。",
+      "article": [
+        {
+          "heading": "国会演说与宣战",
+          "body": "1941 年 12 月 8 日 12:30，罗斯福对国会两院联席会议与全国发表演说。讲稿的第一句原写作“将活在世界大战史中的一天”，后来改成更广为人知的表述。参议院一致支持战争，众议院只有蒙大拿州的和平主义者珍妮特·兰金反对；当天 16:00，罗斯福签署对日宣战书。演说把前一天的空袭定义为突然而蓄意的攻击，这为美国从和平状态转入战争状态提供了政治基础。",
+          "sourceIds": [
+            "source-nara-infamy"
+          ],
+          "claimIds": [
+            "claim-us-declares-war-1941-12-08",
+            "claim-roosevelt-draft-first-line"
+          ]
+        },
+        {
+          "heading": "从局部袭击到全面战争",
+          "body": "珍珠港袭击原本是日本为争取南洋作战时间而策划的局部军事行动，但美国的反应把它变成了太平洋战争的起点。美国参战不仅改变了太平洋战场的力量对比，也使日本原本设想的“短期决战、迫使美国接受既成事实”的战略失去可能。此后日本必须在更长的战线上同时面对美国的海军、航空兵与工业动员能力。对美国来说，夏威夷的基地与幸存的航母成为后续反击的支点，而宣战则把全国资源纳入了战争轨道。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nara-infamy"
+          ],
+          "claimIds": [
+            "claim-us-declares-war-1941-12-08",
+            "claim-ussbs-carriers-absent",
+            "claim-ussbs-attack-purpose"
+          ]
+        }
+      ],
+      "placeIds": [
+        "place-washington-dc",
+        "place-pearl-harbor"
+      ],
+      "personIds": [],
+      "unitIds": [],
+      "equipmentIds": [],
+      "conceptIds": [],
+      "battleId": "battle-pearl-harbor",
+      "relatedEventIds": [
+        "event-overview-part-2-pearl-harbor",
+        "event-japan-war-decision-1941"
+      ],
+      "sourceIds": [
+        "source-nara-infamy",
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-us-declares-war-1941-12-08",
+        "claim-roosevelt-draft-first-line",
+        "claim-ussbs-carriers-absent",
+        "claim-ussbs-attack-purpose"
+      ],
+      "researchStatus": "sources-retrieved"
     }
   ],
-  "battles": [],
+  "battles": [
+    {
+      "id": "battle-pearl-harbor",
+      "title": "珍珠港袭击",
+      "historicalPart": "part-2-pearl-harbor",
+      "battleType": "air-raid",
+      "theater": "pacific",
+      "startDate": "1941-12-07",
+      "endDate": "1941-12-07",
+      "summary": "1941 年 12 月 7 日，日本航母机动部队空袭夏威夷珍珠港，重创美国太平洋舰队战列舰力量；美军航空母舰未在港内。战术上日军得手，战略上却促使美国全面参战。",
+      "belligerents": {
+        "japan": "日本帝国海军（联合舰队机动部队）",
+        "allies": "美国太平洋舰队与夏威夷陆军部队"
+      },
+      "outcome": {
+        "summary": "日军在战术上取得突然袭击的成功，重创美军战列舰与飞机；但美军航母与部分基地设施未受损，美国随后对日宣战。",
+        "winner": "japan",
+        "certainty": "documented"
+      },
+      "placeIds": [
+        "place-pearl-harbor",
+        "place-oahu",
+        "place-ford-island",
+        "place-north-pacific-launch"
+      ],
+      "personIds": [
+        "person-yamamoto-isoroku",
+        "person-nagumo-chuichi",
+        "person-kimmel-husband",
+        "person-short-walter"
+      ],
+      "commanderIds": {
+        "japan": [
+          "person-yamamoto-isoroku",
+          "person-nagumo-chuichi"
+        ],
+        "allies": [
+          "person-kimmel-husband",
+          "person-short-walter"
+        ]
+      },
+      "unitIds": [
+        "unit-kido-butai",
+        "unit-combined-fleet"
+      ],
+      "equipmentIds": [
+        "equipment-akagi",
+        "equipment-type-97-carrier-attack-plane",
+        "equipment-opana-mobile-radar"
+      ],
+      "conceptIds": [
+        "concept-aircraft-carrier",
+        "concept-carrier-aircraft",
+        "concept-naval-aviation",
+        "concept-radar"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-jm-097",
+        "source-jm-147-appx3",
+        "source-nara-infamy",
+        "source-nps-opana-radar",
+        "source-nps-uss-arizona",
+        "source-nww2m-pearl-missed-warnings",
+        "source-nww2m-path-pearl-harbor"
+      ],
+      "claimIds": [
+        "claim-ussbs-attack-purpose",
+        "claim-ussbs-norther-route-tradeoff",
+        "claim-ussbs-date-choice",
+        "claim-ussbs-055-shallow-water",
+        "claim-ussbs-decision-1941-11-03",
+        "claim-ussbs-recall-rules",
+        "claim-ussbs-carriers-absent",
+        "claim-ussbs-why-no-second-attack",
+        "claim-kido-butai-order-1941-11-23",
+        "claim-kido-butai-rearm-plan",
+        "claim-opana-radar-detected",
+        "claim-opana-warning-dismissed",
+        "claim-arizona-crew-losses",
+        "claim-us-declares-war-1941-12-08",
+        "claim-roosevelt-draft-first-line",
+        "claim-yamamoto-us-industrial-might",
+        "claim-nagumo-signed-kido-butai-orders",
+        "claim-ussbs-refuel-critical",
+        "claim-aircraft-role-split",
+        "claim-us-fleet-trains-refuel",
+        "claim-nagumo-kido-butai-command",
+        "claim-nagumo-strike-doctrine-order",
+        "claim-nagumo-rearm-in-plan",
+        "claim-pearl-force-composition",
+        "claim-pearl-route-choice",
+        "claim-pearl-date-takeoff",
+        "claim-pearl-air-organization",
+        "claim-pearl-japanese-losses",
+        "claim-pearl-us-damage-estimate",
+        "claim-pearl-no-landing",
+        "claim-pearl-third-wave-assessment-disputed",
+        "claim-pearl-oahu-and-launch",
+        "claim-pearl-airfield-targets",
+        "claim-pearl-us-command-split",
+        "claim-pearl-three-tactical-warnings",
+        "claim-pearl-ward-submarine-report",
+        "claim-pearl-warning-context",
+        "claim-nimitz-onsite-assessment"
+      ],
+      "sections": {
+        "background": {
+          "title": "背景",
+          "body": "1941 年，日本在东亚的长期战争与对石油等战略资源的依赖，使它在美、英、荷的禁运压力下必须做出选择：要么接受实力差距并放弃扩张，要么在开战之初用一次突然打击换取时间。联合舰队司令长官山本五十六提出以航母机动部队奇袭珍珠港，目标不是占领夏威夷，而是暂时瘫痪美国太平洋舰队的主力舰，使日本在南洋的作战行动获得几个月自由。到 1941 年 11 月底，外交交涉已接近破裂，攻击计划进入执行阶段。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-147-appx3",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-ussbs-date-choice",
+            "claim-yamamoto-us-industrial-might"
+          ]
+        },
+        "geography": {
+          "title": "地理环境",
+          "body": "珍珠港位于夏威夷群岛瓦胡岛南岸，是美国太平洋舰队的主要基地。对日本来说，夏威夷距本土约数千公里，舰队必须跨越缺乏陆基机场掩护的北太平洋；为避开美军巡逻机与商船，机动部队选择北方航线，在瓦胡岛以北约二百英里的海域放飞飞机。港内水道狭窄、水深较浅，舰只又常并排停泊，这使鱼雷攻击必须使用专门改装的浅水鱼雷，对并排停靠的内侧舰只则只能改用轰炸。这一地理条件直接影响了鱼雷与轰炸的分工。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nps-opana-radar"
+          ],
+          "claimIds": [
+            "claim-ussbs-norther-route-tradeoff",
+            "claim-ussbs-055-shallow-water",
+            "claim-pearl-oahu-and-launch"
+          ]
+        },
+        "participants": {
+          "title": "主要参与方",
+          "body": "日方投入的是以六艘航母为核心的机动部队：赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤，另有战列舰比叡、雾岛，重巡洋舰利根、筑摩，轻巡洋舰阿武隈，九艘驱逐舰与八艘补给油船，以及先遣潜艇部队。美方在夏威夷的力量包括太平洋舰队的战列舰与巡洋舰、瓦胡岛上的陆军航空队与防空部队；航空母舰当天不在港内。指挥上，日方由山本五十六策划、第一航空舰队司令长官南云忠一在海上指挥；美方太平洋舰队司令金梅尔与夏威夷陆军司令肖特分掌海军与陆军，两人之上没有统一指挥官。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097",
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-pearl-force-composition",
+            "claim-nagumo-signed-kido-butai-orders",
+            "claim-nagumo-kido-butai-command",
+            "claim-ussbs-carriers-absent",
+            "claim-pearl-us-command-split"
+          ]
+        },
+        "commanders": {
+          "title": "主要指挥官",
+          "body": "山本五十六是计划的最初提出者，他把这次行动看作在实力劣势下争取时间的手段；南云忠一负责海上指挥，并签署了机动部队的作战命令。美方金梅尔与肖特分掌太平洋舰队与夏威夷陆军，两人都收到华盛顿的战争警告，但对警告的理解不同：肖特把重点放在防破坏与内部叛乱，金梅尔则更担心航母位置不明。由于没有统一指挥，陆军负责的防空与战斗机战备、海军负责的港内舰艇无法在同一套警报下协同。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-pearl-missed-warnings",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-yamamoto-us-industrial-might",
+            "claim-nagumo-kido-butai-command",
+            "claim-nagumo-strike-doctrine-order",
+            "claim-pearl-us-command-split",
+            "claim-pearl-warning-context"
+          ]
+        },
+        "forces": {
+          "title": "双方军力对比",
+          "body": "日方第一攻击队 189 架、第二攻击队 171 架，合计 360 架，分水平轰炸、鱼雷攻击、俯冲轰炸与制空四类；核心是六艘航母与其舰载机。美方在瓦胡岛约有海军舰艇与陆军航空队，陆军飞机约二百三十四架、其中战斗机约一百五十二架，但多数飞机密集停放、缺乏疏散；防空火炮数量有限，弹药管理严格。双方力量对比的关键不在总数，而在日方把飞机集中在一次突击中，美方则在预警与战备上失去了把它们用出去的时间。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-pearl-air-organization",
+            "claim-aircraft-role-split",
+            "claim-pearl-us-command-split"
+          ]
+        },
+        "objectives": {
+          "title": "各自战略目标",
+          "body": "日方的目标写得很有限：使美国太平洋舰队暂时失去行动能力，从而为日本在菲律宾与荷属东印度等地的作战争取时间；不计划占领夏威夷，也不计划以水面舰艇追击。美方的战略目标则是保住舰队作为威慑与反击力量，同时守住夏威夷这一太平洋基地。目标的不对称决定了双方对“成功”的定义不同：日方只要几个月的时间窗口，美方只要舰队还在、基地还在，就能把一次战术失败转化为长期动员的起点。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-ussbs-why-no-second-attack",
+            "claim-pearl-no-landing"
+          ]
+        },
+        "constraints": {
+          "title": "决策约束",
+          "body": "日方面临的约束首先来自航程与隐蔽：北方航线天气恶劣、海上加油困难，报告认为突然性与加油是行动的两大支柱，任一失败行动就无法进行。燃料、补给船数量与无线电静默也限制了追击与扩大战果。美方的约束来自情报与指挥：战前预警信息零散，雷达网开机时段有限，陆军与海军没有统一的空情中心，战斗机与防空炮在袭击开始时来不及进入战位。这些限制不是某一个人的疏忽，而是战前组织方式的结果。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097",
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-ussbs-norther-route-tradeoff",
+            "claim-ussbs-recall-rules",
+            "claim-ussbs-refuel-critical",
+            "claim-us-fleet-trains-refuel",
+            "claim-pearl-us-command-split"
+          ]
+        },
+        "plan": {
+          "title": "作战计划",
+          "body": "日方计划把攻击分成两波。第一波以水平轰炸与鱼雷攻击打战列舰与航母，同时用俯冲轰炸与战斗机压制机场；第二波扩大对机场与残余舰艇的打击。为应对珍珠港水浅、可能设有鱼雷网的情况，鱼雷加装稳定装置并从极低空投放，同时保留水平轰炸与俯冲轰炸作为替代。航渡中规定：若在 X 日前两天以上被发现就返航，若更晚被发现则由部队指挥官决定；若外交交涉成功则取消攻击。12 月 2 日，机动部队收到交涉失败、X 日为 12 月 8 日的通知。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097"
+          ],
+          "claimIds": [
+            "claim-ussbs-055-shallow-water",
+            "claim-ussbs-decision-1941-11-03",
+            "claim-ussbs-recall-rules",
+            "claim-kido-butai-order-1941-11-23",
+            "claim-kido-butai-rearm-plan",
+            "claim-pearl-date-takeoff"
+          ]
+        },
+        "course": {
+          "title": "战斗经过",
+          "body": "12 月 7 日 06:00（夏威夷时间），第一攻击队从瓦胡岛以北约二百英里处起飞，第二攻击队约一小时后起飞。07:40 左右第一群到达瓦胡岛上空，07:50 奉命攻击；俯冲轰炸机先打惠勒机场，鱼雷机随后攻击战列舰，战斗机扫射停放的飞机，水平轰炸机接着投弹。第二波约 09:00 开始，重点仍是机场与残余舰只。整个攻击持续约三十分钟到一小时，随后各队返航。日方飞机损失 29 架，港内美军舰艇与飞机损失惨重；攻击计划的首选目标是战列舰与航母，油库、船坞与潜艇基地不在首要目标清单上，据尼米兹后来的评估，包括约四百五十万桶燃油在内的港口设施没有受损。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nps-opana-radar",
+            "source-nps-uss-arizona"
+          ],
+          "claimIds": [
+            "claim-pearl-date-takeoff",
+            "claim-pearl-japanese-losses",
+            "claim-pearl-us-damage-estimate",
+            "claim-arizona-crew-losses",
+            "claim-aircraft-role-split",
+            "claim-pearl-three-tactical-warnings",
+            "claim-pearl-ward-submarine-report",
+            "claim-pearl-air-organization",
+            "claim-nimitz-onsite-assessment"
+          ]
+        },
+        "decisions": {
+          "title": "关键决策",
+          "body": "关键决策发生在三个层面。战略上，山本坚持以航母奇袭代替等待，认为只有突然打击才能在实力劣势下争取时间。海上，南云在收到第一波战果后决定不再发动第三波，按计划撤收；美国战略轰炸调查处记录的理由是既定目标已经达成、美军航母位置不明、以及夏威夷可能还有五十架以上陆基飞机可以反击。岸上，金梅尔与肖特在战争警告下没有把防御级别提升到对外来空袭，雷达与沃德号的报告也没有被升级为全面警报。事后看，撤收与不设防都被批评，但当时的决策者面对的是不完整的信息与有限的资源。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097",
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-ussbs-why-no-second-attack",
+            "claim-pearl-third-wave-assessment-disputed",
+            "claim-pearl-us-command-split",
+            "claim-pearl-three-tactical-warnings",
+            "claim-pearl-warning-context",
+            "claim-nagumo-strike-doctrine-order"
+          ]
+        },
+        "results": {
+          "title": "结果与损失",
+          "body": "按 USSBS 依据飞行员报告与照片给出的当时估计，日军击沉战列舰四艘、巡洋舰一艘、油船两艘，重创战列舰四艘，轻伤一艘；击落美机十架、地面摧毁约二百五十架。日方自身损失飞机二十九架，五艘小型潜艇未回收。美方人员伤亡集中在被击沉与起火爆炸的舰艇上：亚利桑那号一千一百七十七名舰员中九百余人死亡，仅这一艘舰的数字就足以说明损失的性质。不同统计对总伤亡与舰艇损伤的口径并不完全一致，本教材把 USSBS 的当时估计与单舰可核实数字分开呈现，不合并成一个看似精确的总数。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nps-uss-arizona"
+          ],
+          "claimIds": [
+            "claim-pearl-japanese-losses",
+            "claim-pearl-us-damage-estimate",
+            "claim-arizona-crew-losses"
+          ]
+        },
+        "aftermath": {
+          "title": "后续影响",
+          "body": "战术上，日本取得了惊人的成功：美国太平洋舰队的战列舰力量在数小时内被重创，日本随后得以在南洋展开进攻。战略上，结果与日方的期待相反：美国航空母舰没有受损；据尼米兹后来的评估，包括约四百五十万桶燃油在内的港口设施没有受损；美国社会迅速转入全面动员。12 月 8 日，罗斯福在国会发表演说，当天美国对日宣战，太平洋战争全面爆发。日本得到的几个月时间窗口是真的，但它没有摧毁美国继续作战的能力，这正是“战术成功、战略失败”这一评价的来源。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nara-infamy"
+          ],
+          "claimIds": [
+            "claim-ussbs-carriers-absent",
+            "claim-us-declares-war-1941-12-08",
+            "claim-roosevelt-draft-first-line",
+            "claim-ussbs-why-no-second-attack",
+            "claim-nimitz-onsite-assessment"
+          ]
+        },
+        "controversies": {
+          "title": "历史争议",
+          "body": "围绕珍珠港的争议主要有三类。第一是预警为何失效：雷达发现、沃德号的潜艇报告与华盛顿的战争警告都存在，却没有形成统一警报；一种解释强调情报与指挥体系的分散，另一种解释把责任集中在夏威夷的两位指挥官身上，现有材料更支持“体系性失灵”而不足以把责任归于单一个人。第二是南云是否应继续攻击：按计划撤收有明确理由，但攻击计划没有把油库与船坞列为首要目标、而它们后来被认为基本完好，也让“错失扩大战果”的批评长期存在。第三是损失统计口径：当时估计与战后统计并不完全一致，引用时必须说明来源与时点。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nww2m-pearl-missed-warnings",
+            "source-jm-097",
+            "source-nps-opana-radar"
+          ],
+          "claimIds": [
+            "claim-pearl-third-wave-assessment-disputed",
+            "claim-pearl-three-tactical-warnings",
+            "claim-pearl-warning-context",
+            "claim-ussbs-why-no-second-attack",
+            "claim-opana-warning-dismissed",
+            "claim-pearl-air-organization",
+            "claim-nimitz-onsite-assessment"
+          ]
+        },
+        "furtherReading": {
+          "title": "延伸阅读",
+          "body": "延伸阅读建议按入口串联：人物页读山本五十六与南云忠一，理解计划提出者与海上指挥者的不同处境；专题页读航母、舰载机、海军航空作战与雷达，理解这次袭击为什么可能发生；地图页按三个阶段回放从北方海域放飞、第一波攻击到第二波与撤收的示意过程；事件页沿时间线读美国参战及其后果。原始来源以 USSBS 第 2 章、日本专档第 97 号与 NPS 的雷达、亚利桑那号页面为主，配合国家档案馆的宣战演说记录。",
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-jm-097",
+            "source-nps-uss-arizona",
+            "source-nww2m-path-pearl-harbor"
+          ],
+          "claimIds": [
+            "claim-ussbs-attack-purpose",
+            "claim-nagumo-signed-kido-butai-orders",
+            "claim-pearl-date-takeoff",
+            "claim-us-declares-war-1941-12-08"
+          ]
+        }
+      },
+      "phases": [
+        {
+          "id": "phase-pearl-1-launch",
+          "sequence": 1,
+          "title": "北方海域放飞与航渡（示意）",
+          "time": {
+            "start": "1941-12-07T06:00:00-10:30",
+            "end": "1941-12-07T07:45:00-10:30",
+            "display": "1941 年 12 月 7 日 06:00–07:45（夏威夷时间）",
+            "uncertainty": "起飞与航渡时刻来自战后回忆与整理文件，可能有数分钟误差；图中位置为示意。"
+          },
+          "positions": {
+            "japan": {
+              "label": "机动部队与第一攻击队（示意位置）",
+              "description": "机动部队在瓦胡岛以北约二百英里海域放飞攻击队；本图只表示大致海域，不画精确航迹。",
+              "placeIds": [
+                "place-north-pacific-launch"
+              ],
+              "coordinates": {
+                "lat": 24.8,
+                "lng": -158
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 150,
+              "uncertaintyNote": "位置为约二百英里半径内的示意中心点，不是精确舰位。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-date-takeoff",
+                "claim-pearl-force-composition"
+              ]
+            },
+            "allies": {
+              "label": "珍珠港与瓦胡岛守备（示意位置）",
+              "description": "美方舰队主力停泊珍珠港，陆军航空队分布在瓦胡岛各机场。",
+              "placeIds": [
+                "place-pearl-harbor",
+                "place-oahu"
+              ],
+              "coordinates": {
+                "lat": 21.36,
+                "lng": -157.95
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 15,
+              "uncertaintyNote": "守备位置按基地与机场的大致区域示意。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2",
+                "source-nps-opana-radar"
+              ],
+              "claimIds": [
+                "claim-ussbs-carriers-absent",
+                "claim-pearl-oahu-and-launch"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方知道美军主力舰停泊珍珠港，并估计夏威夷海域有四到五艘美军航母。",
+            "allies": "美方收到战争警告，但不知道日本航母的具体位置，也不知道攻击将在何时到来。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不确定攻击当天美军航母是否在港，也不确定美军战备程度。",
+            "allies": "美方不知道来袭机群的数量、航向与起飞海域，雷达发现后也没有完成识别。"
+          },
+          "decision": {
+            "japan": "南云按计划在放飞点派出两波攻击队，并保留战斗机巡逻。",
+            "allies": "金梅尔与肖特维持有限戒备，没有把防御级别提升到全面防空。"
+          },
+          "consequence": {
+            "japan": "攻击队得以在几乎无拦截的情况下接近瓦胡岛。",
+            "allies": "美方失去在攻击前组织拦截与疏散的最后时间。"
+          },
+          "certainty": "schematic",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：只要不被发现，突然性就能弥补兵力劣势；航渡与加油是最容易出问题的环节。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-third-wave-assessment-disputed",
+                "claim-pearl-route-choice"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：战争警告已经收到，但警告没有指明目标；舰队仍在港内，战备处于平时的有限水平。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-warning-context",
+                "claim-pearl-us-command-split"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-pearl-launch-approach",
+              "side": "japan",
+              "label": "第一攻击队自放飞海域南下（示意）",
+              "fromPlaceId": "place-north-pacific-launch",
+              "toPlaceId": "place-oahu",
+              "path": [
+                {
+                  "lat": 24.8,
+                  "lng": -158
+                },
+                {
+                  "lat": 23.6,
+                  "lng": -158
+                },
+                {
+                  "lat": 22.3,
+                  "lng": -158
+                },
+                {
+                  "lat": 21.6,
+                  "lng": -157.99
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示大致来袭方向，不代表真实飞行轨迹。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-date-takeoff"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段位置、航线与时刻均为教学示意；真实航迹没有被完整记录。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-pearl-date-takeoff",
+            "claim-pearl-force-composition",
+            "claim-pearl-warning-context"
+          ]
+        },
+        {
+          "id": "phase-pearl-2-first-wave",
+          "sequence": 2,
+          "title": "第一波攻击（示意）",
+          "time": {
+            "start": "1941-12-07T07:50:00-10:30",
+            "end": "1941-12-07T08:40:00-10:30",
+            "display": "1941 年 12 月 7 日 07:50–08:40（夏威夷时间）",
+            "uncertainty": "攻击开始时刻按 USSBS 记载的 07:50 命令、07:55 起依次攻击；各队实际投弹时刻有数分钟差异。"
+          },
+          "positions": {
+            "japan": {
+              "label": "第一攻击队（示意位置）",
+              "description": "俯冲轰炸、鱼雷、水平轰炸与战斗机队分别进入瓦胡岛上空与港区。",
+              "placeIds": [
+                "place-oahu",
+                "place-pearl-harbor"
+              ],
+              "coordinates": {
+                "lat": 21.5,
+                "lng": -158.1
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 60,
+              "uncertaintyNote": "空中编队位置为示意，不表示精确航迹。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-date-takeoff",
+                "claim-pearl-air-organization"
+              ]
+            },
+            "allies": {
+              "label": "珍珠港泊地与机场（示意位置）",
+              "description": "战列舰停泊在港内，陆军飞机集中在惠勒、希卡姆与福特岛等地。",
+              "placeIds": [
+                "place-pearl-harbor",
+                "place-ford-island"
+              ],
+              "coordinates": {
+                "lat": 21.36,
+                "lng": -157.95
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 10,
+              "uncertaintyNote": "泊地与机场位置按基地大致区域示意。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2",
+                "source-nps-opana-radar"
+              ],
+              "claimIds": [
+                "claim-pearl-airfield-targets",
+                "claim-arizona-crew-losses"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方已确认美军航母不在港内，攻击重点转向战列舰。",
+            "allies": "美方在攻击开始时才确认来袭，雷达与沃德号的报告没有形成统一警报。"
+          },
+          "unknownEnemy": {
+            "japan": "日方仍不知道美军航母的位置，也不知道港内设施受损程度。",
+            "allies": "美方不知道第二波规模与后续是否还有登陆，只能就地组织抵抗。"
+          },
+          "decision": {
+            "japan": "各攻击队按预定分工同时打舰艇与机场，战斗机压制升空与停放的美机。",
+            "allies": "美方舰艇与岸上部队各自进入战斗，没有统一的反击指挥。"
+          },
+          "consequence": {
+            "japan": "第一波取得突然性，港内舰艇与机场在短时间内受重创。",
+            "allies": "战列舰与飞机损失集中出现，但航母与部分设施未受损。"
+          },
+          "certainty": "estimated",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：第一波战果超过预期，但港内油库与船坞是否值得再打，需要现场判断。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-air-organization",
+                "claim-pearl-us-damage-estimate"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：攻击来得太快，防空与战斗机来不及进入战位，只能先保住人员和舰艇。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-three-tactical-warnings",
+                "claim-arizona-crew-losses"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-pearl-first-wave-attack",
+              "side": "japan",
+              "label": "第一攻击队自北岸进入港区（示意）",
+              "fromPlaceId": "place-oahu",
+              "toPlaceId": "place-pearl-harbor",
+              "path": [
+                {
+                  "lat": 21.7,
+                  "lng": -158.05
+                },
+                {
+                  "lat": 21.5,
+                  "lng": -157.99
+                },
+                {
+                  "lat": 21.36,
+                  "lng": -157.95
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示大致进入方向，不代表真实飞行轨迹。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-date-takeoff"
+              ]
+            },
+            {
+              "id": "route-pearl-allies-patrol",
+              "side": "allies",
+              "label": "福特岛与珍珠港之间的守备机动（示意）",
+              "fromPlaceId": "place-ford-island",
+              "toPlaceId": "place-pearl-harbor",
+              "path": [
+                {
+                  "lat": 21.363,
+                  "lng": -157.96
+                },
+                {
+                  "lat": 21.355,
+                  "lng": -157.952
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示港内守备的大致关系，不代表真实航线。",
+              "sourceIds": [
+                "source-nps-opana-radar"
+              ],
+              "claimIds": [
+                "claim-pearl-airfield-targets"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段位置与航线为示意；攻击时刻按来源记载给出，但各队实际位置无法逐点重建。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-ussbs-pto-ch2",
+            "source-nps-opana-radar"
+          ],
+          "claimIds": [
+            "claim-pearl-date-takeoff",
+            "claim-pearl-air-organization",
+            "claim-pearl-three-tactical-warnings",
+            "claim-pearl-us-damage-estimate"
+          ]
+        },
+        {
+          "id": "phase-pearl-3-second-wave-withdraw",
+          "sequence": 3,
+          "title": "第二波与撤收（示意）",
+          "time": {
+            "start": "1941-12-07T08:55:00-10:30",
+            "end": "1941-12-07T11:30:00-10:30",
+            "display": "1941 年 12 月 7 日 08:55–11:30（夏威夷时间）",
+            "uncertainty": "第二波开始时刻按来源记为约 09:00；撤收与返航时刻只有概括记载。"
+          },
+          "positions": {
+            "japan": {
+              "label": "第二攻击队与返航编队（示意位置）",
+              "description": "第二波继续攻击机场与残余舰只，随后各队向瓦胡岛西北方向集合返航。",
+              "placeIds": [
+                "place-oahu",
+                "place-north-pacific-launch"
+              ],
+              "coordinates": {
+                "lat": 22.2,
+                "lng": -158.2
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 120,
+              "uncertaintyNote": "返航编队位置为示意，不表示精确航迹。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-air-organization",
+                "claim-pearl-japanese-losses"
+              ]
+            },
+            "allies": {
+              "label": "珍珠港残余守备（示意位置）",
+              "description": "港内舰艇与岸上设施继续承受攻击，美方开始组织救火与抢救。",
+              "placeIds": [
+                "place-pearl-harbor",
+                "place-oahu"
+              ],
+              "coordinates": {
+                "lat": 21.36,
+                "lng": -157.95
+              },
+              "schematic": true,
+              "uncertaintyRadiusKm": 12,
+              "uncertaintyNote": "守备位置按基地大致区域示意。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2",
+                "source-nps-opana-radar"
+              ],
+              "claimIds": [
+                "claim-pearl-us-damage-estimate",
+                "claim-arizona-crew-losses"
+              ]
+            }
+          },
+          "knownEnemy": {
+            "japan": "日方估计港内主要目标已被击中，但不确定美军航母是否接近。",
+            "allies": "美方逐步确认这是大规模空袭，但不知道是否还有后续登陆。"
+          },
+          "unknownEnemy": {
+            "japan": "日方不知道美军航母位置，也不知道港内油库与船坞的完整情况。",
+            "allies": "美方不知道日方是否会继续攻击或登陆，只能按最坏情况准备。"
+          },
+          "decision": {
+            "japan": "南云决定不再发动后续攻击，按计划撤收返回日本。",
+            "allies": "美方放弃在港内组织大规模反击，优先抢救人员与舰艇。"
+          },
+          "consequence": {
+            "japan": "机动部队保存了兵力；攻击计划没有把油库、船坞与潜艇基地列为首要目标。",
+            "allies": "舰队主力舰受重创，但航母与部分设施保存下来，为后续作战留下基础。"
+          },
+          "certainty": "estimated",
+          "viewpoints": {
+            "japan": {
+              "perspective": "日方视角：既定目标已经达成，继续留在夏威夷附近会面临美军航母与陆基飞机的反击风险。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-third-wave-assessment-disputed",
+                "claim-ussbs-why-no-second-attack"
+              ]
+            },
+            "allies": {
+              "perspective": "美方视角：损失已经发生，接下来最重要的是保住剩余舰艇、修复设施并把国家转入战争状态。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-ussbs-carriers-absent",
+                "claim-us-declares-war-1941-12-08"
+              ]
+            }
+          },
+          "routes": [
+            {
+              "id": "route-pearl-second-wave-withdraw",
+              "side": "japan",
+              "label": "第二波撤收与返航（示意）",
+              "fromPlaceId": "place-oahu",
+              "toPlaceId": "place-north-pacific-launch",
+              "path": [
+                {
+                  "lat": 21.5,
+                  "lng": -158
+                },
+                {
+                  "lat": 22.5,
+                  "lng": -158.1
+                },
+                {
+                  "lat": 24,
+                  "lng": -158.05
+                }
+              ],
+              "schematic": true,
+              "certainty": "schematic",
+              "note": "示意折线，表示大致撤收方向，不代表真实航迹。",
+              "sourceIds": [
+                "source-ussbs-pto-ch2"
+              ],
+              "claimIds": [
+                "claim-pearl-japanese-losses"
+              ]
+            }
+          ],
+          "schematic": true,
+          "uncertaintyNote": "本阶段位置、航线与撤收时刻为示意；日方返航航迹没有逐点记录。",
+          "eventIds": [],
+          "sourceIds": [
+            "source-ussbs-pto-ch2"
+          ],
+          "claimIds": [
+            "claim-pearl-air-organization",
+            "claim-pearl-japanese-losses",
+            "claim-pearl-third-wave-assessment-disputed",
+            "claim-ussbs-why-no-second-attack"
+          ]
+        }
+      ]
+    }
+  ],
   "people": [
     {
       "id": "person-yamamoto-isoroku",
@@ -2850,7 +3825,7 @@
       "role": "日本海军联合舰队司令长官",
       "service": "navy",
       "summary": "日本海军联合舰队司令长官。他清楚美国的工业潜力，却仍然提出并推动了袭击珍珠港的计划；他本人把这场战争看成胜算很低的赌博。",
-      "profile": "要理解山本五十六，得先理解他看到了什么。他在 1904 年的对马海峡海战中负过伤，失去了两根手指；后来长年在美国任职，亲眼看过美国的工厂、油田和劳动力。因此，当日本国内讨论要不要对美开战时，他是少数从一开始就清楚双方力量差距有多大的人之一。据博物馆文章转述，当有人提出日本大约只能与美国打十八个月时，他的回答是：这与我自己的研究一致。他判断日本难以承受一场长期的消耗战。既然如此，他为什么还要支持和策划袭击珍珠港？答案要放回当时的处境去看。第一，日本的作战传统相信“决定性海战”：既然资源不足以长期消耗，就必须在开战之初用一次猛烈打击换取时间。第二，联合舰队面对的现实是：美国太平洋舰队的存在让日本在南进时始终要担心后背。第三，最初提出这个计划的正是他本人——美国战略轰炸调查处的报告明确写道，袭击由山本五十六提出。这里有一个必须讲清楚的区分：对山本判断的评价，不能只记住“他反对对美开战”这句话。他知道风险，却仍然把赌注下了下去，因为在他看来，既然战争已经难以避免，那么唯一的胜机就在开战之初。这个判断对不对，要看它是否建立在他当时能掌握的信息上——那一部分是对的。它的问题出在更远处：一次战术上的成功，能不能换来政治上的结果。1943 年 4 月 18 日，他在布干维尔上空被美军 P-38 击落身亡，没能看到这场战争的结局。还需要补一句容易被忽略的细节：他并不是不了解对手的人，而是一个了解对手、却仍然选择开战的人。正因为如此，他的档案既不能写成被迫应战的军人，也不能写成单纯策划偷袭的反派。把这两面都放进去，才是真实的历史人物。",
+      "profile": "要理解山本五十六，得先理解他看到了什么。他长期在日本海军中服役，后来长年在美国任职，亲眼看过美国的工厂、油田和劳动力。因此，当日本国内讨论要不要对美开战时，他是少数从一开始就清楚双方力量差距有多大的人之一。据博物馆文章转述，当有人提出日本大约只能与美国打十八个月时，他的回答是：这与我自己的研究一致。他判断日本难以承受一场长期的消耗战。既然如此，他为什么还要支持和策划袭击珍珠港？答案要放回当时的处境去看。第一，日本的作战传统相信“决定性海战”：既然资源不足以长期消耗，就必须在开战之初用一次猛烈打击换取时间。第二，联合舰队面对的现实是：美国太平洋舰队的存在让日本在南进时始终要担心后背。第三，最初提出这个计划的正是他本人——美国战略轰炸调查处的报告明确写道，袭击由山本五十六提出。这里有一个必须讲清楚的区分：对山本判断的评价，不能只记住“他反对对美开战”这句话。他知道风险，却仍然把赌注下了下去，因为在他看来，既然战争已经难以避免，那么唯一的胜机就在开战之初。这个判断对不对，要看它是否建立在他当时能掌握的信息上——那一部分是对的。它的问题出在更远处：一次战术上的成功，能不能换来政治上的结果。1943 年 4 月 18 日，他在布干维尔上空被美军 P-38 击落身亡，没能看到这场战争的结局。还需要补一句容易被忽略的细节：他并不是不了解对手的人，而是一个了解对手、却仍然选择开战的人。正因为如此，他的档案既不能写成被迫应战的军人，也不能写成单纯策划偷袭的反派。把这两面都放进去，才是真实的历史人物。",
       "decisions": [
         {
           "id": "decision-yamamoto-propose-pearl-harbor",
@@ -2963,7 +3938,6 @@
       "claimIds": [
         "claim-yamamoto-us-industrial-might",
         "claim-yamamoto-18-months",
-        "claim-yamamoto-tsushima-wounded",
         "claim-ussbs-attack-purpose",
         "claim-ussbs-date-choice",
         "claim-ussbs-decision-1941-11-03",
@@ -3970,6 +4944,167 @@
         "claim-hong-kong-no-air-support",
         "claim-hong-kong-surrender-1941-12-25"
       ]
+    },
+    {
+      "id": "person-kimmel-husband",
+      "name": "赫斯本德·金梅尔",
+      "originalName": "Husband E. Kimmel",
+      "side": "allies",
+      "role": "美国太平洋舰队司令（上将）",
+      "service": "navy",
+      "summary": "1941 年 12 月珍珠港袭击时的美国太平洋舰队司令，负责指挥驻珍珠港的战列舰与巡洋舰部队。",
+      "profile": "金梅尔在 1941 年担任美国太平洋舰队司令，舰队主力战列舰以珍珠港为基地。战争警告在 11 月底到达夏威夷，但警告没有说明日本可能攻击的具体时间与方向；海军在通信情报上对日军能力有较好掌握，却在 11 月 17 日之后失去了日本航母的位置。金梅尔没有把航母位置不明的判断告知陆军司令肖特，两人又都不掌握统一指挥权。袭击当天，舰队仍在港内，防空与战斗机来不及进入战位。评价他的决定时，需要把当时的预警信息、军种分工与战备资源放在一起看，而不是用事后知道的结果反推他本应如何行动。",
+      "decisions": [
+        {
+          "id": "decision-kimmel-keep-fleet-in-port",
+          "title": "把舰队留在珍珠港还是疏散警戒",
+          "context": "1941 年 11 月底，华盛顿发来战争警告，但没有给出具体攻击方向；日本航母位置不明，港内防空与战斗机战备有限，舰队若长期在海上又面临燃油与训练问题。",
+          "options": [
+            "让舰队留在港内、维持有限戒备，同时继续训练与补给",
+            "把主力舰疏散到外海或分散锚地，提高生存性但削弱日常战备与补给效率"
+          ],
+          "choice": "舰队继续留在珍珠港，警戒维持在有限水平。",
+          "constraints": [
+            "战争警告内容笼统，未指明珍珠港是目标",
+            "燃油、护航与训练需求使长期海上戒备代价很高"
+          ],
+          "consequence": "12 月 7 日舰队主力仍在港内，成为集中攻击的目标；这也使后续调查把战备责任集中到夏威夷指挥官身上。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-pearl-warning-context",
+            "claim-pearl-us-command-split"
+          ]
+        },
+        {
+          "id": "decision-kimmel-intel-sharing",
+          "title": "是否把航母位置不明告知陆军",
+          "context": "海军靠通信情报追踪日本舰队，但在 11 月 17 日之后失去日本航母的位置；出于保密，海军没有把这一判断完整告知陆军。",
+          "options": [
+            "保持保密，只在海军内部处理情报",
+            "与陆军共享航母位置不明的判断，并据此提高联合战备"
+          ],
+          "choice": "海军没有把航母位置不明的判断告知陆军。",
+          "constraints": [
+            "通信情报高度保密，扩散有安全风险",
+            "陆海军没有统一指挥与联合空情中心"
+          ],
+          "consequence": "陆军的战备判断与海军的敌情判断脱节，雷达与战斗机没有进入更高戒备。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-pearl-warning-context"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-short-walter",
+        "person-nagumo-chuichi"
+      ],
+      "placeIds": [
+        "place-pearl-harbor",
+        "place-oahu"
+      ],
+      "eventIds": [],
+      "battleIds": [
+        "battle-pearl-harbor"
+      ],
+      "conceptIds": [],
+      "sourceIds": [
+        "source-nww2m-pearl-missed-warnings",
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-pearl-warning-context",
+        "claim-pearl-us-command-split",
+        "claim-pearl-three-tactical-warnings"
+      ]
+    },
+    {
+      "id": "person-short-walter",
+      "name": "沃尔特·肖特",
+      "originalName": "Walter C. Short",
+      "side": "allies",
+      "role": "美国夏威夷陆军部队司令（中将）",
+      "service": "army",
+      "summary": "1941 年 12 月珍珠港袭击时的夏威夷陆军司令，负责包括战斗机与高射炮在内的陆军防御力量。",
+      "profile": "肖特在 1941 年担任夏威夷陆军部队司令，下辖陆军航空队与地面部队，理论上负责在太平洋舰队停泊珍珠港时提供保护。11 月底他收到华盛顿的战争警告，但他的回复强调正在防备内部叛乱与破坏，而不是外部攻击；他没有把战斗机疏散、也没有让高射炮进入随时可用的状态。雷达站只在有限时段开机，空情中心也缺少海军联络人员。袭击发生时，陆军航空队的大多数飞机仍密集停放，战斗机来不及起飞。评价肖特的准备状态，需要同时看到警告文本的模糊、陆军与海军的分工，以及当时对破坏活动的普遍担心。",
+      "decisions": [
+        {
+          "id": "decision-short-limited-alert",
+          "title": "把警戒重点放在防破坏还是防外来空袭",
+          "context": "1941 年 11 月底，华盛顿发来战争警告，但未指明目标；夏威夷陆军同时担心破坏活动与外部攻击，资源有限，雷达与战斗机尚未形成完整空情体系。",
+          "options": [
+            "把警戒重点放在防破坏与内部安全，维持有限开机与集中停放",
+            "提升到全面防空戒备，疏散飞机、展开高射炮并延长雷达开机"
+          ],
+          "choice": "陆军维持以防破坏为主的有限戒备。",
+          "constraints": [
+            "战争警告没有提供具体攻击时间与方向",
+            "防空与战斗机训练、雷达开机时间都受资源限制"
+          ],
+          "consequence": "袭击开始时飞机密集停放、高射炮弹药不便立即使用，战斗机无法及时升空。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-nww2m-pearl-missed-warnings"
+          ],
+          "claimIds": [
+            "claim-pearl-us-command-split",
+            "claim-pearl-warning-context"
+          ]
+        },
+        {
+          "id": "decision-short-radar-hours",
+          "title": "雷达站是否延长开机时间",
+          "context": "瓦胡岛的移动雷达网需要人员值勤，陆军只批准有限开机时段；日军选择在周日清晨袭击，正好落在雷达换班与关闭的窗口附近。",
+          "options": [
+            "维持有限开机时段，节省人力与训练成本",
+            "在战争警告期间延长或全天开机，并要求空情中心保持完整值班"
+          ],
+          "choice": "雷达维持有限开机时段，空情中心缺少完整的识别与联络能力。",
+          "constraints": [
+            "雷达操作与识别人员不足",
+            "陆军与海军没有联合空情中心，识别敌我需要协同"
+          ],
+          "consequence": "欧帕纳雷达虽在 07:02 发现大机群，却没有被纳入能迅速发出警报的体系。",
+          "certainty": "documented",
+          "sourceIds": [
+            "source-nww2m-pearl-missed-warnings",
+            "source-nps-opana-radar"
+          ],
+          "claimIds": [
+            "claim-pearl-three-tactical-warnings",
+            "claim-pearl-us-command-split"
+          ]
+        }
+      ],
+      "relatedPersonIds": [
+        "person-kimmel-husband"
+      ],
+      "placeIds": [
+        "place-pearl-harbor",
+        "place-oahu"
+      ],
+      "eventIds": [],
+      "battleIds": [
+        "battle-pearl-harbor"
+      ],
+      "conceptIds": [
+        "concept-radar"
+      ],
+      "sourceIds": [
+        "source-nww2m-pearl-missed-warnings",
+        "source-nps-opana-radar"
+      ],
+      "claimIds": [
+        "claim-pearl-us-command-split",
+        "claim-pearl-three-tactical-warnings",
+        "claim-pearl-warning-context"
+      ]
     }
   ],
   "places": [
@@ -4873,6 +6008,81 @@
       "claimIds": [
         "claim-doolittle-china-landings"
       ]
+    },
+    {
+      "id": "place-oahu",
+      "historicalName": "瓦胡岛",
+      "modernName": "瓦胡岛（美国夏威夷州）",
+      "modernCountry": "美国",
+      "placeType": "island",
+      "summary": "夏威夷群岛中的岛屿，珍珠港海军基地与惠勒、希卡姆等机场所在地；1941 年 12 月 7 日日军空袭的主要目标区域。",
+      "coordinates": {
+        "lat": 21.47,
+        "lng": -157.98
+      },
+      "coordinateAccuracyKm": 50,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-pearl-harbor",
+        "place-ford-island"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-nps-opana-radar"
+      ],
+      "claimIds": [
+        "claim-pearl-oahu-and-launch",
+        "claim-pearl-airfield-targets"
+      ]
+    },
+    {
+      "id": "place-ford-island",
+      "historicalName": "福特岛",
+      "modernName": "福特岛（珍珠港）",
+      "modernCountry": "美国",
+      "placeType": "base",
+      "summary": "珍珠港港湾中央的岛屿，设有海军航空站与战列舰停泊区；1941 年 12 月 7 日是第一攻击队俯冲轰炸与战斗机扫射的目标之一。",
+      "coordinates": {
+        "lat": 21.363,
+        "lng": -157.96
+      },
+      "coordinateAccuracyKm": 2,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-pearl-harbor",
+        "place-oahu"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-pearl-airfield-targets"
+      ]
+    },
+    {
+      "id": "place-north-pacific-launch",
+      "historicalName": "瓦胡岛以北的放飞海域",
+      "modernName": "瓦胡岛以北约二百英里的太平洋海域",
+      "modernCountry": "美国（夏威夷以北公海）",
+      "placeType": "sea",
+      "summary": "1941 年 12 月 7 日日军机动部队放飞攻击队的海域，位于瓦胡岛以北约二百英里；此处以近似中心点表示，不代表精确航迹。",
+      "coordinates": {
+        "lat": 24.8,
+        "lng": -158
+      },
+      "coordinateAccuracyKm": 120,
+      "schematic": false,
+      "relatedPlaceIds": [
+        "place-oahu",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "claimIds": [
+        "claim-pearl-oahu-and-launch",
+        "claim-pearl-date-takeoff"
+      ]
     }
   ],
   "units": [
@@ -5662,7 +6872,7 @@
       "url": "https://www.defensemedianetwork.com/stories/admirals-ernest-j-king-chester-w-nimitz/",
       "accessedDate": "2026-11-04",
       "citation": "Dwight Jon Zimmerman, \"Admirals Ernest J. King and Chester W. Nimitz: The S.O.B. and the quiet man,\" Defense Media Network, January 30, 2012.",
-      "reliabilityNote": "军事主题网站的特写文章，非官方战史。可支持尼米兹接任太平洋舰队总司令的日期与经过、他对珍珠港残局的实地评估、他选择岸上指挥的原因，以及金上将要求主动出击的背景。文中含人物轶事与转述评价，本教材只使用其中可与其他官方来源相互印证的事实性内容，不采用其性格判断。",
+      "reliabilityNote": "军事主题网站的特写文章，非官方战史、属二手转述。可支持尼米兹接任太平洋舰队总司令的日期与经过、他对珍珠港残局的实地评估、他选择岸上指挥的原因，以及金上将要求主动出击的背景。HIST-02 attempt 2 用它支撑“包括约四百五十万桶燃油在内的港口设施未受损”这一细节；该细节仅见于本篇特写，属单一二手来源，claimType 只表示“来源如此记载”，不升级为官方档案结论。文中还含人物轶事与转述评价，本教材只使用可与其它来源相互印证的事实性内容，不采用其性格判断。",
       "language": "en"
     },
     {
@@ -5760,6 +6970,18 @@
       "reliabilityNote": "一手战斗报告，由参战部队指挥官本人撰写并呈报，是这次行动最直接的原始记录。可支持起飞时间与位置、被迫提前起飞的原因、机队编成与改装、目标分配、各机去向与人员下落。属参战者自述，对日方损失与日本国内反应的判断需另找来源；报告自身也注明部分人员下落“据可得报告，未必可靠”。",
       "language": "en",
       "archiveCollectionId": "AAF-rep-Doolittle"
+    },
+    {
+      "id": "source-nww2m-pearl-missed-warnings",
+      "title": "The Three Missed Tactical Warnings That Could Have Made a Difference at Pearl Harbor",
+      "creator": "Richard B. Frank / The National WWII Museum",
+      "publisher": "The National WWII Museum",
+      "year": 2021,
+      "sourceType": "museum",
+      "url": "https://www.nationalww2museum.org/war/articles/pearl-harbor-missed-tactical-warnings",
+      "accessedDate": "2026-11-05",
+      "citation": "Richard B. Frank, \"The Three Missed Tactical Warnings That Could Have Made a Difference at Pearl Harbor\", The National WWII Museum, October 13, 2021.",
+      "reliabilityNote": "博物馆邀请历史学者撰写的分析文章，可支持夏威夷陆海军指挥关系、战备状态与三次战术预警的经过；属二手分析，不用于精确伤亡总数或逐分钟舰位。"
     }
   ],
   "media": [],
@@ -5870,6 +7092,32 @@
         "claim-indian-ocean-readiness-position",
         "claim-kido-butai-unscathed-reach",
         "claim-indian-ocean-wellspring-of-supply-strain"
+      ]
+    },
+    {
+      "id": "question-why-pearl-tactical-strategic",
+      "historicalPart": "part-2-pearl-harbor",
+      "prompt": "为什么战术上成功的珍珠港袭击，没有带来日本想要的战略结果？",
+      "answer": "因为日本把目标定得很有限：它要的是让美国太平洋舰队暂时失去行动能力，从而为南洋作战争取几个月时间，而不是摧毁美国的工业能力或迫使美国立即求和。12 月 7 日的袭击确实在几个小时内重创了美国战列舰力量，但美军的航空母舰不在港内；攻击计划的首选目标是战列舰与航母，油库、船坞与潜艇基地不在首要目标清单上，而据尼米兹后来的评估，包括约四百五十万桶燃油在内的港口设施没有受损；12 月 8 日美国对日宣战，社会迅速转入全面动员。也就是说，日本在战术上赢得了时间，却没有改变双方长期的实力对比，反而把美国拉进了它最不想面对的长期战争。所谓“战术成功、战略失败”，之所以成立，是因为它同时看到日方当时有限的计划目标与美方保存下来的反击能力，而不是只比较当天的损失数字。理解这一点，也能帮助我们判断后来中途岛等战役中日本为什么会一再低估对手的恢复能力。",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "event-overview-part-2-pearl-harbor",
+        "event-us-declares-war-1941",
+        "person-yamamoto-isoroku"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2",
+        "source-nara-infamy",
+        "source-dmn-king-nimitz"
+      ],
+      "claimIds": [
+        "claim-ussbs-attack-purpose",
+        "claim-ussbs-carriers-absent",
+        "claim-ussbs-why-no-second-attack",
+        "claim-us-declares-war-1941-12-08",
+        "claim-pearl-us-damage-estimate",
+        "claim-pearl-air-organization",
+        "claim-nimitz-onsite-assessment"
       ]
     }
   ],
@@ -6864,25 +8112,6 @@
       "note": "本 claim 原先引用一篇二手转述中的“十八个月”引语，现已改为引用日方专档原文中的可定位段落；原引语不再使用。"
     },
     {
-      "id": "claim-yamamoto-tsushima-wounded",
-      "text": "关于山本五十六早年经历的若干细节（如 1904 年对马海战负伤），关于这些细节，目前没有可定位段落的一手或官方记述，因此不作具体描写，只保留其作为海军军官参加了早期海战的表述。",
-      "claimType": "fact",
-      "entityIds": [
-        "person-yamamoto-isoroku"
-      ],
-      "sourceIds": [
-        "source-ussbs-pto-ch2"
-      ],
-      "locators": [
-        {
-          "sourceId": "source-ussbs-pto-ch2",
-          "locatorType": "chapter-section",
-          "locator": "Ch. 2, section Introduction"
-        }
-      ],
-      "note": "归类说明：内容为 USSBS 明确记载的事实（山本为联合舰队司令长官并提出该计划），故改标为 fact。"
-    },
-    {
       "id": "claim-nagumo-signed-kido-butai-orders",
       "text": "日方专档收录的机动部队作战命令均署名南云忠一；美国战略轰炸调查处的附录一也把第一航空舰队司令官记为南云忠一，统辖赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤六艘航母。",
       "claimType": "fact",
@@ -7418,7 +8647,9 @@
       "text": "达特写文章记载尼米兹到任后的判断：局势严峻但并非灾难——大部分战列舰沉在珍珠港浅水里可以打捞修复，他的三艘航母全部可用，而且包括四百五十万桶燃油在内的港口设施没有受损。",
       "claimType": "fact",
       "entityIds": [
-        "person-nimitz-chester"
+        "person-nimitz-chester",
+        "battle-pearl-harbor",
+        "place-pearl-harbor"
       ],
       "sourceIds": [
         "source-dmn-king-nimitz"
@@ -7427,10 +8658,10 @@
         {
           "sourceId": "source-dmn-king-nimitz",
           "locatorType": "section-paragraph",
-          "locator": "Article body, paragraph 7"
+          "locator": "Article body, paragraph beginning “His assessment was a combination of concern, hope, and disappointment”"
         }
       ],
-      "note": "四百五十万桶燃油这一数字仅见于此文，属单一来源口径，正文使用时会说明为'据该文'。"
+      "note": "该细节为单一二手来源（Defense Media Network 特写）对尼米兹到任评估的转述；claimType=fact 只表示“来源如此记载”，不等同于官方档案核证。"
     },
     {
       "id": "claim-nimitz-retained-staff",
@@ -10559,6 +11790,340 @@
         }
       ],
       "note": "标注为解释：物质损失有限与士气影响巨大这两点，是依据报告所记的本土防空状况与盟方处境作出的判断，不是报告原文的结论。"
+    },
+    {
+      "id": "claim-pearl-force-composition",
+      "text": "美国战略轰炸调查处记载：珍珠港机动部队以六艘航母（赤城、加贺、苍龙、飞龙、翔鹤、瑞鹤）为核心，另有战列舰比叡、雾岛，重巡洋舰利根、筑摩，轻巡洋舰阿武隈，九艘驱逐舰与八艘补给油船，以及先遣潜艇部队；部队于 11 月 26 日 06:00 从单冠湾出航，12 月 7 日 07:30（夏威夷时间）抵达瓦胡岛以北约二百英里的放飞点。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "unit-kido-butai",
+        "place-oahu",
+        "place-north-pacific-launch"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Organization of the Task Force"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Movement of Pearl Harbor Task Force"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 1"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-route-choice",
+      "text": "美国战略轰炸调查处记载：日军考虑三条航线，实际采用北方航线；北方航线天气恶劣、增加海上加油困难，但遇到商船的机会少、最能避开美军陆基巡逻机。报告强调突然性与海上加油是行动的两个决定性因素，任何一项失败，行动都无法进行。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-oahu",
+        "unit-kido-butai"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Selection of Track"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-date-takeoff",
+      "text": "美国战略轰炸调查处记载：从月相看 12 月 10 日最适合突袭，但考虑到国际形势与周日攻击的好处，最终把 12 月 8 日（东经日期）定为 X 日；第一攻击队于 12 月 7 日 06:00（夏威夷时间）从瓦胡岛以北二百英里处起飞，第二攻击队约一小时后起飞，第一群约 07:40 到达瓦胡岛上空、07:50 奉命攻击。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-oahu",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Selection of Date and Time of Attack"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Execution of Attack"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-air-organization",
+      "text": "美国战略轰炸调查处记载：第一攻击队共 189 架，包括 50 架九七式舰攻（水平轰炸）、40 架九七式舰攻（鱼雷攻击）、54 架九九式舰爆（俯冲轰炸）与 45 架零式战斗机；第二攻击队共 171 架，包括 54 架九七式舰攻、81 架九九式舰爆与 36 架零式战斗机。主要目标是战列舰与航母，因航母不在锚地，攻击集中于战列舰。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "equipment-type-97-carrier-attack-plane",
+        "unit-kido-butai",
+        "concept-carrier-aircraft"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack Plans"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 3"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-japanese-losses",
+      "text": "美国战略轰炸调查处记载：日军损失飞机 29 架（第一攻击队 9 架、第二攻击队 20 架）；另有一艘舰队潜艇与五艘由潜艇甲板搭载的小型潜艇参战，五艘小型潜艇均未回收，其具体战果无法确认。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Losses"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, subsection Japanese Submarines"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-us-damage-estimate",
+      "text": "美国战略轰炸调查处依据飞行员报告与攻击机所摄照片给出当时估计：击沉战列舰 4 艘、巡洋舰 1 艘、油船 2 艘；重创战列舰 4 艘；轻伤战列舰 1 艘；击落飞机 10 架、地面摧毁约 250 架（机库内数量未定）。报告注明攻击后没有立即派侦察机评估战果。这一组数字属当时估计口径，不等同于战后逐舰核实的统计。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Losses"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-no-landing",
+      "text": "美国战略轰炸调查处记载：日方没有制定登陆计划，原因是 11 月内时间不足以完成准备，而且舰速与后勤问题会使初期攻击无法在不被发现的情况下接近。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-oahu"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section General Information"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-third-wave-assessment-disputed",
+      "text": "关于第一波与第二波攻击后不再发动后续攻击，评价存在分歧：日方机动部队 1941 年 11 月 23 日的作战命令要求攻击完成后立即撤收返回日本；美国战略轰炸调查处则记载了不继续攻击的理由——既定目标只是削弱美国太平洋舰队主力舰以延后美军西进、美军航母位置不明、以及夏威夷可能还留有五十架以上大型陆基飞机可以反击。这些理由说明继续攻击存在实际风险；攻击计划的首选目标是战列舰与航母，油库与船坞不在首要目标清单上，至于若继续攻击能否取得更大战果，现有已读材料不足以判定。“撤收是否过早”因此成为长期争论。",
+      "claimType": "disputed",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "person-nagumo-chuichi",
+        "person-yamamoto-isoroku"
+      ],
+      "sourceIds": [
+        "source-jm-097",
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-jm-097",
+          "locatorType": "page",
+          "locator": "p. 7"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section General Information"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack Plans"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 3"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-oahu-and-launch",
+      "text": "瓦胡岛是夏威夷群岛中珍珠港海军基地所在的岛屿，欧帕纳雷达站位于该岛北岸；1941 年 12 月 7 日，日军机动部队在瓦胡岛以北约二百英里的海域放飞攻击队。",
+      "claimType": "fact",
+      "entityIds": [
+        "place-oahu",
+        "place-pearl-harbor",
+        "place-north-pacific-launch",
+        "battle-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nps-opana-radar",
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nps-opana-radar",
+          "locatorType": "section-paragraph",
+          "locator": "The Opana Radar Plot, paragraphs 1-2"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section Movement of Pearl Harbor Task Force"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-airfield-targets",
+      "text": "美国战略轰炸调查处记载：第一攻击队的俯冲轰炸目标是福特岛与惠勒机场的机库与停放的飞机；战斗机队先在空中寻战，若没有遭遇美机则分散扫射各机场，以防止美军反击机动部队。第二攻击队继续攻击机场，并准备以俯冲轰炸打击航母与巡洋舰。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-ford-island",
+        "place-oahu"
+      ],
+      "sourceIds": [
+        "source-ussbs-pto-ch2"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, section The Attack Plans"
+        },
+        {
+          "sourceId": "source-ussbs-pto-ch2",
+          "locatorType": "chapter-section",
+          "locator": "Ch. 2, Appendix 3"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-us-command-split",
+      "text": "据国家二战博物馆刊载的分析，1941 年 12 月 7 日夏威夷的陆军由肖特中将指挥，约有 234 架飞机、其中 152 架战斗机，陆军理论上负责在舰队停泊珍珠港时提供保护；金梅尔上将指挥太平洋舰队；两人都不掌握统一指挥权。陆军高射炮未展开或弹药上锁，没有战斗机处于待命状态。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "person-kimmel-husband",
+        "person-short-walter",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nww2m-pearl-missed-warnings"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-pearl-missed-warnings",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph beginning “Before we get to the specific tactical warnings”"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-three-tactical-warnings",
+      "text": "据国家二战博物馆刊载的分析，12 月 7 日晨有三个战术预警没有转化为警报：约 06:45 雷达发现两架身份不明的日军侦察机；约 06:30 至 06:37 沃德号驱逐舰在港外攻击并击沉一艘小型潜艇，其报告没有被升级为全面警报；07:02 欧帕纳雷达发现大规模来袭机群，报告被判断为预定抵达的美军 B-17 轰炸机。作者认为，即使只有雷达发现的大机群被正确识别，也应在攻击前约二十分钟发出警报。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "person-kimmel-husband",
+        "person-short-walter",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nww2m-pearl-missed-warnings"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-pearl-missed-warnings",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraphs beginning “Now we come to the three tactical warnings” and “Third, at the best and northernmost radar site”"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-ward-submarine-report",
+      "text": "据国家二战博物馆刊载的分析，12 月 7 日约 06:30，沃德号驱逐舰在珍珠港入口附近发现并攻击一艘小型潜艇，第二轮射击击中指挥塔基部，随后投深水炸弹将其击沉，并发出“我们已攻击、射击并向一艘潜艇投掷深水炸弹”的报告；太平洋舰队值班军官选择先核实报告，而没有据此发出全面警报。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "place-pearl-harbor"
+      ],
+      "sourceIds": [
+        "source-nww2m-pearl-missed-warnings"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-pearl-missed-warnings",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph beginning “Second, guarding the entrance to Pearl Harbor was the destroyer USS Ward”"
+        }
+      ]
+    },
+    {
+      "id": "claim-pearl-warning-context",
+      "text": "据国家二战博物馆刊载的分析，美军靠通信情报对日军能力有较好掌握，但在 11 月 17 日之后失去了日本航母的位置；金梅尔因保密没有告知肖特航母位置不明；华盛顿在 11 月底分别向两人发出战争警告，肖特回复称他只在防备内部叛乱与破坏，而非外部攻击，华盛顿没有进一步质疑其战备。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-pearl-harbor",
+        "person-kimmel-husband",
+        "person-short-walter",
+        "place-washington-dc"
+      ],
+      "sourceIds": [
+        "source-nww2m-pearl-missed-warnings"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-nww2m-pearl-missed-warnings",
+          "locatorType": "section-paragraph",
+          "locator": "Article body, paragraph beginning “That morning the key principle later to guide American WWII conduct was conspicuously violated”"
+        }
+      ]
     }
   ]
 }
