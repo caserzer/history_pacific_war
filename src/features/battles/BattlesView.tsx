@@ -12,7 +12,7 @@ import { useMemo, useState } from 'react';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
 import { CitationList } from '../../components/CitationList';
-import { ClaimTag } from '../../components/ClaimTag';
+import { CertaintyTag, ClaimTag } from '../../components/ClaimTag';
 import {
   ClaimTypeFilter,
   ContextBar,
@@ -149,7 +149,7 @@ function BattleDetail({ battle }: { battle: BattleEntity }) {
         <p style={{ margin: '0 0 var(--pw-space-2)' }}>{battle.outcome.summary}</p>
         <p style={{ margin: 0, fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
           交战结果的表述：{OUTCOME_LABELS[battle.outcome.winner] ?? battle.outcome.winner}。这一判断的证据把握：
-          <ClaimTag type={battle.outcome.certainty} />
+          <CertaintyTag type={battle.outcome.certainty} />
           <span style={{ display: 'block', marginTop: '0.35rem', fontSize: 'var(--pw-size-xs)', color: 'var(--pw-ink-muted)' }}>
             「争议」表示研究者对结果的解释或统计口径存在分歧；「示意」表示这是教学简化，不能当作精确历史数据。
           </span>
@@ -333,7 +333,7 @@ function PhaseBlock({ phase, claimFilter }: { phase: Phase; claimFilter: ClaimTy
           阶段 {String(phase.sequence).padStart(2, '0')}
         </span>
         <h3 style={{ margin: 0, fontSize: 'var(--pw-size-lg)' }}>{phase.title}</h3>
-        <ClaimTag type={phase.certainty} />
+        <CertaintyTag type={phase.certainty} />
         {phase.schematic ? <ClaimTag type="schematic" /> : null}
         <button type="button" className="pw-btn" aria-expanded={open} onClick={() => setOpen((value) => !value)} style={{ marginLeft: 'auto' }}>
           {open ? '收起细节' : '展开双方视角与证据'}
