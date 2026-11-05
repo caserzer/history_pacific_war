@@ -4092,7 +4092,9 @@
         "claim-fletcher-cincpac-praise",
         "claim-aircraft-role-split",
         "claim-doolittle-significance-limits",
-        "claim-coral-shokaku-not-sunk"
+        "claim-coral-shokaku-not-sunk",
+        "claim-coral-carrier-disposition",
+        "claim-coral-shoho-cover-group"
       ],
       "sections": {
         "background": {
@@ -4151,14 +4153,16 @@
         },
         "forces": {
           "title": "双方军力对比",
-          "body": "美军有两艘大型航母、约十艘巡洋舰与驱逐舰，以及油船与岸基侦察支援；日方有两艘大型航母、一艘轻型航母，另有巡洋舰、驱逐舰与登陆船团。5 月 7 日美军把两艘航母的飞机合并成约 92 架的攻击群，日方则以航母舰载机与岸基飞机配合作战。数量之外，更关键的是双方都把航母当作浮动机场：谁先发现对方、谁先放飞攻击群，谁就能在对方反应之前完成打击。美军的两艘航母在纸面上少于日方三艘，但日方的祥凤号是轻型航母，且其两艘大型航母还需要分兵掩护登陆船团。",
+          "body": "美军有两艘大型航母、约十艘巡洋舰与驱逐舰，以及油船与岸基侦察支援；日方有两艘大型航母、一艘轻型航母，另有巡洋舰、驱逐舰与登陆船团。5 月 7 日美军把两艘航母的飞机合并成约 92 架的攻击群，日方则以航母舰载机与岸基飞机配合作战。数量之外，更关键的是双方都把航母当作浮动机场：谁先发现对方、谁先放飞攻击群，谁就能在对方反应之前完成打击。美军的两艘航母在纸面上少于日方三艘，但日方的祥凤号是轻型航母。ONI 战史记载，5 月 8 日日军两艘大型航母相距约 6 至 8 英里，由 1 艘战列舰或大型巡洋舰、3 艘重巡洋舰与 4 艘驱逐舰联合护航；5 月 7 日美军攻击的则是另一支编队：1 艘航母、16 艘各型军舰与 10 艘运输船同行，这艘航母随后被确认为祥凤号并在当天被击沉。",
           "sourceIds": [
             "source-oni-coral-sea-combat-narrative"
           ],
           "claimIds": [
             "claim-coral-shoho-sunk",
             "claim-coral-may8-exchange",
-            "claim-aircraft-role-split"
+            "claim-aircraft-role-split",
+            "claim-coral-carrier-disposition",
+            "claim-coral-shoho-cover-group"
           ]
         },
         "objectives": {
@@ -6332,12 +6336,12 @@
       "role": "日本海军第 5 航空战队司令（中将）",
       "service": "navy",
       "summary": "1942 年 5 月指挥以翔鹤、瑞鹤为核心的第 5 航空战队参加 MO 作战，是珊瑚海海战时日本方面的高级现场指挥官。",
-      "profile": "高木武雄是日本海军将领，1942 年 5 月 1 日晋升中将，随后指挥以翔鹤、瑞鹤为核心的第 5 航空战队参加 MO 作战。MO 作战的目标是经海路夺取莫尔兹比港，航母部队负责为登陆船团提供空中掩护并寻机打击美军航母。5 月 7—8 日的交战中，日军航母部队先与美军攻击群交战、损失轻型航母祥凤号，随后在 5 月 8 日与美军航母正面交换打击，翔鹤号受重创。高木此前参加过爪哇海作战，此后在中途岛指挥第 5 巡洋战队。",
+      "profile": "高木武雄是日本海军将领，1942 年 5 月 1 日晋升中将，随后指挥以翔鹤、瑞鹤为核心的第 5 航空战队参加 MO 作战。MO 作战的目标是经海路夺取莫尔兹比港；高木指挥的航母部队参加这次作战，并寻机打击美军航母。5 月 7—8 日的交战中，日军航母部队先与美军攻击群交战、损失轻型航母祥凤号，随后在 5 月 8 日与美军航母正面交换打击，翔鹤号受重创。高木此前参加过爪哇海作战，此后在中途岛指挥第 5 巡洋战队。",
       "decisions": [
         {
           "id": "decision-takagi-cover-moresby",
           "title": "航母部队先掩护登陆还是先寻歼美军航母",
-          "context": "MO 作战需要航母部队掩护驶向莫尔兹比港的登陆船团，同时又要防备美军航母介入；日军对美军航母位置掌握并不完整。",
+          "context": "MO 作战包括驶向莫尔兹比港的登陆船团与航母部队，同时需要防备美军介入；日军对美军航母位置掌握并不完整。",
           "options": [
             "以掩护登陆船团为优先，同时派出侦察搜索美军航母",
             "把航母集中用于寻找并歼灭美军航母，暂时放松对船团的直接掩护"
@@ -7408,7 +7412,8 @@
         "source-oni-coral-sea-combat-narrative"
       ],
       "claimIds": [
-        "claim-coral-tulagi-attack"
+        "claim-coral-tulagi-attack",
+        "claim-coral-tulagi-landing-3may"
       ]
     },
     {
@@ -13974,6 +13979,69 @@
           "sourceId": "source-oni-coral-sea-combat-narrative",
           "locatorType": "chapter-section",
           "locator": "The action of May 8th, p. 25"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-carrier-disposition",
+      "text": "ONI 战史记载，5 月 8 日美军发现日军两艘航母相距约 6 至 8 英里，其联合护航兵力包括 1 艘战列舰或大型巡洋舰、3 艘重巡洋舰与 4 艘驱逐舰。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-coral-sea"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action of May 8th, p. 22"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-shoho-cover-group",
+      "text": "ONI 战史记载，5 月 7 日岸基侦察在米西马附近报告发现 1 艘航母、16 艘各型军舰与 10 艘运输船一同行动；美军攻击这支编队并击沉其中的航母，该舰随后被确认为祥凤号。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-misima",
+        "place-port-moresby"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "The action off Misima, May 7th, p. 14"
+        },
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Results of the 7th, p. 20"
+        }
+      ]
+    },
+    {
+      "id": "claim-coral-tulagi-landing-3may",
+      "text": "ONI 战史记载，5 月 3 日 19 时，弗莱彻收到情报：日军已开始占领佛罗里达岛，部队从运输船登上图拉吉港。",
+      "claimType": "fact",
+      "entityIds": [
+        "battle-coral-sea",
+        "place-tulagi"
+      ],
+      "sourceIds": [
+        "source-oni-coral-sea-combat-narrative"
+      ],
+      "locators": [
+        {
+          "sourceId": "source-oni-coral-sea-combat-narrative",
+          "locatorType": "chapter-section",
+          "locator": "Our forces joined, pp. 3-4"
         }
       ]
     }

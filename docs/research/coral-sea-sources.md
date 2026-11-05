@@ -27,7 +27,7 @@
 
 ---
 
-## 2. 新增 claims 与来源定位（本任务新增 20 条）
+## 2. 新增 claims 与来源定位（本任务新增 23 条）
 
 | Claim ID | 类型 | 支撑来源与定位 | 支撑内容 |
 |---|---|---|---|
@@ -51,6 +51,9 @@
 | `claim-coral-fletcher-retire` | fact | ONI 珊瑚海 `Sinking of the Lexington, p. 39` | 5 月 8 日下午放弃再战、向南撤退；该决定使列克星敦号约 92% 舰员获救 |
 | `claim-coral-shokaku-not-sunk` | fact | ONI 珊瑚海 `The action of May 8th, p. 25` | 美军内部对日军损失判断不一；后续表明翔鹤重创、瑞鹤仅轻伤，两舰均未沉没 |
 | `claim-coral-takagi-command` | fact | Wikipedia 高木武雄条目 `Biography, paragraph 5`（低权重） | 高木指挥第 5 航空战队参加 MO 作战、为珊瑚海日方现场高级指挥官 |
+| `claim-coral-carrier-disposition` | fact | ONI 珊瑚海 `The action of May 8th, p. 22` | 5 月 8 日日军两艘大型航母相距约 6–8 英里、由 1 艘战列舰或大型巡洋舰＋3 艘重巡洋舰＋4 艘驱逐舰联合护航 |
+| `claim-coral-shoho-cover-group` | fact | ONI 珊瑚海 `The action off Misima, May 7th, p. 14`；`Results of the 7th, p. 20` | 5 月 7 日 1 艘航母与 16 艘各型军舰、10 艘运输船一同行动；该航母随后确认为祥凤号并被击沉 |
+| `claim-coral-tulagi-landing-3may` | fact | ONI 珊瑚海 `Our forces joined, pp. 3-4` | 5 月 3 日 19 时弗莱彻收到日军登上图拉吉港、占领佛罗里达岛的情报 |
 
 复用的既有 claims（不重复列出文本）：`claim-naval-aviation-coral-simultaneous`、`claim-radar-coral-bogey-problem`、`claim-radar-carriers-should-have-two`、`claim-nimitz-coral-evaluation`、`claim-fletcher-combined-command`、`claim-fletcher-fuel-constraint`、`claim-fletcher-fuel-limited-reach`、`claim-fletcher-tulagi-chance`、`claim-fletcher-tulagi-risked-dispersion`、`claim-fletcher-false-report`、`claim-fletcher-night-risk-tradeoff`、`claim-fletcher-coral-outcome`、`claim-fletcher-cincpac-praise`、`claim-aircraft-role-split`、`claim-doolittle-purpose-and-plan`、`claim-doolittle-forced-early-launch`、`claim-doolittle-launch-position`、`claim-doolittle-crew-fates`、`claim-doolittle-significance-limits`、`claim-midway-codebreaking`。
 
@@ -104,7 +107,7 @@
 ```text
 $ node scripts/validate-content.mjs --stage coral
 阶段：coral（累积部分门禁）
-实体：88；来源：30；claim：261；问题：6；素材：0
+实体：88；来源：30；claim：264；问题：6；素材：0
 结果：PASS
 说明：结构验证通过不等于可读性评审通过；可读性证据须见 tests/evidence/pedagogy.md。
 退出码：0
@@ -125,17 +128,21 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 
 - **`person-fletcher-frank-jack`**：审计后为 609 汉字 profile、**4** 个决策卡、3 个独立来源、13 条 claims（最低要求 500/3/3/3，达标）。原有 3 张决策卡覆盖珊瑚海期间的燃油取舍、图拉吉出击与 5 月 7 日夜战取舍；本任务**新增**第 4 张决策卡「5 月 8 日下午：再战还是撤退」（依据 ONI `Sinking of the Lexington, p. 39`），并把 `battle-coral-sea` 加入其 `battleIds`、把 `claim-coral-fletcher-retire` / `claim-coral-fitch-command` / `claim-nimitz-coral-evaluation` 加入其 claims。未删除或改写其它内容，未回退既有深度。
 - **`concept-radar`**（3 层：无线电波探测 / 强项与做不到的事 / 为什么改变舰队决策）、**`concept-codebreaking`**（3 层：加密与破译 / 破译后还要验证 / 情报优势的能与不能）、**`concept-naval-aviation`**（3 层：搜索侦察 / 组织一波攻击 / 时间差为什么决定胜负）：三层顺序均符合「是什么→如何运作→如何影响决策/中途岛」的递进，深度均高于 coverage 最低要求（`--stage coral` 通过）。本任务**只**把 `battle-coral-sea`、`event-overview-part-4-turning-point`、`event-us-carrier-raids-early-1942` 追加进三个专题的 `relatedEntityIds`，使它们与本任务内容互链；**未改写**任何专题正文。
-- **既有陈述冲突检查**：检索既有 canvas 中与珊瑚海相关的 claims（均为 HIST-00 已接受、ONI 来源的雷达/海军航空/弗莱彻/尼米兹评价 claims），未发现与本任务新增内容直接冲突的陈述，因此本任务没有需要更正的既有陈述。
+- **attempt 2 的更正记录（本次提交）**：
+  1. **[阻断，已修正] `forces` 小节的错误部署判断**：attempt 1 在 `battle-coral-sea.sections.forces` 写「其两艘大型航母还需要分兵掩护登陆船团」，这一判断没有 claim 支持，且与 ONI《珊瑚海》第 4 章 `The action of May 8th`, p. 22 的原文冲突：该页记载 5 月 8 日两艘日军航母相距约 6 至 8 英里、由 1 艘战列舰或大型巡洋舰、3 艘重巡洋舰与 4 艘驱逐舰联合护航，即两艘大型航母是集中行动的。attempt 2 已把该句改写为有来源支持的部署：5 月 8 日两艘大型航母相距约 6–8 英里并共同护航（新 claim `claim-coral-carrier-disposition`，ONI p. 22）；5 月 7 日美军攻击的是另一支编队，1 艘航母与 16 艘各型军舰、10 艘运输船同行，该航母随后确认为祥凤号并被击沉（新 claim `claim-coral-shoho-cover-group`，ONI p. 14、p. 20）。`forces` 现有 5 条 claims、268 汉字，仍 ≥160。
+  2. **[次要，已修正] `place-tulagi` 的 5 月 3 日无来源**：原摘要写「1942 年 5 月 3 日日军在此登陆」，但当时挂接的 `claim-coral-tulagi-attack` 只覆盖 5 月 4 日空袭。attempt 2 新增 `claim-coral-tulagi-landing-3may`（ONI `Our forces joined, pp. 3-4`：5 月 3 日 19 时弗莱彻收到日军登上图拉吉港的报告）并挂到该 place 的 `claimIds`，日期现在有 claim 级定位。
+  3. **[次要，已决定并记录] 高木武雄的职务来源**：attempt 2 未找到已读官方来源可直接支持高木的现场职务；决定**保留低权重 Wikipedia 引用**（已在 `source-wikipedia-takagi.reliabilityNote` 标注），同时收窄人物正文：删除「航母部队负责为登陆船团提供空中掩护」这一超出该来源的表述，改为「高木指挥的航母部队参加这次作战，并寻机打击美军航母」；决策卡背景也改为只陈述「MO 作战包括登陆船团与航母部队」，不再断言具体掩护分工。
+  4. **既有陈述冲突检查**：检索既有 content 中与珊瑚海相关的 claims（HIST-00 已接受的 ONI 雷达/海军航空/弗莱彻/尼米兹评价 claims），未发现需要更正的其它既有陈述；attempt 1 自己写下的 `forces` 判断是唯一与来源冲突的陈述，已在第 1 条修正。
 
 ---
 
 ## 8. 交付内容与本任务边界
 
-- 新增 `battle-coral-sea`：14 个固定小节（每节 ≥160 汉字，实际 164–201 汉字），**4** 个地图阶段，3 位人物、4 个地点、4 个来源、35 条 claims（含 1 条 disputed：`claim-coral-outcome-disputed`）。
+- 新增 `battle-coral-sea`：14 个固定小节（每节 ≥160 汉字，attempt 2 修正后实际 164–268 汉字），**4** 个地图阶段，3 位人物、4 个地点、4 个来源、**37 条 claims**（含 1 条 disputed：`claim-coral-outcome-disputed`）。
 - 新增 `event-overview-part-4-turning-point`：5 个精确标题小节（每节 ≥100 汉字，实际 152–207；合计 874 汉字），4 个来源、18 条 claims、4 个 placeIds。
 - 新增 `event-us-carrier-raids-early-1942`：2 节、247 汉字、2 个来源、4 条 claims。
 - 新增 `question-why-coral-sea-judged-differently`（part-4，见 §4）。
-- 新增地点 `place-tulagi`、`place-port-moresby`、`place-misima`；新增人物 `person-fitch-aubrey`、`person-takagi-takeo`；新增来源 `source-wikipedia-takagi`；新增 20 条 claims；更新 Fletcher 档案与三个专题的关联（见 §7）。
+- 新增地点 `place-tulagi`、`place-port-moresby`、`place-misima`；新增人物 `person-fitch-aubrey`、`person-takagi-takeo`；新增来源 `source-wikipedia-takagi`；新增 **23 条 claims**；更新 Fletcher 档案与三个专题的关联（见 §7）。
 - **未**修改契约、验证器、`src`、`tests`、`public`、媒体；**未**创建 `content/media.json`；**未**改写第 1、2、3 部分既有问题与既有正文；**未** commit/merge/push。
 
 ---
@@ -145,7 +152,7 @@ $ node scripts/validate-content.mjs --check-contracts → 结果：PASS（契约
 1. 双方损失数字采用 ONI 战时估计口径（美机 66 架、人员 543；日军人员 2,000–5,000+ 估计）；本教材明确标注为当时估计，不与战后统计合并成精确数字。
 2. 翔鹤与瑞鹤均未沉没：翔鹤重创、瑞鹤仅轻伤；当时美军内部对日军损失的判断并不一致，本教材以 `claim-coral-shokaku-not-sunk` 与 disputed claim 分开呈现。
 3. 战斗机引导批评来自 ONI 脚注中的军官意见，属当时参与者的评价，不等同于官方调查结论。
-4. 日方现场指挥官的职务信息只有低权重参考来源支撑；日方战斗过程与损失主要依据美方官方战史转述。
+4. 日方现场指挥官（高木武雄）的职务信息只有低权重 Wikipedia 参考来源支撑；attempt 2 已收窄人物正文，使其只断言该来源能支持的指挥角色，不再推断具体掩护分工。日方战斗过程与损失主要依据美方官方战史转述。
 5. 珊瑚海是否“阻止”了莫尔兹比港登陆属解释性判断：日军登陆船团北撤、行动停顿与转向中太平洋均有 ONI 战史支撑，但“登陆未按原计划发生”是由两部战史综合推出的解释，已在 `claim-coral-moresby-postponed` 中标为 interpretation。
 6. 地图阶段全部为示意；真实航迹无法逐点重建，本教材不把示意数据包装成精确轨迹。
 7. 可读性与教学效果须由人工评审并记录 `tests/evidence/pedagogy.md`；该中央交付物尚不存在，本任务不声称内容已通过可读性评审。
