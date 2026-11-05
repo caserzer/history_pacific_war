@@ -1,0 +1,445 @@
+{
+  "version": 1,
+  "media": [
+    {
+      "id": "media-battle-map-pearl-harbor",
+      "title": "珍珠港袭击三阶段作战示意图（原创）",
+      "mediaType": "battle-map",
+      "path": "public/media/pearl-harbor.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；舰位、航线、地物与时间标注为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-ussbs-pto-ch2",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-2.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：瓦胡岛与珍珠港、福特岛、战列舰排；红色箭头表示日军第一、第二攻击波的进入与撤收方向，底部为 06:00—11:30 时间带。",
+      "caption": "珍珠港袭击示意：日军机动部队自北方海域放飞攻击队，第一波约 07:50 进入港区，第二波约 08:55 抵达，随后撤收。所有舰位与航线均为示意。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "battle-pearl-harbor"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-battle-map-coral-sea",
+      "title": "珊瑚海海战四阶段作战示意图（原创）",
+      "mediaType": "battle-map",
+      "path": "public/media/coral-sea.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；舰位、航线、地物与时间标注为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-coral-sea-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Coral/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：珊瑚海、澳大利亚北部、新几内亚与图拉吉；深蓝箭头为美军行动、红色箭头为日军行动，底部为 5 月 4—8 日四阶段时间带。",
+      "caption": "珊瑚海海战示意：图拉吉空袭、会合与搜索、米西马海战、5 月 8 日航母交换打击。双方航迹均为示意，不代表精确历史航迹。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "battle-coral-sea"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-battle-map-midway",
+      "title": "中途岛海战五阶段作战示意图（原创）",
+      "mediaType": "battle-map",
+      "path": "public/media/midway.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；舰位、航线、地物与时间标注为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-midway-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：中途岛环礁位于中部，日军航母机动部队在西北、美军特混舰队在东北；箭头表示搜索、空袭中途岛、美军攻击、飞龙反击与向西撤退，底部为五阶段时间带。",
+      "caption": "中途岛海战示意：搜索接触、日军空袭中途岛、美军航母攻击、飞龙反击、追击与撤退。赤城、加贺、苍龙标为被击中；舰位与航线均为示意。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "battle-midway"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-photo-midway-yorktown-hit",
+      "title": "中途岛：约克城号遭日机攻击（历史照片，1942-06-04）",
+      "mediaType": "photograph",
+      "path": "public/media/midway-photo.jpg",
+      "author": "U.S. Navy（美国海军）",
+      "license": "public-domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "rightsStatement": "美国联邦政府作品（U.S. Government work）：二战时期美国海军官方照片，作为 ONI《The Battle of Midway》(1943) 插图发表；美国政府作品在美国不受版权保护，属公有领域。",
+      "sourceId": "source-oni-midway-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/index.html",
+      "creditLine": "U.S. Navy photograph · ONI Combat Narrative, The Battle of Midway (1943), illustration facing p.11 · via HyperWar",
+      "alt": "黑白历史照片：中途岛海战中，约克城号航母周围被炸弹激起的巨大水柱与浓烟，舰体位于画面下方。",
+      "caption": "ONI《中途岛海战》(1943) 插图原题 “Direct hit on the Yorktown by Japanese dive bombers.” 照片记录 1942 年 6 月 4 日约克城号遭日机攻击的场景；“直接命中”沿用原题措辞，本教材不作额外推断。",
+      "width": 1000,
+      "height": 582,
+      "articleIds": [
+        "battle-midway"
+      ]
+    },
+    {
+      "id": "media-photo-coral-sea-near-miss",
+      "title": "珊瑚海：日本航母遭近失弹（历史照片，1942-05）",
+      "mediaType": "photograph",
+      "path": "public/media/coral-sea-photo.jpg",
+      "author": "U.S. Navy（美国海军）",
+      "license": "public-domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "rightsStatement": "美国联邦政府作品（U.S. Government work）：作为 ONI《The Battle of the Coral Sea》(1943) 插图发表的美国海军官方照片；美国政府作品在美国不受版权保护，属公有领域。ONI 页面未印照片目录号。",
+      "sourceId": "source-oni-coral-sea-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Coral/index.html",
+      "creditLine": "U.S. Navy photograph · ONI Combat Narrative, The Battle of the Coral Sea (1943), illustration facing p.1 · via HyperWar",
+      "alt": "黑白历史照片：海面上的一艘日本航母，舰侧升起近失弹造成的巨大水柱与黑烟。",
+      "caption": "ONI《珊瑚海海战》(1943) 插图原题 “Near hit on Zuikaku class carrier.” 画面为航母与近失弹水柱；来源页面只给出插图题名与页码，未印照片目录号。",
+      "width": 640,
+      "height": 346,
+      "articleIds": [
+        "battle-coral-sea"
+      ]
+    },
+    {
+      "id": "media-photo-pearl-harbor-california",
+      "title": "珍珠港：加利福尼亚号中雷后倾覆（历史照片，1941-12-07）",
+      "mediaType": "photograph",
+      "path": "public/media/pearl-harbor-photo.png",
+      "author": "U.S. Navy（美国海军）",
+      "license": "public-domain",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "rightsStatement": "美国联邦政府作品（U.S. Government work）：美国海军官方照片，编号 National Archives Photo 80-G-32463；美国政府作品在美国不受版权保护，属公有领域。 实际发表在 USMC《Infamous Day: Marines at Pearl Harbor》；因冻结的 history 来源清单未收录该专著，本条目 sourceId 采用主题最接近的已接受来源 source-ussbs-pto-ch2（理由与局限详见 media-audit §4.1）。",
+      "sourceId": "source-ussbs-pto-ch2",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USMC/USMC-C-Pearl/index.html",
+      "creditLine": "U.S. Navy photograph · National Archives Photo 80-G-32463 · reproduced in USMC “Infamous Day: Marines at Pearl Harbor” (via HyperWar)",
+      "alt": "黑白历史照片：珍珠港内被鱼雷命中的战列舰加利福尼亚号向左舷倾斜并冒烟，前景为一名抬头张望的陆战队员。",
+      "caption": "USMC 纪念专著《Infamous Day: Marines at Pearl Harbor》原题：战列舰加利福尼亚号（BB-44）被鱼雷命中后向左舷倾斜，前景一名陆战队员抬头望向天空；照片编号 National Archives 80-G-32463。",
+      "width": 520,
+      "height": 280,
+      "articleIds": [
+        "battle-pearl-harbor"
+      ]
+    },
+    {
+      "id": "media-map-part1-why-war",
+      "title": "太平洋战争为何爆发：资源、禁运与战略困境（原创示意地图）",
+      "mediaType": "map",
+      "path": "public/media/map-part1-why-war.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-nww2m-path-pearl-harbor",
+      "sourcePage": "https://www.nationalww2museum.org/war/articles/path-pearl-harbor",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：以方块与箭头表示日本、中国、东南亚与美国之间的资源依赖和禁运关系，并标出日本的扩张方向。",
+      "caption": "本图为原创示意：用简化轮廓与箭头解释资源依赖、美国禁运与日本“速战速决”的战略困境；国家轮廓、资源地与箭头均为示意，不是精确地理或经济数据图。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "event-overview-part-1-why-war"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-map-part2-pearl-harbor",
+      "title": "夏威夷与中太平洋位置（原创示意地图）",
+      "mediaType": "map",
+      "path": "public/media/map-part2-pearl-harbor.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-ussbs-pto-ch2",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-2.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：中太平洋中的日本本土、夏威夷群岛与中途岛；右下角为瓦胡岛与珍珠港的放大示意。",
+      "caption": "本图为原创示意：标出日本本土—夏威夷—中途岛的相对位置（不按精确比例），并以放大框示意瓦胡岛、珍珠港与战列舰排的位置关系。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "event-overview-part-2-pearl-harbor"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-map-part3-expansion",
+      "title": "1941—1942 年日本快速扩张方向（原创示意地图）",
+      "mediaType": "map",
+      "path": "public/media/map-part3-expansion.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-ussbs-pto-ch3",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-3.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：从日本本土指向香港、马来亚与新加坡、菲律宾、荷属东印度、威克岛、关岛、达尔文与印度洋的红色箭头与目标点。",
+      "caption": "本图为原创示意：用箭头与目标点表示 1941—1942 年日本进攻的方向与大致先后，并标注各方向的大致时段；箭头不代表精确航线或兵力规模。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "event-overview-part-3-expansion"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-map-part4-turning-point",
+      "title": "珊瑚海与中途岛：1942 年战局变化（原创示意地图）",
+      "mediaType": "map",
+      "path": "public/media/map-part4-turning-point.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-coral-sea-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Coral/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：日本本土、拉包尔、莫尔兹比港、珊瑚海、中途岛与夏威夷的相对位置，红色为日军进攻方向，深蓝为美军航母兵力投入方向。",
+      "caption": "本图为原创示意：展示 1942 年 5—6 月珊瑚海与中途岛两个战略方向的相对位置与先后；箭头为方向示意，不表示精确航迹或兵力。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "event-overview-part-4-turning-point"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-map-part5-midway",
+      "title": "中途岛：北太平洋前哨与战略位置（原创示意地图）",
+      "mediaType": "map",
+      "path": "public/media/map-part5-midway.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-ussbs-pto-ch5",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-5.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意地图：中途岛位于中部，周围有表示“约 1,300 英里”的虚线圈；左侧为日本本土，右侧为夏威夷，并标出阿留申方向。",
+      "caption": "本图为原创示意：以虚线圈表示日方计划中约 1,300 英里的空中掩护半径（不按精确比例），并标出中途岛与夏威夷约 1,100 英里的距离关系。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "event-overview-part-5-midway"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-portrait-yamamoto",
+      "title": "山本五十六 人物示意（原创）",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-yamamoto.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-nww2m-operation-vengeance",
+      "sourcePage": "https://www.nationalww2museum.org/war/articles/operation-vengeance-killing-isoroku-yamamoto",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创人物示意：山本五十六的半身剪影与身份铭牌，标注“联合舰队司令长官”；不是历史照片或真实容貌复原。",
+      "caption": "原创矢量人物示意：山本五十六，联合舰队司令长官。面部与服饰为符号化图形，不是历史照片、画像扫描或真实容貌复原；决策要素见人物档案正文。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "person-yamamoto-isoroku"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-portrait-nagumo",
+      "title": "南云忠一 人物示意（原创）",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-nagumo.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-wikipedia-nagumo",
+      "sourcePage": "https://en.wikipedia.org/wiki/Ch%C5%ABichi_Nagumo",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创人物示意：南云忠一的半身剪影与身份铭牌，标注“第一航空舰队司令长官”；不是历史照片或真实容貌复原。",
+      "caption": "原创矢量人物示意：南云忠一，第一航空舰队司令长官。面部与服饰为符号化图形，不是历史照片、画像扫描或真实容貌复原；决策要素见人物档案正文。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "person-nagumo-chuichi"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-portrait-fletcher",
+      "title": "弗兰克·弗莱彻 人物示意（原创）",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-fletcher.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-coral-sea-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Coral/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创人物示意：弗兰克·弗莱彻的半身剪影与身份铭牌，标注“第 17 特混舰队司令”；不是历史照片或真实容貌复原。",
+      "caption": "原创矢量人物示意：弗兰克·弗莱彻，第 17 特混舰队司令。面部与服饰为符号化图形，不是历史照片、画像扫描或真实容貌复原；决策要素见人物档案正文。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "person-fletcher-frank-jack"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-portrait-nimitz",
+      "title": "切斯特·尼米兹 人物示意（原创）",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-nimitz.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-dmn-king-nimitz",
+      "sourcePage": "https://www.defensemedianetwork.com/stories/admirals-ernest-j-king-chester-w-nimitz/",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创人物示意：切斯特·尼米兹的半身剪影与身份铭牌，标注“太平洋舰队总司令（CINCPAC）”；不是历史照片或真实容貌复原。",
+      "caption": "原创矢量人物示意：切斯特·尼米兹，太平洋舰队总司令（CINCPAC）。面部与服饰为符号化图形，不是历史照片、画像扫描或真实容貌复原；决策要素见人物档案正文。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "person-nimitz-chester"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-portrait-spruance",
+      "title": "雷蒙德·斯普鲁恩斯 人物示意（原创）",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-spruance.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-midway-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创人物示意：雷蒙德·斯普鲁恩斯的半身剪影与身份铭牌，标注“第 16 特混舰队司令”；不是历史照片或真实容貌复原。",
+      "caption": "原创矢量人物示意：雷蒙德·斯普鲁恩斯，第 16 特混舰队司令。面部与服饰为符号化图形，不是历史照片、画像扫描或真实容貌复原；决策要素见人物档案正文。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "person-spruance-raymond"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-diagram-aircraft-carrier",
+      "title": "航空母舰结构示意（原创）",
+      "mediaType": "diagram",
+      "path": "public/media/diagram-aircraft-carrier.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-midway-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创结构示意图：航母侧视，标注飞行甲板、舰岛、升降机、机库、弹射器与拦阻索。",
+      "caption": "原创结构示意：以侧视图解释航母的主要部位与甲板作业关系；比例与外形为教学示意，不代表真实舰型。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "concept-aircraft-carrier"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-diagram-carrier-aircraft",
+      "title": "舰载机按任务分工（原创）",
+      "mediaType": "diagram",
+      "path": "public/media/diagram-carrier-aircraft.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-ussbs-pto-ch2",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-2.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意图：战斗机、俯冲轰炸机与鱼雷机三种机种的符号化图形及其任务分工。",
+      "caption": "原创示意：用符号化机形与载荷解释舰载机按任务分工；机形不代表真实机型外形。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "concept-carrier-aircraft"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-diagram-naval-aviation",
+      "title": "海军航空作战循环（原创）",
+      "mediaType": "diagram",
+      "path": "public/media/diagram-naval-aviation.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-oni-midway-combat-narrative",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USN/USN-CN-Midway/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创流程图：侦察、发现、出动、返航回收、整备、再次出动的环形流程，中心标出“时间差”。",
+      "caption": "原创流程示意：把航母打击能力表示为一条会被时间打断的循环，中心强调出动与整备的时间差；流程为教学简化。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "concept-naval-aviation"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-diagram-radar",
+      "title": "雷达防空预警几何（原创）",
+      "mediaType": "diagram",
+      "path": "public/media/diagram-radar.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-nps-opana-radar",
+      "sourcePage": "https://www.nps.gov/perl/learn/historyculture/opana-mobile-radar-site.htm",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创示意图：雷达站、探测波束、距离环与来袭机群；标注“接到报告后约五分钟、约九万米发现”。",
+      "caption": "原创示意：用距离环与波束解释雷达如何提前发现来袭机群；几何不按真实雷达参数。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "concept-radar"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-diagram-codebreaking",
+      "title": "密码分析到作战情报（原创）",
+      "mediaType": "diagram",
+      "path": "public/media/diagram-codebreaking.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-nww2m-battle-midway",
+      "sourcePage": "https://www.nationalww2museum.org/war/articles/battle-midway",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创流程图：截收、破译、验证（AF = 中途岛）、研判四个步骤，下方列出情报的三个不确定性。",
+      "caption": "原创流程示意：展示破译情报如何被验证并转成作战判断，同时明确情报不是“全知”；流程为教学简化。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "concept-codebreaking"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    },
+    {
+      "id": "media-diagram-logistics",
+      "title": "补给与后勤约束（原创）",
+      "mediaType": "diagram",
+      "path": "public/media/diagram-logistics.svg",
+      "author": "DSH 太平洋战争教材内容组（原创）",
+      "license": "original-work",
+      "rightsStatement": "原创矢量示意图：由本教材内容组用文本（SVG）绘制，非历史照片或历史地图扫描；位置、箭头、结构与时间为教学示意，不作为精确历史记录使用。",
+      "sourceId": "source-ussbs-pto-campaigns",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/index.html",
+      "creditLine": "原创示意图 · DSH 太平洋战争教材",
+      "alt": "原创流程图：本土基地→油船补给船→前进基地→舰队，并标出燃油、弹药、备件、维修、航程等约束。",
+      "caption": "原创流程示意：用链条图解释补给线如何限制舰队的可用兵力与出击节奏；流程为教学简化。",
+      "width": 1200,
+      "height": 800,
+      "articleIds": [
+        "concept-logistics"
+      ],
+      "licenseUrl": "https://github.com/caserzer/history_pacific_war"
+    }
+  ]
+}

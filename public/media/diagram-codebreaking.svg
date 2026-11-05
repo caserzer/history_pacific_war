@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="ttl desc">
+  <title id="ttl">密码分析如何变成作战情报（原创）</title>
+  <desc id="desc">截收 → 破译 → 验证 → 研判的流程，以及情报的不确定性　—　流程为教学简化</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd0b4" stroke-width="1"/></pattern>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8b2c2c"/></marker><marker id="arrNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5d8a"/></marker><marker id="arrBrass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a8894f"/></marker><marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f6b4a"/></marker><marker id="arrMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b604d"/></marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#f4ecd8"/>
+  <rect width="100%" height="100%" fill="url(#grid)" opacity="0.55"/>
+  <rect x="20" y="20" width="1160" height="760" fill="none" stroke="#1f3a5f" stroke-width="3"/>
+  <rect x="29" y="29" width="1142" height="742" fill="none" stroke="#a8894f" stroke-width="1.2"/>
+  <text x="60" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="33" font-weight="700" fill="#1f3a5f" text-anchor="start" opacity="1">密码分析如何变成作战情报（原创）</text>
+  <text x="60" y="106" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="17" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">截收 → 破译 → 验证 → 研判的流程，以及情报的不确定性　—　流程为教学简化</text>
+  <line x1="60" y1="122" x2="1140" y2="122" stroke="#a8894f" stroke-width="2" opacity="1"/>
+  <text x="1140" y="74" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="700" fill="#a8894f" text-anchor="end" opacity="1">DSH · 太平洋战争教材</text>
+  <rect x="150" y="250" width="190" height="90" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/><text x="245" y="292" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#1f3a5f" text-anchor="middle" opacity="1">截收电文</text><text x="245" y="318" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">（示意）</text>
+<rect x="370" y="250" width="190" height="90" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/><text x="465" y="292" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#1f3a5f" text-anchor="middle" opacity="1">破译 / 解密</text><text x="465" y="318" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">（示意）</text>
+<rect x="590" y="250" width="190" height="90" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/><text x="685" y="292" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#1f3a5f" text-anchor="middle" opacity="1">验证：AF = 中途岛</text><text x="685" y="318" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">（示意）</text>
+<rect x="810" y="250" width="190" height="90" rx="8" fill="#fbf7ea" stroke="#2f5d8a" stroke-width="2" opacity="1"/><text x="905" y="292" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="15" font-weight="600" fill="#1f3a5f" text-anchor="middle" opacity="1">研判地点与日期</text><text x="905" y="318" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="12" font-weight="400" fill="#6b604d" text-anchor="middle" opacity="1">（示意）</text>
+<line x1="340" y1="295" x2="368" y2="295" stroke="#2f5d8a" stroke-width="3" opacity="1" marker-end="url(#arrNavy)"/>
+<line x1="560" y1="295" x2="588" y2="295" stroke="#2f5d8a" stroke-width="3" opacity="1" marker-end="url(#arrNavy)"/>
+<line x1="780" y1="295" x2="808" y2="295" stroke="#2f5d8a" stroke-width="3" opacity="1" marker-end="url(#arrNavy)"/>
+<rect x="120" y="390" width="960" height="150" rx="10" fill="#f7f1e2" stroke="#8b2c2c" stroke-width="2" opacity="1"/>
+<text x="140" y="420" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="18" font-weight="700" fill="#8b2c2c" text-anchor="start" opacity="1">但情报不是“全知”</text>
+<text x="140" y="448" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">• 地点需要靠假情报（“淡水不足”）去验证；</text>
+<text x="140" y="474" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">• 日期只能给到“6 月 4 日或 5 日”两天区间；</text>
+<text x="140" y="500" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#22303f" text-anchor="start" opacity="1">• 具体战斗序列与现场位置仍要靠巡逻机与雷达确认。</text>
+<text x="140" y="526" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">情报优势要变成战果，还需要正确的时机判断。</text>
+  <rect x="60" y="624" width="684" height="44" rx="8" fill="#fbf7ea" stroke="#c9b995" stroke-width="1.5" opacity="0.92"/><line x1="78" y1="645" x2="108" y2="645" stroke="#2f5d8a" stroke-width="4" opacity="1" marker-end="url(#arrNavy)"/><text x="116" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">情报流程（示意）</text><rect x="408" y="638" width="26" height="14" rx="3" fill="#f7f1e2" stroke="#8b2c2c" stroke-width="2" opacity="1"/><text x="446" y="650" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="14" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">不确定性</text>
+  <text x="60" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="start" opacity="1">流程为教学简化；“AF = 中途岛”与日期区间的表述依据已接受 claims 与 concept-codebreaking 正文。</text>
+  <text x="1140" y="758" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-size="13" font-weight="400" fill="#6b604d" text-anchor="end" opacity="1">原创示意图 · 示意性标注</text>
+</svg>

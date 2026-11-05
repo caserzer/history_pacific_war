@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#141c26" />
+    <title>太平洋战争：从珍珠港到中途岛 · 数字历史档案馆</title>
+    <meta
+      name="description"
+      content="面向 11 岁读者的中文交互式太平洋战争历史教材：时间线、战役、人物、地图、知识专题与历史问题六个入口共享同一份带证据定位的可核查内容。"
+    />
+    <!--
+      图标以内联 data URI 提供：本模块不创建 public/ 资产（public/media 与媒体登记由 knowledge 模块 MEDIA-01 拥有）。
+      favicon = 深海军蓝底 + 旧地图绿波纹 + 黄铜罗盘，与站内设计 token 同色。
+    -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23141c26'/%3E%3Cpath d='M6 44c8-3 12-9 26-9s18 6 26 9' fill='none' stroke='%237fb49c' stroke-width='2'/%3E%3Ccircle cx='32' cy='24' r='11' fill='none' stroke='%23d9b45a' stroke-width='2.2'/%3E%3Cpath d='M32 18v12M32 24l7 5' stroke='%23f2e8d5' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <!--
+      说明：本页不引用任何 CDN 字体、外部瓦片服务或付费 API。
+      字体使用本地系统栈（见 src/styles/tokens.css），离线可用。
+    -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="font-family: system-ui, sans-serif; padding: 2rem; background: #f2e8d5; color: #1c2530">
+        本教材需要启用 JavaScript 才能浏览六个阅读入口（时间线、战役、人物、地图、知识专题、历史问题）。
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
