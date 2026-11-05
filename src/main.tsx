@@ -96,13 +96,14 @@ function RouteView({ route }: { route: Route }) {
     case 'overview':
       return <OverviewView />;
     case 'timeline':
-      return <TimelineView eventId={route.id} />;
+      return <TimelineView eventId={route.id} initialDate={route.date ?? null} />;
     case 'battles':
       return <BattlesView battleId={route.id} />;
     case 'people':
       return <PeopleView personId={route.id} />;
     case 'atlas':
-      return <AtlasView placeId={route.id} />;
+      // MAP-01：支持 #/atlas?battle=<battleId>&phase=<phaseId> 深链定位到战役阶段。
+      return <AtlasView placeId={route.id} battleId={route.battle ?? null} phaseId={route.phase ?? null} />;
     case 'concepts':
       return <ConceptsView conceptId={route.id} />;
     case 'questions':

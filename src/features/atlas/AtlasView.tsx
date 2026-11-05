@@ -1,15 +1,19 @@
 /**
  * 地图入口（Atlas）
  *
- * 实现状态（MAP-00 更新）：交互式地图**已实现**，由 `src/Atlas.tsx`（入口组件，内部使用
- * `src/atlas/mapEngine` 的 SVG 引擎与 `src/atlas/controls` 控件）渲染；
- * 本视图负责页面级排版、地点列表与地点详情。
+ * 实现状态（MAP-00 更新 + MAP-01 真实内容接入）：交互式地图**已实现**，由
+ * `src/Atlas.tsx`（入口组件，内部使用 `src/atlas/mapEngine` 的 SVG 引擎与
+ * `src/atlas/controls` 控件）渲染；本视图负责页面级排版、地点列表与地点详情。
  * 挂载契约见 ./mountApi.ts（含硬性规则：无外部瓦片依赖、示意必须可见、双方对称等）。
  *
  * 本视图提供：
  * - 地点列表（真实地理节点，历史地名 + 现代地名 + 国家 + 坐标精度）；
  * - 选中地点详情，并展示「这个地点出现在哪些事件/战役/问题中」；
- * - 交互式 SVG 地图（由 `src/Atlas.tsx` 渲染，替代早期的 `data-atlas-mount` 占位容器）。
+ * - 交互式 SVG 地图（由 `src/Atlas.tsx` 渲染）；
+ * - MAP-01：三场重点战役的阶段推演（战役选择器 + 播放/暂停/前后 + 双方情报），
+ *   支持 `#/atlas?battle=<battleId>&phase=<phaseId>` 深链从战役叙述定位到地图阶段；
+ * - MAP-01：战略节点与海域索引（历史地名 + 现代地名并列，可从地图跳到地点详情）；
+ * - MAP-01：区域标注索引（区域名锚定到真实地点，例如以达尔文港为锚点的「澳大利亚北部」）。
  */
 
 import { useMemo } from 'react';
@@ -20,9 +24,20 @@ import type { PlaceEntity } from '../../data/types';
 import { buildHref } from '../../router/route';
 import { PLACE_TYPE_LABELS, SIDE_LABELS } from '../../content/labels';
 import { Atlas } from '../../Atlas';
+import { MAP_REGION_LABELS, type RegionLabel } from '../../atlas/regions';
 import { useReadingProgress } from '../../a11y/readingProgress';
 
-export function AtlasView({ placeId }: { placeId: string | null }) {
+export function AtlasView({
+  placeId,
+  battleId = null,
+  phaseId = null,
+}: {
+  placeId: string | null;
+  /** MAP-01：来自 `#/atlas?battle=` 的深链目标战役。 */
+  battleId?: string | null;
+  /** MAP-01：来自 `#/atlas?...&phase=` 的深链目标阶段。 */
+  phaseId?: string | null;
+}) {
   const { index } = useApp();
   const places = useMemo(
     () => [...index.places.values()].sort((a, b) => a.historicalName.localeCompare(b.historicalName, 'zh-Hans-CN')),
@@ -31,8 +46,54 @@ export function AtlasView({ placeId }: { placeId: string | null }) {
   const battles = useMemo(() => [...index.battles.values()], [index]);
   const selected = placeId ? index.places.get(placeId) ?? null : null;
 
+  // MAP-01：战略节点索引的数据来源是**同一份内容 JSON**（战役阶段与事件引用的地点 + 海域），
+  // 不另建地图数据源。历史地名与现代地名并列可发现（不硬编码内容 ID）。
+  const referencedPlaceIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const battle of battles) {
+      for (const id of battle.placeIds ?? []) ids.add(id);
+      for (const phase of battle.phases ?? []) {
+        for (const side of ['japan', 'allies'] as const) {
+          for (const id of phase.positions?.[side]?.placeIds ?? []) ids.add(id);
+        }
+        for (const route of phase.routes ?? []) {
+          ids.add(route.fromPlaceId);
+          ids.add(route.toPlaceId);
+        }
+      }
+    }
+    for (const event of index.events.values()) {
+      for (const id of event.placeIds ?? []) ids.add(id);
+    }
+    return ids;
+  }, [battles, index]);
+  const strategicPlaces = useMemo(
+    () =>
+      [...referencedPlaceIds]
+        .map((id) => index.places.get(id))
+        .filter((place): place is PlaceEntity => Boolean(place))
+        .sort((a, b) => a.historicalName.localeCompare(b.historicalName, 'zh-Hans-CN')),
+    [referencedPlaceIds, index],
+  );
+  const seaPlaces = useMemo(
+    () => places.filter((place) => place.placeType === 'sea' || place.placeType === 'strait'),
+    [places],
+  );
+  // MAP-01 区域标注（地理区域名，锚定到真实地点；不新增坐标/史实）。
+  const regionEntries = useMemo(
+    () =>
+      MAP_REGION_LABELS.map((region) => ({ region, place: index.places.get(region.anchorPlaceId) })).filter(
+        (entry): entry is { region: RegionLabel; place: PlaceEntity } => Boolean(entry.place),
+      ),
+    [index],
+  );
+
   const navigateToPlace = (nextPlaceId: string) => {
     window.location.hash = buildHref('atlas', { id: nextPlaceId }).slice(1);
+  };
+  const navigateToBattle = (nextBattleId: string) => {
+    // 写回 hash：战役选择可深链、可后退；同时保留当前地点详情。
+    window.location.hash = buildHref('atlas', { id: selected?.id ?? null, battle: nextBattleId }).slice(1);
   };
 
   return (
@@ -40,16 +101,70 @@ export function AtlasView({ placeId }: { placeId: string | null }) {
       <PageHead
         eyebrow="入口 04 / Atlas"
         title="地图"
-        description="从地理空间理解行动：历史地名与现代地名并列，坐标精度与示意标记可见。地点是真实已知的地理节点，舰队位置与航线只出现在战役的地图阶段里，并且一律标记为示意。"
+        description="从地理空间理解行动：历史地名与现代地名并列，坐标精度与示意标记可见。选择一场重点战役即可按阶段推演：双方当时知道什么、不知道什么、做了什么决定、带来什么后果。地点是真实已知的地理节点，舰队位置与航线只出现在战役的地图阶段里，并且一律标记为示意。"
       />
 
       {/* 交互式 SVG 地图引擎（离线自绘，无瓦片依赖）。数据来自同一份 content/history.json。 */}
-      <Atlas
-        places={places}
-        battles={battles}
-        selectedPlaceId={selected?.id ?? null}
-        onSelectPlace={navigateToPlace}
-      />
+      <div data-atlas-mount="" data-atlas-initial-battle={battleId ?? ''} data-atlas-initial-phase={phaseId ?? ''}>
+        <Atlas
+          key={`${battleId ?? ''}:${phaseId ?? ''}`}
+          places={places}
+          battles={battles}
+          selectedPlaceId={selected?.id ?? null}
+          onSelectPlace={navigateToPlace}
+          initialBattleId={battleId}
+          initialPhaseId={phaseId}
+          onSelectBattle={navigateToBattle}
+        />
+      </div>
+
+      <section className="pw-section" style={{ marginTop: 'var(--pw-space-5)' }} aria-labelledby="atlas-node-index" data-atlas-node-index="">
+        <h2 className="pw-section__heading" id="atlas-node-index">
+          <span className="pw-section__index">索引</span>
+          战略节点与海域（历史地名 / 现代地名）
+        </h2>
+        <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
+          地图上每个节点都同时标注历史地名与现代地名；下面是战役阶段与时间线事件引用到的地点
+          （{strategicPlaces.length} 个）以及全部海域/海峡（{seaPlaces.length} 处）。点选任一名称可在地点详情中核对历史地名、现代地名与坐标精度。
+        </p>
+        <RelatedLinks
+          groups={[
+            {
+              title: '战役与事件涉及的地点',
+              links: strategicPlaces.map((place) => ({
+                href: buildHref('atlas', { id: place.id }),
+                label: place.historicalName,
+                hint: place.modernName,
+              })),
+            },
+            {
+              title: '海域与海峡',
+              links: seaPlaces.map((place) => ({
+                href: buildHref('atlas', { id: place.id }),
+                label: place.historicalName,
+                hint: place.modernName,
+              })),
+            },
+          ]}
+        />
+        {regionEntries.length > 0 ? (
+          <p data-atlas-region-index="" style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
+            <strong>区域标注：</strong>
+            {regionEntries.map(({ region, place }, indexOfRegion) => (
+              <span key={region.id} data-region-index-id={region.id} style={{ marginRight: '0.75em' }}>
+                {indexOfRegion > 0 ? '、' : null}
+                <a href={buildHref('atlas', { id: place.id })}>{region.label}</a>
+                <span style={{ color: 'var(--pw-ink-muted)' }}>
+                  （以{place.historicalName}为锚点 · {place.modernName}）
+                </span>
+              </span>
+            ))}
+            <span style={{ display: 'block', color: 'var(--pw-ink-muted)', fontSize: 'var(--pw-size-xs)' }}>
+              区域名只是地理描述，不是精确边界，也不代表舰队位置或历史航迹。
+            </span>
+          </p>
+        ) : null}
+      </section>
 
       <div style={{ marginTop: 'var(--pw-space-5)' }}>
         <h2 className="pw-section__heading">地点列表（{places.length}）</h2>

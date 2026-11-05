@@ -7,10 +7,10 @@
  *
  * 路由表（全部是六入口内的视图，不存在孤立页面）：
  *   #/                      → 总览（六入口索引）
- *   #/timeline[/<eventId>]
+ *   #/timeline[/<eventId>][?date=YYYY-MM-DD]      ← 可选日期筛选（MAP-01）
  *   #/battles[/<battleId>]
  *   #/people[/<personId>]
- *   #/atlas[/<placeId>]
+ *   #/atlas[/<placeId>][?battle=<battleId>&phase=<phaseId>]  ← 深链定位战役阶段（MAP-01）
  *   #/concepts[/<conceptId>]
  *   #/questions[/<questionId>]
  *   #/search?q=<query>
@@ -29,6 +29,12 @@ export interface Route {
   id: string | null;
   /** #/search?q=... 的查询词。 */
   query: string;
+  /** 可选：#/atlas?battle=<battleId> —— 地图要定位的战役（MAP-01 深链）。 */
+  battle?: string;
+  /** 可选：#/atlas?...&phase=<phaseId> —— 地图要定位的阶段（MAP-01 深链）。 */
+  phase?: string;
+  /** 可选：#/timeline?date=YYYY-MM-DD —— 时间线日期筛选（MAP-01）。 */
+  date?: string;
 }
 
 export const DEFAULT_ROUTE: Route = { view: 'overview', id: null, query: '' };
@@ -49,17 +55,27 @@ export function parseRoute(hash: string): Route {
   const [viewSegment, ...rest] = segments;
   if (!viewSegment) return DEFAULT_ROUTE;
   let view = decodeSegment(viewSegment);
-  if (!isViewId(view)) return { ...DEFAULT_ROUTE, view: 'overview' };
-  const id = rest.length > 0 ? decodeSegment(rest.join('/')) : null;
   const params = new URLSearchParams(searchPart);
+  const extras = routeExtras(params);
+  if (!isViewId(view)) return { ...DEFAULT_ROUTE, ...extras };
+  const id = rest.length > 0 ? decodeSegment(rest.join('/')) : null;
   const query = params.get('q') ?? '';
   // 列表视图不接受 id，保持 URL 与视图一致。
   const detailViews: ViewId[] = ['timeline', 'battles', 'people', 'atlas', 'concepts', 'questions', 'sources'];
   if (id !== null && !detailViews.includes(view)) {
-    return { view, id: null, query };
+    return { view, id: null, query, ...extras };
   }
-  return { view, id: id === '' ? null : id, query };
+  return { view, id: id === '' ? null : id, query, ...extras };
 }
+
+/** 查询串里 MAP-01 用到的可选参数（空串按「未提供」处理）。 */
+function routeExtras(params: URLSearchParams): Pick<Route, 'battle' | 'phase' | 'date'> {
+  const battle = params.get('battle') || undefined;
+  const phase = params.get('phase') || undefined;
+  const date = params.get('date') || undefined;
+  return { battle, phase, date };
+}
+
 
 function decodeSegment(value: string): string {
   try {
@@ -72,6 +88,12 @@ function decodeSegment(value: string): string {
 export interface HrefOptions {
   id?: string | null;
   query?: string;
+  /** MAP-01：地图深链要定位的战役。 */
+  battle?: string | null;
+  /** MAP-01：地图深链要定位的阶段。 */
+  phase?: string | null;
+  /** MAP-01：时间线日期筛选。 */
+  date?: string | null;
 }
 
 /**
@@ -79,10 +101,16 @@ export interface HrefOptions {
  * 用 `<a href="#/timeline/...">` 即可让浏览器原生处理历史记录，无需 JS 拦截。
  */
 export function buildHref(view: ViewId, options: HrefOptions = {}): string {
-  const { id, query } = options;
+  const { id, query, battle, phase, date } = options;
   let href = view === 'overview' ? '#/' : `#/${view}`;
   if (id) href += `/${encodeURIComponent(id)}`;
-  if (query) href += `?q=${encodeURIComponent(query)}`;
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (battle) params.set('battle', battle);
+  if (phase) params.set('phase', phase);
+  if (date) params.set('date', date);
+  const searchPart = params.toString();
+  if (searchPart) href += `?${searchPart}`;
   return href;
 }
 

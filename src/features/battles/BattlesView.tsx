@@ -207,7 +207,7 @@ function BattleDetail({ battle }: { battle: BattleEntity }) {
             </p>
             <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {phases.map((phase) => (
-                <PhaseBlock key={phase.id} phase={phase} claimFilter={claimFilter} />
+                <PhaseBlock key={phase.id} phase={phase} battleId={battle.id} claimFilter={claimFilter} />
               ))}
             </ol>
           </>
@@ -323,11 +323,11 @@ function BattleSectionBlock({
   );
 }
 
-function PhaseBlock({ phase, claimFilter }: { phase: Phase; claimFilter: ClaimType | 'all' }) {
+function PhaseBlock({ phase, battleId, claimFilter }: { phase: Phase; battleId: string; claimFilter: ClaimType | 'all' }) {
   const { index } = useApp();
   const [open, setOpen] = useState(false);
   return (
-    <li className="pw-card" style={{ marginBottom: 'var(--pw-space-4)' }} data-phase-id={phase.id}>
+    <li className="pw-card" style={{ marginBottom: 'var(--pw-space-4)' }} data-phase-id={phase.id} data-phase-battle={battleId}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--pw-space-3)', alignItems: 'baseline' }}>
         <span style={{ fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', color: 'var(--pw-brass-text)', letterSpacing: '0.1em' }}>
           阶段 {String(phase.sequence).padStart(2, '0')}
@@ -341,6 +341,17 @@ function PhaseBlock({ phase, claimFilter }: { phase: Phase; claimFilter: ClaimTy
       </div>
       <p style={{ margin: 'var(--pw-space-2) 0', fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', color: 'var(--pw-ink-muted)' }}>
         {phase.time.display}
+      </p>
+      {/* MAP-01：从战役叙述定位到地图阶段（深链 URL 由 buildHref 生成，base 子路径无关）。 */}
+      <p style={{ margin: '0 0 var(--pw-space-2)' }}>
+        <a
+          className="pw-btn"
+          href={buildHref('atlas', { battle: battleId, phase: phase.id })}
+          data-phase-map-link={phase.id}
+          data-phase-map-battle={battleId}
+        >
+          在地图上查看此阶段 →
+        </a>
       </p>
       <p style={{ margin: '0 0 var(--pw-space-2)', fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
         {phase.uncertaintyNote}

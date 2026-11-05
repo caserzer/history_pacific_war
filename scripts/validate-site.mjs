@@ -180,6 +180,46 @@
  *      本机 worktree 是 LF，同一自检必须在两种检出下给出相同结果。函数体提取只允许
  *      使用 extractFunctionSource()（内部已归一化）。NAV-7 用 CRLF 变体做真实断言。
  *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MAP-01 交付：真实内容接入地图与三大战役分阶段推演（本文件增量，PART 2 · WEB）
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 数据基线：HIST-04 已接受内容 content/history.json（fixtureOnly=false）：
+ *   珍珠港 3 阶段 / 珊瑚海 4 阶段 / 中途岛 5 阶段 = 12 个阶段；每阶段都带双方
+ *   knownEnemy / unknownEnemy / decision / consequence 与示意航线（MAP1-phase-fields /
+ *   MAP1-routes 逐阶段断言）。本任务不生成内容、不改契约、不生成虚构航迹。
+ *
+ * 站点侧增量（src/，本文件对应断言名）：
+ *   - 战役选择器（Atlas）：data-battle-select / data-atlas-battle / data-atlas-battle-count；
+ *     断言 MAP1-atlas-selector / MAP1-atlas-default-battle。
+ *   - 「#/atlas?battle=<battleId>&phase=<phaseId>」深链定位阶段（路由 buildHref 支持
+ *     battle/phase；AtlasView → Atlas initialBattleId/initialPhaseId）：
+ *     断言 MAP1-<battleId>-deep-link / MAP1-<battleId>-intel。
+ *   - 阶段控件与播放/暂停/前后/时间轴（既有 MAP-00 控件复用）：
+ *     断言 MAP1-<battleId>-controls / MAP1-<battleId>-playback / -routes。
+ *   - 从地图跳叙述（data-phase-action="narrative"）与从叙述回地图阶段
+ *     （战役页每阶段 data-phase-map-link → #/atlas?battle=&phase=）：
+ *     断言 MAP1-<battleId>-narrative-link / -narrative-phase-links。
+ *   - 图例 / 比例尺 / 经纬网 / 双方视觉编码 / 不确定范围（MAP-00 引擎能力）：
+ *     断言 MAP1-atlas-{legend,scalebar,graticule,uncertainty,keyboard-touch}。
+ *   - 验收要求的重点标签（夏威夷 / 中途岛 / 菲律宾 / 新加坡 / 马来亚 / 关岛 / 威克岛 /
+ *     澳大利亚北部 + 相关海域）：MAP1-node-<标签> 断言**字面标签**出现在渲染输出中，
+ *     并在消息里写明承载来源（地点标签第一/二行 vs 区域标注层）；MAP1-node-<标签>-detail
+ *     断言地点详情可发现历史名+现代名；MAP1-seas 断言海域标签。
+ *   - 区域标注层（src/atlas/regions.ts，MAP-01 地理标注）：区域名锚定到真实 place
+ *     （不新增坐标/史实）。「澳大利亚北部」由该层以 SVG <text> 字面渲染：
+ *     断言 MAP1-region-layer / MAP1-region-anchor-guard（锚点缺失时不渲染，证明数据驱动）。
+ *   - 时间线日期筛选（#/timeline?date=YYYY-MM-DD → 事件筛选，稳定控件
+ *     data-timeline-date-*）：断言 MAP1-timeline-{controls,date,count,events,reset}。
+ *   - 六入口在真实完整内容上正常显示：断言 MAP1-entry-<view>（覆盖六入口）。
+ *   既有 LEAK-* 组继续保证发布路由无 fixture 事实（本任务新增 UI 文案不引入夹具内容）。
+ *   诚实性说明：MAP1-phase-fields / MAP1-routes 是内容 JSON 结构 gate；MAP1-<battleId>-playback
+ *   是状态机层断言（与组件同一纯函数实现，未在浏览器中真实点击）；它们在消息里显式标注
+ *   所证明的范围，不冒充浏览器交互验证。
+ *
+ * 扩展约定补充（MAP-01）：地图/时间线的**稳定 data-* 控件属性**属于 WEB 展示契约；
+ * 新增地图展示只在 PART 2 增加渲染断言，字段来源仍是同一份 content/history.json，
+ * 不得为地图另建数据源或手写 URL（一律 buildHref）。
+ *
  * 每个检查都打印 PASS/FAIL；本文件没有 SKIP 状态。负例检查（negative case）是刻意
  * 构造的错误输入，用来证明检查本身有效。
  */
@@ -689,13 +729,15 @@ function renderApp(M, { content, route }) {
       case 'overview':
         return h(M.OverviewView);
       case 'timeline':
-        return h(M.TimelineView, { eventId: route.id });
+        // MAP-01：route.date 让验证器复用真实站点的「时间线日期筛选」路径（#/timeline?date=…）。
+        return h(M.TimelineView, { eventId: route.id, initialDate: route.date ?? null });
       case 'battles':
         return h(M.BattlesView, { battleId: route.id });
       case 'people':
         return h(M.PeopleView, { personId: route.id });
       case 'atlas':
-        return h(M.AtlasView, { placeId: route.id });
+        // MAP-01：route.battle / route.phase 让验证器复用真实站点的「#/atlas?battle=&phase=」深链路径。
+        return h(M.AtlasView, { placeId: route.id, battleId: route.battle ?? null, phaseId: route.phase ?? null });
       case 'concepts':
         return h(M.ConceptsView, { conceptId: route.id });
       case 'questions':
@@ -2099,6 +2141,454 @@ function checkPublishedRouteFixtureLeakage(M) {
       `LEAK-${spec.view}-match`,
       realRenderOk && detailHtml !== fixtureDetailHtml,
       `发布路由 ${spec.label} 详情渲染与真实内容加载一致：真实内容渲染 ${detailHtml.length} 字节，夹具内容渲染同一路由 ${fixtureDetailHtml.length} 字节（输出随加载内容变化，不是固定/夹具输出）`,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MAP-01. 真实内容地图接入与三大战役分阶段推演　【PART 2 · WEB 渲染图/展示断言】
+// ---------------------------------------------------------------------------
+//
+// 数据：已接受的 HIST-04 真实内容 content/history.json（fixtureOnly=false）：
+//   珍珠港 / 珊瑚海 / 中途岛三场重点战役共 12 个地图阶段；每阶段都带双方
+//   knownEnemy / unknownEnemy / decision / consequence 与示意航线。
+// 本组断言只走**站点真实渲染路径**（M.loadContent → renderApp → AtlasView / Atlas /
+// mapEngine / controls、TimelineView），字段值一律从真实内容对象读取后再断言其渲染，
+// 不硬编码任何史实措辞，也不引入夹具事实。
+//
+// 断言 ID：
+//   MAP1-content / MAP1-load / MAP1-battles / MAP1-phases
+//   MAP1-phase-fields / MAP1-routes（内容 JSON 结构 gate，消息注明「非渲染」并由 -intel/-routes 覆盖呈现）
+//   MAP1-atlas-*（engine / selector / default-battle / date / legend / scalebar / graticule /
+//                uncertainty / keyboard-touch / place-clickable / stable-selectors）
+//   MAP1-node-<标签> 与 MAP1-node-<标签>-detail（验收要求的八个重点标签：断言**字面标签**
+//                出现在渲染输出中，并写明由地点标签第一/二行还是区域标注层承载）
+//   MAP1-region-layer（SVG 区域标注层渲染字面区域名「澳大利亚北部」）
+//   MAP1-region-anchor-guard（锚点不存在时不渲染区域标签 → 标签由真实地点派生，不兜造坐标）
+//   MAP1-seas（相关海域/海峡，历史名+现代名以字面文字渲染）
+//   MAP1-<battleId>-{deep-link,intel,controls,routes,narrative-link,playback}
+//   MAP1-<battleId>-narrative-<phaseId>-map-link（从叙述定位到地图阶段）
+//   MAP1-entry-<view>（六入口在真实完整内容上正常显示）
+//   MAP1-timeline-{controls,date,count,events,reset}（时间线日期筛选 → 事件筛选）
+// 诚实性：MAP1-phase-fields / MAP1-routes 是内容 JSON 结构 gate；MAP1-<battle>-playback 是
+// 状态机层断言（与组件同一实现，未在浏览器中真实点击）——三者在消息里显式说明所证明的范围。
+
+/** 渲染真实内容的一条路由并返回 HTML（renderApp 与站点使用同一外壳 + 视图）。 */
+function renderRealRoute(M, realState, route) {
+  return renderApp(M, { content: realState, route: { query: '', ...route } }).html;
+}
+
+/** 重点战役的固定顺序（已接受内容中的稳定 ID；缺失由 MAP1-battles 直接 FAIL）。 */
+const MAP1_FOCUS_BATTLE_IDS = ['battle-pearl-harbor', 'battle-coral-sea', 'battle-midway'];
+
+/**
+ * 验收要求标注的重点标签（区域/地名 + 相关海域）：
+ * - `satisfiedBy` 记录该标签在**渲染输出**里由什么承载，消息里如实写明；
+ * - 非 region 标签由真实 place 的历史名/现代名/国家字段提供，`keyword` 用于解析锚点 place；
+ * - `regionId` 标签由 MAP-01 区域标注层提供（src/atlas/regions.ts，锚定到真实 place，
+ *   不新增坐标/史实）；旧提交只断言了「达尔文」关键词，没有断言验收要求的字面区域名，
+ *   NAV 这里改为**断言字面标签真的出现在渲染输出中**。
+ */
+const MAP1_REQUIRED_LABELS = [
+  { label: '夏威夷', keyword: '夏威夷', satisfiedBy: '地点标签第二行（现代名「瓦胡岛（美国夏威夷州）」含「夏威夷」）' },
+  { label: '中途岛', keyword: '中途岛', satisfiedBy: '地点标签第一行（历史地名「中途岛」）' },
+  { label: '菲律宾', keyword: '菲律宾', satisfiedBy: '地点标签第二行（现代名 · 国家字段「马尼拉 · 菲律宾」）' },
+  { label: '新加坡', keyword: '新加坡', satisfiedBy: '地点标签第一行（历史地名「新加坡（英属海峡殖民地）」）' },
+  { label: '马来亚', keyword: '马来亚', satisfiedBy: '地点标签第一行（历史地名「马来亚（英属）」）' },
+  { label: '关岛', keyword: '关岛', satisfiedBy: '地点标签第一行（历史地名「关岛」）' },
+  { label: '威克岛', keyword: '威克岛', satisfiedBy: '地点标签第一行（历史地名「威克岛」）' },
+  {
+    label: '澳大利亚北部',
+    keyword: '达尔文',
+    regionId: 'region-northern-australia',
+    satisfiedBy: '区域标注层（data-region-id="region-northern-australia"，以 place-darwin 为锚点的区域名，不是精确边界）',
+  },
+];
+
+/** 六入口（用于真实内容渲染断言）。 */
+const MAP1_ENTRIES = [
+  ['timeline', '时间线', 'events'],
+  ['battles', '战役', 'battles'],
+  ['people', '人物', 'people'],
+  ['atlas', '地图', 'places'],
+  ['concepts', '知识专题', 'concepts'],
+  ['questions', '历史问题', 'questions'],
+];
+
+function checkRealContentMapIntegration(M) {
+  // ---------------------------------------------------------------- 真实内容输入
+  const realDoc = loadRealContentDocument();
+  check(
+    'MAP1-content',
+    Boolean(realDoc) && realDoc.fixtureOnly === false,
+    '真实内容 content/history.json 存在且 fixtureOnly=false（MAP-01 的唯一地图数据源）',
+  );
+  if (!realDoc) {
+    fail('MAP1', '真实内容缺失：无法执行真实内容地图/战役推演检查（前置条件缺失必须失败，不得跳过）');
+    return;
+  }
+  const realState = M.loadContent({ '/virtual/content/history.json': realDoc });
+  check(
+    'MAP1-load',
+    realState.status === 'available' && realState.doc !== null,
+    `真实内容经真实加载器 loadContent 得到发布状态（状态 ${realState.status}）`,
+  );
+  if (!realState.doc) {
+    fail('MAP1', '真实内容无法加载：渲染检查未执行（必须失败）');
+    return;
+  }
+  const doc = realState.doc;
+
+  // ---------------------------------------------------------------- 三场重点战役 / 12 阶段
+  const focusBattles = MAP1_FOCUS_BATTLE_IDS.map((id) => (doc.battles ?? []).find((battle) => battle.id === id) ?? null);
+  check(
+    'MAP1-battles',
+    focusBattles.every(Boolean),
+    `真实内容含三场重点战役：${MAP1_FOCUS_BATTLE_IDS.join(' / ')}（实际 battles=${(doc.battles ?? []).length} 场）`,
+  );
+  if (!focusBattles.every(Boolean)) {
+    fail('MAP1', '三场重点战役不齐：无法继续阶段推演检查（必须失败，不跳过）');
+    return;
+  }
+  const phasesOf = (battle) => M.sortPhases([...(battle.phases ?? [])]);
+  const counted = focusBattles.map((battle) => `${battle.id}=${phasesOf(battle).length}`);
+  const allPhases = focusBattles.flatMap(phasesOf);
+  check('MAP1-phases', allPhases.length === 12, `三场重点战役阶段总数 = ${allPhases.length}（${counted.join('，')}）`);
+
+  const missingFields = allPhases.filter(
+    (phase) =>
+      !(
+        phase.knownEnemy?.japan &&
+        phase.knownEnemy?.allies &&
+        phase.unknownEnemy?.japan &&
+        phase.unknownEnemy?.allies &&
+        phase.decision?.japan &&
+        phase.decision?.allies &&
+        phase.consequence?.japan &&
+        phase.consequence?.allies &&
+        phase.time?.display
+      ),
+  );
+  check(
+    'MAP1-phase-fields',
+    missingFields.length === 0,
+    `内容 JSON 结构 gate（非渲染）：每个阶段数据都含双方已知/未知敌情、时间、决策与后果（缺失字段的阶段 ${missingFields.length} 个）；这些字段的**页面呈现**由 MAP1-<battleId>-intel（真实渲染文本）断言`,
+  );
+  const badRoutes = allPhases.filter(
+    (phase) =>
+      (phase.routes ?? []).length === 0 ||
+      (phase.routes ?? []).some((route) => route.schematic !== true || !Array.isArray(route.path) || route.path.length < 2),
+  );
+  check(
+    'MAP1-routes',
+    badRoutes.length === 0,
+    `内容 JSON 结构 gate（非渲染）：每个阶段的航线都标记 schematic=true 且路径 ≥2 点（不合格阶段 ${badRoutes.length} 个；不生成虚构精确航迹）；页面上的示意航线与「不是精确历史航迹」声明由 MAP1-<battleId>-routes 断言`,
+  );
+
+  // ---------------------------------------------------------------- 地图入口（真实内容）
+  const atlasList = renderRealRoute(M, realState, { view: 'atlas', id: null });
+  check(
+    'MAP1-atlas-engine',
+    atlasList.includes('data-atlas-engine') && atlasList.includes('data-atlas-canvas') && atlasList.includes('<svg'),
+    '真实内容下渲染本地自绘 SVG 地图引擎（离线，无外部瓦片/商业 Key）',
+  );
+  const selectorIds = [...atlasList.matchAll(/data-battle-select="([^"]+)"/g)].map((match) => match[1]);
+  check(
+    'MAP1-atlas-selector',
+    MAP1_FOCUS_BATTLE_IDS.every((id) => selectorIds.includes(id)) && selectorIds.length === MAP1_FOCUS_BATTLE_IDS.length,
+    `地图渲染战役选择器并覆盖三场重点战役（实际：${selectorIds.join(' / ')}）`,
+  );
+  check(
+    'MAP1-atlas-default-battle',
+    atlasList.includes(`data-atlas-battle="${MAP1_FOCUS_BATTLE_IDS[0]}"`),
+    `地图默认选中第一场重点战役 ${MAP1_FOCUS_BATTLE_IDS[0]}（data-atlas-battle 可观察）`,
+  );
+  check(
+    'MAP1-atlas-date',
+    /data-atlas-active-date="[^"]+"/.test(atlasList),
+    '地图根节点暴露当前阶段日期（data-atlas-active-date），可供浏览器测试观察时间联动',
+  );
+  check(
+    'MAP1-atlas-legend',
+    atlasList.includes('data-certainty-legend') &&
+      atlasList.includes('data-side-encoding="japan"') &&
+      atlasList.includes('data-side-encoding="allies"') &&
+      atlasList.includes('示意'),
+    '图例齐全：certainty 图例 + 双方不同视觉编码（形状/线型，不只靠颜色）+ 示意说明',
+  );
+  check(
+    'MAP1-atlas-scalebar',
+    atlasList.includes('data-layer="scalebar"') && /≈ \d+ km/.test(atlasList),
+    '近似比例尺可见（随缩放换算 km）',
+  );
+  check(
+    'MAP1-atlas-graticule',
+    atlasList.includes('data-layer="graticule"') && atlasList.includes('data-layer-toggle="graticule"'),
+    '经纬网图层渲染且可切换（data-layer="graticule"）',
+  );
+  check(
+    'MAP1-atlas-uncertainty',
+    atlasList.includes('data-layer="uncertainty"') && atlasList.includes('data-uncertainty-radius-km'),
+    '不确定范围可见（data-uncertainty-radius-km）且标注为示意',
+  );
+  check(
+    'MAP1-atlas-keyboard-touch',
+    /<svg[^>]*role="application"[^>]*tabindex="0"/.test(atlasList) &&
+      atlasList.includes('使用方向键平移') &&
+      atlasList.includes('data-map-action="zoom-in"') &&
+      atlasList.includes('data-atlas-canvas'),
+    '键盘可操作性声明可见（role="application" + tabindex=0 + 方向键说明）；触摸/指针事件由 M7 与 D3 组对同一引擎断言',
+  );
+  // 地点节点可点击/可键盘激活（点击后由 AtlasView 写回 #/atlas/<placeId> 进入详情）。
+  check(
+    'MAP1-atlas-place-clickable',
+    atlasList.includes('data-place-id=')
+      && atlasList.includes('data-layer="place"')
+      && atlasList.includes('role="button"')
+      && atlasList.includes('aria-label="选择地点 ')
+      && atlasList.includes('tabindex="0"'),
+    '全部地点节点可点击/可键盘激活（role="button" + tabindex=0 + aria-label「选择地点…」，hover/title 带历史名与现代名）',
+  );
+  check(
+    'MAP1-atlas-stable-selectors',
+    [
+      'data-battle-select=',
+      'data-atlas-battle=',
+      'data-phase-action="playpause"',
+      'data-phase-action="next"',
+      'data-phase-action="prev"',
+      'data-phase-id=',
+      'data-map-action="zoom-in"',
+      'data-map-action="zoom-out"',
+      'data-map-action="reset"',
+      'data-layer-toggle="places"',
+      'data-date-range',
+    ].every((needle) => atlasList.includes(needle)),
+    '地图页暴露稳定 data-* 控件供 MAP-01 之后的浏览器测试/QA 选择（战役、阶段、缩放、图层、日期）',
+  );
+
+  // 区域标注层的实际渲染片段（用于日志自证：字面区域名出现在 SVG <text> 里）。
+  const regionTextMatch = atlasList.match(/<g[^>]*data-region-id="region-northern-australia"[^>]*>\s*<text[^>]*>([^<]*)<\/text>/);
+  const regionRenderedText = regionTextMatch?.[1] ?? '';
+  // ---------------------------------------------------------------- 重点标签与海域标注
+  // 每个验收要求的标签都必须以**字面文字**出现在渲染输出里（不只是解析到某个关键词），
+  // 并在消息中写明由哪种渲染承载（地点标签第一/二行 vs 区域标注层）。
+  const placeText = (place) => `${place.historicalName} ${place.modernName} ${place.modernCountry}`;
+  const atlasPlainText = htmlToPlainText(atlasList);
+  for (const node of MAP1_REQUIRED_LABELS) {
+    const place = doc.places.find((candidate) => placeText(candidate).includes(node.keyword));
+    const literalRendered = atlasPlainText.includes(node.label);
+    const regionRendered =
+      node.regionId === undefined ||
+      (atlasList.includes(`data-layer="region"`) &&
+        atlasList.includes(`data-region-id="${node.regionId}"`) &&
+        atlasList.includes(`data-region-label="${node.label}"`));
+    const placeRendered = Boolean(place) && atlasList.includes(place.historicalName) && atlasList.includes(place.modernName);
+    check(
+      `MAP1-node-${node.label}`,
+      literalRendered && regionRendered && placeRendered,
+      `地图以明确文字标注「${node.label}」（字面标签出现；承载：${node.satisfiedBy}）${
+        place ? `；锚点地点 ${place.id}（历史名「${place.historicalName}」/ 现代名「${place.modernName}」均渲染）` : '；未在真实 places 中找到匹配节点'
+      }${node.regionId === undefined ? '' : `；SVG 渲染片段：「<text>${regionRenderedText}</text>」`}`,
+    );
+    const detailHtml = place ? renderRealRoute(M, realState, { view: 'atlas', id: place.id }) : '';
+    check(
+      `MAP1-node-${node.label}-detail`,
+      Boolean(place) &&
+        detailHtml.includes('历史地名') &&
+        detailHtml.includes('现代地名') &&
+        detailHtml.includes(place.historicalName) &&
+        detailHtml.includes(place.modernName),
+      `地点详情可发现${node.label}的历史名与现代名（#/atlas/${place?.id ?? '—'}）`,
+    );
+  }
+  // 区域标注层本身：字面标签必须出现在 SVG 的 region 分组文本里（不是只出现在索引文字中）。
+  check(
+    'MAP1-region-layer',
+    regionRenderedText === '澳大利亚北部' &&
+      atlasList.includes('data-layer="region"') &&
+      atlasList.includes('data-anchor-place="place-darwin"') &&
+      atlasList.includes('data-atlas-region-index=""') &&
+      atlasList.includes('以达尔文港为锚点'),
+    `区域标注层：SVG 地图以 <text> 渲染字面区域名（实际渲染片段：「<text>${regionRenderedText}</text>」，data-layer="region"，锚点 data-anchor-place="place-darwin"；不新增坐标，区域名≠精确边界/舰队位置），页内索引同样可发现`,
+  );
+  // 锚点守卫：内容里没有锚点地点时不得渲染该区域标签（证明标签由真实地点派生，不兜造坐标）。
+  const minFixtureState = M.loadContent({ '/virtual/content/history.json': loadFixtureDocument(FIXTURE_MIN) });
+  const minFixtureAtlas = renderRealRoute(M, minFixtureState, { view: 'atlas', id: null });
+  check(
+    'MAP1-region-anchor-guard',
+    !minFixtureAtlas.includes('data-layer="region"') && !minFixtureAtlas.includes('澳大利亚北部'),
+    '区域标注只在真实锚点存在时渲染：valid-min 夹具没有 place-darwin → 地图不渲染「澳大利亚北部」，也不凭空生成坐标',
+  );
+  const seaPlaces = doc.places.filter((place) => place.placeType === 'sea' || place.placeType === 'strait');
+  const seaLabelsPresent = seaPlaces.filter((place) => atlasList.includes(place.historicalName) && atlasList.includes(place.modernName));
+  check(
+    'MAP1-seas',
+    seaPlaces.length >= 3 && seaLabelsPresent.length === seaPlaces.length,
+    `相关海域/海峡标注：${seaPlaces.length} 处（${seaPlaces.map((place) => place.historicalName).slice(0, 6).join('、')}${seaPlaces.length > 6 ? '…' : ''}），历史名+现代名全部以字面文字出现在地图渲染中`,
+  );
+
+  // ---------------------------------------------------------------- 三场战役：深链 + 阶段情报 + 控件
+  for (const battle of focusBattles) {
+    const phases = phasesOf(battle);
+    const chosen =
+      phases.find(
+        (phase) =>
+          phase.knownEnemy?.japan &&
+          phase.knownEnemy?.allies &&
+          phase.unknownEnemy?.japan &&
+          phase.unknownEnemy?.allies &&
+          phase.decision?.japan &&
+          phase.decision?.allies &&
+          phase.consequence?.japan &&
+          phase.consequence?.allies,
+      ) ?? phases[0];
+    const battleTitle = String(battle.title ?? '');
+    const detail = renderRealRoute(M, realState, { view: 'atlas', id: null, battle: battle.id, phase: chosen.id });
+    const detailText = normalizePlain(htmlToPlainText(detail));
+
+    check(
+      `MAP1-${battle.id}-deep-link`,
+      detail.includes(`data-atlas-battle="${battle.id}"`) &&
+        detail.includes(`data-phase-id="${chosen.id}"`) &&
+        detail.includes(`data-atlas-active-phase="${chosen.id}"`) &&
+        detail.includes(battleTitle) &&
+        detail.includes(chosen.time.display),
+      `#/atlas?battle=${battle.id}&phase=${chosen.id} 深链直接渲染该战役阶段（阶段 ${chosen.sequence}「${chosen.title}」，时间「${chosen.time.display}」）`,
+    );
+
+    const intelTexts = [
+      ['日方已知', chosen.knownEnemy.japan],
+      ['盟方已知', chosen.knownEnemy.allies],
+      ['日方未知', chosen.unknownEnemy.japan],
+      ['盟方未知', chosen.unknownEnemy.allies],
+      ['日方决策', chosen.decision.japan],
+      ['盟方决策', chosen.decision.allies],
+      ['日方后果', chosen.consequence.japan],
+      ['盟方后果', chosen.consequence.allies],
+    ];
+    const missingIntel = intelTexts.filter(([, text]) => !detailText.includes(normalizePlain(text)));
+    check(
+      `MAP1-${battle.id}-intel`,
+      missingIntel.length === 0,
+      `${battle.id} 阶段「${chosen.title}」同时显示双方已知/未知敌情、决策与后果（缺失 ${missingIntel.map(([label]) => label).join('、') || '无'}）`,
+    );
+
+    check(
+      `MAP1-${battle.id}-controls`,
+      detail.includes('data-phase-action="playpause"') &&
+        detail.includes('data-phase-action="next"') &&
+        detail.includes('data-phase-action="prev"') &&
+        detail.includes('data-date-range') &&
+        detail.includes('data-phase-counter') &&
+        /aria-pressed="(true|false)"/.test(detail),
+      `${battle.id} 地图阶段控件：播放/暂停 + 上一阶段 + 下一阶段 + 时间轴滑块 + 阶段计数 + aria-pressed`,
+    );
+
+    check(
+      `MAP1-${battle.id}-routes`,
+      detail.includes('data-layer="route"') &&
+        detail.includes('data-schematic="true"') &&
+        detail.includes('data-layer="position"') &&
+        detail.includes('data-side="japan"') &&
+        detail.includes('data-side="allies"') &&
+        detail.includes('不是精确历史航迹'),
+      `${battle.id} 阶段示意图：双方位置（日本/盟军分开编码）+ 示意航线 + 「不是精确历史航迹」声明`,
+    );
+
+    // 从地图跳转叙述（PhaseControls.narrativeHref → #/battles/<battleId>）
+    check(
+      `MAP1-${battle.id}-narrative-link`,
+      detail.includes('data-phase-action="narrative"') && detail.includes(`href="#/battles/${battle.id}"`),
+      `${battle.id} 地图阶段面板提供「阅读战役全文」链接 → #/battles/${battle.id}`,
+    );
+
+    // 播放状态机（与组件同一份实现）：真实阶段数量下的 播放/暂停/前进/后退
+    const count = phases.length;
+    const playing = M.togglePlayback(M.INITIAL_PLAYBACK, count);
+    const ticked = M.tickPlayback(playing, count);
+    const stepped = M.stepPlayback(ticked, -1, count);
+    const paused = M.togglePlayback(playing, count);
+    check(
+      `MAP1-${battle.id}-playback`,
+      playing.playing === true &&
+        ticked.activeIndex === 1 &&
+        ticked.playing === true &&
+        stepped.activeIndex === 0 &&
+        stepped.playing === false &&
+        paused.playing === false,
+      `${battle.id} 真实阶段数 ${count} 下的播放状态机层断言（调用与组件 usePhasePlayback 同一份纯函数实现，**未**在浏览器中真实点击）：播放→tick 到阶段 2→上一阶段回阶段 1（并停止播放）→暂停；控件存在性与可点击接线由 MAP1-${battle.id}-controls 断言，真实点击由下游浏览器测试覆盖`,
+    );
+
+    // 从叙述定位到地图阶段：战役详情页每个阶段都有 «在地图上查看此阶段» 深链
+    const narrative = renderRealRoute(M, realState, { view: 'battles', id: battle.id });
+    const mapLinks = phases.filter(
+      (phase) =>
+        narrative.includes(`data-phase-map-link="${phase.id}"`) &&
+        narrative.includes(`href="#/atlas?battle=${battle.id}`) &&
+        narrative.includes(`phase=${phase.id}`),
+    );
+    check(
+      `MAP1-${battle.id}-narrative-phase-links`,
+      mapLinks.length === phases.length,
+      `${battle.id} 战役叙述页的 ${phases.length} 个阶段均提供「在地图上查看此阶段」深链（实际 ${mapLinks.length} 个）`,
+    );
+  }
+
+  // ---------------------------------------------------------------- 时间线日期筛选
+  const timelineNoFilter = renderRealRoute(M, realState, { view: 'timeline', id: null });
+  check(
+    'MAP1-timeline-controls',
+    timelineNoFilter.includes('data-timeline-date-filter') &&
+      timelineNoFilter.includes('data-timeline-date-range') &&
+      timelineNoFilter.includes('data-timeline-date-display') &&
+      timelineNoFilter.includes('data-timeline-date-reset') &&
+      timelineNoFilter.includes('data-timeline-event='),
+    '时间线提供日期筛选控件（滑块 / 当前日期文案 / 全部日期按钮 / 每个事件 data-timeline-event），可被浏览器测试稳定观察',
+  );
+  const eventDates = [...new Set(doc.events.map((event) => event.startDate))].sort();
+  const middleDate = eventDates[Math.floor(eventDates.length / 2)] ?? eventDates[0];
+  const expectedIds = doc.events.filter((event) => event.startDate <= middleDate).map((event) => event.id);
+  const filteredTimeline = renderRealRoute(M, realState, { view: 'timeline', id: null, date: middleDate });
+  check(
+    'MAP1-timeline-date',
+    filteredTimeline.includes(`data-timeline-date="${middleDate}"`) &&
+      filteredTimeline.includes(`aria-valuetext="显示截至 ${middleDate} 的 ${expectedIds.length} 个事件（共 ${doc.events.length} 个）"`),
+    `#/timeline?date=${middleDate} 通过稳定控件显示所选日期与筛选后事件数（${expectedIds.length}/${doc.events.length}）`,
+  );
+  check(
+    'MAP1-timeline-count',
+    filteredTimeline.includes(`data-timeline-date-count="${expectedIds.length}"`) &&
+      filteredTimeline.includes(`data-timeline-date-total="${doc.events.length}"`),
+    `时间线日期筛选按「截至该日」筛选事件：data-timeline-date-count=${expectedIds.length}（共 ${doc.events.length}）`,
+  );
+  const renderedIds = [...filteredTimeline.matchAll(/data-timeline-event="([^"]+)"/g)].map((match) => match[1]);
+  const missingEvents = expectedIds.filter((id) => !renderedIds.includes(id));
+  const unexpectedEvents = renderedIds.filter((id) => !expectedIds.includes(id));
+  check(
+    'MAP1-timeline-events',
+    missingEvents.length === 0 && unexpectedEvents.length === 0,
+    `时间线日期筛选后渲染的事件集合与真实内容一致（应显示 ${expectedIds.length} 个，实显示 ${renderedIds.length} 个；缺 ${missingEvents.length} / 多 ${unexpectedEvents.length}）`,
+  );
+  check(
+    'MAP1-timeline-reset',
+    timelineNoFilter.includes(`data-timeline-date-count="${doc.events.length}"`) && timelineNoFilter.includes('data-timeline-date="all"'),
+    `未选日期时时间线显示全部 ${doc.events.length} 个事件（「全部日期」复位语义可观察）`,
+  );
+
+  // ---------------------------------------------------------------- 六入口在真实完整内容上正常显示
+  for (const [view, label, collection] of MAP1_ENTRIES) {
+    const collectionItems = Array.isArray(doc[collection]) ? doc[collection] : [];
+    const first = collectionItems[0] ?? null;
+    const firstText = String((first && (first.title ?? first.name ?? first.historicalName ?? first.prompt)) || '');
+    const html = renderRealRoute(M, realState, { view, id: null });
+    check(
+      `MAP1-entry-${view}`,
+      collectionItems.length > 0 &&
+        firstText.length > 0 &&
+        html.includes(firstText) &&
+        !html.includes('data-empty-state=""'),
+      `六入口之一「${label}」在真实完整内容上正常显示（${collection}=${collectionItems.length}，首条「${firstText.slice(0, 24)}」渲染，不显示空状态）`,
     );
   }
 }
@@ -3743,6 +4233,7 @@ async function main() {
     await checkContentFile(M);
     checkEntries(M);
     checkPublishedRouteFixtureLeakage(M);
+    checkRealContentMapIntegration(M);
     await checkSynthetic(M);
     await checkAtlas(M);
     checkAtlasAgainstValidMinFixture(M);

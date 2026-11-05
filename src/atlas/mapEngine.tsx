@@ -17,6 +17,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Phase, PlaceEntity } from '../data/types';
+import { MAP_REGION_LABELS } from './regions';
 import {
   LAYER_LABELS,
   panView,
@@ -233,6 +234,7 @@ export function AtlasMapEngine({
         .map((place) => ({ place, point: project(place.coordinates, projection) })),
     [places, projection],
   );
+  const projectedById = useMemo(() => new Map(projectedPlaces.map(({ place, point }) => [place.id, point])), [projectedPlaces]);
 
   const sideGeometry = useMemo(() => {
     if (!phase) return null;
@@ -405,6 +407,30 @@ export function AtlasMapEngine({
                         }
                       }}
                     />
+                  </g>
+                );
+              })
+            : null}
+
+          {/* 区域标注（MAP-01 地理标注层）：区域名锚定到真实地点，不新增坐标/史实 */}
+          {layers.places
+            ? MAP_REGION_LABELS.map((region) => {
+                const point = projectedById.get(region.anchorPlaceId);
+                // 锚点地点不在当前内容里 → 不渲染该区域标签（绝不兜造坐标）。
+                if (!point) return null;
+                return (
+                  <g
+                    key={region.id}
+                    data-layer="region"
+                    data-region-id={region.id}
+                    data-region-label={region.label}
+                    data-anchor-place={region.anchorPlaceId}
+                    transform={`translate(${point.x} ${point.y - 26})`}
+                  >
+                    <text x={0} y={0} fontSize="12.5" fontWeight="700" textAnchor="middle" fill="#7a4a1f" aria-hidden="true">
+                      {region.label}
+                    </text>
+                    <title>{region.description}</title>
                   </g>
                 );
               })

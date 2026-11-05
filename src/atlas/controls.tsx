@@ -290,12 +290,17 @@ export interface PlaybackState extends PlaybackSnapshot {
 /**
  * 阶段播放状态机。播放到最后一个阶段自动停止（不回环），
  * 便于读者看清「推演结束」而不是无限循环。
+ *
+ * `initialIndex`（MAP-01）：允许从战役叙述跳转到地图时直接定位到某一阶段；
+ * 只在挂载时生效，之后由播放控件接管。切换战役（phaseCount 变化）仍复位到第一阶段。
  */
-export function usePhasePlayback(phaseCount: number, reducedMotion: boolean): PlaybackState {
+export function usePhasePlayback(phaseCount: number, reducedMotion: boolean, initialIndex = 0): PlaybackState {
   // 状态迁移全部来自纯函数 stateMachines（验证器直接调用同一批函数做断言），
   // 这里只负责把它们接到 React state 与定时器上。
-  const [state, setState] = useState<PlaybackSnapshot>(INITIAL_PLAYBACK);
+  const [state, setState] = useState<PlaybackSnapshot>(() => selectPhase(initialIndex, phaseCount));
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // 首次挂载不重置：initialIndex 必须保留；只有 phaseCount 真正变化（切换战役）才复位。
+  const firstPhaseCountRef = useRef(true);
 
   const clearTimer = () => {
     if (timerRef.current !== null) {
@@ -322,8 +327,12 @@ export function usePhasePlayback(phaseCount: number, reducedMotion: boolean): Pl
     setState((current) => stepPlayback(current, delta, phaseCount));
   };
 
-  // 阶段数量变化时（切换战役）复位到第一阶段。
+  // 阶段数量变化时（切换战役）复位到第一阶段；首次挂载不复位（保留 initialIndex）。
   useEffect(() => {
+    if (firstPhaseCountRef.current) {
+      firstPhaseCountRef.current = false;
+      return;
+    }
     setState(INITIAL_PLAYBACK);
     clearTimer();
     return clearTimer;
