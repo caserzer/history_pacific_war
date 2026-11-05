@@ -26,12 +26,16 @@
  *    E2 所有站内链接是 hash 路由（可在 GitHub Pages 子路径下工作）；
  *    E3 无外部 CDN 字体/脚本、无外部瓦片依赖。
  *
+ * 本文件没有 SKIP 状态：每条检查要么 PASS 要么 FAIL。任何前置条件缺失（输出目录
+ * 不可写、已接受夹具缺失、渲染运行时构建失败）都判 FAIL 并以非零退出码说明原因；
+ * 检查项计数等于实际执行的断言数（见 Z-accounting）。GRAPH 组对渲染运行时模块图
+ * 做断言，证明 B4 的渲染路径只由业务模块构成（不含 index.html / react-dom/client）。
+ *
  * 每个检查都打印 PASS/FAIL；任何一条 FAIL 都让进程以退出码 1 结束。
  * 负例检查（negative case）是刻意构造的错误输入，用来证明检查本身有效。
  */
 
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import React from 'react';
@@ -59,19 +63,26 @@ const DIST_DIR = DIST_ARG_INDEX >= 0 && args[DIST_ARG_INDEX + 1] ? path.resolve(
 // ---------------------------------------------------------------------------
 
 const results = [];
+/**
+ * 记录一条**已执行**断言。
+ *
+ * MAP-00 a4 硬规则（验收 L541）：不得把未执行断言报告为通过。
+ * 因此本验证器**没有 SKIP 状态**：只有 PASS / FAIL。任何前置条件缺失都必须
+ * 走 fail(...) 并以非零退出码结束并说明原因，绝不允许「条件不满足就跳过、
+ * 整体仍报 PASS」。
+ */
 function record(status, id, message) {
+  if (status !== 'PASS' && status !== 'FAIL') {
+    throw new Error(`内部错误：未知检查状态 ${String(status)}（本验证器禁止 SKIP：未执行的断言不得计入结果）`);
+  }
   results.push({ status, id, message });
-  const label = status === 'PASS' ? 'PASS' : status === 'FAIL' ? 'FAIL' : 'SKIP';
-  console.log(`${label}  ${id}  ${message}`);
+  console.log(`${status}  ${id}  ${message}`);
 }
 function pass(id, message) {
   record('PASS', id, message);
 }
 function fail(id, message) {
   record('FAIL', id, message);
-}
-function skip(id, message) {
-  record('SKIP', id, message);
 }
 function check(id, condition, message, detail) {
   if (condition) pass(id, message);
@@ -145,7 +156,7 @@ function childProcessShimPlugin() {
 
 /** src 中可被测试直接导入的模块与导出名。 */
 const RUNTIME_EXPORTS = {
-  'data/index.ts': ['buildIndex', 'entryCounts', 'searchContent', 'collectEvidenceBlocks', 'collectEntityEvidence', 'earlyCampaignBlocks', 'ANALYSIS_PROFILE_KEYS'],
+  'data/index.ts': ['buildIndex', 'entryCounts', 'searchContent', 'collectEvidenceBlocks', 'collectEntityEvidence', 'analysisProfileBlocks', 'ANALYSIS_PROFILE_KEYS'],
   'router/route.ts': ['parseRoute', 'buildHref', 'entityTypeFromId'],
   'content/labels.ts': ['SIDE_LABELS', 'HISTORICAL_PART_META'],
   'content/loader.ts': ['loadContent', 'loadContentAsync', 'loadContentFromText', 'emptyDocument'],
@@ -203,21 +214,17 @@ const RUNTIME_EXPORTS = {
 };
 
 /**
- * 渲染测试用的临时构建目录（MAP-00R1：可配置）。
+ * 渲染测试用的临时构建目录（MAP-00R1 / a4：可配置，**默认在工作树内**）。
  *
- * 历史：
- * - D1 修复把目录从工作树 `.cache/` 移到 `os.tmpdir()`，只读沙箱下不再 EPERM；
- * - MAP-00R1 进一步允许**显式配置**输出目录，供只读评审 / CI 指定可写位置。
+ * 验收 L540 硬规则：
+ * - validate-site 的临时/报告目录可通过 `--out-dir <path>` 或环境变量
+ *   `DSH_SITE_OUT_DIR` 指向工作树内路径；
+ * - **默认只写工作树内 `.cache/site-validate/`**（不是 os.tmpdir()）；
+ * - 删除只作用于本次在该目录下创建的 `run-*` 子目录；
+ * - `check` / `build` 不要求系统临时目录可写（本文件不再使用 os.tmpdir()）。
  *
- * 解析优先级（高 → 低）：
- *   1. `--out-dir <path>`（也接受 `--out-dir=<path>`）
- *   2. 环境变量 `DSH_SITE_OUT_DIR`
- *   3. 默认：`os.tmpdir()/dsh-site-*`（每次运行独立的 mkdtemp 目录）
- *
- * 约束（对应验收条目）：
- * - **绝不写入源树**：配置目录不得位于 src/ scripts/ contracts/ content/ docs/ public/ 内；
- * - **删除只在配置目录内**：清理前再次确认目标就是本次创建的子目录；
- * - 目录不可写时不 exit 1，而是降级为明确的 SKIP（由 main 处理 TMPDIR_UNWRITABLE）。
+ * 验收 L541 硬规则：目录不可写属于**前置条件缺失**，必须 FAIL 并以非零退出码
+ * 说明原因，绝不允许降级成 SKIP 后再报 PASS。
  */
 let tempRuntimeRoot = null;
 
@@ -232,17 +239,22 @@ function readOutDirArg(argv) {
 
 const OUT_DIR_ARG = readOutDirArg(process.argv.slice(2));
 const OUT_DIR_ENV = process.env.DSH_SITE_OUT_DIR || null;
-/** 解析后的配置输出目录（绝对路径）；null 表示使用默认 mkdtemp 临时目录。 */
+/** 默认输出根：工作树内 `.cache/site-validate`（默认只写工作树，不依赖系统临时目录）。 */
+const DEFAULT_OUT_DIR = path.join(ROOT, '.cache', 'site-validate');
+/** 配置的输出根（绝对路径）；null 表示使用工作树内默认目录。 */
 const CONFIGURED_OUT_DIR = OUT_DIR_ARG
   ? path.resolve(ROOT, OUT_DIR_ARG)
   : OUT_DIR_ENV
     ? path.resolve(ROOT, OUT_DIR_ENV)
     : null;
+/** 实际使用的输出根（配置优先，否则工作树内默认目录）。 */
+const OUT_DIR_ROOT = CONFIGURED_OUT_DIR ?? DEFAULT_OUT_DIR;
+const OUT_DIR_SOURCE = OUT_DIR_ARG ? '--out-dir' : OUT_DIR_ENV ? 'DSH_SITE_OUT_DIR' : '默认（工作树 .cache/site-validate）';
 
-/** 输出目录禁止落在这些源树子目录内（加载入口不得写入源树）。 */
-const FORBIDDEN_OUT_DIR_PREFIXES = ['src', 'scripts', 'contracts', 'content', 'docs', 'public', 'node_modules'];
+/** 输出根禁止落在这些源树子目录内（加载入口不得写入源树）。 */
+const FORBIDDEN_OUT_DIR_PREFIXES = ['src', 'scripts', 'contracts', 'content', 'docs', 'public', 'node_modules', '.git'];
 
-/** 校验配置的输出目录；返回错误说明字符串，合法时返回 null。 */
+/** 校验输出根；返回错误说明字符串，合法时返回 null。 */
 function outDirPolicyError(configuredDir) {
   if (!configuredDir) return null;
   const normalized = path.resolve(configuredDir);
@@ -256,36 +268,25 @@ function outDirPolicyError(configuredDir) {
 }
 
 function createTempRuntimeRoot() {
-  // 1) 显式配置目录：在其下建独立子目录，避免与其它运行冲突。
-  if (CONFIGURED_OUT_DIR) {
-    const policyError = outDirPolicyError(CONFIGURED_OUT_DIR);
-    if (policyError) throw new Error(`OUT_DIR_POLICY: ${policyError}`);
-    try {
-      fs.mkdirSync(CONFIGURED_OUT_DIR, { recursive: true });
-      const dir = fs.mkdtempSync(path.join(CONFIGURED_OUT_DIR, 'run-'));
-      tempRuntimeRoot = dir;
-      return dir;
-    } catch (error) {
-      // 配置目录不可写：与 tmp 不可写同样处理（降级 SKIP，不 exit 1）。
-      throw new Error(`TMPDIR_UNWRITABLE:${error?.code ?? 'UNKNOWN'}`);
-    }
-  }
-  // 2) 默认：系统临时目录。
+  const policyError = outDirPolicyError(OUT_DIR_ROOT);
+  if (policyError) throw new Error(`OUT_DIR_POLICY: ${policyError}`);
   try {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dsh-site-'));
+    fs.mkdirSync(OUT_DIR_ROOT, { recursive: true });
+    const dir = fs.mkdtempSync(path.join(OUT_DIR_ROOT, 'run-'));
     tempRuntimeRoot = dir;
     return dir;
   } catch (error) {
-    throw new Error(`TMPDIR_UNWRITABLE:${error?.code ?? 'UNKNOWN'}`);
+    // 前置条件缺失 → 由 main 判 FAIL 并非零退出（不再 SKIP）。
+    throw new Error(`OUT_DIR_UNWRITABLE:${error?.code ?? 'UNKNOWN'}:${OUT_DIR_ROOT}`);
   }
 }
 
 function cleanupTempRuntimeRoot() {
   if (!tempRuntimeRoot) return;
   const created = path.resolve(tempRuntimeRoot);
-  // 删除前再次确认：目标必须是本次在「配置目录」或「系统临时目录」下创建的子目录。
-  const allowedRoot = CONFIGURED_OUT_DIR ? path.resolve(CONFIGURED_OUT_DIR) : path.resolve(os.tmpdir());
-  const insideAllowed = created.startsWith(allowedRoot + path.sep);
+  // 删除前再次确认：目标必须是本次在**输出根**下创建的子目录（只删自己创建的 run-*）。
+  const allowedRoot = path.resolve(OUT_DIR_ROOT);
+  const insideAllowed = created !== allowedRoot && created.startsWith(allowedRoot + path.sep);
   if (!insideAllowed) {
     tempRuntimeRoot = null;
     return;
@@ -293,9 +294,29 @@ function cleanupTempRuntimeRoot() {
   try {
     fs.rmSync(created, { recursive: true, force: true, maxRetries: 3 });
   } catch {
-    // 清理失败不影响结论；系统最终会回收临时目录。
+    // 清理失败不影响结论：输出根在工作树 .cache/ 内，不污染版本库。
   }
   tempRuntimeRoot = null;
+}
+
+/**
+ * 渲染运行时的模块图（由 buildRuntimeBundle 的 `recordRuntimeGraphPlugin` 记录）。
+ * 用于验收 L538：证明 validate-site 的渲染图只含业务模块，不包含 index.html
+ * 或 react-dom/client（B4 的派生逻辑不得把浏览器整棵应用水合拉进验证器）。
+ */
+let runtimeGraph = null;
+
+function recordRuntimeGraphPlugin() {
+  const ids = new Set();
+  return {
+    name: 'pw-record-render-graph',
+    moduleParsed(info) {
+      if (info && typeof info.id === 'string') ids.add(info.id);
+    },
+    buildEnd() {
+      runtimeGraph = { ids: [...ids] };
+    },
+  };
 }
 
 let siteModules = null;
@@ -312,8 +333,8 @@ function pathToFileUrl(absolutePath) {
  * React / react-dom 的**绝对入口路径**。
  *
  * 用绝对路径而不是裸说明符（'react'），原因见 buildRuntimeBundle 的注释：
- * entry 位于 os.tmpdir()，裸说明符无法从 tmp 解析；而绝对路径保证
- * 打包期与运行期都指向同一份文件 → 进程内只有一个 React 实例。
+ * 生成的 entry 位于工作树 `.cache/site-validate/run-*` 内，裸说明符无法从该目录解析；
+ * 而绝对路径保证打包期与运行期都指向同一份文件 → 进程内只有一个 React 实例。
  */
 const reactEntry = path.join(ROOT, 'node_modules', 'react', 'index.js');
 const reactDomServerEntry = path.join(ROOT, 'node_modules', 'react-dom', 'server.node.js');
@@ -321,7 +342,7 @@ const reactJsxRuntimeEntry = path.join(ROOT, 'node_modules', 'react', 'jsx-runti
 
 /**
  * 以 file:// URL 给出上面的绝对路径。
- * 产物位于 os.tmpdir()，裸说明符无法解析；而且验证器与产物必须指向**同一个文件**，
+ * 产物位于工作树 `.cache/` 内，裸说明符无法解析；而且验证器与产物必须指向**同一个文件**，
  * 否则会出现两个 React 实例（实测症状：元素类型合法但渲染结果为 ""）。
  */
 const reactModuleUrl = pathToFileURL(reactEntry).href;
@@ -330,8 +351,8 @@ const reactJsxRuntimeModuleUrl = pathToFileURL(reactJsxRuntimeEntry).href;
 
 async function buildRuntimeBundle() {
   const vite = await import('vite');
-  // createTempRuntimeRoot() 在不可写时抛 TMPDIR_UNWRITABLE（由 main 降级为 SKIP），
-  // 在配置目录违反源树策略时抛 OUT_DIR_POLICY（由 main 报 FAIL，属使用者错误）。
+  // createTempRuntimeRoot() 在输出根不可写时抛 OUT_DIR_UNWRITABLE（由 main 判 FAIL
+  // 并非零退出，不再降级 SKIP），在输出根违反源树策略时抛 OUT_DIR_POLICY（同样是 FAIL）。
   const baseDir = createTempRuntimeRoot();
   const outDir = path.join(baseDir, 'from-source');
   fs.mkdirSync(outDir, { recursive: true });
@@ -364,7 +385,9 @@ async function buildRuntimeBundle() {
     ssr: { noExternal: true },
     // 让 SRC 组件里的 'react' / 'react/jsx-runtime' 也走全局（见下方插件），
     // 避免产物内再打包一份 React。
-    plugins: [rewriteReactImportsPlugin(), childProcessShimPlugin()],
+    // recordRuntimeGraphPlugin 记录真实模块图，供 GRAPH 组证明渲染图只含业务模块
+    // （不包含 index.html / react-dom/client，见验收 L538）。
+    plugins: [rewriteReactImportsPlugin(), childProcessShimPlugin(), recordRuntimeGraphPlugin()],
     build: {
       ssr: entry,
       outDir,
@@ -377,6 +400,8 @@ async function buildRuntimeBundle() {
       },
     },
   });
+  // 记录 entry 路径，供 GRAPH 组把「生成的入口文件」与业务模块区分开。
+  runtimeGraph = { ...(runtimeGraph ?? { ids: [] }), entry: toImportPath(path.resolve(entry)) };
   return path.join(outDir, 'runtime.mjs');
 }
 
@@ -421,9 +446,10 @@ function rewriteReactImportsPlugin() {
  * import 阶段访问浏览器全局（document / MutationObserver / navigator），
  * 在纯 Node 里无法可靠导入；为它维护一套全局替身既脆弱又会掩盖真实问题。
  *
- * 产物本身由 `--dist` 的 E 段检查（资源存在、子路径、hash 路由、CDN 依赖、
- * 体积）以及一次性的 jsdom 冒烟测试（真实 bundle + 真实内容）覆盖，
- * 因此这里不再重复一条不可靠的路径。
+ * 产物本身由 `--dist` 的 E 段检查（资源存在、子路径、hash 路由、CDN 依赖、体积）
+ * 覆盖；浏览器 DOM 级交互（真实点击/键盘/触摸）由 QA-01 的 Playwright 套件负责。
+ * 渲染图只打包 RUNTIME_EXPORTS 中列出的**业务模块**，不引入 index.html / main.tsx /
+ * react-dom/client（见 GRAPH 组与验收 L538）。
  */
 /**
  * 安装全局 React 实例供产物使用（唯一实例）。
@@ -449,8 +475,9 @@ async function loadSiteModules() {
 // React 实例统一（重要）
 // ---------------------------------------------------------------------------
 //
-// 运行时 bundle 位于 os.tmpdir()，它 external 的 'react' 由 tmp 里的 node_modules
-// 链接解析；而本文件顶部 `import React from 'react'` 解析的是 worktree 的 node_modules。
+// 运行时 bundle 位于工作树 `.cache/site-validate/run-*`，它 external 的 'react'
+// 由该目录经提升的 node_modules 解析；而本文件顶部 `import React from 'react'`
+// 解析的是 worktree 的 node_modules。
 // 即使两者指向同一份包，只要经过不同的解析路径（或不同条件导出：development vs production），
 // React 就会被加载成**两个实例**，渲染时抛出
 // `Cannot read properties of null (reading 'useContext')`。
@@ -588,12 +615,14 @@ function isCoverageGapError(line) {
   return line.startsWith('- [coverage]') || line.includes('缺少至少一个实质性的探究问题');
 }
 
-async function checkContentFile() {
+async function checkContentFile(M) {
   if (!fs.existsSync(CONTENT_FILE)) {
+    // 不是「恒真通过」：真的断言加载器对缺失内容返回诚实的 missing 状态。
+    const missing = M.loadContent({});
     return check(
       'A2',
-      true,
-      'content/history.json 尚未交付 —— 站点必须以「诚实的未加载状态」构建（下面 B/D 用 fixture 验证渲染能力）',
+      missing.status === 'missing' && missing.doc === null && missing.issues.length > 0,
+      `content/history.json 尚未交付 → 真实加载器返回诚实 missing 状态（实际 ${missing.status}，${missing.issues.length} 条说明），站点以未加载状态构建`,
     );
   }
   // 在进程内调用验证器的公开 API（validateDocument），而不是 spawn 子进程：
@@ -757,35 +786,12 @@ function checkEntries(M) {
     );
   }
 
-  // 早期战役 fixture：分析小节必须逐节呈现。
-  //
-  // ARCH-02 起目标结构是十键 `analysisProfiles`；旧五键 `earlyCampaignAnalysis` 仍被 schema
-  // 允许但已不是目标结构。因此这里**不写死**任何一种，而是用与 UI 相同的
-  // `earlyCampaignBlocks()` 判定，再断言「实际使用的结构的每一节都渲染出来了」。
-  const early = loadFixture(FIXTURE_EARLY);
-  const earlyEvent = early.doc.events[0];
-  const earlyHtml = renderApp(M, { content: early, route: { view: 'timeline', id: earlyEvent.id, query: '' } }).html;
-  const earlyBlocks = M.earlyCampaignBlocks(earlyEvent);
-  if (earlyBlocks === null) {
-    // fixture 没有分析结构时，UI 不应渲染分析区（也不应崩溃）——这是真实断言，不是跳过。
-    check('B4', !earlyHtml.includes('early-analysis'), `早期扩张战役 ${earlyEvent.id} 未提供分析结构 → UI 不渲染分析区（避免空壳）`);
-  } else {
-    const expectedTitles = earlyBlocks.keys
-      .map((key) => earlyBlocks.sections[key])
-      .filter(Boolean)
-      .map((section) => section.title);
-    const renderedAll = expectedTitles.every((title) => earlyHtml.includes(title));
-    check(
-      'B4',
-      expectedTitles.length > 0 && renderedAll,
-      `早期扩张战役 ${earlyEvent.id} 的 ${earlyBlocks.kind === 'profiles' ? '十类分析（ARCH-02 analysisProfiles）' : '五类分析（旧 earlyCampaignAnalysis）'}逐节渲染：${expectedTitles.join(' / ')}`,
-    );
-    check(
-      'B4-kind',
-      earlyBlocks.kind === 'profiles' || earlyBlocks.kind === 'legacy',
-      `分析结构来源判定为 ${earlyBlocks.kind}（profiles=ARCH-02 目标结构，legacy=旧结构回退）`,
-    );
-  }
+  // 早期扩张战役分析：严格回归（验收 L536/L537）。
+  // 两条输入都经**真实加载器 + 真实渲染函数**，断言契约十键的标题与正文全部渲染：
+  //   (a) 已接受的 contracts/fixtures/valid-early-campaign.json（真实加载路径）；
+  //   (b) 内存构造、只含 analysisProfiles 全部具名键的早期战役对象（夹具正文为
+  //       合成占位文本，由内存路径补齐「真实正文」覆盖）。
+  checkEarlyCampaignAnalysisRegression(M);
 
   // 路由解析：base 子路径无关、畸形输入不崩溃
   const parsed = [
@@ -804,6 +810,317 @@ function checkEntries(M) {
     'B6',
     M.buildHref('battles', { id: 'battle-midway' }) === '#/battles/battle-midway' && M.buildHref('overview') === '#/',
     `buildHref 生成 base 无关的 hash 链接：${M.buildHref('battles', { id: 'battle-midway' })}`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// B4 / B4-M. 早期扩张战役 analysisProfiles 十键渲染回归（验收 L534/L536/L537）
+// ---------------------------------------------------------------------------
+//
+// 根因（本任务）：时间线视图曾读取 ARCH-02 之前的 legacy 字段，而契约已改为
+// `analysisProfiles` 十键 → 早期战役分析小节不渲染，导致 B4/check/build 失败。
+// 因此这里按**契约十键**做严格回归，且不再有「夹具无内容就 SKIP」的分支：
+//   (a) 已接受夹具 contracts/fixtures/valid-early-campaign.json 经真实加载器
+//       (`loadContent`) 与真实渲染函数 (`renderApp` → AppShell + TimelineView)
+//       渲染 event-hong-kong-1941，断言十键小节的**标题与正文**都出现；
+//   (b) 内存构造、只含 analysisProfiles 全部具名键的事件对象，走**同一**加载器与
+//       渲染函数；夹具正文是合成占位文本，由这条路径补齐「真实正文」覆盖；
+//   (c) 负例：只带 legacy 五键 `earlyCampaignAnalysis` 的事件不得再渲染分析小节
+//       —— 证明旧字段不是渲染条件。
+//
+// 每个小节的标题/正文/证据断言都限定在**该小节自身的 HTML 片段**内，
+// 避免「只换页面标题文字」的表面修补蒙混过关。
+
+/** 渲染后的 HTML → 归一化纯文本（去标签、解常见实体、折叠空白）。 */
+function htmlToPlainText(html) {
+  return String(html)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normalizePlain(text) {
+  return String(text ?? '').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * 把事件详情 HTML 切分成每个 `data-analysis-profile="<key>"` 小节的**自身** HTML。
+ * 小节边界是下一个 data-analysis-profile 标记；最后一个小节截到所属
+ * `</section>` 结尾，避免把后面的正文误算进本节（断言只作用于本节内容）。
+ */
+function splitAnalysisSections(html) {
+  const source = String(html);
+  const parts = source.split('data-analysis-profile="');
+  const sections = new Map();
+  for (let index = 1; index < parts.length; index += 1) {
+    const quote = parts[index].indexOf('"');
+    if (quote < 0) continue;
+    const key = parts[index].slice(0, quote);
+    let fragment = parts[index].slice(quote + 1);
+    if (index === parts.length - 1) {
+      const boundary = fragment.indexOf('</section>');
+      if (boundary >= 0) fragment = fragment.slice(0, boundary);
+    }
+    sections.set(key, fragment);
+  }
+  return sections;
+}
+
+/** 断言一个事件按契约十键渲染出标题、正文与**每节自己的**来源/claim 证据。 */
+function assertAnalysisProfilesRendered(M, label, event, html) {
+  const keys = [...M.ANALYSIS_PROFILE_KEYS];
+  const sections = splitAnalysisSections(html);
+  check(
+    `${label}-count`,
+    sections.size === keys.length,
+    `${label}：渲染出 ${sections.size} 个具名分析小节（契约要求 ${keys.length} 个）`,
+  );
+  const missingKeys = keys.filter((key) => !sections.has(key));
+  check(
+    `${label}-keys`,
+    missingKeys.length === 0,
+    `${label}：契约十键全部出现（${keys.join(' / ')}${missingKeys.length > 0 ? `；缺失 ${missingKeys.join('、')}` : ''}）`,
+  );
+  const positions = keys.map((key) => String(html).indexOf(`data-analysis-profile="${key}"`));
+  check(
+    `${label}-order`,
+    positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])),
+    `${label}：十个分析小节按契约 ANALYSIS_PROFILE_KEYS 顺序渲染（不折叠成一段）`,
+  );
+  check(
+    `${label}-no-legacy`,
+    !String(html).includes('earlyCampaignAnalysis') && !String(html).includes('五类分析'),
+    `${label}：渲染结果不包含 legacy 字段名或旧五键标题文案（渲染条件只有 analysisProfiles）`,
+  );
+  const plain = htmlToPlainText(html);
+  check(
+    `${label}-no-undefined`,
+    !/undefined/.test(plain) && !plain.includes('未定义'),
+    `${label}：界面没有 "undefined"/"未定义" 之类的空洞文本`,
+  );
+
+  for (const key of keys) {
+    const fragment = sections.get(key) ?? '';
+    const fragmentText = htmlToPlainText(fragment);
+    const section = (event.analysisProfiles ?? {})[key] ?? {};
+    const title = normalizePlain(section.title);
+    const body = normalizePlain(section.body);
+    check(
+      `${label}-${key}-heading`,
+      fragment.includes(`data-analysis-heading="${key}"`) && title.length > 0 && fragmentText.includes(title),
+      `${label}/${key}：小节标题「${title}」以 h3(data-analysis-heading) 渲染在该小节内`,
+    );
+    check(
+      `${label}-${key}-body`,
+      body.length > 0 && fragmentText.includes(body),
+      `${label}/${key}：小节正文完整渲染在该小节内（${body.length} 字）`,
+    );
+    const claimIds = Array.isArray(section.claimIds) ? section.claimIds : [];
+    const sourceIds = Array.isArray(section.sourceIds) ? section.sourceIds : [];
+    const claimsRendered = claimIds.every((id) => fragment.includes(`data-claim-id="${id}"`));
+    const sourcesRendered = sourceIds.every((id) => fragment.includes(`data-source-id="${id}"`));
+    check(
+      `${label}-${key}-evidence`,
+      fragment.includes('data-evidence-panel') && claimIds.length > 0 && sourceIds.length > 0 && claimsRendered && sourcesRendered,
+      `${label}/${key}：小节自带来源与 claim 证据面板（${claimIds.length} claim / ${sourceIds.length} 来源）`,
+    );
+  }
+}
+
+/** 内存构造：只含 analysisProfiles 全部具名键的早期战役事件（不含真实战役正文）。 */
+function makeInMemoryAnalysisEvent(M) {
+  const keys = [...M.ANALYSIS_PROFILE_KEYS];
+  const titles = ['背景', '地理环境', '参与方与指挥', '双方目标与军力', '约束条件', '阶段经过', '可选方案与被排除它的约束', '结果与损失口径', '后续影响', '不确定性'];
+  const analysisProfiles = {};
+  keys.forEach((key, index) => {
+    analysisProfiles[key] = {
+      title: titles[index],
+      body:
+        `内存构造正文 ${index + 1}/${keys.length}（键 ${key}）：本节仅用于验证 analysisProfiles 具名键的渲染结构，` +
+        `不代表任何真实历史事实，也不含真实战役正文。` +
+        `每个分析小节都必须独立渲染标题与正文，并携带本节自己的来源与 claim 证据。`.repeat(2),
+      sourceIds: ['source-mem-analysis'],
+      claimIds: [`claim-mem-${key}`],
+    };
+  });
+  return {
+    id: 'event-memory-analysis',
+    title: '内存构造早期战役事件',
+    historicalPart: 'part-3-expansion',
+    eventType: 'campaign',
+    startDate: '1941-12-08',
+    summary: '内存构造事件：只提供 analysisProfiles 十键，用于验证适配层与渲染层。',
+    article: [],
+    placeIds: [],
+    personIds: [],
+    unitIds: [],
+    equipmentIds: [],
+    conceptIds: [],
+    relatedEventIds: [],
+    analysisProfiles,
+    researchStatus: 'cross-checked',
+    sourceIds: ['source-mem-analysis'],
+    claimIds: keys.map((key) => `claim-mem-${key}`),
+  };
+}
+
+/** 内存构造的来源与 claim（只服务证据面板渲染，不是历史内容）。 */
+function makeInMemoryAnalysisEvidence(M) {
+  const keys = [...M.ANALYSIS_PROFILE_KEYS];
+  const source = {
+    id: 'source-mem-analysis',
+    title: '内存构造来源（测试用）',
+    creator: '站点验证器',
+    publisher: 'MAP-00 自测',
+    year: 1942,
+    sourceType: 'reference',
+    url: 'https://example.invalid/memory-source',
+    accessedDate: '1942-06-04',
+    citation: '站点验证器内存构造来源，仅用于渲染结构测试。',
+    reliabilityNote: '不是历史来源，不能支持任何史实结论。',
+  };
+  const claims = keys.map((key) => ({
+    id: `claim-mem-${key}`,
+    text: `内存构造 claim（${key}）：用于验证该分析小节的证据面板渲染。`,
+    claimType: 'fact',
+    entityIds: ['event-memory-analysis'],
+    sourceIds: ['source-mem-analysis'],
+    locators: [{ sourceId: 'source-mem-analysis', locatorType: 'section-paragraph', locator: `内存构造定位 ${key}` }],
+  }));
+  return { source, claims };
+}
+
+function checkEarlyCampaignAnalysisRegression(M) {
+  // ---------------------------------------------------------------- (a) 已接受夹具
+  check('B4-fixture-present', fs.existsSync(FIXTURE_EARLY), '已接受契约夹具 contracts/fixtures/valid-early-campaign.json 存在');
+  if (!fs.existsSync(FIXTURE_EARLY)) {
+    fail('B4', '无法运行十键渲染回归：已接受夹具缺失（这是前置条件缺失，必须失败而不是跳过）');
+    return;
+  }
+  const fixtureRaw = JSON.parse(fs.readFileSync(FIXTURE_EARLY, 'utf8'));
+  // 真实加载路径：站点运行时调用的就是 loadContent(glob 模块表)。
+  const fixtureState = M.loadContent({ '/virtual/content/history.json': fixtureRaw });
+  check(
+    'B4-load',
+    fixtureState.status === 'fixture' && fixtureState.doc !== null,
+    `valid-early-campaign.json 经真实加载器 loadContent 识别为内容（状态 ${fixtureState.status}，fixtureOnly=${fixtureState.doc?.fixtureOnly}）`,
+  );
+  const fixtureEvent = fixtureState.doc?.events?.find((item) => item.id === 'event-hong-kong-1941') ?? null;
+  check('B4-event', Boolean(fixtureEvent), '夹具含契约事件 event-hong-kong-1941（香港战役）');
+  if (!fixtureEvent || !fixtureState.doc) {
+    fail('B4', '无法运行十键渲染回归：夹具缺少 event-hong-kong-1941（必须失败而不是跳过）');
+    return;
+  }
+  const fixtureHtml = renderApp(M, { content: fixtureState, route: { view: 'timeline', id: fixtureEvent.id, query: '' } }).html;
+  check(
+    'B4',
+    fixtureHtml.includes('data-analysis-section'),
+    `event-hong-kong-1941 经真实加载 + 渲染路径渲染出早期战役分析区（ARCH-02 analysisProfiles）`,
+  );
+  assertAnalysisProfilesRendered(M, 'B4', fixtureEvent, fixtureHtml);
+  check(
+    'B4-research-status',
+    Boolean(fixtureEvent.researchStatus) && fixtureHtml.includes(`data-research-status="${fixtureEvent.researchStatus}"`),
+    `研究状态 ${fixtureEvent.researchStatus} 显示在分析区（ARCH-02 要求）`,
+  );
+
+  // ---- 适配层（src/data）也必须接受并按十键暴露数据，而不是只有视图认识它
+  const blocks = M.analysisProfileBlocks(fixtureEvent);
+  check(
+    'B4-adapter-count',
+    Array.isArray(blocks) && blocks.length === M.ANALYSIS_PROFILE_KEYS.length,
+    `src/data 适配层 analysisProfileBlocks() 返回 ${Array.isArray(blocks) ? blocks.length : 'null'} 个具名小节（契约十键）`,
+  );
+  check(
+    'B4-adapter-keys',
+    Array.isArray(blocks) && blocks.every((block, index) => block.key === M.ANALYSIS_PROFILE_KEYS[index]),
+    '适配层返回的小节键与契约 ANALYSIS_PROFILE_KEYS 顺序完全一致（十键全部暴露）',
+  );
+  check(
+    'B4-adapter-evidence',
+    Array.isArray(blocks) && blocks.every((block) => block.sourceIds.length > 0 && block.claimIds.length > 0),
+    '适配层为每个分析小节保留各自的 sourceIds 与 claimIds（不是只传标题）',
+  );
+  const profileEvidence = M.collectEvidenceBlocks(fixtureEvent).filter((block) => block.key.startsWith('profile-'));
+  check(
+    'B4-adapter-evidence-blocks',
+    profileEvidence.length === M.ANALYSIS_PROFILE_KEYS.length && profileEvidence.every((block) => block.sourceIds.length > 0 && block.claimIds.length > 0),
+    `collectEvidenceBlocks() 为十个分析小节各登记一份小节级证据（${profileEvidence.length} 份）`,
+  );
+  check(
+    'B4-adapter-no-legacy',
+    M.analysisProfileBlocks({ ...fixtureEvent, analysisProfiles: undefined }) === null,
+    '适配层没有 legacy 回退：没有 analysisProfiles 时返回 null（不读取 earlyCampaignAnalysis）',
+  );
+
+  // ---------------------------------------------------------------- (b) 内存构造
+  const { source, claims } = makeInMemoryAnalysisEvidence(M);
+  const inMemoryEvent = makeInMemoryAnalysisEvent(M);
+  const inMemoryDoc = {
+    schemaVersion: '1.0.0',
+    fixtureOnly: true,
+    events: [inMemoryEvent],
+    battles: [],
+    people: [],
+    places: [],
+    units: [],
+    equipment: [],
+    concepts: [],
+    sources: [source],
+    media: [],
+    questions: [],
+    claims,
+  };
+  const inMemoryState = M.loadContent({ '/virtual/content/history.json': inMemoryDoc });
+  check(
+    'B4-M-load',
+    inMemoryState.status === 'fixture' && inMemoryState.doc !== null,
+    `内存构造事件经真实加载器 loadContent 识别为内容（状态 ${inMemoryState.status}）`,
+  );
+  check(
+    'B4-M-only-profiles',
+    inMemoryEvent.article.length === 0 &&
+      !('earlyCampaignAnalysis' in inMemoryEvent) &&
+      Object.keys(inMemoryEvent.analysisProfiles).length === M.ANALYSIS_PROFILE_KEYS.length,
+    '内存对象只含 analysisProfiles 全部具名键（无 article 正文、无 legacy 字段）',
+  );
+  if (inMemoryState.doc) {
+    // 与 (a) 使用**同一个**渲染函数（renderApp → AppShell + TimelineView）。
+    const inMemoryHtml = renderApp(M, { content: inMemoryState, route: { view: 'timeline', id: inMemoryEvent.id, query: '' } }).html;
+    check('B4-M-section', inMemoryHtml.includes('data-analysis-section'), '内存构造事件渲染出早期战役分析区（同一渲染函数）');
+    assertAnalysisProfilesRendered(M, 'B4-M', inMemoryEvent, inMemoryHtml);
+  } else {
+    fail('B4-M-render', '内存构造事件无法加载，无法执行十键渲染回归');
+  }
+
+  // ---------------------------------------------------------------- (c) legacy 负例
+  const legacyProfiles = {};
+  for (const key of ['background', 'course', 'constraints', 'results', 'impact']) {
+    legacyProfiles[key] = {
+      title: `旧五键-${key}`,
+      body: `旧五键正文标记 ${key}：该形状已被 ARCH-02 停用，UI 不应把它当作分析小节渲染。`,
+      sourceIds: ['source-mem-analysis'],
+      claimIds: [`claim-mem-${key}`],
+    };
+  }
+  const legacyEvent = { ...inMemoryEvent, id: 'event-memory-legacy', analysisProfiles: undefined, earlyCampaignAnalysis: legacyProfiles };
+  const legacyState = M.loadContent({ '/virtual/content/history.json': { ...inMemoryDoc, events: [legacyEvent] } });
+  const legacyHtml = legacyState.doc
+    ? renderApp(M, { content: legacyState, route: { view: 'timeline', id: 'event-memory-legacy', query: '' } }).html
+    : '';
+  check(
+    'B4-legacy-not-rendered',
+    Boolean(legacyState.doc) &&
+      !legacyHtml.includes('data-analysis-section') &&
+      !legacyHtml.includes('data-analysis-profile') &&
+      !legacyHtml.includes('旧五键正文标记'),
+    '负例：只带 legacy 五键 earlyCampaignAnalysis 的事件不再渲染分析小节（旧字段不是渲染条件，也不显示旧五键正文）',
   );
 }
 
@@ -1679,185 +1996,157 @@ async function checkAtlas(M) {
     check(`M9-certainty-${certainty}`, html.includes(`data-certainty="${certainty}"`), `CertaintyTag 渲染 ${certainty}（修复前 documented/estimated 会被 ClaimTag 静默丢弃，见 src/data/types.ts 的 BUGFIX 记录）`);
   }
 
-  // ---------------------------------------------------------------- M10 交互行为（DOM 级）
-  // 用 jsdom 挂载真实组件并派发真实事件，验证「控件不是摆设」。
-  // 说明：jsdom 可选依赖；未安装时这几项标记为 SKIP 并明确说明，而不是假装通过。
-  await checkAtlasInteractions(M, synthetic);
+  // ---------------------------------------------------------------- M10 控件接线（无条件执行）
+  // a4 说明：历史版本用 jsdom 挂载真实 DOM 派发事件，但 jsdom 不是本工程依赖
+  // （package-lock 中没有，中央 `npm ci` 不会安装），因此那条路径在权威环境里只能
+  // 写成 SKIP —— 而「前置条件缺失 → SKIP → 整体 PASS」正是本任务被拒的缺陷。
+  // 浏览器 DOM 级交互（真实 click / 键盘 / 触摸）由 QA-01 的 Playwright 套件负责；
+  // 本组改为**无条件执行**的接线断言：把组件实际调用的同一份状态机的输出作为受控
+  // props 喂回真实控件组件，断言可见 DOM 确实随状态改变。
+  checkControlWiring(M, synthetic);
 }
 
 /**
- * DOM 级交互测试（需要 jsdom）。
- * 覆盖：缩放按钮、方向键平移（含 zoom=1 时自动放大以免「按了没反应」）、图层开关、
- * 阶段前进/后退、播放状态、时间轴跳转。
+ * M10 控件接线（无条件运行，不依赖 jsdom）。
+ *
+ * 断言链路：纯函数状态机（组件内部实际调用的同一实现）→ 真实控件组件 →
+ * 渲染出的可见 DOM 状态（aria-pressed / disabled / 文本 / 节点存在性）随之改变。
+ * 每一步都断言具体状态变化，没有任何「无 jsdom 就跳过」的分支。
  */
-async function checkAtlasInteractions(M, synthetic) {
-  let jsdom;
-  try {
-    jsdom = await import('jsdom');
-  } catch {
-    skip('M10', 'jsdom 未安装：未做「真实浏览器 DOM」级验证。交互行为本身已由 D3 组（无条件运行、直接调用组件同一份状态机）覆盖；此处只缺 jsdom 渲染层的那一份。');
-    return;
-  }
-  const { JSDOM } = jsdom;
-  let dom;
-  try {
-    dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
-      url: 'https://example.github.io/history_pacific_war/#/atlas',
-      pretendToBeVisual: true,
-    });
-  } catch (error) {
-    fail('M10', `无法创建 jsdom 环境：${error?.message ?? error}`);
-    return;
-  }
-  const { window } = dom;
-  const restore = [];
-  const setGlobal = (key, value) => {
-    restore.push([key, Object.getOwnPropertyDescriptor(globalThis, key)]);
-    Object.defineProperty(globalThis, key, { value, configurable: true, writable: true });
-  };
-  setGlobal('window', window);
-  setGlobal('document', window.document);
-  setGlobal('navigator', window.navigator);
-  for (const key of ['HTMLElement', 'Element', 'Node', 'SVGElement', 'MutationObserver', 'Event', 'CustomEvent', 'MouseEvent', 'KeyboardEvent', 'PointerEvent', 'DocumentFragment', 'HTMLInputElement', 'HTMLButtonElement', 'FormData']) {
-    if (window[key] !== undefined) setGlobal(key, window[key]);
-  }
-  window.scrollTo = () => {};
-  window.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 0);
-  window.cancelAnimationFrame = (id) => clearTimeout(id);
+function checkControlWiring(M, synthetic) {
+  const phases = M.sortPhases(synthetic.battles[0].phases);
+  const phaseCount = phases.length;
 
-  const container = window.document.getElementById('root');
-  let root;
-  try {
-    const { createRoot } = await import('react-dom/client');
-    const { act } = await import('react');
-    root = createRoot(container);
-    await act(async () => {
-      root.render(
-        h(M.Atlas, {
-          places: synthetic.places,
-          battles: synthetic.battles,
-          selectedPlaceId: null,
-          onSelectPlace: () => {},
-        }),
-      );
-    });
-
-    const q = (selector) => window.document.querySelector(selector);
-    const qa = (selector) => [...window.document.querySelectorAll(selector)];
-    const zoomOf = () => Number(q('[data-atlas-canvas]')?.getAttribute('data-map-zoom'));
-    const transformOf = () => q('[data-atlas-canvas] g[transform]')?.getAttribute('transform') ?? '';
-    const click = async (el) => {
-      await act(async () => {
-        el.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
-      });
-    };
-
-    const zoom0 = zoomOf();
-    await click(q('[data-map-action="zoom-in"]'));
-    const zoom1 = zoomOf();
-    check('M10-1', zoom1 > zoom0, `点击「放大」后 zoom ${zoom0} → ${zoom1}`);
-    await click(q('[data-map-action="zoom-out"]'));
-    check('M10-2', zoomOf() < zoom1, `点击「缩小」后 zoom ${zoom1} → ${zoomOf()}`);
-    await click(q('[data-map-action="reset"]'));
-    check('M10-3', zoomOf() === 1, `点击「复位」后 zoom=${zoomOf()}`);
-
-    const canvas = q('[data-atlas-canvas]');
-    const beforeArrow = transformOf();
-    await act(async () => {
-      canvas.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
-    });
-    check(
-      'M10-4',
-      transformOf() !== beforeArrow,
-      `方向键平移生效（${beforeArrow} → ${transformOf()}）：zoom=1 时会先自动放大，避免「按了没反应」`,
+  // ---- 播放 / 暂停：状态机 togglePlayback 的输出驱动按钮 aria-pressed 与文案
+  const paused = { ...M.INITIAL_PLAYBACK };
+  const playing = M.togglePlayback(paused, phaseCount);
+  const renderControls = (state) =>
+    renderStatic(
+      h(M.PhaseControls, {
+        phases,
+        activeIndex: state.activeIndex,
+        playing: state.playing,
+        onTogglePlay: () => {},
+        onStep: () => {},
+        reducedMotion: false,
+      }),
     );
-    await act(async () => {
-      canvas.dispatchEvent(new window.KeyboardEvent('keydown', { key: '0', bubbles: true }));
-    });
-    check('M10-5', zoomOf() === 1, `键盘 0 复位（zoom=${zoomOf()}）`);
+  const pausedHtml = renderControls(paused);
+  const playingHtml = renderControls(playing);
+  const playButton = (html) => (html.match(/<button[^>]*data-phase-action="playpause"[^>]*>[\s\S]*?<\/button>/) ?? [''])[0];
+  check(
+    'M10-1',
+    /aria-pressed="false"/.test(playButton(pausedHtml)) && playButton(pausedHtml).includes('播放'),
+    'M10 播放/暂停接线：state.playing=false → 按钮 aria-pressed="false" 且文案为「播放」',
+  );
+  check(
+    'M10-2',
+    /aria-pressed="true"/.test(playButton(playingHtml)) && playButton(playingHtml).includes('暂停'),
+    'M10 播放/暂停接线：togglePlayback 后 playing=true → 同一按钮 aria-pressed="true" 且文案变为「暂停」（可观察差异）',
+  );
 
-    const placesBefore = qa('[data-layer="place"]').length;
-    await act(async () => {
-      q('[data-layer-toggle="places"]').click();
-    });
-    const placesOff = qa('[data-layer="place"]').length;
-    check('M10-6', placesOff < placesBefore && placesOff === 0, `关闭「地点」图层后地点节点 ${placesBefore} → ${placesOff}`);
-    await act(async () => {
-      q('[data-layer-toggle="places"]').click();
-    });
-    check('M10-7', qa('[data-layer="place"]').length === placesBefore, '重新开启图层后地点节点恢复');
+  // ---- 上一 / 下一阶段：stepPlayback 输出驱动 disabled 边界与阶段计数
+  const first = { activeIndex: 0, playing: false };
+  const atSecond = M.stepPlayback(first, 1, phaseCount);
+  const firstHtml = renderControls(first);
+  const secondHtml = renderControls(atSecond);
+  const prevButton = (html) => (html.match(/<button[^>]*data-phase-action="prev"[^>]*>/) ?? [''])[0];
+  const nextButton = (html) => (html.match(/<button[^>]*data-phase-action="next"[^>]*>/) ?? [''])[0];
+  check(
+    'M10-3',
+    /disabled/.test(prevButton(firstHtml)) && !/disabled/.test(nextButton(firstHtml)),
+    'M10 阶段接线：首阶段时「上一阶段」禁用、「下一阶段」可用',
+  );
+  check(
+    'M10-4',
+    !/disabled/.test(prevButton(secondHtml)) && secondHtml.includes(`阶段 2 / ${phaseCount}`),
+    `M10 阶段接线：stepPlayback 前进一步后计数变为「阶段 2 / ${phaseCount}」且「上一阶段」启用`,
+  );
+  const atLast = { activeIndex: phaseCount - 1, playing: false };
+  check('M10-5', /disabled/.test(nextButton(renderControls(atLast))), 'M10 阶段接线：末阶段时「下一阶段」禁用（边界正确）');
 
-    const phaseCount = synthetic.battles[0].phases.length;
-    const firstId = q('[data-phase-panel]')?.getAttribute('data-phase-id');
-    await click(q('[data-phase-action="next"]'));
-    const secondId = q('[data-phase-panel]')?.getAttribute('data-phase-id');
-    check('M10-8', secondId !== firstId, `点击「下一阶段」后阶段面板切换（${firstId} → ${secondId}）`);
-    await click(q('[data-phase-action="prev"]'));
-    check('M10-9', q('[data-phase-panel]')?.getAttribute('data-phase-id') === firstId, '点击「上一阶段」返回第一阶段');
+  // ---- 图层：setLayerChecked 的输出驱动真实图层按钮的 aria-pressed
+  const layerButton = (html, key) => (html.match(new RegExp(`<button[^>]*data-layer-button="${key}"[^>]*>`)) ?? [''])[0];
+  const defaultLayersHtml = renderStatic(h(M.LayersControl, { layers: M.DEFAULT_LAYERS, onChange: () => {} }));
+  const hiddenLayersHtml = renderStatic(
+    h(M.LayersControl, { layers: M.setLayerChecked(M.DEFAULT_LAYERS, 'places', false), onChange: () => {} }),
+  );
+  check(
+    'M10-6',
+    layerButton(defaultLayersHtml, 'places').includes('aria-pressed="true"'),
+    'M10 图层接线：DEFAULT_LAYERS 下「地点」图层按钮 aria-pressed="true"',
+  );
+  check(
+    'M10-7',
+    layerButton(hiddenLayersHtml, 'places').includes('aria-pressed="false"') &&
+      layerButton(hiddenLayersHtml, 'routes').includes('aria-pressed="true"'),
+    'M10 图层接线：setLayerChecked(places=false) 后仅「地点」按钮变 false，routes 保持 true',
+  );
 
-    const playBtn = q('[data-phase-action="playpause"]');
-    check('M10-10', playBtn.getAttribute('aria-pressed') === 'false', '播放按钮初始 aria-pressed=false');
-    await click(playBtn);
-    check(
-      'M10-11',
-      playBtn.getAttribute('aria-pressed') === 'true' && playBtn.textContent.includes('暂停'),
-      '点击「播放」后 aria-pressed=true 且文案变为「暂停」',
-    );
-    await click(playBtn);
-    check('M10-12', playBtn.getAttribute('aria-pressed') === 'false', '再次点击后暂停（aria-pressed=false）');
+  // ---- 时间轴联动：activeIndex 驱动 data-date-display 文本与 data-date-jump 选中态
+  const selectorHtml = (activeIndex) =>
+    renderStatic(h(M.DateSelector, { phases, activeIndex, onSelectIndex: () => {}, showStepButtons: true }));
+  const selectorFirst = selectorHtml(0);
+  const selectorSecond = selectorHtml(1);
+  check(
+    'M10-8',
+    (selectorFirst.match(/data-date-jump=/g) ?? []).length === phaseCount,
+    `M10 时间轴接线：为 ${phaseCount} 个阶段渲染 ${phaseCount} 个时间点按钮`,
+  );
+  const jumpButton = (html, index) => (html.match(new RegExp(`<button[^>]*data-date-jump="${index}"[^>]*>`)) ?? [''])[0];
+  check(
+    'M10-9',
+    jumpButton(selectorFirst, 0).includes('aria-pressed="true"') &&
+      jumpButton(selectorFirst, 1).includes('aria-pressed="false"') &&
+      jumpButton(selectorSecond, 0).includes('aria-pressed="false"') &&
+      jumpButton(selectorSecond, 1).includes('aria-pressed="true"'),
+    'M10 时间轴接线：activeIndex 0→1 时选中态从第 1 个时间点移动到第 2 个（可观察差异）',
+  );
+  check(
+    'M10-10',
+    selectorFirst.includes(phases[0].time.display) && !selectorFirst.includes(phases[1].time.display) && selectorSecond.includes(phases[1].time.display),
+    'M10 时间轴接线：data-date-display 随 activeIndex 显示对应阶段时间（不是固定文案）',
+  );
 
-    // 时间轴联动：点击时间点按钮应切换阶段并更新日期显示
-    const dateBefore = q('[data-date-display]')?.textContent;
-    const jumps = qa('[data-date-jump]');
-    check('M10-13', jumps.length === phaseCount, `时间轴提供 ${jumps.length} 个时间点按钮（阶段数 ${phaseCount}）`);
-    if (jumps.length > 1) {
-      await click(jumps[1]);
-      check(
-        'M10-14',
-        q('[data-date-display]')?.textContent !== dateBefore,
-        `时间轴联动：切到第 2 阶段后日期显示变化（${dateBefore} → ${q('[data-date-display]')?.textContent}）`,
-      );
-    }
+  // ---- Atlas 受控图层：状态机输出作为 initialLayers → 地图 DOM 真的少一层
+  const atlasPlacesOff = renderStatic(
+    h(M.Atlas, {
+      places: synthetic.places,
+      battles: synthetic.battles,
+      selectedPlaceId: null,
+      onSelectPlace: () => {},
+      initialLayers: M.setLayerChecked(M.DEFAULT_LAYERS, 'places', false),
+    }),
+  );
+  check(
+    'M10-11',
+    layerButton(atlasPlacesOff, 'places').includes('aria-pressed="false"') && !atlasPlacesOff.includes('data-layer="place"'),
+    'M10 Atlas 图层接线：initialLayers 关闭 places → 地点节点从地图 DOM 消失且图层按钮为 false',
+  );
 
-    // 触摸：jsdom 的 getBoundingClientRect() 恒为 0×0，而引擎在 rect 为 0 时会安全跳过
-    // 位移换算（正确的防御，避免 NaN）。因此这里**只**断言「指针事件被正确接线且不抛异常」，
-    // 并明确说明位移本身未在 jsdom 中验证 —— 不做 "A || 无变化" 这类恒真的伪断言。
-    let pointerThrew = false;
-    try {
-      await act(async () => {
-        canvas.dispatchEvent(new window.PointerEvent('pointerdown', { pointerId: 7, pointerType: 'touch', clientX: 200, clientY: 150, bubbles: true }));
-        canvas.dispatchEvent(new window.PointerEvent('pointermove', { pointerId: 7, pointerType: 'touch', clientX: 260, clientY: 190, bubbles: true }));
-        canvas.dispatchEvent(new window.PointerEvent('pointerup', { pointerId: 7, pointerType: 'touch', clientX: 260, clientY: 190, bubbles: true }));
-      });
-    } catch {
-      pointerThrew = true;
-    }
-    check('M10-15', !pointerThrew, '触摸指针事件（pointerdown/move/up）被处理且不抛异常；jsdom 无布局，触摸位移不在此验证');
+  // ---- 键盘 / 触摸的接线点存在（行为逻辑由 D3 状态机断言；真实 DOM 事件由 QA-01 覆盖）
+  check(
+    'M10-12',
+    /<svg[^>]*role="application"[^>]*tabindex="0"[^>]*data-atlas-canvas/.test(atlasPlacesOff) &&
+      atlasPlacesOff.includes('使用方向键平移，加号减号缩放，数字键 0 复位'),
+    'M10 键盘接线：地图画布是 role="application" + tabindex="0"，并声明方向键/±/0 操作说明',
+  );
 
-    // 触摸位移的核心数学单独验证（不依赖 DOM 布局）
-    const rectFake = { left: 0, top: 0, width: M.VIEW_WIDTH, height: M.VIEW_HEIGHT };
-    const userA = M.toUserSpace(200, 150, rectFake, M.IDENTITY_TRANSFORM);
-    const userB = M.toUserSpace(264, 190, rectFake, M.IDENTITY_TRANSFORM);
-    check(
-      'M10-16',
-      Math.abs(userB.x - userA.x - 64) < 1e-9 && Math.abs(userB.y - userA.y - 40) < 1e-9,
-      `触摸位移坐标换算正确（客户端 64px → 用户 ${(userB.x - userA.x).toFixed(1)}，40px → ${(userB.y - userA.y).toFixed(1)}）`,
-    );
-  } catch (error) {
-    fail('M10', `交互测试执行失败：${error?.stack ?? error}`);
-  } finally {
-    try {
-      root?.unmount();
-    } catch {
-      /* 卸载失败不影响结论 */
-    }
-    for (const [key, descriptor] of restore.reverse()) {
-      if (descriptor) Object.defineProperty(globalThis, key, descriptor);
-      else delete globalThis[key];
-    }
-  }
+  // ---- 触摸位移坐标换算（纯数学，不依赖 DOM 布局；原 M10-16）
+  const rectFake = { left: 0, top: 0, width: M.VIEW_WIDTH, height: M.VIEW_HEIGHT };
+  const userA = M.toUserSpace(200, 150, rectFake, M.IDENTITY_TRANSFORM);
+  const userB = M.toUserSpace(264, 190, rectFake, M.IDENTITY_TRANSFORM);
+  check(
+    'M10-13',
+    Math.abs(userB.x - userA.x - 64) < 1e-9,
+    `M10 触摸位移：客户端水平 64px → 用户坐标 ${(userB.x - userA.x).toFixed(1)}（zoom=1 时可逆换算）`,
+  );
+  check(
+    'M10-14',
+    Math.abs(userB.y - userA.y - 40) < 1e-9,
+    `M10 触摸位移：客户端垂直 40px → 用户坐标 ${(userB.y - userA.y).toFixed(1)}（zoom=1 时可逆换算）`,
+  );
 }
-
 
 // ---------------------------------------------------------------------------
 // D2. 用**真实契约 fixture** `contracts/fixtures/valid-min.json` 驱动地图引擎检查
@@ -1952,11 +2241,11 @@ function checkAtlasAgainstValidMinFixture(M) {
 }
 
 // ---------------------------------------------------------------------------
-// D3. 交互行为测试 —— **无条件运行**（不依赖 jsdom）
+// D3. 交互行为测试 —— **无条件运行**（不依赖 jsdom / 浏览器）
 // ---------------------------------------------------------------------------
 //
 // 评审意见：缩放/平移/图层/播放只有 grep 或静态标记检查，真实事件路径从未执行；
-// M10 在无 jsdom 时 SKIP，因此「控件是否真的工作」没有证据。
+// 旧 M10 jsdom 组在权威环境里只能 SKIP，因此「控件是否真的工作」没有证据。
 //
 // 解决方式：
 // 1. 组件里的状态迁移已提炼为纯函数 `src/atlas/stateMachines.ts`，**组件与测试调用同一份实现**
@@ -2139,8 +2428,9 @@ function checkLabelsAndPanSemantics(M) {
 // 播放状态迁移），绝不比对任何具体历史文本。
 //
 // 两组用例：
-//   R2-A  磁盘夹具 contracts/fixtures/map-phases.json（存在时运行；不存在时**不跳过**，
-//         而是改为断言「缺失时 UI 仍显示诚实空状态」，见 R2-A-missing）。
+//   R2-A  契约阶段夹具：优先读取已接受的 contracts/fixtures/map-phases.json；
+//         磁盘夹具缺失时用**代码内等价结构夹具**跑同一批断言（验收 L542），
+//         不存在「夹具缺失 → SKIP / 恒真 PASS」的路径。
 //   R2-B  完全由内存构造的阶段对象 → 证明复验不依赖磁盘夹具或 ARCH-02 新增字段。
 
 /** 内存阶段对象构造器（不读取任何文件）。刻意只使用**基础契约字段**。 */
@@ -2278,14 +2568,39 @@ function assertPhaseContractMapping(M, labelPrefix, phase, html) {
   }
 }
 
+/** 代码内等价阶段夹具（磁盘夹具缺失时使用；验收 L542 明确允许）。不读取任何文件。 */
+function builtinMapPhaseFixture() {
+  const phases = [makeInMemoryPhase(), makeInMemoryPhase({ id: 'phase-mem-2', sequence: 2, title: '内存阶段二' })];
+  const { battle, places } = makeInMemoryScenario(phases);
+  return {
+    schemaVersion: '1.0.0',
+    fixtureOnly: true,
+    events: [],
+    battles: [battle],
+    people: [],
+    places,
+    units: [],
+    equipment: [],
+    concepts: [],
+    sources: [],
+    media: [],
+    questions: [],
+    claims: [],
+  };
+}
+
 function checkAtlasPhaseContractReverification(M) {
-  // ---------------------------------------------------------------- R2-A：磁盘夹具
-  if (fs.existsSync(FIXTURE_MAP_PHASES)) {
-    const fixture = JSON.parse(fs.readFileSync(FIXTURE_MAP_PHASES, 'utf8'));
+  // ---------------------------------------------------------------- R2-A：契约阶段夹具
+  // 优先读取已接受的磁盘夹具；缺失时使用**代码内等价结构夹具**跑**同一批断言**
+  // （验收 L542 明确允许），绝不出现「夹具缺失 → SKIP / 恒真 PASS」的路径。
+  const fixtureFromDisk = fs.existsSync(FIXTURE_MAP_PHASES);
+  const fixture = fixtureFromDisk ? JSON.parse(fs.readFileSync(FIXTURE_MAP_PHASES, 'utf8')) : builtinMapPhaseFixture();
+  const fixtureLabel = fixtureFromDisk ? 'contracts/fixtures/map-phases.json（已接受磁盘夹具）' : '代码内等价阶段夹具（磁盘夹具缺失，按 L542 使用内置结构）';
+  {
     const battles = Array.isArray(fixture.battles) ? fixture.battles : [];
     const places = Array.isArray(fixture.places) ? fixture.places : [];
-    check('R2-A-0', fixture.fixtureOnly === true, `map-phases.json 为测试样本（fixtureOnly=${fixture.fixtureOnly}），不得作为历史发布`);
-    check('R2-A-1', battles.length > 0 && places.length > 0, `夹具含 ${battles.length} 场战役 / ${places.length} 个地点`);
+    check('R2-A-0', fixture.fixtureOnly === true, `阶段夹具为测试样本（fixtureOnly=${fixture.fixtureOnly}），不得作为历史发布`);
+    check('R2-A-1', battles.length > 0 && places.length > 0, `阶段复验输入 ${fixtureLabel} 含 ${battles.length} 场战役 / ${places.length} 个地点`);
 
     const state = { status: 'fixture', doc: fixture, issues: [], sourceKey: 'map-phases.json' };
     const html = renderApp(M, { content: state, route: { view: 'atlas', id: null, query: '' } }).html;
@@ -2338,9 +2653,6 @@ function checkAtlasPhaseContractReverification(M) {
       const paused = M.togglePlayback(M.togglePlayback(M.INITIAL_PLAYBACK, count), count);
       check(`R2-A-${battle.id}-pause`, paused.playing === false, `${battle.id}：暂停 → playing=false`);
     }
-  } else {
-    // 夹具缺失：不得「跳过」，而是断言缺失时 UI 仍诚实地显示空阶段状态。
-    check('R2-A-missing', true, 'map-phases.json 不存在 → 由 R2-B 内存用例独立复验（此处如实记录夹具缺失）');
   }
 
   // ---------------------------------------------------------------- R2-B：纯内存阶段用例
@@ -2409,7 +2721,7 @@ function checkAtlasPhaseContractReverification(M) {
 // 做法：用内存阶段场景渲染出真实 HTML，然后把「纯函数状态机」的每一步结果
 // 作为下一轮的输入（与组件内的 usePhasePlayback / setLayerChecked 完全同一实现），
 // 并在每一步重新渲染页面，断言**可见输出确实发生变化**（不是只在内存里改字段）。
-// 这样即使没有 jsdom，也是真实的状态驱动；jsdom 缺失不影响本组，仍会运行。
+// 这样是真实的状态驱动，且不依赖 jsdom / 浏览器 / 系统临时目录，任何环境都会运行。
 
 function checkObservableInteraction(M) {
   // 构造 3 阶段内存场景（与 R2-B 同一构造器，保证不依赖磁盘夹具）。
@@ -2563,10 +2875,94 @@ function checkObservableInteraction(M) {
 // 主流程
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// GRAPH. 渲染图治理（验收 L538）
+// ---------------------------------------------------------------------------
+//
+// 要求：B4 及其派生逻辑不得把 index.html / react-dom/client 拉进 validate-site 的
+// 渲染图；渲染图必须只含业务模块。这里直接对 `buildRuntimeBundle` 记录的真实
+// 模块图做断言（不是注释承诺，也不是 grep 猜测）。
+
+function checkRenderGraph() {
+  const graph = runtimeGraph;
+  const ids = Array.isArray(graph?.ids) ? graph.ids : [];
+  check('GRAPH-1', ids.length > 0, `渲染运行时模块图已记录（${ids.length} 个模块，供证明不含浏览器入口）`);
+  if (ids.length === 0) {
+    fail('GRAPH-2', '没有记录到渲染模块图，无法证明渲染图只含业务模块（前置条件缺失即失败，不跳过）');
+    return;
+  }
+  const normalize = (id) => String(id).split('\\').join('/');
+  const normalizedIds = ids.map(normalize);
+  const entry = normalize(graph.entry ?? '');
+  const srcPrefix = `${normalize(SRC)}/`;
+  const contentData = normalize(path.join(ROOT, 'content', 'history.json'));
+  const classify = (id) => {
+    if (id.startsWith('\0pw-')) return 'virtual-react-shim';
+    if (id.startsWith('node:')) return 'builtin';
+    if (entry !== '' && id === entry) return 'generated-entry';
+    if (id.startsWith(srcPrefix)) return 'business';
+    if (id === contentData) return 'content-data';
+    return 'unexpected';
+  };
+  const unexpected = normalizedIds.filter((id) => classify(id) === 'unexpected');
+  check(
+    'GRAPH-2',
+    unexpected.length === 0,
+    `渲染图只含业务模块 / React 全局替身 / 生成的入口（${normalizedIds.length} 个模块；不认识的模块 ${unexpected.length} 个${unexpected.length > 0 ? `：${unexpected.join(', ')}` : ''}）`,
+  );
+  const browserOnly = normalizedIds.filter(
+    (id) =>
+      /index\.html$/i.test(id) ||
+      id.includes('react-dom/client') ||
+      id.includes('react-dom/server') ||
+      /\/src\/main\.tsx$/.test(id) ||
+      id.includes('/node_modules/'),
+  );
+  check(
+    'GRAPH-3',
+    browserOnly.length === 0,
+    `渲染图不含 index.html / react-dom/client / src/main.tsx / node_modules 浏览器入口（命中 ${browserOnly.length} 个${browserOnly.length > 0 ? `：${browserOnly.join(', ')}` : ''}）`,
+  );
+  const requiredModules = [
+    'src/Atlas.tsx',
+    'src/features/timeline/TimelineView.tsx',
+    'src/data/index.ts',
+    'src/content/loader.ts',
+    'src/components/EvidencePanel.tsx',
+    'src/atlas/mapEngine.tsx',
+  ].map((file) => normalize(path.join(ROOT, file)));
+  const missing = requiredModules.filter((id) => !normalizedIds.includes(id));
+  check(
+    'GRAPH-4',
+    missing.length === 0,
+    `B4 的渲染路径确实由业务模块构成（${requiredModules.length} 个关键模块全部在图中${missing.length > 0 ? `；缺失 ${missing.map((id) => path.relative(ROOT, path.resolve(id))).join(', ')}` : ''}）`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Z. 收尾自检：检查项计数 = 实际执行断言数；不存在 SKIP / 空跑 PASS（验收 L541）
+// ---------------------------------------------------------------------------
+
+/** 允许的最小断言数：低于此值说明检查大面积未执行，不能报告通过。 */
+const MIN_EXPECTED_CHECKS = 250;
+
+function verifyCheckAccounting() {
+  const total = results.length;
+  const passed = results.filter((item) => item.status === 'PASS').length;
+  const failed = results.filter((item) => item.status === 'FAIL').length;
+  const notExecuted = results.filter((item) => item.status !== 'PASS' && item.status !== 'FAIL').length;
+  check(
+    'Z-accounting',
+    notExecuted === 0 && total === passed + failed && total >= MIN_EXPECTED_CHECKS,
+    `检查项计数自证：本自检之前已执行断言 ${total} 条 = PASS ${passed} + FAIL ${failed}（本自检为第 ${total + 1} 条）；未执行/SKIP ${notExecuted} 条；且 ≥ ${MIN_EXPECTED_CHECKS} 条（不存在「0 项检查仍 PASS」或「前置条件缺失即 SKIP 计入 PASS」的路径）`,
+  );
+}
+
 async function main() {
   console.log('DSH 站点验证（validate-site.mjs）');
   console.log(`工作区：${ROOT}`);
   console.log(`模式：${DIST_DIR ? `构建产物检查（${DIST_DIR}）` : '源码与契约渲染检查'}`);
+  console.log(`渲染测试输出根：${OUT_DIR_ROOT}（来源：${OUT_DIR_SOURCE}）`);
   console.log('');
 
   let M;
@@ -2581,25 +2977,16 @@ async function main() {
       summarize();
       return 1;
     }
-    if (message.includes('TMPDIR_UNWRITABLE')) {
-      // 配置目录 / 系统临时目录都不可写 —— 这是环境限制，不是站点缺陷。
-      // 降级为明确的 SKIP（而不是 exit 1），并在输出中说明原因与影响范围。
-      const where = CONFIGURED_OUT_DIR ? `配置的输出目录 ${CONFIGURED_OUT_DIR}` : '系统临时目录（os.tmpdir()）';
-      console.log(`SKIP  BUNDLE  ${where} 不可写，无法构建渲染测试用运行时。`);
-      console.log('                这不是站点缺陷：源码类型检查已由 tsc 完成；');
-      console.log('                可用 --out-dir <可写目录> 或 DSH_SITE_OUT_DIR 指定输出位置后重跑。');
-      console.log('');
-      console.log('注意：依赖渲染运行时的检查（B/C/D/F/G/M 组的大部分）本次**未执行**，');
-      console.log('      因此本次输出**不能**作为这些检查通过的证据。');
-      record('SKIP', 'RENDER-SKIPPED', `渲染相关检查未执行（${where} 不可写）—— 本次结果不构成其通过证据`);
-      // 产物检查（E 段）**不需要** React 运行时：它只读 dist 文件与 index.html。
-      // 因此即便运行时被 SKIP，`build` 仍应校验产物，否则「构建产物可用」这一条
-      // 会在受限环境下无声地不被验证。
-      if (DIST_ARG_INDEX >= 0) {
-        checkDist();
-      }
+    if (message.includes('OUT_DIR_UNWRITABLE')) {
+      // 验收 L541：输出目录不可写是**前置条件缺失**，必须 FAIL + 非零退出，
+      // 绝不允许降级为 SKIP 后再把整体报告为 PASS。
+      const detail = message.replace('OUT_DIR_UNWRITABLE:', '').trim();
+      fail(
+        'OUT-DIR',
+        `输出目录不可写（${detail}）：无法构建渲染测试运行时，因此渲染/契约检查全部**未执行**；本次运行不构成通过证据，退出码非零。请用 --out-dir <工作树内可写目录> 或 DSH_SITE_OUT_DIR 指定可写位置后重跑。`,
+      );
       summarize();
-      return 0;
+      return 1;
     }
     fail('BUNDLE', `无法加载站点模块：${message}`);
     summarize();
@@ -2613,27 +3000,29 @@ async function main() {
   console.log(`渲染运行时：${M.__source ?? '未知'}`);
   console.log('');
   try {
-    await checkContentFile();
+    await checkContentFile(M);
     checkEntries(M);
     await checkSynthetic(M);
     await checkAtlas(M);
-  checkAtlasAgainstValidMinFixture(M);
-  checkLabelsAndPanSemantics(M);
-  checkAtlasPhaseContractReverification(M);
-  checkObservableInteraction(M);
-  checkNoVacuousAssertions();
-  checkInteractionStateMachines(M, await loadSyntheticDocument());
+    checkAtlasAgainstValidMinFixture(M);
+    checkLabelsAndPanSemantics(M);
+    checkAtlasPhaseContractReverification(M);
+    checkObservableInteraction(M);
+    checkRenderGraph();
+    checkNoVacuousAssertions();
+    checkInteractionStateMachines(M, await loadSyntheticDocument());
     checkEvidenceComponents(M);
     checkHonestStates(M);
     await checkNegatives(M);
 
     if (DIST_ARG_INDEX >= 0) {
+      // E 段只在 --dist 模式下执行；未指定 --dist 只是「本模式不检查产物」，
+      // 既不记录 SKIP，也不参与检查项计数（计数只统计真实执行的断言）。
       checkDist();
-    } else {
-      skip('E', '未指定 --dist；构建产物检查由 npm run build 在 vite build 之后执行');
     }
+    verifyCheckAccounting();
   } finally {
-    // D1：无论成功失败都清理临时构建目录（位于 os.tmpdir()，不写 worktree）。
+    // 无论成功失败都清理本次在输出根下创建的 run-* 目录（不写工作树源树）。
     cleanupTempRuntimeRoot();
   }
 
@@ -2643,9 +3032,18 @@ async function main() {
 function summarize() {
   const passed = results.filter((item) => item.status === 'PASS').length;
   const failed = results.filter((item) => item.status === 'FAIL').length;
-  const skipped = results.filter((item) => item.status === 'SKIP').length;
+  const notExecuted = results.filter((item) => item.status !== 'PASS' && item.status !== 'FAIL').length;
+  const executed = passed + failed;
   console.log('');
-  console.log(`检查项：${results.length}（PASS ${passed} / FAIL ${failed} / SKIP ${skipped}）`);
+  console.log(`检查项：${executed}（PASS ${passed} / FAIL ${failed}）—— 计数 = 实际执行断言数，未执行断言 ${notExecuted} 条`);
+  if (results.length === 0) {
+    console.log('结果：FAIL（本次没有执行任何断言，不能报告通过）');
+    return 1;
+  }
+  if (notExecuted > 0 || results.length !== executed) {
+    console.log('结果：FAIL（存在未执行断言被记录进结果 —— 验收禁止把未执行断言报告为通过）');
+    return 1;
+  }
   if (failed > 0) {
     console.log('\n失败项：');
     for (const item of results.filter((entry) => entry.status === 'FAIL')) {

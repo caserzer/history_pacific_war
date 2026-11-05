@@ -218,29 +218,54 @@ export interface EvidenceBlock {
 }
 
 /**
- * 早期扩张战役分析的**唯一**取值入口（ARCH-02 兼容层）。
+ * 早期扩张战役分析的**唯一**取值入口（ARCH-02 已接受契约）。
  *
- * - `kind: 'profiles'` → 使用 ARCH-02 的十键 `analysisProfiles`（优先）；
- * - `kind: 'legacy'`   → 回退到旧五键 `earlyCampaignAnalysis`；
- * - `null`             → 两者都没有（纯时间线条目，或分析尚未交付）。
+ * 契约只有十键具名 `analysisProfiles`（见 contracts/content.schema.json
+ * $defs.analysisProfiles 与 contracts/README.md）；旧五键 `earlyCampaignAnalysis`
+ * 已被门禁一律拒绝，因此这里**没有** legacy 分支，也不读取该字段。
  *
- * 视图与验证器都通过它取数据，避免两处各写一套判断而产生分歧。
+ * 返回契约顺序（ANALYSIS_PROFILE_KEYS）下**可渲染**的小节：
+ * - 标题与正文都非空的小节才会返回，因此 UI 不可能出现「空洞小节」或
+ *   `undefined` 标题；
+ * - 每个小节原样携带自己的 `sourceIds` / `claimIds`，供小节级证据面板使用；
+ * - 事件没有 `analysisProfiles`（或全部小节为空）时返回 `null`，UI 不渲染分析区。
+ *
+ * 视图（TimelineView）与站点验证器都经由本函数取值，避免两处各写一套判断。
  */
-export type EarlyCampaignBlockSection = { title: string; body: string; sourceIds: string[]; claimIds: string[] };
+export interface AnalysisProfileBlock {
+  key: AnalysisProfileKey;
+  title: string;
+  body: string;
+  sourceIds: string[];
+  claimIds: string[];
+}
 
-export type EarlyCampaignBlocks =
-  | { kind: 'profiles'; keys: readonly AnalysisProfileKey[]; sections: Partial<Record<AnalysisProfileKey, EarlyCampaignBlockSection>> }
-  | { kind: 'legacy'; keys: readonly string[]; sections: Record<string, EarlyCampaignBlockSection> };
+function nonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
 
-export function earlyCampaignBlocks(event: EventEntity): EarlyCampaignBlocks | null {
-  if (event.analysisProfiles && typeof event.analysisProfiles === 'object') {
-    return { kind: 'profiles', keys: ANALYSIS_PROFILE_KEYS, sections: event.analysisProfiles };
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+export function analysisProfileBlocks(event: EventEntity): AnalysisProfileBlock[] | null {
+  const profiles = event.analysisProfiles;
+  if (!profiles || typeof profiles !== 'object') return null;
+  const blocks: AnalysisProfileBlock[] = [];
+  for (const key of ANALYSIS_PROFILE_KEYS) {
+    const section = profiles[key];
+    if (!section || typeof section !== 'object') continue;
+    // 只渲染有标题且有正文的小节：避免「空洞小节」与伪造的占位标题。
+    if (!nonEmptyString(section.title) || !nonEmptyString(section.body)) continue;
+    blocks.push({
+      key,
+      title: section.title.trim(),
+      body: section.body,
+      sourceIds: stringArray(section.sourceIds),
+      claimIds: stringArray(section.claimIds),
+    });
   }
-  if (event.earlyCampaignAnalysis && typeof event.earlyCampaignAnalysis === 'object') {
-    const sections = event.earlyCampaignAnalysis as Record<string, EarlyCampaignBlockSection>;
-    return { kind: 'legacy', keys: Object.keys(sections), sections };
-  }
-  return null;
+  return blocks.length > 0 ? blocks : null;
 }
 
 /**
@@ -260,16 +285,13 @@ export function collectEvidenceBlocks(entity: ArticleEntity): EvidenceBlock[] {
   if ('article' in entity && Array.isArray(entity.article)) {
     entity.article.forEach((section, i) => add(`article-${i}`, section.heading, section.sourceIds, section.claimIds));
   }
-  // 早期扩张战役分析：优先 ARCH-02 的十键 analysisProfiles；只有它缺失时才回退到旧五键结构，
-  // 避免两代结构同时存在时重复渲染同一批证据。
+  // 早期扩张战役分析：契约（ARCH-02）唯一结构是十键 `analysisProfiles`。
+  // 逐一登记每节的 sourceIds/claimIds（含正文尚为空的小节，证据仍要可见），
+  // 不存在旧五键 `earlyCampaignAnalysis` 的回退分支。
   if ('analysisProfiles' in entity && entity.analysisProfiles) {
     for (const key of ANALYSIS_PROFILE_KEYS) {
       const section = entity.analysisProfiles[key];
       if (section) add(`profile-${key}`, section.title, section.sourceIds, section.claimIds);
-    }
-  } else if ('earlyCampaignAnalysis' in entity && entity.earlyCampaignAnalysis) {
-    for (const [key, section] of Object.entries(entity.earlyCampaignAnalysis)) {
-      add(`early-${key}`, section.title, section.sourceIds, section.claimIds);
     }
   }
   if ('sections' in entity && entity.sections) {

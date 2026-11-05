@@ -2,9 +2,12 @@
  * 契约词汇表 —— 界面文案
  *
  * 这里的中文只翻译**契约枚举**（claimType、locatorType、sourceType、历史部分标题、
- * 战役十四类字段名、早期战役五类分析标题）。这些名字由
+ * 战役十四类字段名）。这些名字由
  * contracts/content.schema.json 与 contracts/coverage.json 固定，
  * 不是历史叙述，也不复制任何文章正文。
+ *
+ * 早期扩张战役分析的十类小节标题**不在这里**：它们逐条来自内容数据的
+ * `analysisProfiles[<key>].title`（契约 ARCH-02），代码中不存在旧五键标题表。
  *
  * 历史叙述一律来自 content/history.json。
  */
@@ -12,7 +15,6 @@
 import type {
   BattleSectionKey,
   ClaimType,
-  EarlyCampaignKey,
   HistoricalPartId,
   LocatorType,
   SourceType,
@@ -101,15 +103,6 @@ export const BATTLE_SECTION_TITLES: Record<BattleSectionKey, string> = {
   aftermath: '后续影响',
   controversies: '历史争议',
   furtherReading: '延伸阅读',
-};
-
-/** 早期扩张战役五类分析标题，逐字来自 contracts/coverage.json 的 earlyCampaign.analysisKeys[].title。 */
-export const EARLY_CAMPAIGN_TITLES: Record<EarlyCampaignKey, string> = {
-  background: '背景',
-  course: '经过',
-  constraints: '约束',
-  results: '结果',
-  impact: '影响',
 };
 
 /** 五种验证阶段的中文名（coverage.stages[].title），用于「内容交付进度」说明。 */

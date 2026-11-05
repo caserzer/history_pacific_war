@@ -138,20 +138,14 @@ export const BATTLE_SECTION_KEYS = [
 export type BattleSectionKey = (typeof BATTLE_SECTION_KEYS)[number];
 
 /**
- * 早期扩张战役分析 —— 两代结构并存（ARCH-02）。
+ * 早期扩张战役分析 —— 已接受契约（ARCH-02）只有**一种**结构：十键具名分析
+ * `analysisProfiles`（背景/地理/参与方/目标与军力/约束/经过/可选方案/结果与损失/
+ * 影响/不确定性），顺序与 schema $defs.analysisProfiles.required 一致。
  *
- * - **目标结构** `analysisProfiles`：十键具名分析（背景/地理/参与方/目标与军力/
- *   约束/经过/可选方案/结果与损失/影响/不确定性）。ARCH-02 起为规范形态。
- * - **旧结构** `earlyCampaignAnalysis`：五键（背景/经过/约束/结果/影响）。
- *   schema 仍允许，但已不是目标结构；为兼容已交付内容保留渲染支持。
- *
- * UI 必须**优先**渲染 `analysisProfiles`，两者都存在时不重复渲染旧结构
- * （见 data/index.ts 的 collectEarlyCampaignBlocks）。
+ * 旧五键 `earlyCampaignAnalysis` 已被契约门禁一律拒绝（contracts/README.md，
+ * legacyDisabledBy=HIST-01），因此这里**不再声明**旧结构类型，UI 也不存在任何
+ * legacy 渲染/回退路径 —— 渲染条件只有 `analysisProfiles`。
  */
-export const EARLY_CAMPAIGN_KEYS = ['background', 'course', 'constraints', 'results', 'impact'] as const;
-export type EarlyCampaignKey = (typeof EARLY_CAMPAIGN_KEYS)[number];
-
-/** ARCH-02 目标结构：十键具名分析（schema $defs.analysisProfiles.required，顺序即渲染顺序）。 */
 export const ANALYSIS_PROFILE_KEYS = [
   'background',
   'geography',
@@ -166,6 +160,7 @@ export const ANALYSIS_PROFILE_KEYS = [
 ] as const;
 export type AnalysisProfileKey = (typeof ANALYSIS_PROFILE_KEYS)[number];
 
+/** 每个分析小节的标题、正文与**本节自己的**来源/claim（契约 §3.3：不得只显示页面级来源）。 */
 export interface AnalysisProfileSection {
   title: string;
   body: string;
@@ -174,15 +169,6 @@ export interface AnalysisProfileSection {
 }
 
 export type AnalysisProfiles = Record<AnalysisProfileKey, AnalysisProfileSection>;
-
-export interface EarlyCampaignSection {
-  title: string;
-  body: string;
-  sourceIds: string[];
-  claimIds: string[];
-}
-
-export type EarlyCampaignAnalysis = Record<EarlyCampaignKey, EarlyCampaignSection>;
 
 /** 研究/检索过程状态（ARCH-02）：正文中不得出现研究过程措辞，只能放在这里。 */
 export const RESEARCH_STATUSES = [
@@ -268,10 +254,8 @@ export interface EventEntity {
   conceptIds: string[];
   battleId?: string;
   relatedEventIds: string[];
-  /** ARCH-02 目标结构：十键具名分析。UI 优先渲染它。 */
+  /** ARCH-02 已接受契约：十键具名分析。这是早期战役分析唯一的渲染来源。 */
   analysisProfiles?: AnalysisProfiles;
-  /** 旧结构（五键）；schema 仍允许，仅在没有 analysisProfiles 时渲染。 */
-  earlyCampaignAnalysis?: EarlyCampaignAnalysis;
   /** 研究过程状态（ARCH-02）；正文不得出现研究过程措辞。 */
   researchStatus?: ResearchStatus;
   sourceIds: string[];
