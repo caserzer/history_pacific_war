@@ -10,11 +10,21 @@
  *
  * 工程事实（已在 Vite 8.3.5 实测）：对不存在的目录做 `import.meta.glob` 不会失败，
  * 返回空对象 `{}`。因此缺失内容在构建期是「空集」而不是构建错误。
+ *
+ * MAP-01 attempt 2（post-merge check failure 修正）：glob 从 `../../content/*.json`
+ * 收窄为**唯一内容源** `../../content/history.json`。原因：
+ * - 站点运行时只消费 `content/history.json`（本文件 CONTENT_PATH，唯一数据入口）；
+ * - 集成中新增的 `content/media.json` 属于媒体注册表（媒体门禁/其它任务用），
+ *   站点不读取它，宽 glob 却会把它打进渲染 bundle（约 29 KB 死重量），
+ *   并使验证器的渲染图把「未来任何新增 content/*.json」误判为异常模块；
+ * - 收窄后：站点 bundle 只含业务模块 + 唯一内容源；新增内容文件不会被动进入渲染图。
+ *   「内容缺失 → 诚实未加载状态」路径不变（glob 只匹配一个文件，缺失时仍返回 `{}`）。
  */
 
 import type { ContentDocument } from '../data/types';
 
-const CONTENT_GLOB = import.meta.glob('../../content/*.json') as Record<string, unknown>;
+// 只打包站点真正使用的唯一内容源（不是 content/*.json：媒体注册表等由其它门禁消费）。
+const CONTENT_GLOB = import.meta.glob('../../content/history.json') as Record<string, unknown>;
 
 export const CONTENT_PATH = 'content/history.json';
 

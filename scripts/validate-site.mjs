@@ -76,7 +76,8 @@
  *   B4-order / B4-no-legacy / B4-no-undefined / B4-<key>-heading|body|evidence（逐节）/
  *   B4-research-status / B4-adapter-{count,keys,evidence,evidence-blocks,no-legacy} /
  *   B4-M-{load,only-profiles,section,count,keys,order,no-legacy,no-undefined,
- *   <key>-heading|body|evidence} / B4-legacy-not-rendered；另有 GRAPH-1..4。
+ *   <key>-heading|body|evidence} / B4-legacy-not-rendered；另有 GRAPH-1..4
+ *   （含 MAP-01 a2 新增的 GRAPH-2-negative 反向自证）。
  *
  * 四、checkAtlas 的唯一归属
  * ---------------------------------------------------------------------------
@@ -215,6 +216,17 @@
  *   诚实性说明：MAP1-phase-fields / MAP1-routes 是内容 JSON 结构 gate；MAP1-<battleId>-playback
  *   是状态机层断言（与组件同一纯函数实现，未在浏览器中真实点击）；它们在消息里显式标注
  *   所证明的范围，不冒充浏览器交互验证。
+ *
+ *   - MAP-01 attempt 2（post-merge check failure 修正）：并行 MEDIA-01 在集成中新增
+ *     content/media.json 后，宽 glob `content/*.json` 把它打进渲染 bundle，旧 GRAPH-2
+ *     只认 content/history.json 精确路径 → 误判为 unexpected 而 FAIL。修正两点：
+ *       1) src/content/loader.ts 的 glob 收窄为唯一内容源 `content/history.json`
+ *          （站点不消费媒体注册表；内容缺失仍返回空集 → D2 诚实未加载路径不变）；
+ *       2) GRAPH-2 分类抽出为 classifyRenderGraphModule()，**按类别**判定
+ *          content/ 下任意 `.json` 为 content-data（不写死文件名）；
+ *       3) 新增 GRAPH-2-negative：正样本（history/media.json、src 业务模块）被接受，
+ *          越界样本（/etc/passwd、scripts/、content/notes.txt、public/、vite.config.ts、
+ *          index.html、node_modules/）仍判 unexpected —— 证明放宽白名单后判据仍有牙齿。
  *
  * 扩展约定补充（MAP-01）：地图/时间线的**稳定 data-* 控件属性**属于 WEB 展示契约；
  * 新增地图展示只在 PART 2 增加渲染断言，字段来源仍是同一份 content/history.json，
@@ -4106,6 +4118,50 @@ function checkObservableInteraction(M) {
 // 要求：B4 及其派生逻辑不得把 index.html / react-dom/client 拉进 validate-site 的
 // 渲染图；渲染图必须只含业务模块。这里直接对 `buildRuntimeBundle` 记录的真实
 // 模块图做断言（不是注释承诺，也不是 grep 猜测）。
+//
+// MAP-01 attempt 2 修正（post-merge check failure）：集成新增 content/media.json 后，
+// 旧的「只认 content/history.json 精确路径」分类把它判为 unexpected → GRAPH-2 FAIL。
+// 修正为**按类别**判定：content/ 下任意 `.json` 是内容数据（content-data），不写死文件名；
+// 同时 loader 的 glob 收窄为唯一内容源 content/history.json（站点不再把媒体注册表打进
+// 渲染 bundle）。分类函数抽出为 classifyRenderGraphModule()，并由 GRAPH-2-negative
+// 用正/负样本反向自证：白名单可按类别扩展，但越界模块仍判 unexpected（GRAPH-2 仍有牙齿）。
+
+/** 渲染图模块 id 归一化（Windows 反斜杠 → 正斜杠）。 */
+function normalizeGraphId(value) {
+  return String(value ?? '').split('\\').join('/');
+}
+
+/** 渲染图分类上下文（同一份根路径，供 GRAPH-2 与反向自证共用）。 */
+function renderGraphContext() {
+  return {
+    entry: normalizeGraphId(runtimeGraph?.entry ?? ''),
+    srcPrefix: `${normalizeGraphId(SRC)}/`,
+    contentPrefix: `${normalizeGraphId(path.join(ROOT, 'content'))}/`,
+  };
+}
+
+/**
+ * 渲染图模块分类 —— GRAPH-2 的**唯一**判定实现。
+ *
+ * 允许的类别：
+ *   generated-entry    验证器生成的临时入口（位于输出根）
+ *   virtual-react-shim 验证器注入的 React 全局替身（\0pw-*）
+ *   builtin            Node 内建模块（node:*）
+ *   business           src/ 下的业务模块
+ *   content-data       content/ 下的内容 JSON：站点唯一内容源 history.json，以及未来
+ *                      任何合法新增内容 JSON（数据不是代码，但必须仍在工作树 content/ 内）
+ * 其余一律 unexpected → GRAPH-2 FAIL。类别扩展仍有边界：非 content/ 路径、content/ 下
+ * 非 .json 文件、其它工作树文件、node_modules、/etc/passwd 等仍为 unexpected。
+ */
+function classifyRenderGraphModule(rawId, context = renderGraphContext()) {
+  const id = normalizeGraphId(rawId);
+  if (context.entry !== '' && id === context.entry) return 'generated-entry';
+  if (id.startsWith('\0pw-')) return 'virtual-react-shim';
+  if (id.startsWith('node:')) return 'builtin';
+  if (context.srcPrefix !== '/' && id.startsWith(context.srcPrefix)) return 'business';
+  if (id.startsWith(context.contentPrefix) && id.endsWith('.json')) return 'content-data';
+  return 'unexpected';
+}
 
 function checkRenderGraph() {
   const graph = runtimeGraph;
@@ -4115,24 +4171,46 @@ function checkRenderGraph() {
     fail('GRAPH-2', '没有记录到渲染模块图，无法证明渲染图只含业务模块（前置条件缺失即失败，不跳过）');
     return;
   }
-  const normalize = (id) => String(id).split('\\').join('/');
-  const normalizedIds = ids.map(normalize);
-  const entry = normalize(graph.entry ?? '');
-  const srcPrefix = `${normalize(SRC)}/`;
-  const contentData = normalize(path.join(ROOT, 'content', 'history.json'));
-  const classify = (id) => {
-    if (id.startsWith('\0pw-')) return 'virtual-react-shim';
-    if (id.startsWith('node:')) return 'builtin';
-    if (entry !== '' && id === entry) return 'generated-entry';
-    if (id.startsWith(srcPrefix)) return 'business';
-    if (id === contentData) return 'content-data';
-    return 'unexpected';
-  };
-  const unexpected = normalizedIds.filter((id) => classify(id) === 'unexpected');
+  const context = renderGraphContext();
+  const normalizedIds = ids.map(normalizeGraphId);
+  const unexpected = normalizedIds.filter((id) => classifyRenderGraphModule(id, context) === 'unexpected');
   check(
     'GRAPH-2',
     unexpected.length === 0,
-    `渲染图只含业务模块 / React 全局替身 / 生成的入口（${normalizedIds.length} 个模块；不认识的模块 ${unexpected.length} 个${unexpected.length > 0 ? `：${unexpected.join(', ')}` : ''}）`,
+    `渲染图只含业务模块 / React 全局替身 / Node builtin / 生成的入口 / content 内容数据（${normalizedIds.length} 个模块；不认识的模块 ${unexpected.length} 个${unexpected.length > 0 ? `：${unexpected.join(', ')}` : ''}）`,
+  );
+  // GRAPH-2 反向自证：白名单按**类别**扩展（content/ 下合法 JSON），但必须仍有牙齿 ——
+  // 用同一分类函数断言正样本被接受、越界样本仍判 unexpected；若渲染图真的出现这些越界
+  // id，GRAPH-2 的 unexpected 计数就会 > 0 并 FAIL。
+  const positiveSamples = [
+    path.join(ROOT, 'content', 'history.json'),
+    path.join(ROOT, 'content', 'media.json'),
+    path.join(ROOT, 'src', 'Atlas.tsx'),
+    path.join(ROOT, 'src', 'content', 'loader.ts'),
+    path.join(ROOT, 'src', 'atlas', 'regions.ts'),
+  ];
+  const negativeSamples = [
+    '/etc/passwd',
+    path.join(ROOT, 'scripts', 'validate-site.mjs'),
+    path.join(ROOT, 'content', 'notes.txt'),
+    path.join(ROOT, 'public', 'favicon.svg'),
+    path.join(ROOT, 'vite.config.ts'),
+    path.join(ROOT, 'index.html'),
+    path.join(ROOT, 'node_modules', 'react', 'index.js'),
+  ];
+  const positiveOk = positiveSamples.every((sample) => {
+    const kind = classifyRenderGraphModule(sample, context);
+    return kind === 'content-data' || kind === 'business';
+  });
+  const negativeUnexpected = negativeSamples.filter((sample) => classifyRenderGraphModule(sample, context) === 'unexpected');
+  const sentinelOk =
+    classifyRenderGraphModule('\0pw-react', context) === 'virtual-react-shim' &&
+    classifyRenderGraphModule('node:fs', context) === 'builtin' &&
+    (context.entry === '' || classifyRenderGraphModule(context.entry, context) === 'generated-entry');
+  check(
+    'GRAPH-2-negative',
+    positiveOk && negativeUnexpected.length === negativeSamples.length && sentinelOk,
+    `GRAPH-2 判据反向自证：content/ 下合法 JSON（history.json / media.json 等）归为 content-data、src/ 归为 business、React 替身/Node builtin/生成入口各归其类（${positiveSamples.length} 个正样本）；越界 id（${negativeSamples.map((sample) => normalizeGraphId(sample).replace(`${normalizeGraphId(ROOT)}/`, '')).join('、')}）仍判 unexpected（${negativeUnexpected.length}/${negativeSamples.length}）—— 扩散白名单未失去牙齿`,
   );
   const browserOnly = normalizedIds.filter(
     (id) =>
@@ -4154,7 +4232,7 @@ function checkRenderGraph() {
     'src/content/loader.ts',
     'src/components/EvidencePanel.tsx',
     'src/atlas/mapEngine.tsx',
-  ].map((file) => normalize(path.join(ROOT, file)));
+  ].map((file) => normalizeGraphId(path.join(ROOT, file)));
   const missing = requiredModules.filter((id) => !normalizedIds.includes(id));
   check(
     'GRAPH-4',
