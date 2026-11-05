@@ -1,6 +1,6 @@
-# HIST-01 背景与早期扩张研究来源记录（attempt 6 有界修正）
+# HIST-01 背景与早期扩张研究来源记录（attempt 7 有界修正）
 
-状态：本文件记录 HIST-01（`--stage background`）内容撰写时**实际读取过**的来源、每条来源支撑的具体论断、检索失败的情况，以及材料自身的缺口。最初的外部访问均在 **2026-11-04** 由本任务发起；**attempt 6（2026-11-05）是有界修正**，没有发起新的外部来源访问，只重核已读来源的定位与内容表述是否一致。
+状态：本文件记录 HIST-01（`--stage background`）内容撰写时**实际读取过**的来源、每条来源支撑的具体论断、检索失败的情况，以及材料自身的缺口。最初的外部访问均在 **2026-11-04** 由本任务发起；**attempt 6/7（2026-11-05）是有界修正**，没有发起新的内容来源访问。attempt 7 为核对「USAF Historical Study 109」的真实身份，另行查阅了 AFHRA 的编号研究索引（书目核对，不作为历史 claim 来源，见 §1.9 与 §4.2）。
 
 本文件不是全站参考书目，也不声称任何历史判断已被中央核验。它只回答三件事：读了什么、读到哪一句、还有什么读不到。
 
@@ -14,15 +14,15 @@
 2. **把检索失败写进了正文**。曾把「某页面 404／无法解析域名」写成一条历史论断。那是检索状态，不是历史事实。现全部集中到 §3。
 3. **定位约定的说明不准确**。现按实际操作写明，见 §8。
 
-### 0.2 attempt 5 的内容修订（历史记录）与 attempt 6 的有界修正
+### 0.2 attempt 5 的内容修订（历史记录）与 attempt 6/7 的有界修正
 
-attempt 5 不是纯记录任务，而是**实质内容修订**：它改动了 `content/history.json` 本身。这里先如实列出 attempt 5 的改动（历史记录），再在 §0.4 列出 attempt 6 在其之上的有界修正，两者不混为一次：
+attempt 5 不是纯记录任务，而是**实质内容修订**：它改动了 `content/history.json` 本身。这里先如实列出 attempt 5 的改动（历史记录），再在 §0.4/§0.5 列出 attempt 6/7 在其之上的有界修正，三者不混为一次：
 
 1. **契约迁移（影响最大）**：契约任务 ARCH-02 已并入主线，旧的五键 `earlyCampaignAnalysis` 在门禁中被停用（`legacyAnalysis.enforcement=off`，`legacyDisabledBy=HIST-01`）。因此把 **8 个早期战役事件**全部迁移到新的十键 `analysisProfiles`：background / geography / participants / objectivesAndForces / constraints / course / options / resultsAndLosses / impact / uncertainty。每个键都满足 `minHanCharsPerKey`（80 汉字）与 `requiredElements` 标记，并各自带 `sourceIds` 与 `claimIds`。同时为每个事件声明了 `researchStatus` 字段。
 2. **补上阶段归属要求的 `event-doolittle-raid-1942`（杜立特空袭）**，来源与取材见 §1.6。其契约归属由 ARCH-02 的 `stageOwnership.background.events` 与 `eventPartPolicy` 定义；attempt 6 **只保留并核对**该事件及其既有正文，不新增、不改写、不删除、不另建第二份。
 3. **补齐 D1 的实质内容**：迁移过程中为每个战役真正写出了「可选方案与被排除它的约束」（`options`）与「不确定性」（`uncertainty`），而不是把旧五键原样搬家。
 4. **达尔文机种争议改写**：把此前当作确定事实的「十八架重型轰炸机」改为开放分歧（详见 §4.2）；attempt 6 进一步把争议收束到实际读过的 ONI 与 USSBS。
-5. **移除研究过程措辞**：正文、摘要与 claim 文本中此前出现的「本教材未取得……」一类收集过程叙述已移除，只保留「已知／仍有争议」的边界与证据状态；过程说明集中在本文件。attempt 6 又清理了门禁未覆盖位置（人物档案正文与部分 claim note）中残留的取得过程措辞，见 §0.4。
+5. **移除研究过程措辞**：正文、摘要与 claim 文本中此前出现的「本教材未取得……」一类收集过程叙述已改写为历史表述。attempt 6 清理了人物档案正文与部分 claim note；attempt 7 又发现并清理了 4 个战役正文「不确定与争议之处」中的取得过程/写作说明口吻，以及早期战役 claims 与 `analysisProfiles` 中的「可定位」式检索表述（见 §0.5 与 delta 报告 §3.3）。**本文件不再声称任何一轮已实现全库「0 命中」**；实际扫描模式与残余命中见 `docs/research/hist01-delta-report.md` §3.3。
 6. **补充中国侵略与平民受难**：在第 1 部分导读的「日本扩张与资源依赖」一节内增写一段关于 1931 年侵占东北、1937 年全面侵华与南京暴行的叙述（相关材料缺口见 §4 第 5 条）。
 
 attempt 5 **未**新增人物档案、未新增专题、未新增媒体、未创建任何战役条目（`battles` 仍为 0）。计数变化见 §6.1。
@@ -32,23 +32,34 @@ attempt 5 **未**新增人物档案、未新增专题、未新增媒体、未创
 `content/history.json` 现在是**唯一一份经过验证的内容源**，同时被两条消费链路使用：
 
 1. **内容验证器**：`node scripts/validate-content.mjs --stage strategy|background|full` 与 `--check-contracts` 检查结构、覆盖、引用完整性与最低深度。
-2. **WEB-01 站点构建**：已合并的 React + Vite + TypeScript 站点直接读取同一份文件构建时间线、战役、人物、地图、专题、问题与来源入口。站点侧的数据契约（`src/data/index.ts` / `types.ts` / `TimelineView.tsx`）消费以下字段：`earlyCampaignAnalysis`、`historicalPart`、`placeIds`、`personIds`、`relatedPlaceIds`、`relatedPersonIds`、`phases`、`concepts`、`questions`。**注意（attempt 6 更正）**：本任务内容已按已接受 ARCH-02 契约从旧五键 `earlyCampaignAnalysis` 迁移到十键 `analysisProfiles`，而站点代码仍只读取旧字段；因此站点当前**不会**渲染这批早期战役的分析块。这是消费者侧待更新项（`src/` 不在本任务写权限内），已在 `docs/research/hist01-delta-report.md` 登记为后续任务输入；本任务不声称站点已展示这些分析。
+2. **WEB-01 站点构建**：已合并的 React + Vite + TypeScript 站点直接读取同一份文件构建时间线、战役、人物、地图、专题、问题与来源入口。站点侧的数据契约（`src/data/index.ts` / `types.ts` / `TimelineView.tsx`）在已接受基线 8b0ca6a 上消费以下字段：`earlyCampaignAnalysis`、`historicalPart`、`placeIds`、`personIds`、`relatedPlaceIds`、`relatedPersonIds`、`phases`、`concepts`、`questions`。**注意（attempt 6 更正、attempt 7 复核）**：本任务内容已按已接受 ARCH-02 契约从旧五键 `earlyCampaignAnalysis` 迁移到十键 `analysisProfiles`。在**已接受集成基线 8b0ca6a** 上，站点代码只读取旧字段，因此不会渲染这批早期战役的分析块；当前工作树 HEAD 另含**尚未被本任务候选接受**的 MAP-00（它把渲染改为十键 `analysisProfiles`），本任务不依赖 MAP-00、也不把它作为验收依据。该消费者状态已登记在 `docs/research/hist01-delta-report.md` 的未解决项中。
 
 attempt 5 同步时实测：`npm run typecheck` 退出码 0；`npm run build` 全部 94 项检查通过（含子路径资源、hash 路由、无 CDN、无外部瓦片、`lang="zh-CN"`、viewport、标题、产物大小）。**这说明站点能构建；它不说明站点已展示本次迁移后的分析块（见上一条注意），也不说明历史准确性、可读性或素材授权已经通过审查。**
 
 内容同时供养叙述、阅读入口与地图导航，正是架构政策要求的「共享内容是叙述、地图与导航的单一来源」。任何一条历史内容只需要在一处修订，站点与验证器会同时看到。
 
-### 0.4 attempt 6 的有界修正（本次提交）
+### 0.4 attempt 6 的有界修正（历史记录）
 
 attempt 6 不是重建，也不是新增内容，只在已接受基线上做有界根因修正：
 
 1. **关岛分析块**：`analysisProfiles.uncertainty` 去掉「资料不足，无法确定的部分是……」式表述，改写为关于史料沉默、记录分布与开放问题的历史分析；正文「不确定与争议之处」与 `resultsAndLosses` 中相应的取得过程式措辞同步改写。
-2. **达尔文 18 架类别争议**：删除对未取得、无可核实页码的 1948 年美国空军历史研究的间接引用（原先写作「另一份战后航空研究」）；争议改由实际读过的 ONI p.36 / p.38 与 USSBS p.30 承载，并统一区分「全次空袭合计约 72 + 18 架」与「09:55 第一波 18 架」两个口径；第 3 部分导读与问题文本同步一致。
+2. **达尔文 18 架类别争议**：删除对未取得、无可核实页码的审查意见所称「USAF Historical Study 109」的间接引用（原先写作「另一份战后航空研究」）；争议改由实际读过的 ONI p.36 / p.38 与 USSBS p.30 承载，并统一区分「全次空袭合计约 72 + 18 架」与「09:55 第一波 18 架」两个口径；第 3 部分导读与问题文本同步一致。
 3. **研究过程措辞清理**：人物档案正文（5 位早期战役指挥官）与 7 条 claim note 中残留的「本教材未取得……」式措辞改写为史料状态表述；`sources[].reliabilityNote` 属来源可靠性元数据，保留原样。
 4. **本文件记录更正**：§0.2/§0.3/§5/§7/§9 的记录偏差按 attempt 6 实测更正（含站点消费者仍读旧字段、`--stage background` 实际强制项、`reliabilityNote` 只存在于 `sources[]`）。
 5. **新建** `docs/research/hist01-delta-report.md`（本任务提交绑定报告，逐项记录基线与门禁）。
 
 attempt 6 **未**新增来源、未改契约/验证器/`src`/`public`、未创建 `content/media.json`、未 commit/merge/push。
+
+### 0.5 attempt 7 的有界修正（本次提交）
+
+attempt 7 仍是有界修正，不重建、不新增实体：
+
+1. **正文去编辑口吻**：把 4 个早期战役「不确定与争议之处」小节（马来亚与新加坡、菲律宾与巴丹/科雷希多、荷属东印度、印度洋）改写为历史分析：写史料确认了什么、说法在哪里分歧、哪些仍无法确定，并保留来源归属；删除「本节取得的是……」「因此正文不给出」「材料上有……」「本节最需要坦白的是……」「凡属……都应以这种并列的形式呈现」等取得过程与写作说明。
+2. **扩大清理范围**：同一轮清理了早期扩张事件正文、`analysisProfiles` 与相关 claims 文本中残留的「可定位/正文/本节/教材/读者/提醒读者」等检索-可定位与编辑口吻（详见 `docs/research/hist01-delta-report.md` §3.3，含实际扫描模式与残余命中清单）；`claim-guam-uncertainty`、`claim-philippines-uncertainty`、`claim-nei-uncertainty`、`claim-indian-ocean-uncertainty` 改写为基于史料的历史不确定性表述。
+3. **达尔文编号核实**：核对 AFHRA 索引后确认「USAF Historical Study 109」实为《The Fourteenth Air Force to 1 October 1943》（中国战区），与达尔文无关；真正相关的是 No. 111《Army Air Action in the Philippines and Netherlands East Indies, 1941-1942》。HS-111 未能取得正文，因此**不引用、不给页码**；达尔文争议仍由已读的 ONI p.36/p.38 与 USSBS p.30 承载（见 §4.2）。
+4. **本文件更正**：修正 §4.2 自相矛盾（一处称间接提及已删、另一处仍称正文以不点名说法概括）与对自身核验的夸大；更新 §0.3 站点消费者状态、§9 未解决项。
+
+attempt 7 **未**新增来源、未改契约/验证器/`src`/`public`、未创建 `content/media.json`、未改写杜立特事件、未 commit/merge/push。
 
 ## 1. attempt 5 实际重新读取并引用的来源（attempt 6 重核）
 
@@ -184,6 +195,21 @@ attempt 5 交付的 9 个事件**全部取值为 `sources-retrieved`**（attempt
 - 为什么不取 `cross-checked`：多数战役存在只有单一来源支撑的关键数字（例如关岛只有计划层来源、印度洋两次打击没有逐次战果），达不到「每条论断都有两个以上来源互证」的程度。
 - 为什么不取 `final`：`final` 需与人工评审结论一致，而 `tests/evidence/pedagogy.md` 尚不存在。
 
+### 1.9 attempt 7 的文献编号核对（书目核对，不是历史 claim 来源）
+
+attempt 7 为核对「USAF Historical Study 109」的真实身份，查阅了 AFHRA 的《Numbered USAF Historical Studies》编号索引（GPO 永久存档）：
+
+- 索引 101–150：https://permanent.access.gpo.gov/websites/dodandmilitaryejournals/www.au.af.mil/au/afhra/wwwroot/numbered_studies/studies3.php.htm （HTTP 200，2026-11-05 读取）
+
+核对结果：
+
+| 编号 | 索引给出的标题 | 与达尔文的关系 |
+|---|---|---|
+| No. 109 | (U) The Fourteenth Air Force to 1 October 1943, by Herbert Weaver and Marvin A. Rapp (1945). 169 pages. | **无关**：中国战区第十四航空队研究 |
+| No. 111 | (U) Army Air Action in the Philippines and Netherlands East Indies, 1941-1942, by Richard L. Watson, Jr. (1945). 300 pages. | **相关**：覆盖菲律宾与荷属东印度空中行动；未取得正文，未引用 |
+
+该索引是**书目工具**，不是历史内容来源：它只用于核实编号与标题，不支撑任何日期、数字或因果 claim，因此不写入 `content/history.json` 的 `sources[]`。
+
 ## 2. HIST-00 期间读过、attempt 5 未重新打开、attempt 6 亦未重新打开的来源
 
 以下来源在 HIST-00 中实际读取并建立了 claim 与定位，**本轮没有重新打开**。记录在此以免被误认为本轮复核过：`previously verified in HIST-00, NOT re-verified this attempt`。
@@ -234,25 +260,27 @@ attempt 5 交付的 9 个事件**全部取值为 `sources-retrieved`**（attempt
 8. **ONI 1943 年战史叙事是战时出版物**，前言自述「因资料仓促征集，个别细节可能不准确」；USSBS 编者注明内容源于战后访谈。两者适合说明计划逻辑与行动序列，不适合逐分钟时间线。
 9. **USSBS「四艘战列舰、六艘大型航空母舰」是对整支支援部队的描述**，不等于对锡兰两天打击的出击兵力；**南海支队的编成表**同样覆盖关岛与俾斯麦两个方向，不等于关岛登陆兵力。这两处口径提示已分别写进对应 claim 的 `note` 与正文。
 
-### 4.2 达尔文机种归属的来源分歧（attempt 5 改写、attempt 6 收束）
+### 4.2 达尔文机种归属的来源分歧（attempt 5 改写、attempt 6 收束、attempt 7 编号核实）
 
 此前版本把「十八架重型轰炸机」当作确定事实写入正文。这一表述掩盖了官方来源之间的分歧，attempt 5 已改为开放争议、attempt 6 进一步把争议收束到已读来源。可以确认的分歧形态：
 
-| 来源 | 对该批十八架飞机的表述 | 是否直接读取（attempt 5 / attempt 6） |
+| 来源 | 对该批十八架飞机的表述 | 是否直接读取（attempt 5 / attempt 6 / attempt 7 重核） |
 |---|---|---|
 | ONI 战史叙事《爪哇海战役》p.38 | 09:55 出现的编队是**第一波高空水平轰炸机**；同一段落又写这批飞机的「体型表明它们以航母或水上飞机母舰为基地」 | 是，已读 |
 | ONI 同章 p.36 | 提到 2 月 16 日攻击船队的飞机「据称是舰载机，但别处又被描述为重型轰炸机」——**该来源自己就记录了描述不一致** | 是，已读 |
 | USSBS 第 3 章 p.30 | 称这次空袭使用了**四艘航母的舰载机** | 是，已读 |
 
-**处理方式（attempt 5 + attempt 6）**：`claim-darwin-carrier-identity-disputed` 保持 `claimType: disputed`，并列不同说法并注明各自出处（ONI p.38 / ONI p.36 / USSBS p.30）；`claim-darwin-no-warning` 收窄为可以确认的事实（首轮编队无预警到达），不再断言机种。正文、`course`、`uncertainty`、第 3 部分导读与第 3 部分问题均已同步改写；全库的「重型轰炸机」字样只出现在争议框架内（引用 ONI 原文或明确声明不作定论），不存在把「重型轰炸机」当定论的说法。attempt 6 另删除了对未读的第二手研究（1948 年美国空军历史研究）的间接引用，见下条。
+**处理方式（attempt 5 + attempt 6）**：`claim-darwin-carrier-identity-disputed` 保持 `claimType: disputed`，并列不同说法并注明各自出处（ONI p.38 / ONI p.36 / USSBS p.30）；`claim-darwin-no-warning` 收窄为可以确认的事实（首轮编队无预警到达），不再断言机种。正文、`course`、`uncertainty`、第 3 部分导读与第 3 部分问题均已同步改写；全库的「重型轰炸机」字样只出现在争议框架内（引用 ONI 原文或明确声明不作定论），不存在把「重型轰炸机」当定论的说法。attempt 6 另删除了对未读的第二手研究（审查意见所称「USAF Historical Study 109」）的间接引用，见下条。
 
-**一处必须说明的核对边界（后续任务请勿重新引入）**：审查意见提到「USAF Historical Study 109 (1948) 把这十八架归入俯冲轰炸机大队」。**本任务从未取得该研究原文，从未读过它，也没有它的页码。** attempt 6 已把 `content/history.json` 与 claim 文本中对它的间接提及（原先写作「另一份战后航空研究」）删除；争议完全由已读的 ONI 与 USSBS 承载。
+**核对边界与编号更正（attempt 7，后续任务请勿重新引入）**：审查意见称「USAF Historical Study 109（1948）把这十八架归入俯冲轰炸机大队」。attempt 7 核对了 AFHRA《Numbered USAF Historical Studies》编号索引（GPO 永久存档，HTTP 200；见 §1.9）：**No. 109 是《(U) The Fourteenth Air Force to 1 October 1943》, by Herbert Weaver and Marvin A. Rapp (1945), 169 pages——一部中国战区第十四航空队研究，不是达尔文研究**。与该战区真正相关的是 **No. 111《(U) Army Air Action in the Philippines and Netherlands East Indies, 1941-1942》, by Richard L. Watson, Jr. (1945), 300 pages**（IRIS 00467695 / 467695.pdf）。因此审查意见中的「HS-109」是编号误指：若用它支撑达尔文机种，会构成对来源的误归属，违反内容政策「不得虚构来源/定位」。
+
+对 HS-111 的取用尝试（attempt 7）：GPO 的 `467695.pdf` 经 `web_fetch` 返回 `unsupported content type "application/pdf"`；文本代理 `r.jina.ai` 返回空正文（无 OCR 文本）；Internet Archive 检索无该研究副本。**因此 HS-111 未能读取，不能引用、不能给页码。** 本任务**不**为「USAF Historical Study 109」或其他未读的 USAF 研究建立 claim、locator 或 `sources[]` 记录；达尔文争议只由实际读过的 ONI p.36/p.38 与 USSBS p.30 承载。
 
 因此本教材确认的只有一件更有把握的事：**已读的两份官方来源对这批飞机的机种与平台存在实质分歧**——ONI p.38 称之为第一波高空水平轰炸机（同段又说其体型「表明以航母或水上飞机母舰为基地」），ONI p.36 自己记录了「别处又被描述为重型轰炸机」，USSBS p.30 则称使用四艘航母的舰载机。这是有据可查的分歧。
 
-关于那份 1948 年研究：正文只以「另一份战后航空研究」这种**不点名**的说法概括，**没有为它建立 claim、没有引用页码、没有写进 `sources[]`**。`content/history.json` 中已确认不再出现 `109`、`HS-109`、`Historical Study`、`USAF` 或「空军历史研究」任何字样（attempt 5 与 attempt 6 均已逐项 grep 核实为 0 处）。
+关于这份 USAF 研究：它在 attempt 6 之前曾以「另一份战后航空研究」的**不点名**说法出现在正文/claim 中；attempt 6 已删除该提及。attempt 7 复核 `content/history.json` 中不存在对它的任何指代，也没有为它建立 claim、引用页码或写入 `sources[]`：`109`、`HS-109`、`Historical Study`、`USAF`、「空军历史研究」均为 0 处（attempt 7 实际 grep 见 delta 报告 §4.5）。此前本文件一处写「已删除」、另一处仍写「正文以不点名说法概括」，是前后不一致的旧文本，attempt 7 已统一为本段表述。
 
-**如果后续任务想点名称引那份研究**：必须先取得其正文并建立带真实页码的 `source` 记录，否则不得写回内容。审查意见中出现过的来源名称，其本身不能当作已核实的依据。
+**如果后续任务要引用 USAF 研究**：只能引用与达尔文/荷属东印度战场相关的 **HS-111**，且必须先取得其正文并建立带真实页码的 `source` 记录；**HS-109 与达尔文无关，不得引用**。审查意见中出现过的来源名称与编号，其本身不能当作已核实的依据。
 
 
 ## 5. 五位指挥官档案的取材说明
@@ -276,9 +304,9 @@ attempt 5 为四位在早期扩张战役中实际做决定的盟军指挥官与�
 
 ## 6. 本阶段未交付的内容（明确声明）
 
-### 6.1 attempt 6 提交前的实际内容状态
+### 6.1 attempt 7 提交前的实际内容状态
 
-以下计数是 attempt 6 提交前的实测值（attempt 5 之后实体计数未变）：
+以下计数是 attempt 7 提交前的实测值（attempt 5 之后实体计数与 claims 结构未变）：
 
 | 集合 | 数量 | 说明 |
 |---|---:|---|
@@ -332,7 +360,7 @@ attempt 5 为四位在早期扩张战役中实际做决定的盟军指挥官与�
 
 ## 9. 剩余已知限制（同步复核后仍然成立）
 
-以下限制在 attempt 5 同步与 attempt 6 修正中复核，均**未被解决**，后续任务不得把它们当作已完成：
+以下限制在 attempt 5 同步、attempt 6 修正与 attempt 7 修正中复核，均**未被解决**，后续任务不得把它们当作已完成：
 
 1. **关岛只有计划层，没有岛级战斗细节**：守军兵力、登陆具体时刻与地点、抵抗持续时间、双方伤亡在日方文件译文与美方战后报告中均无系统记载，因此正文一律不写（正文以史料沉默的历史表述呈现，不用「资料不足」式说明）。有据可查的只有谁去夺、谁去守、从何出发、按何顺序、代号为何。
 2. **达尔文的投送平台身份存在来源冲突**：USSBS 称「四艘航母的舰载机」，ONI 自身对同一批飞机既有「舰载机」又有「重型轰炸机」「航母或水上飞机母舰」的说法，登记为 `disputed`。
@@ -343,9 +371,10 @@ attempt 5 为四位在早期扩张战役中实际做决定的盟军指挥官与�
 7. **未取得任何中文语种档案来源**；中国战场部分依据 FRUS 与博物馆综述。
 8. **香港战役双方总伤亡未列**（报告附录 H 未逐条提取）。
 9. **印度洋两次打击没有逐次战果**；报告仅记「都取得了成功」，合计数字不能分配给这两天；战略意图在现有材料中无法确认，已列为开放问题。
-10. **1948 年美国空军历史研究（USAF Historical Study 109）未取得**：本任务不引用、不建立 claim、不写页码；达尔文争议由已读的 ONI 与 USSBS 承载。
-11. **站点侧消费者仍读取旧字段 `earlyCampaignAnalysis`**，未消费本内容已迁移的 `analysisProfiles`；因此站点当前不渲染早期战役分析块。这是消费者待更新项（`src/` 不在本任务写权限内），已登记在 `docs/research/hist01-delta-report.md`。
+10. **审查意见所称「USAF Historical Study 109」是编号误指**：AFHRA 索引显示 No.109 是中国战区第十四航空队研究；真正相关的 No.111（Watson, 1945）未取得正文。本任务不引用、不建立 claim、不写页码；达尔文争议由已读的 ONI 与 USSBS 承载（见 §4.2、§1.9）。
+11. **站点侧消费者状态**：在已接受集成基线 8b0ca6a 上，站点读取旧字段 `earlyCampaignAnalysis`，不渲染 `analysisProfiles`；当前工作树 HEAD 另含未接受的 MAP-00，把渲染改为十键 `analysisProfiles`。本任务不依赖 MAP-00，只登记状态（见 §0.3 与 delta 报告未解决项）。
 12. **研究过程措辞的合法位置**：过程状态只允许写在 9 个事件的 `researchStatus` 与本文件；`sources[].reliabilityNote` 仍保留来源取舍的元数据说明（例如南云条目的低权重说明），它不属于正文/事件 summary/claim 文本。
+13. **正文去编辑口吻的范围**：attempt 7 只清理了本任务承认范围（9 个早期扩张事件及其 claims）内的检索-可定位与编辑口吻；HIST-00 已接受内容（第 1 部分事件、人物、专题、问题**及其 claims**）中的教学性「教材/读者」等表述**未改写**（[职责边界] 禁止改写 HIST-00 已接受内容）。
 
 ## 10. 结构性验证 ≠ 可读性评审（重申）
 
