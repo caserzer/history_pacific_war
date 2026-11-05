@@ -76,7 +76,8 @@
  *   B4-order / B4-no-legacy / B4-no-undefined / B4-<key>-heading|body|evidence（逐节）/
  *   B4-research-status / B4-adapter-{count,keys,evidence,evidence-blocks,no-legacy} /
  *   B4-M-{load,only-profiles,section,count,keys,order,no-legacy,no-undefined,
- *   <key>-heading|body|evidence} / B4-legacy-not-rendered；另有 GRAPH-1..4。
+ *   <key>-heading|body|evidence} / B4-legacy-not-rendered；另有 GRAPH-1..4
+ *   （含 MAP-01 a2 新增的 GRAPH-2-negative 反向自证）。
  *
  * 四、checkAtlas 的唯一归属
  * ---------------------------------------------------------------------------
@@ -179,6 +180,74 @@
  *      `split('\n')` 行号或区间切片；中央 project worktree 用 core.autocrlf 检出（CRLF），
  *      本机 worktree 是 LF，同一自检必须在两种检出下给出相同结果。函数体提取只允许
  *      使用 extractFunctionSource()（内部已归一化）。NAV-7 用 CRLF 变体做真实断言。
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MAP-01 交付：真实内容接入地图与三大战役分阶段推演（本文件增量，PART 2 · WEB）
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 数据基线：HIST-04 已接受内容 content/history.json（fixtureOnly=false）：
+ *   珍珠港 3 阶段 / 珊瑚海 4 阶段 / 中途岛 5 阶段 = 12 个阶段；每阶段都带双方
+ *   knownEnemy / unknownEnemy / decision / consequence 与示意航线（MAP1-phase-fields /
+ *   MAP1-routes 逐阶段断言）。本任务不生成内容、不改契约、不生成虚构航迹。
+ *
+ * 站点侧增量（src/，本文件对应断言名）：
+ *   - 战役选择器（Atlas）：data-battle-select / data-atlas-battle / data-atlas-battle-count；
+ *     断言 MAP1-atlas-selector / MAP1-atlas-default-battle。
+ *   - 「#/atlas?battle=<battleId>&phase=<phaseId>」深链定位阶段（路由 buildHref 支持
+ *     battle/phase；AtlasView → Atlas initialBattleId/initialPhaseId）：
+ *     断言 MAP1-<battleId>-deep-link / MAP1-<battleId>-intel。
+ *   - 阶段控件与播放/暂停/前后/时间轴（既有 MAP-00 控件复用）：
+ *     断言 MAP1-<battleId>-controls / MAP1-<battleId>-playback / -routes。
+ *   - 从地图跳叙述（data-phase-action="narrative"）与从叙述回地图阶段
+ *     （战役页每阶段 data-phase-map-link → #/atlas?battle=&phase=）：
+ *     断言 MAP1-<battleId>-narrative-link / -narrative-phase-links。
+ *   - 图例 / 比例尺 / 经纬网 / 双方视觉编码 / 不确定范围（MAP-00 引擎能力）：
+ *     断言 MAP1-atlas-{legend,scalebar,graticule,uncertainty,keyboard-touch}。
+ *   - 验收要求的重点标签（夏威夷 / 中途岛 / 菲律宾 / 新加坡 / 马来亚 / 关岛 / 威克岛 /
+ *     澳大利亚北部 + 相关海域）：MAP1-node-<标签> 断言**字面标签**出现在渲染输出中，
+ *     并在消息里写明承载来源（地点标签第一/二行 vs 区域标注层）；MAP1-node-<标签>-detail
+ *     断言地点详情可发现历史名+现代名；MAP1-seas 断言海域标签。
+ *   - 区域标注层（src/atlas/regions.ts，MAP-01 地理标注）：区域名锚定到真实 place
+ *     （不新增坐标/史实）。「澳大利亚北部」由该层以 SVG <text> 字面渲染：
+ *     断言 MAP1-region-layer / MAP1-region-anchor-guard（锚点缺失时不渲染，证明数据驱动）。
+ *   - 时间线日期筛选（#/timeline?date=YYYY-MM-DD → 事件筛选，稳定控件
+ *     data-timeline-date-*）：断言 MAP1-timeline-{controls,date,count,events,reset}。
+ *   - 六入口在真实完整内容上正常显示：断言 MAP1-entry-<view>（覆盖六入口）。
+ *   既有 LEAK-* 组继续保证发布路由无 fixture 事实（本任务新增 UI 文案不引入夹具内容）。
+ *   诚实性说明：MAP1-phase-fields / MAP1-routes 是内容 JSON 结构 gate；MAP1-<battleId>-playback
+ *   是状态机层断言（与组件同一纯函数实现，未在浏览器中真实点击）；它们在消息里显式标注
+ *   所证明的范围，不冒充浏览器交互验证。
+ *
+ *   - MAP-01 attempt 2（post-merge check failure 修正）：并行 MEDIA-01 在集成中新增
+ *     content/media.json 后，宽 glob `content/*.json` 把它打进渲染 bundle，旧 GRAPH-2
+ *     只认 content/history.json 精确路径 → 误判为 unexpected 而 FAIL。修正两点：
+ *       1) src/content/loader.ts 的 glob 收窄为唯一内容源 `content/history.json`
+ *          （站点不消费媒体注册表；内容缺失仍返回空集 → D2 诚实未加载路径不变）；
+ *       2) GRAPH-2 分类抽出为 classifyRenderGraphModule()，**按类别**判定
+ *          content/ 下任意 `.json` 为 content-data（不写死文件名）；
+ *       3) 新增 GRAPH-2-negative：正样本（history/media.json、src 业务模块）被接受，
+ *          越界样本（/etc/passwd、scripts/、content/notes.txt、public/、vite.config.ts、
+ *          index.html、node_modules/）仍判 unexpected —— 证明放宽白名单后判据仍有牙齿。
+ *
+ *   - MAP-01 attempt 3（chief-architect 驳回修正）：比例尺几何错误。旧实现把
+ *     `scaleBarKm(110, projection)` 返回的**公里数**当 user unit 用（`x2 = scaleKm/zoom`），
+ *     真实内容下 zoom=1 会画出约 4000 user units 的线（视口仅 640），且旧断言只查
+ *     `data-layer="scalebar"` 与 `≈ N km` 文本 → 把坏元素认证为通过。修正：
+ *       1) src/atlas/projection.ts 新增 scaleBarGeometry(projection, zoom, targetPx) →
+ *          { km, screenLength, ... }，线长与标签由**同一个** km 派生（单位链：
+ *          1 屏幕 user unit = KM_PER_DEGREE / (projection.scale * zoom) km）；
+ *          scaleBarKm 增加可选 zoom 参数（默认 1，兼容旧调用）；
+ *       2) src/atlas/mapEngine.tsx 的比例尺 `<line x2>` 直接使用 screenLength、标签用
+ *          未除 zoom 的 km，并暴露 data-scalebar-{km,length,zoom,projection-scale}；
+ *       3) MAP1-atlas-scalebar 改为**几何断言**：解析 SSR 输出的线端点/标签，断言
+ *          对应性（反推 km ≈ 标签 km）与尺寸合理（屏幕线长 60–160 user units）；
+ *       4) MAP1-atlas-scalebar-zoom：受控 transform=4 再渲染一次，断言同一判据；
+ *       5) MAP1-atlas-scalebar-negative：把旧缺陷几何喂给同一判据，断言必须 FAIL。
+ *      `uncertaintyRadius` 的维度审计：`(radiusKm / KM_PER_DEGREE) * projection.scale`
+ *      是 km→度→user unit 的正确换算（且位于缩放组内，随 zoom 一起缩放），无同类错误。
+ *
+ * 扩展约定补充（MAP-01）：地图/时间线的**稳定 data-* 控件属性**属于 WEB 展示契约；
+ * 新增地图展示只在 PART 2 增加渲染断言，字段来源仍是同一份 content/history.json，
+ * 不得为地图另建数据源或手写 URL（一律 buildHref）。
  *
  * 每个检查都打印 PASS/FAIL；本文件没有 SKIP 状态。负例检查（negative case）是刻意
  * 构造的错误输入，用来证明检查本身有效。
@@ -355,6 +424,7 @@ const RUNTIME_EXPORTS = {
     'svgTransform',
     'uncertaintyRadius',
     'scaleBarKm',
+    'scaleBarGeometry',
     'toUserSpace',
   ],
   'atlas/mapEngine.tsx': ['AtlasMapEngine'],
@@ -689,13 +759,15 @@ function renderApp(M, { content, route }) {
       case 'overview':
         return h(M.OverviewView);
       case 'timeline':
-        return h(M.TimelineView, { eventId: route.id });
+        // MAP-01：route.date 让验证器复用真实站点的「时间线日期筛选」路径（#/timeline?date=…）。
+        return h(M.TimelineView, { eventId: route.id, initialDate: route.date ?? null });
       case 'battles':
         return h(M.BattlesView, { battleId: route.id });
       case 'people':
         return h(M.PeopleView, { personId: route.id });
       case 'atlas':
-        return h(M.AtlasView, { placeId: route.id });
+        // MAP-01：route.battle / route.phase 让验证器复用真实站点的「#/atlas?battle=&phase=」深链路径。
+        return h(M.AtlasView, { placeId: route.id, battleId: route.battle ?? null, phaseId: route.phase ?? null });
       case 'concepts':
         return h(M.ConceptsView, { conceptId: route.id });
       case 'questions':
@@ -2099,6 +2171,596 @@ function checkPublishedRouteFixtureLeakage(M) {
       `LEAK-${spec.view}-match`,
       realRenderOk && detailHtml !== fixtureDetailHtml,
       `发布路由 ${spec.label} 详情渲染与真实内容加载一致：真实内容渲染 ${detailHtml.length} 字节，夹具内容渲染同一路由 ${fixtureDetailHtml.length} 字节（输出随加载内容变化，不是固定/夹具输出）`,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// MAP-01. 真实内容地图接入与三大战役分阶段推演　【PART 2 · WEB 渲染图/展示断言】
+// ---------------------------------------------------------------------------
+//
+// 数据：已接受的 HIST-04 真实内容 content/history.json（fixtureOnly=false）：
+//   珍珠港 / 珊瑚海 / 中途岛三场重点战役共 12 个地图阶段；每阶段都带双方
+//   knownEnemy / unknownEnemy / decision / consequence 与示意航线。
+// 本组断言只走**站点真实渲染路径**（M.loadContent → renderApp → AtlasView / Atlas /
+// mapEngine / controls、TimelineView），字段值一律从真实内容对象读取后再断言其渲染，
+// 不硬编码任何史实措辞，也不引入夹具事实。
+//
+// 断言 ID：
+//   MAP1-content / MAP1-load / MAP1-battles / MAP1-phases
+//   MAP1-phase-fields / MAP1-routes（内容 JSON 结构 gate，消息注明「非渲染」并由 -intel/-routes 覆盖呈现）
+//   MAP1-atlas-*（engine / selector / default-battle / date / legend / scalebar / graticule /
+//                uncertainty / keyboard-touch / place-clickable / stable-selectors）
+//   MAP1-atlas-scalebar（几何断言：解析 SSR 的线端点与标签，断言 线长↔标签对应性 + 尺寸合理）
+//   MAP1-atlas-scalebar-zoom（受控 transform=4 再渲染，断言同一几何判据）
+//   MAP1-atlas-scalebar-negative（旧缺陷几何喂同一判据必须 FAIL —— 证明判据有牙齿）
+//   MAP1-node-<标签> 与 MAP1-node-<标签>-detail（验收要求的八个重点标签：断言**字面标签**
+//                出现在渲染输出中，并写明由地点标签第一/二行还是区域标注层承载）
+//   MAP1-region-layer（SVG 区域标注层渲染字面区域名「澳大利亚北部」）
+//   MAP1-region-anchor-guard（锚点不存在时不渲染区域标签 → 标签由真实地点派生，不兜造坐标）
+//   MAP1-seas（相关海域/海峡，历史名+现代名以字面文字渲染）
+//   MAP1-<battleId>-{deep-link,intel,controls,routes,narrative-link,playback}
+//   MAP1-<battleId>-narrative-<phaseId>-map-link（从叙述定位到地图阶段）
+//   MAP1-entry-<view>（六入口在真实完整内容上正常显示）
+//   MAP1-timeline-{controls,date,count,events,reset}（时间线日期筛选 → 事件筛选）
+// 诚实性：MAP1-phase-fields / MAP1-routes 是内容 JSON 结构 gate；MAP1-<battle>-playback 是
+// 状态机层断言（与组件同一实现，未在浏览器中真实点击）——三者在消息里显式说明所证明的范围。
+
+/** 渲染真实内容的一条路由并返回 HTML（renderApp 与站点使用同一外壳 + 视图）。 */
+function renderRealRoute(M, realState, route) {
+  return renderApp(M, { content: realState, route: { query: '', ...route } }).html;
+}
+
+/** 重点战役的固定顺序（已接受内容中的稳定 ID；缺失由 MAP1-battles 直接 FAIL）。 */
+const MAP1_FOCUS_BATTLE_IDS = ['battle-pearl-harbor', 'battle-coral-sea', 'battle-midway'];
+
+/**
+ * 验收要求标注的重点标签（区域/地名 + 相关海域）：
+ * - `satisfiedBy` 记录该标签在**渲染输出**里由什么承载，消息里如实写明；
+ * - 非 region 标签由真实 place 的历史名/现代名/国家字段提供，`keyword` 用于解析锚点 place；
+ * - `regionId` 标签由 MAP-01 区域标注层提供（src/atlas/regions.ts，锚定到真实 place，
+ *   不新增坐标/史实）；旧提交只断言了「达尔文」关键词，没有断言验收要求的字面区域名，
+ *   NAV 这里改为**断言字面标签真的出现在渲染输出中**。
+ */
+const MAP1_REQUIRED_LABELS = [
+  { label: '夏威夷', keyword: '夏威夷', satisfiedBy: '地点标签第二行（现代名「瓦胡岛（美国夏威夷州）」含「夏威夷」）' },
+  { label: '中途岛', keyword: '中途岛', satisfiedBy: '地点标签第一行（历史地名「中途岛」）' },
+  { label: '菲律宾', keyword: '菲律宾', satisfiedBy: '地点标签第二行（现代名 · 国家字段「马尼拉 · 菲律宾」）' },
+  { label: '新加坡', keyword: '新加坡', satisfiedBy: '地点标签第一行（历史地名「新加坡（英属海峡殖民地）」）' },
+  { label: '马来亚', keyword: '马来亚', satisfiedBy: '地点标签第一行（历史地名「马来亚（英属）」）' },
+  { label: '关岛', keyword: '关岛', satisfiedBy: '地点标签第一行（历史地名「关岛」）' },
+  { label: '威克岛', keyword: '威克岛', satisfiedBy: '地点标签第一行（历史地名「威克岛」）' },
+  {
+    label: '澳大利亚北部',
+    keyword: '达尔文',
+    regionId: 'region-northern-australia',
+    satisfiedBy: '区域标注层（data-region-id="region-northern-australia"，以 place-darwin 为锚点的区域名，不是精确边界）',
+  },
+];
+
+/** 六入口（用于真实内容渲染断言）。 */
+const MAP1_ENTRIES = [
+  ['timeline', '时间线', 'events'],
+  ['battles', '战役', 'battles'],
+  ['people', '人物', 'people'],
+  ['atlas', '地图', 'places'],
+  ['concepts', '知识专题', 'concepts'],
+  ['questions', '历史问题', 'questions'],
+];
+
+/**
+ * 从 SSR 输出解析比例尺几何（线端点 + 标签 + data-* 审计属性；解析失败返回 null）。
+ *
+ * 比例尺 `<g data-layer="scalebar">` 内只有 rect/line/text、无嵌套 `<g>`，因此可按首个
+ * `</g>` 安全截取；线端点取 `<line>` 的 x1/x2，标签取文本 `≈ N km`。
+ */
+function parseRenderedScaleBar(html) {
+  const source = String(html);
+  const groupMatch = source.match(/<g[^>]*data-layer="scalebar"[^>]*>[\s\S]*?<\/g>/);
+  if (!groupMatch) return null;
+  const group = groupMatch[0];
+  const attr = (name) => {
+    const match = group.match(new RegExp(`${name}="([^"]+)"`));
+    return match ? Number(match[1]) : null;
+  };
+  const lineMatch = group.match(/<line[^>]*x1="([-\d.]+)"[^>]*y1="[-\d.]+"[^>]*x2="([-\d.]+)"/);
+  const labelMatch = group.match(/≈\s*([\d.]+)\s*km/);
+  return {
+    x1: lineMatch ? Number(lineMatch[1]) : null,
+    x2: lineMatch ? Number(lineMatch[2]) : null,
+    labelKm: labelMatch ? Number(labelMatch[1]) : null,
+    dataKm: attr('data-scalebar-km'),
+    dataLength: attr('data-scalebar-length'),
+    zoom: attr('data-scalebar-zoom'),
+    projectionScale: attr('data-scalebar-projection-scale'),
+    targetPx: attr('data-scalebar-target-px'),
+  };
+}
+
+/**
+ * 比例尺几何判据（MAP1-atlas-scalebar* 的唯一判定）—— MAP-01 attempt 3 修正。
+ *
+ * 比例尺位于缩放组之外（`<svg>` 直接子节点），所以**屏幕线长 = |x2 - x1|（不再乘 zoom）**；
+ * 屏幕 user unit → km：`KM_PER_DEGREE / (projection.scale * zoom)`。
+ * 判据（任一不满足即 FAIL）：
+ *   1) 对应性：线长反推的 km 与标签 km 一致（容差 max(1 km, 1%)）；
+ *   2) 尺寸合理：屏幕线长在 60–160 user units（不是旧缺陷的 4000），且不超过视口宽度。
+ * 该函数同时被 MAP1-atlas-scalebar-negative 用来喂**旧的错误几何**，证明判据有牙齿。
+ */
+function evaluateScaleBarGeometry({ x1, x2, zoom, projectionScale, labelKm, kmPerDegree, viewportWidth }) {
+  const screenLength = Math.abs(x2 - x1);
+  const impliedKm = (screenLength * kmPerDegree) / (projectionScale * zoom);
+  const tolerance = Math.max(1, labelKm * 0.01);
+  const correspondence = Math.abs(impliedKm - labelKm) <= tolerance;
+  const sanity = screenLength >= 60 && screenLength <= 160 && screenLength <= viewportWidth;
+  return { ok: correspondence && sanity, screenLength, impliedKm, correspondence, sanity, tolerance };
+}
+
+function checkRealContentMapIntegration(M) {
+  // ---------------------------------------------------------------- 真实内容输入
+  const realDoc = loadRealContentDocument();
+  check(
+    'MAP1-content',
+    Boolean(realDoc) && realDoc.fixtureOnly === false,
+    '真实内容 content/history.json 存在且 fixtureOnly=false（MAP-01 的唯一地图数据源）',
+  );
+  if (!realDoc) {
+    fail('MAP1', '真实内容缺失：无法执行真实内容地图/战役推演检查（前置条件缺失必须失败，不得跳过）');
+    return;
+  }
+  const realState = M.loadContent({ '/virtual/content/history.json': realDoc });
+  check(
+    'MAP1-load',
+    realState.status === 'available' && realState.doc !== null,
+    `真实内容经真实加载器 loadContent 得到发布状态（状态 ${realState.status}）`,
+  );
+  if (!realState.doc) {
+    fail('MAP1', '真实内容无法加载：渲染检查未执行（必须失败）');
+    return;
+  }
+  const doc = realState.doc;
+
+  // ---------------------------------------------------------------- 三场重点战役 / 12 阶段
+  const focusBattles = MAP1_FOCUS_BATTLE_IDS.map((id) => (doc.battles ?? []).find((battle) => battle.id === id) ?? null);
+  check(
+    'MAP1-battles',
+    focusBattles.every(Boolean),
+    `真实内容含三场重点战役：${MAP1_FOCUS_BATTLE_IDS.join(' / ')}（实际 battles=${(doc.battles ?? []).length} 场）`,
+  );
+  if (!focusBattles.every(Boolean)) {
+    fail('MAP1', '三场重点战役不齐：无法继续阶段推演检查（必须失败，不跳过）');
+    return;
+  }
+  const phasesOf = (battle) => M.sortPhases([...(battle.phases ?? [])]);
+  const counted = focusBattles.map((battle) => `${battle.id}=${phasesOf(battle).length}`);
+  const allPhases = focusBattles.flatMap(phasesOf);
+  check('MAP1-phases', allPhases.length === 12, `三场重点战役阶段总数 = ${allPhases.length}（${counted.join('，')}）`);
+
+  const missingFields = allPhases.filter(
+    (phase) =>
+      !(
+        phase.knownEnemy?.japan &&
+        phase.knownEnemy?.allies &&
+        phase.unknownEnemy?.japan &&
+        phase.unknownEnemy?.allies &&
+        phase.decision?.japan &&
+        phase.decision?.allies &&
+        phase.consequence?.japan &&
+        phase.consequence?.allies &&
+        phase.time?.display
+      ),
+  );
+  check(
+    'MAP1-phase-fields',
+    missingFields.length === 0,
+    `内容 JSON 结构 gate（非渲染）：每个阶段数据都含双方已知/未知敌情、时间、决策与后果（缺失字段的阶段 ${missingFields.length} 个）；这些字段的**页面呈现**由 MAP1-<battleId>-intel（真实渲染文本）断言`,
+  );
+  const badRoutes = allPhases.filter(
+    (phase) =>
+      (phase.routes ?? []).length === 0 ||
+      (phase.routes ?? []).some((route) => route.schematic !== true || !Array.isArray(route.path) || route.path.length < 2),
+  );
+  check(
+    'MAP1-routes',
+    badRoutes.length === 0,
+    `内容 JSON 结构 gate（非渲染）：每个阶段的航线都标记 schematic=true 且路径 ≥2 点（不合格阶段 ${badRoutes.length} 个；不生成虚构精确航迹）；页面上的示意航线与「不是精确历史航迹」声明由 MAP1-<battleId>-routes 断言`,
+  );
+
+  // ---------------------------------------------------------------- 地图入口（真实内容）
+  const atlasList = renderRealRoute(M, realState, { view: 'atlas', id: null });
+  check(
+    'MAP1-atlas-engine',
+    atlasList.includes('data-atlas-engine') && atlasList.includes('data-atlas-canvas') && atlasList.includes('<svg'),
+    '真实内容下渲染本地自绘 SVG 地图引擎（离线，无外部瓦片/商业 Key）',
+  );
+  const selectorIds = [...atlasList.matchAll(/data-battle-select="([^"]+)"/g)].map((match) => match[1]);
+  check(
+    'MAP1-atlas-selector',
+    MAP1_FOCUS_BATTLE_IDS.every((id) => selectorIds.includes(id)) && selectorIds.length === MAP1_FOCUS_BATTLE_IDS.length,
+    `地图渲染战役选择器并覆盖三场重点战役（实际：${selectorIds.join(' / ')}）`,
+  );
+  check(
+    'MAP1-atlas-default-battle',
+    atlasList.includes(`data-atlas-battle="${MAP1_FOCUS_BATTLE_IDS[0]}"`),
+    `地图默认选中第一场重点战役 ${MAP1_FOCUS_BATTLE_IDS[0]}（data-atlas-battle 可观察）`,
+  );
+  check(
+    'MAP1-atlas-date',
+    /data-atlas-active-date="[^"]+"/.test(atlasList),
+    '地图根节点暴露当前阶段日期（data-atlas-active-date），可供浏览器测试观察时间联动',
+  );
+  check(
+    'MAP1-atlas-legend',
+    atlasList.includes('data-certainty-legend') &&
+      atlasList.includes('data-side-encoding="japan"') &&
+      atlasList.includes('data-side-encoding="allies"') &&
+      atlasList.includes('示意'),
+    '图例齐全：certainty 图例 + 双方不同视觉编码（形状/线型，不只靠颜色）+ 示意说明',
+  );
+  // ---- 近似比例尺（MAP-01 attempt 3 修正：断言几何，而不是「元素存在」）--------
+  // 真实内容 places 与 AtlasView 传入的同一批地点（排序不影响 boundsForPlaces）。
+  const realPlaces = [...doc.places];
+  const realBounds = M.boundsForPlaces(realPlaces);
+  const realProjection = M.createProjection(realBounds);
+  const renderedScaleBar = parseRenderedScaleBar(atlasList);
+  const evaluatedScaleBar =
+    renderedScaleBar === null
+      ? null
+      : evaluateScaleBarGeometry({
+          x1: renderedScaleBar.x1,
+          x2: renderedScaleBar.x2,
+          zoom: renderedScaleBar.zoom,
+          projectionScale: renderedScaleBar.projectionScale,
+          labelKm: renderedScaleBar.labelKm,
+          kmPerDegree: M.KM_PER_DEGREE,
+          viewportWidth: M.VIEW_WIDTH,
+        });
+  const expectedScaleBarZoom1 = M.scaleBarGeometry(realProjection, 1, 110);
+  check(
+    'MAP1-atlas-scalebar',
+    Boolean(renderedScaleBar && evaluatedScaleBar) &&
+      renderedScaleBar.x1 === 0 &&
+      Math.abs((renderedScaleBar.zoom ?? -1) - 1) < 1e-6 &&
+      Math.abs((renderedScaleBar.x2 ?? -1) - expectedScaleBarZoom1.screenLength) < 1e-6 &&
+      (renderedScaleBar.labelKm ?? -1) === expectedScaleBarZoom1.km &&
+      (renderedScaleBar.dataKm ?? -1) === expectedScaleBarZoom1.km &&
+      Math.abs((renderedScaleBar.dataLength ?? -1) - expectedScaleBarZoom1.screenLength) < 0.01 &&
+      Math.abs((renderedScaleBar.projectionScale ?? -1) - realProjection.scale) < 1e-6 &&
+      evaluatedScaleBar.ok,
+    `近似比例尺几何（zoom=1）：屏幕线长 ${evaluatedScaleBar?.screenLength.toFixed(1)} user units ↔ 标签 ≈${renderedScaleBar?.labelKm} km；按投影反推 ${evaluatedScaleBar?.impliedKm.toFixed(1)} km（对应性 ${evaluatedScaleBar?.correspondence}，容差 ±${evaluatedScaleBar?.tolerance.toFixed(2)} km；尺寸合理 ${evaluatedScaleBar?.sanity}，60–160 units）；与 scaleBarGeometry() 期望一致（km=${expectedScaleBarZoom1.km}，length=${expectedScaleBarZoom1.screenLength.toFixed(1)}，projection.scale=${realProjection.scale.toFixed(4)}）`,
+  );
+
+  // 第二个缩放：直接渲染引擎的受控 transform=4，证明同一几何在其它 zoom 下仍成立。
+  const scaleZoom = 4;
+  const scaleZoomHtml = renderStatic(
+    h(M.AtlasMapEngine, {
+      places: realPlaces,
+      bounds: realBounds,
+      phase: null,
+      battleTitle: undefined,
+      selectedPlaceId: null,
+      onSelectPlace: () => {},
+      layers: M.DEFAULT_LAYERS,
+      onLayersChange: () => {},
+      transform: M.zoomByFactor(M.IDENTITY_TRANSFORM, scaleZoom),
+      label: '比例尺几何断言（zoom=4）',
+    }),
+  );
+  const renderedScaleBarZoom = parseRenderedScaleBar(scaleZoomHtml);
+  const evaluatedScaleBarZoom =
+    renderedScaleBarZoom === null
+      ? null
+      : evaluateScaleBarGeometry({
+          x1: renderedScaleBarZoom.x1,
+          x2: renderedScaleBarZoom.x2,
+          zoom: renderedScaleBarZoom.zoom,
+          projectionScale: renderedScaleBarZoom.projectionScale,
+          labelKm: renderedScaleBarZoom.labelKm,
+          kmPerDegree: M.KM_PER_DEGREE,
+          viewportWidth: M.VIEW_WIDTH,
+        });
+  const expectedScaleBarZoom4 = M.scaleBarGeometry(realProjection, scaleZoom, 110);
+  check(
+    'MAP1-atlas-scalebar-zoom',
+    Boolean(renderedScaleBarZoom && evaluatedScaleBarZoom) &&
+      Math.abs((renderedScaleBarZoom?.zoom ?? -1) - scaleZoom) < 1e-6 &&
+      Math.abs((renderedScaleBarZoom?.x2 ?? -1) - expectedScaleBarZoom4.screenLength) < 1e-6 &&
+      (renderedScaleBarZoom?.labelKm ?? -1) === expectedScaleBarZoom4.km &&
+      evaluatedScaleBarZoom.ok,
+    `近似比例尺几何（zoom=${scaleZoom}）：屏幕线长 ${evaluatedScaleBarZoom?.screenLength.toFixed(1)} user units ↔ 标签 ≈${renderedScaleBarZoom?.labelKm} km；按投影反推 ${evaluatedScaleBarZoom?.impliedKm.toFixed(1)} km（对应性 ${evaluatedScaleBarZoom?.correspondence}，容差 ±${evaluatedScaleBarZoom?.tolerance.toFixed(2)} km；尺寸合理 ${evaluatedScaleBarZoom?.sanity}）；与 scaleBarGeometry() 期望一致（km=${expectedScaleBarZoom4.km}，length=${expectedScaleBarZoom4.screenLength.toFixed(1)}）`,
+  );
+
+  // 判据反向自证：旧的缺陷几何（x2 = 旧 km/zoom，标签也被除 zoom）用同一判据必须 FAIL。
+  const oldScaleBarKm = M.scaleBarKm(110, realProjection, 1);
+  const oldScaleBar = {
+    x1: 0,
+    x2: oldScaleBarKm / 1,
+    zoom: 1,
+    projectionScale: realProjection.scale,
+    labelKm: Math.round(oldScaleBarKm / 1),
+  };
+  const evaluatedOldScaleBar = evaluateScaleBarGeometry({
+    ...oldScaleBar,
+    kmPerDegree: M.KM_PER_DEGREE,
+    viewportWidth: M.VIEW_WIDTH,
+  });
+  check(
+    'MAP1-atlas-scalebar-negative',
+    evaluatedOldScaleBar.ok === false &&
+      evaluatedScaleBar !== null &&
+      evaluatedScaleBar.ok === true &&
+      evaluatedScaleBarZoom !== null &&
+      evaluatedScaleBarZoom.ok === true,
+    `比例尺判据反向自证：旧缺陷公式（x2 = 旧 scaleKm/zoom，标签也除 zoom）在同一判据下 FAIL —— 屏幕线长 ${evaluatedOldScaleBar.screenLength.toFixed(1)} user units、标签 ≈${oldScaleBar.labelKm} km、反推 ${evaluatedOldScaleBar.impliedKm.toFixed(0)} km（对应性 ${evaluatedOldScaleBar.correspondence} / 尺寸合理 ${evaluatedOldScaleBar.sanity}）；修正后的真实输出（zoom=1 与 zoom=${scaleZoom}）均通过同一判据 —— 判据不是「元素存在」`,
+  );
+  check(
+    'MAP1-atlas-graticule',
+    atlasList.includes('data-layer="graticule"') && atlasList.includes('data-layer-toggle="graticule"'),
+    '经纬网图层渲染且可切换（data-layer="graticule"）',
+  );
+  check(
+    'MAP1-atlas-uncertainty',
+    atlasList.includes('data-layer="uncertainty"') && atlasList.includes('data-uncertainty-radius-km'),
+    '不确定范围可见（data-uncertainty-radius-km）且标注为示意',
+  );
+  check(
+    'MAP1-atlas-keyboard-touch',
+    /<svg[^>]*role="application"[^>]*tabindex="0"/.test(atlasList) &&
+      atlasList.includes('使用方向键平移') &&
+      atlasList.includes('data-map-action="zoom-in"') &&
+      atlasList.includes('data-atlas-canvas'),
+    '键盘可操作性声明可见（role="application" + tabindex=0 + 方向键说明）；触摸/指针事件由 M7 与 D3 组对同一引擎断言',
+  );
+  // 地点节点可点击/可键盘激活（点击后由 AtlasView 写回 #/atlas/<placeId> 进入详情）。
+  check(
+    'MAP1-atlas-place-clickable',
+    atlasList.includes('data-place-id=')
+      && atlasList.includes('data-layer="place"')
+      && atlasList.includes('role="button"')
+      && atlasList.includes('aria-label="选择地点 ')
+      && atlasList.includes('tabindex="0"'),
+    '全部地点节点可点击/可键盘激活（role="button" + tabindex=0 + aria-label「选择地点…」，hover/title 带历史名与现代名）',
+  );
+  check(
+    'MAP1-atlas-stable-selectors',
+    [
+      'data-battle-select=',
+      'data-atlas-battle=',
+      'data-phase-action="playpause"',
+      'data-phase-action="next"',
+      'data-phase-action="prev"',
+      'data-phase-id=',
+      'data-map-action="zoom-in"',
+      'data-map-action="zoom-out"',
+      'data-map-action="reset"',
+      'data-layer-toggle="places"',
+      'data-date-range',
+    ].every((needle) => atlasList.includes(needle)),
+    '地图页暴露稳定 data-* 控件供 MAP-01 之后的浏览器测试/QA 选择（战役、阶段、缩放、图层、日期）',
+  );
+
+  // 区域标注层的实际渲染片段（用于日志自证：字面区域名出现在 SVG <text> 里）。
+  const regionTextMatch = atlasList.match(/<g[^>]*data-region-id="region-northern-australia"[^>]*>\s*<text[^>]*>([^<]*)<\/text>/);
+  const regionRenderedText = regionTextMatch?.[1] ?? '';
+  // ---------------------------------------------------------------- 重点标签与海域标注
+  // 每个验收要求的标签都必须以**字面文字**出现在渲染输出里（不只是解析到某个关键词），
+  // 并在消息中写明由哪种渲染承载（地点标签第一/二行 vs 区域标注层）。
+  const placeText = (place) => `${place.historicalName} ${place.modernName} ${place.modernCountry}`;
+  const atlasPlainText = htmlToPlainText(atlasList);
+  for (const node of MAP1_REQUIRED_LABELS) {
+    const place = doc.places.find((candidate) => placeText(candidate).includes(node.keyword));
+    const literalRendered = atlasPlainText.includes(node.label);
+    const regionRendered =
+      node.regionId === undefined ||
+      (atlasList.includes(`data-layer="region"`) &&
+        atlasList.includes(`data-region-id="${node.regionId}"`) &&
+        atlasList.includes(`data-region-label="${node.label}"`));
+    const placeRendered = Boolean(place) && atlasList.includes(place.historicalName) && atlasList.includes(place.modernName);
+    check(
+      `MAP1-node-${node.label}`,
+      literalRendered && regionRendered && placeRendered,
+      `地图以明确文字标注「${node.label}」（字面标签出现；承载：${node.satisfiedBy}）${
+        place ? `；锚点地点 ${place.id}（历史名「${place.historicalName}」/ 现代名「${place.modernName}」均渲染）` : '；未在真实 places 中找到匹配节点'
+      }${node.regionId === undefined ? '' : `；SVG 渲染片段：「<text>${regionRenderedText}</text>」`}`,
+    );
+    const detailHtml = place ? renderRealRoute(M, realState, { view: 'atlas', id: place.id }) : '';
+    check(
+      `MAP1-node-${node.label}-detail`,
+      Boolean(place) &&
+        detailHtml.includes('历史地名') &&
+        detailHtml.includes('现代地名') &&
+        detailHtml.includes(place.historicalName) &&
+        detailHtml.includes(place.modernName),
+      `地点详情可发现${node.label}的历史名与现代名（#/atlas/${place?.id ?? '—'}）`,
+    );
+  }
+  // 区域标注层本身：字面标签必须出现在 SVG 的 region 分组文本里（不是只出现在索引文字中）。
+  check(
+    'MAP1-region-layer',
+    regionRenderedText === '澳大利亚北部' &&
+      atlasList.includes('data-layer="region"') &&
+      atlasList.includes('data-anchor-place="place-darwin"') &&
+      atlasList.includes('data-atlas-region-index=""') &&
+      atlasList.includes('以达尔文港为锚点'),
+    `区域标注层：SVG 地图以 <text> 渲染字面区域名（实际渲染片段：「<text>${regionRenderedText}</text>」，data-layer="region"，锚点 data-anchor-place="place-darwin"；不新增坐标，区域名≠精确边界/舰队位置），页内索引同样可发现`,
+  );
+  // 锚点守卫：内容里没有锚点地点时不得渲染该区域标签（证明标签由真实地点派生，不兜造坐标）。
+  const minFixtureState = M.loadContent({ '/virtual/content/history.json': loadFixtureDocument(FIXTURE_MIN) });
+  const minFixtureAtlas = renderRealRoute(M, minFixtureState, { view: 'atlas', id: null });
+  check(
+    'MAP1-region-anchor-guard',
+    !minFixtureAtlas.includes('data-layer="region"') && !minFixtureAtlas.includes('澳大利亚北部'),
+    '区域标注只在真实锚点存在时渲染：valid-min 夹具没有 place-darwin → 地图不渲染「澳大利亚北部」，也不凭空生成坐标',
+  );
+  const seaPlaces = doc.places.filter((place) => place.placeType === 'sea' || place.placeType === 'strait');
+  const seaLabelsPresent = seaPlaces.filter((place) => atlasList.includes(place.historicalName) && atlasList.includes(place.modernName));
+  check(
+    'MAP1-seas',
+    seaPlaces.length >= 3 && seaLabelsPresent.length === seaPlaces.length,
+    `相关海域/海峡标注：${seaPlaces.length} 处（${seaPlaces.map((place) => place.historicalName).slice(0, 6).join('、')}${seaPlaces.length > 6 ? '…' : ''}），历史名+现代名全部以字面文字出现在地图渲染中`,
+  );
+
+  // ---------------------------------------------------------------- 三场战役：深链 + 阶段情报 + 控件
+  for (const battle of focusBattles) {
+    const phases = phasesOf(battle);
+    const chosen =
+      phases.find(
+        (phase) =>
+          phase.knownEnemy?.japan &&
+          phase.knownEnemy?.allies &&
+          phase.unknownEnemy?.japan &&
+          phase.unknownEnemy?.allies &&
+          phase.decision?.japan &&
+          phase.decision?.allies &&
+          phase.consequence?.japan &&
+          phase.consequence?.allies,
+      ) ?? phases[0];
+    const battleTitle = String(battle.title ?? '');
+    const detail = renderRealRoute(M, realState, { view: 'atlas', id: null, battle: battle.id, phase: chosen.id });
+    const detailText = normalizePlain(htmlToPlainText(detail));
+
+    check(
+      `MAP1-${battle.id}-deep-link`,
+      detail.includes(`data-atlas-battle="${battle.id}"`) &&
+        detail.includes(`data-phase-id="${chosen.id}"`) &&
+        detail.includes(`data-atlas-active-phase="${chosen.id}"`) &&
+        detail.includes(battleTitle) &&
+        detail.includes(chosen.time.display),
+      `#/atlas?battle=${battle.id}&phase=${chosen.id} 深链直接渲染该战役阶段（阶段 ${chosen.sequence}「${chosen.title}」，时间「${chosen.time.display}」）`,
+    );
+
+    const intelTexts = [
+      ['日方已知', chosen.knownEnemy.japan],
+      ['盟方已知', chosen.knownEnemy.allies],
+      ['日方未知', chosen.unknownEnemy.japan],
+      ['盟方未知', chosen.unknownEnemy.allies],
+      ['日方决策', chosen.decision.japan],
+      ['盟方决策', chosen.decision.allies],
+      ['日方后果', chosen.consequence.japan],
+      ['盟方后果', chosen.consequence.allies],
+    ];
+    const missingIntel = intelTexts.filter(([, text]) => !detailText.includes(normalizePlain(text)));
+    check(
+      `MAP1-${battle.id}-intel`,
+      missingIntel.length === 0,
+      `${battle.id} 阶段「${chosen.title}」同时显示双方已知/未知敌情、决策与后果（缺失 ${missingIntel.map(([label]) => label).join('、') || '无'}）`,
+    );
+
+    check(
+      `MAP1-${battle.id}-controls`,
+      detail.includes('data-phase-action="playpause"') &&
+        detail.includes('data-phase-action="next"') &&
+        detail.includes('data-phase-action="prev"') &&
+        detail.includes('data-date-range') &&
+        detail.includes('data-phase-counter') &&
+        /aria-pressed="(true|false)"/.test(detail),
+      `${battle.id} 地图阶段控件：播放/暂停 + 上一阶段 + 下一阶段 + 时间轴滑块 + 阶段计数 + aria-pressed`,
+    );
+
+    check(
+      `MAP1-${battle.id}-routes`,
+      detail.includes('data-layer="route"') &&
+        detail.includes('data-schematic="true"') &&
+        detail.includes('data-layer="position"') &&
+        detail.includes('data-side="japan"') &&
+        detail.includes('data-side="allies"') &&
+        detail.includes('不是精确历史航迹'),
+      `${battle.id} 阶段示意图：双方位置（日本/盟军分开编码）+ 示意航线 + 「不是精确历史航迹」声明`,
+    );
+
+    // 从地图跳转叙述（PhaseControls.narrativeHref → #/battles/<battleId>）
+    check(
+      `MAP1-${battle.id}-narrative-link`,
+      detail.includes('data-phase-action="narrative"') && detail.includes(`href="#/battles/${battle.id}"`),
+      `${battle.id} 地图阶段面板提供「阅读战役全文」链接 → #/battles/${battle.id}`,
+    );
+
+    // 播放状态机（与组件同一份实现）：真实阶段数量下的 播放/暂停/前进/后退
+    const count = phases.length;
+    const playing = M.togglePlayback(M.INITIAL_PLAYBACK, count);
+    const ticked = M.tickPlayback(playing, count);
+    const stepped = M.stepPlayback(ticked, -1, count);
+    const paused = M.togglePlayback(playing, count);
+    check(
+      `MAP1-${battle.id}-playback`,
+      playing.playing === true &&
+        ticked.activeIndex === 1 &&
+        ticked.playing === true &&
+        stepped.activeIndex === 0 &&
+        stepped.playing === false &&
+        paused.playing === false,
+      `${battle.id} 真实阶段数 ${count} 下的播放状态机层断言（调用与组件 usePhasePlayback 同一份纯函数实现，**未**在浏览器中真实点击）：播放→tick 到阶段 2→上一阶段回阶段 1（并停止播放）→暂停；控件存在性与可点击接线由 MAP1-${battle.id}-controls 断言，真实点击由下游浏览器测试覆盖`,
+    );
+
+    // 从叙述定位到地图阶段：战役详情页每个阶段都有 «在地图上查看此阶段» 深链
+    const narrative = renderRealRoute(M, realState, { view: 'battles', id: battle.id });
+    const mapLinks = phases.filter(
+      (phase) =>
+        narrative.includes(`data-phase-map-link="${phase.id}"`) &&
+        narrative.includes(`href="#/atlas?battle=${battle.id}`) &&
+        narrative.includes(`phase=${phase.id}`),
+    );
+    check(
+      `MAP1-${battle.id}-narrative-phase-links`,
+      mapLinks.length === phases.length,
+      `${battle.id} 战役叙述页的 ${phases.length} 个阶段均提供「在地图上查看此阶段」深链（实际 ${mapLinks.length} 个）`,
+    );
+  }
+
+  // ---------------------------------------------------------------- 时间线日期筛选
+  const timelineNoFilter = renderRealRoute(M, realState, { view: 'timeline', id: null });
+  check(
+    'MAP1-timeline-controls',
+    timelineNoFilter.includes('data-timeline-date-filter') &&
+      timelineNoFilter.includes('data-timeline-date-range') &&
+      timelineNoFilter.includes('data-timeline-date-display') &&
+      timelineNoFilter.includes('data-timeline-date-reset') &&
+      timelineNoFilter.includes('data-timeline-event='),
+    '时间线提供日期筛选控件（滑块 / 当前日期文案 / 全部日期按钮 / 每个事件 data-timeline-event），可被浏览器测试稳定观察',
+  );
+  const eventDates = [...new Set(doc.events.map((event) => event.startDate))].sort();
+  const middleDate = eventDates[Math.floor(eventDates.length / 2)] ?? eventDates[0];
+  const expectedIds = doc.events.filter((event) => event.startDate <= middleDate).map((event) => event.id);
+  const filteredTimeline = renderRealRoute(M, realState, { view: 'timeline', id: null, date: middleDate });
+  check(
+    'MAP1-timeline-date',
+    filteredTimeline.includes(`data-timeline-date="${middleDate}"`) &&
+      filteredTimeline.includes(`aria-valuetext="显示截至 ${middleDate} 的 ${expectedIds.length} 个事件（共 ${doc.events.length} 个）"`),
+    `#/timeline?date=${middleDate} 通过稳定控件显示所选日期与筛选后事件数（${expectedIds.length}/${doc.events.length}）`,
+  );
+  check(
+    'MAP1-timeline-count',
+    filteredTimeline.includes(`data-timeline-date-count="${expectedIds.length}"`) &&
+      filteredTimeline.includes(`data-timeline-date-total="${doc.events.length}"`),
+    `时间线日期筛选按「截至该日」筛选事件：data-timeline-date-count=${expectedIds.length}（共 ${doc.events.length}）`,
+  );
+  const renderedIds = [...filteredTimeline.matchAll(/data-timeline-event="([^"]+)"/g)].map((match) => match[1]);
+  const missingEvents = expectedIds.filter((id) => !renderedIds.includes(id));
+  const unexpectedEvents = renderedIds.filter((id) => !expectedIds.includes(id));
+  check(
+    'MAP1-timeline-events',
+    missingEvents.length === 0 && unexpectedEvents.length === 0,
+    `时间线日期筛选后渲染的事件集合与真实内容一致（应显示 ${expectedIds.length} 个，实显示 ${renderedIds.length} 个；缺 ${missingEvents.length} / 多 ${unexpectedEvents.length}）`,
+  );
+  check(
+    'MAP1-timeline-reset',
+    timelineNoFilter.includes(`data-timeline-date-count="${doc.events.length}"`) && timelineNoFilter.includes('data-timeline-date="all"'),
+    `未选日期时时间线显示全部 ${doc.events.length} 个事件（「全部日期」复位语义可观察）`,
+  );
+
+  // ---------------------------------------------------------------- 六入口在真实完整内容上正常显示
+  for (const [view, label, collection] of MAP1_ENTRIES) {
+    const collectionItems = Array.isArray(doc[collection]) ? doc[collection] : [];
+    const first = collectionItems[0] ?? null;
+    const firstText = String((first && (first.title ?? first.name ?? first.historicalName ?? first.prompt)) || '');
+    const html = renderRealRoute(M, realState, { view, id: null });
+    check(
+      `MAP1-entry-${view}`,
+      collectionItems.length > 0 &&
+        firstText.length > 0 &&
+        html.includes(firstText) &&
+        !html.includes('data-empty-state=""'),
+      `六入口之一「${label}」在真实完整内容上正常显示（${collection}=${collectionItems.length}，首条「${firstText.slice(0, 24)}」渲染，不显示空状态）`,
     );
   }
 }
@@ -3616,6 +4278,50 @@ function checkObservableInteraction(M) {
 // 要求：B4 及其派生逻辑不得把 index.html / react-dom/client 拉进 validate-site 的
 // 渲染图；渲染图必须只含业务模块。这里直接对 `buildRuntimeBundle` 记录的真实
 // 模块图做断言（不是注释承诺，也不是 grep 猜测）。
+//
+// MAP-01 attempt 2 修正（post-merge check failure）：集成新增 content/media.json 后，
+// 旧的「只认 content/history.json 精确路径」分类把它判为 unexpected → GRAPH-2 FAIL。
+// 修正为**按类别**判定：content/ 下任意 `.json` 是内容数据（content-data），不写死文件名；
+// 同时 loader 的 glob 收窄为唯一内容源 content/history.json（站点不再把媒体注册表打进
+// 渲染 bundle）。分类函数抽出为 classifyRenderGraphModule()，并由 GRAPH-2-negative
+// 用正/负样本反向自证：白名单可按类别扩展，但越界模块仍判 unexpected（GRAPH-2 仍有牙齿）。
+
+/** 渲染图模块 id 归一化（Windows 反斜杠 → 正斜杠）。 */
+function normalizeGraphId(value) {
+  return String(value ?? '').split('\\').join('/');
+}
+
+/** 渲染图分类上下文（同一份根路径，供 GRAPH-2 与反向自证共用）。 */
+function renderGraphContext() {
+  return {
+    entry: normalizeGraphId(runtimeGraph?.entry ?? ''),
+    srcPrefix: `${normalizeGraphId(SRC)}/`,
+    contentPrefix: `${normalizeGraphId(path.join(ROOT, 'content'))}/`,
+  };
+}
+
+/**
+ * 渲染图模块分类 —— GRAPH-2 的**唯一**判定实现。
+ *
+ * 允许的类别：
+ *   generated-entry    验证器生成的临时入口（位于输出根）
+ *   virtual-react-shim 验证器注入的 React 全局替身（\0pw-*）
+ *   builtin            Node 内建模块（node:*）
+ *   business           src/ 下的业务模块
+ *   content-data       content/ 下的内容 JSON：站点唯一内容源 history.json，以及未来
+ *                      任何合法新增内容 JSON（数据不是代码，但必须仍在工作树 content/ 内）
+ * 其余一律 unexpected → GRAPH-2 FAIL。类别扩展仍有边界：非 content/ 路径、content/ 下
+ * 非 .json 文件、其它工作树文件、node_modules、/etc/passwd 等仍为 unexpected。
+ */
+function classifyRenderGraphModule(rawId, context = renderGraphContext()) {
+  const id = normalizeGraphId(rawId);
+  if (context.entry !== '' && id === context.entry) return 'generated-entry';
+  if (id.startsWith('\0pw-')) return 'virtual-react-shim';
+  if (id.startsWith('node:')) return 'builtin';
+  if (context.srcPrefix !== '/' && id.startsWith(context.srcPrefix)) return 'business';
+  if (id.startsWith(context.contentPrefix) && id.endsWith('.json')) return 'content-data';
+  return 'unexpected';
+}
 
 function checkRenderGraph() {
   const graph = runtimeGraph;
@@ -3625,24 +4331,46 @@ function checkRenderGraph() {
     fail('GRAPH-2', '没有记录到渲染模块图，无法证明渲染图只含业务模块（前置条件缺失即失败，不跳过）');
     return;
   }
-  const normalize = (id) => String(id).split('\\').join('/');
-  const normalizedIds = ids.map(normalize);
-  const entry = normalize(graph.entry ?? '');
-  const srcPrefix = `${normalize(SRC)}/`;
-  const contentData = normalize(path.join(ROOT, 'content', 'history.json'));
-  const classify = (id) => {
-    if (id.startsWith('\0pw-')) return 'virtual-react-shim';
-    if (id.startsWith('node:')) return 'builtin';
-    if (entry !== '' && id === entry) return 'generated-entry';
-    if (id.startsWith(srcPrefix)) return 'business';
-    if (id === contentData) return 'content-data';
-    return 'unexpected';
-  };
-  const unexpected = normalizedIds.filter((id) => classify(id) === 'unexpected');
+  const context = renderGraphContext();
+  const normalizedIds = ids.map(normalizeGraphId);
+  const unexpected = normalizedIds.filter((id) => classifyRenderGraphModule(id, context) === 'unexpected');
   check(
     'GRAPH-2',
     unexpected.length === 0,
-    `渲染图只含业务模块 / React 全局替身 / 生成的入口（${normalizedIds.length} 个模块；不认识的模块 ${unexpected.length} 个${unexpected.length > 0 ? `：${unexpected.join(', ')}` : ''}）`,
+    `渲染图只含业务模块 / React 全局替身 / Node builtin / 生成的入口 / content 内容数据（${normalizedIds.length} 个模块；不认识的模块 ${unexpected.length} 个${unexpected.length > 0 ? `：${unexpected.join(', ')}` : ''}）`,
+  );
+  // GRAPH-2 反向自证：白名单按**类别**扩展（content/ 下合法 JSON），但必须仍有牙齿 ——
+  // 用同一分类函数断言正样本被接受、越界样本仍判 unexpected；若渲染图真的出现这些越界
+  // id，GRAPH-2 的 unexpected 计数就会 > 0 并 FAIL。
+  const positiveSamples = [
+    path.join(ROOT, 'content', 'history.json'),
+    path.join(ROOT, 'content', 'media.json'),
+    path.join(ROOT, 'src', 'Atlas.tsx'),
+    path.join(ROOT, 'src', 'content', 'loader.ts'),
+    path.join(ROOT, 'src', 'atlas', 'regions.ts'),
+  ];
+  const negativeSamples = [
+    '/etc/passwd',
+    path.join(ROOT, 'scripts', 'validate-site.mjs'),
+    path.join(ROOT, 'content', 'notes.txt'),
+    path.join(ROOT, 'public', 'favicon.svg'),
+    path.join(ROOT, 'vite.config.ts'),
+    path.join(ROOT, 'index.html'),
+    path.join(ROOT, 'node_modules', 'react', 'index.js'),
+  ];
+  const positiveOk = positiveSamples.every((sample) => {
+    const kind = classifyRenderGraphModule(sample, context);
+    return kind === 'content-data' || kind === 'business';
+  });
+  const negativeUnexpected = negativeSamples.filter((sample) => classifyRenderGraphModule(sample, context) === 'unexpected');
+  const sentinelOk =
+    classifyRenderGraphModule('\0pw-react', context) === 'virtual-react-shim' &&
+    classifyRenderGraphModule('node:fs', context) === 'builtin' &&
+    (context.entry === '' || classifyRenderGraphModule(context.entry, context) === 'generated-entry');
+  check(
+    'GRAPH-2-negative',
+    positiveOk && negativeUnexpected.length === negativeSamples.length && sentinelOk,
+    `GRAPH-2 判据反向自证：content/ 下合法 JSON（history.json / media.json 等）归为 content-data、src/ 归为 business、React 替身/Node builtin/生成入口各归其类（${positiveSamples.length} 个正样本）；越界 id（${negativeSamples.map((sample) => normalizeGraphId(sample).replace(`${normalizeGraphId(ROOT)}/`, '')).join('、')}）仍判 unexpected（${negativeUnexpected.length}/${negativeSamples.length}）—— 扩散白名单未失去牙齿`,
   );
   const browserOnly = normalizedIds.filter(
     (id) =>
@@ -3664,7 +4392,7 @@ function checkRenderGraph() {
     'src/content/loader.ts',
     'src/components/EvidencePanel.tsx',
     'src/atlas/mapEngine.tsx',
-  ].map((file) => normalize(path.join(ROOT, file)));
+  ].map((file) => normalizeGraphId(path.join(ROOT, file)));
   const missing = requiredModules.filter((id) => !normalizedIds.includes(id));
   check(
     'GRAPH-4',
@@ -3743,6 +4471,7 @@ async function main() {
     await checkContentFile(M);
     checkEntries(M);
     checkPublishedRouteFixtureLeakage(M);
+    checkRealContentMapIntegration(M);
     await checkSynthetic(M);
     await checkAtlas(M);
     checkAtlasAgainstValidMinFixture(M);

@@ -53,6 +53,18 @@ export interface AtlasProps extends Omit<AtlasMountProps, 'view' | 'phaseOptions
   defaultBattleId?: string;
   /** 减少动态效果；不传则由 `prefers-reduced-motion` 决定。 */
   reducedMotion?: boolean;
+  /**
+   * MAP-01：初始选中的战役（来自 `#/atlas?battle=<battleId>` 深链）。
+   * 与 `defaultBattleId` 的区别：这是「视图层当前选中」的初值，用户可以在地图上切换。
+   */
+  initialBattleId?: string | null;
+  /**
+   * MAP-01：初始选中的阶段（来自 `#/atlas?battle=...&phase=<phaseId>` 深链）。
+   * 只在组件挂载时生效，之后由播放控件接管；用于「从战役叙述定位到地图阶段」。
+   */
+  initialPhaseId?: string | null;
+  /** MAP-01：用户切换战役时回调（AtlasView 用它写回 hash，保持深链与后退可用）。 */
+  onSelectBattle?: (battleId: string) => void;
 }
 
 /**
@@ -168,8 +180,10 @@ function PhaseRow({ label, field, children }: { label: string; field: string; ch
 /**
  * Atlas —— 地图入口的主组件（必需交付物）。
  *
- * 真实站点（content/history.json 目前 battles[] 为 0）会走到「尚未交付阶段数据」的
- * 诚实空状态；地图本身仍然渲染真实地点，图层/缩放/平移全部可用。
+ * MAP-01：真实内容现在包含三场可推演战役（珍珠港 / 珊瑚海 / 中途岛，共 12 个阶段）。
+ * 组件渲染「战役选择器 + 阶段控件 + 双方情报面板」，并支持
+ * `initialBattleId` / `initialPhaseId` 深链定位（从战役叙述跳转到地图阶段）。
+ * 没有任何可推演阶段时仍渲染诚实空状态，绝不编造阶段。
  */
 export function Atlas({
   places,
@@ -179,13 +193,32 @@ export function Atlas({
   initialLayers,
   defaultBattleId,
   reducedMotion,
+  initialBattleId,
+  initialPhaseId,
+  onSelectBattle,
 }: AtlasProps) {
   const [layers, setLayers] = useState<MapLayers>(initialLayers ?? DEFAULT_LAYERS);
   const reduced = reducedMotion ?? prefersReducedMotion();
+  // MAP-01：当前选中的战役由用户在地图上切换（初值可来自深链）。
+  const [selectedBattleId, setSelectedBattleId] = useState<string | null>(initialBattleId ?? null);
 
-  const battle = useMemo(() => pickBattle(battles, defaultBattleId), [battles, defaultBattleId]);
+  /** 战役选择器只列出真正有阶段数据的战役（契约允许 phases 为空）。 */
+  const battleOptions = useMemo(
+    () => (battles ?? []).filter((option) => Boolean(option) && phasesUsable(option.phases).length > 0),
+    [battles],
+  );
+  const battle = useMemo(
+    () => pickBattle(battles, selectedBattleId ?? defaultBattleId),
+    [battles, selectedBattleId, defaultBattleId],
+  );
   const phases = useMemo(() => phasesUsable(battle?.phases), [battle]);
-  const playback = usePhasePlayback(phases.length, reduced);
+  // 深链阶段：找到对应下标后交给播放状态机（只在挂载时生效）。
+  const initialPhaseIndex = useMemo(() => {
+    if (!initialPhaseId) return 0;
+    const index = phases.findIndex((phase) => phase.id === initialPhaseId);
+    return index >= 0 ? index : 0;
+  }, [phases, initialPhaseId]);
+  const playback = usePhasePlayback(phases.length, reduced, initialPhaseIndex);
   const activePhase = phases[playback.activeIndex] ?? null;
 
   const placeById = useMemo(() => new Map(places.map((place) => [place.id, place])), [places]);
@@ -193,8 +226,45 @@ export function Atlas({
 
   const narrativeHref = battle ? buildHref('battles', { id: battle.id }) : undefined;
 
+  const selectBattle = (battleId: string) => {
+    setSelectedBattleId(battleId);
+    onSelectBattle?.(battleId);
+  };
+
   return (
-    <div className="pw-atlasengine" data-atlas-root="">
+    <div
+      className="pw-atlasengine"
+      data-atlas-root=""
+      data-atlas-battle={battle?.id ?? ''}
+      data-atlas-battle-count={battleOptions.length}
+      data-atlas-active-phase={activePhase?.id ?? ''}
+      data-atlas-active-date={activePhase?.time?.display ?? ''}
+    >
+      {battleOptions.length > 1 ? (
+        <div className="pw-filters" role="group" aria-label="选择战役（地图阶段推演）" data-battle-selector="">
+          <span className="pw-filters__label">战役推演</span>
+          {battleOptions.map((option) => {
+            const phaseCount = phasesUsable(option.phases).length;
+            const active = battle?.id === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                className="pw-btn"
+                aria-pressed={active}
+                data-battle-select={option.id}
+                data-battle-phase-count={phaseCount}
+                title={`${option.startDate} — ${option.endDate} · ${phaseCount} 个地图阶段`}
+                onClick={() => selectBattle(option.id)}
+              >
+                {option.title}
+                <span style={{ fontFamily: 'var(--pw-font-mono)', fontSize: 'var(--pw-size-xs)', marginLeft: '0.45em' }}>{phaseCount} 阶段</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+
       <LayersControl layers={layers} onChange={setLayers} />
 
       <div className="pw-atlasengine__layout">
