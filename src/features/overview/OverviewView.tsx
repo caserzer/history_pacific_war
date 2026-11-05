@@ -54,8 +54,9 @@ export function OverviewView() {
           选择一种阅读方式
         </h2>
         <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)', maxWidth: '62ch' }}>
-          六个入口不是六份各自编写的内容，而是同一批稳定 ID 实体的不同投影。你在任何一个入口看到的事件、人物与地点，
-          都可以跳到其他入口里的同一条记录。
+          六个入口不是六份各自编写的内容，而是同一段历史的六种看法：按时间读、按战斗读、按人物读、
+          按地图读、按原理读、按问题读。你在任何一条路径上遇到的事件、人物和地点，都能沿着链接
+          走到另外五条路径里的同一处。
         </p>
         <ol className="pw-entry-grid">
           {ENTRY_NAV.map((entry, i) => (
@@ -98,7 +99,8 @@ export function OverviewView() {
           五个历史部分
         </h2>
         <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)', maxWidth: '62ch' }}>
-          内容按契约的五个历史部分组织。每个部分都有导读、必需事件，并且最终必须有带证据的探究问题。
+          整部教材分成五个部分，按「为什么会打起来 → 珍珠港 → 日本快速扩张 → 战局开始转变 → 中途岛」
+          的顺序推进。每个部分都有导读和关键事件，并配有用证据回答的探究问题。
         </p>
         <div style={{ overflowX: 'auto' }}>
           <table className="pw-table">

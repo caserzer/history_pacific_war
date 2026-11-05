@@ -1,0 +1,105 @@
+{
+  "task": "QA-01",
+  "generatedAt": "2026-11-05T05:54:37.708Z",
+  "tooling": {
+    "runner": "@axe-core/playwright",
+    "axePlaywrightVersion": "4.14.0",
+    "axeCoreVersion": "4.14.0",
+    "spec": "tests/a11y.spec.ts"
+  },
+  "axeExecuted": false,
+  "status": "BLOCKED",
+  "blockedReason": "axe runs inside a browser page. This sandbox denies process creation (spawn EPERM), so no page could be loaded and axe-core never analyzed any DOM. Per the order, this is recorded as BLOCKED, never as passed.",
+  "pagesPlanned": [
+    {
+      "label": "overview",
+      "route": "#/"
+    },
+    {
+      "label": "timeline",
+      "route": "#/timeline"
+    },
+    {
+      "label": "battles",
+      "route": "#/battles"
+    },
+    {
+      "label": "people",
+      "route": "#/people"
+    },
+    {
+      "label": "atlas",
+      "route": "#/atlas"
+    },
+    {
+      "label": "concepts",
+      "route": "#/concepts"
+    },
+    {
+      "label": "questions",
+      "route": "#/questions"
+    },
+    {
+      "label": "battle-pearl-harbor",
+      "route": "#/battles/battle-pearl-harbor"
+    },
+    {
+      "label": "battle-coral-sea",
+      "route": "#/battles/battle-coral-sea"
+    },
+    {
+      "label": "battle-midway",
+      "route": "#/battles/battle-midway"
+    },
+    {
+      "label": "place-pearl-harbor",
+      "route": "#/atlas/place-pearl-harbor"
+    },
+    {
+      "label": "sources",
+      "route": "#/sources"
+    }
+  ],
+  "viewportsPlanned": [
+    "chromium-desktop 1440x900",
+    "chromium-mobile Pixel 7",
+    "webkit-desktop 1440x900",
+    "webkit-mobile iPhone 13"
+  ],
+  "criticalCount": null,
+  "seriousCount": null,
+  "note": "criticalCount/seriousCount are null because axe did not run. Do not read them as zero.",
+  "staticEvidenceWithoutBrowser": {
+    "method": "Regex/inspection over the emitted dist/assets/*.js and *.css (not a DOM audit, not an axe result).",
+    "facts": {
+      "langAttr": true,
+      "hasRoleApplication": true,
+      "hasTabIndex0": true,
+      "reducedMotionCSS": true,
+      "reducedMotionJS": true,
+      "ariaLive": 4,
+      "ariaPressed": 9,
+      "ariaLabel": 52,
+      "skipLink": true,
+      "focusVisibleCss": true,
+      "touchActionNone": true,
+      "hasRoleApplicationNote": "role:`application` on the map <svg> (minified with template literals; verified at dist index chunk offset 701247 along with aria-label keyboard instructions and tabIndex:0)."
+    },
+    "keyboardEvidence": {
+      "mapCanvas": "role:`application` + tabIndex:0 + aria-label \"…使用方向键平移，加号减号缩放，数字键 0 复位。\"",
+      "ariaPressedUsages": 9,
+      "ariaLabelUsages": 52,
+      "ariaLiveUsages": 4
+    },
+    "reducedMotionEvidence": {
+      "cssMediaQuery": true,
+      "jsMediaQueryUsage": true,
+      "note": "CSS contains @media (prefers-reduced-motion). Behavioural verification (animations actually suppressed) requires a browser and is NOT verified here."
+    },
+    "contrastEvidence": {
+      "status": "NOT VERIFIED",
+      "reason": "Contrast requires computed styles from a real renderer; no browser available. valuesForContrastRulesCannotBeComputedStatisticallyFromCSS."
+    }
+  },
+  "whatCentralMustDo": "Run `npm.cmd run test:e2e -- tests/a11y.spec.ts` with browsers installed. Any critical/serious axe finding will fail the suite."
+}

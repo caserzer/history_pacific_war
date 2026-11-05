@@ -26,6 +26,22 @@ import type { ContentDocument } from '../data/types';
 // 只打包站点真正使用的唯一内容源（不是 content/*.json：媒体注册表等由其它门禁消费）。
 const CONTENT_GLOB = import.meta.glob('../../content/history.json') as Record<string, unknown>;
 
+/**
+ * 媒体注册表（`content/media.json`）—— **QA-01 attempt 2 / 观察项 MEDIA-VISIBLE 修正**。
+ *
+ * 背景：MAP-01 把内容 glob 收窄为只匹配 `history.json`（避免把媒体注册表当死重量打进
+ * bundle）。收窄本身是对的，但副作用是**注册的 22 个素材从未被站点加载**，读者永远
+ * 看不到任何插图——文件存在 + HTTP 可达 ≠ 读者可见。这里用**第二个、同样精确的 glob**
+ * 只加载这一个文件，既恢复读者可见性，又不回到「content/*.json 宽 glob」的老问题
+ * （新增其它 content 文件仍不会被动进入渲染图）。
+ *
+ * 缺失时返回 `null`：媒体是增强信息，缺失不应让整站进入未加载状态。
+ */
+const MEDIA_GLOB = import.meta.glob('../../content/media.json') as Record<string, unknown>;
+
+export const MEDIA_PATH = 'content/media.json';
+
+/** 唯一内容源路径（对外导出；旧代码与提示文案依赖这个常量）。 */
 export const CONTENT_PATH = 'content/history.json';
 
 export type ContentStatusKind =
@@ -133,8 +149,79 @@ function isLazyLoader(value: unknown): value is () => Promise<unknown> {
   return typeof value === 'function';
 }
 
+/**
+ * 从媒体 glob 里取出注册条目数组。
+ *
+ * `content/media.json` 的契约形状是 `{ version: 1, media: [...] }`；也容忍直接是数组
+ * 的形式（测试/未来兼容）。任何异常都返回 `null`，**绝不让媒体问题阻断教材加载**。
+ */
+function extractMediaEntries(modules: Record<string, unknown>): unknown[] | null {
+  const key = Object.keys(modules).find((candidate) => candidate.endsWith('/media.json'));
+  if (!key) return null;
+  const raw = modules[key];
+  // 惰性加载形态（SSR 打包/代码分割）：媒体是增强信息，同步路径下不 await，
+  // 直接视为「暂无媒体」，由异步路径 loadContentAsync 负责真正的加载。
+  if (isLazyLoader(raw)) return null;
+  return pickMediaArray(raw);
+}
+
+/**
+ * 从任意形状里取出媒体数组。
+ *
+ * 注意：**不能**先调用 `unwrapGlobValue` 再取 `.media` —— 该函数会把
+ * `{ version, media: [...] }` 里的 `default` 当作文档继续下钻，从而丢掉 `media`
+ * （媒体注册表没有 `schemaVersion`/`events`，不是内容文档）。因此这里先按
+ * 「数组 / .media / .default.media」逐层直取。
+ */
+function pickMediaArray(value: unknown): unknown[] | null {
+  if (Array.isArray(value)) return value;
+  if (!value || typeof value !== 'object') return null;
+  const obj = value as Record<string, unknown>;
+  if (Array.isArray(obj.media)) return obj.media;
+  const nested = obj.default;
+  if (nested && typeof nested === 'object') {
+    const inner = nested as Record<string, unknown>;
+    if (Array.isArray(inner.media)) return inner.media;
+    if (Array.isArray(inner)) return inner;
+  }
+  return null;
+}
+
+/** 异步解析媒体条目（处理惰性加载形态）。任何失败都回退为 null，不影响教材加载。 */
+async function extractMediaEntriesAsync(
+  modules: Record<string, unknown> | null,
+): Promise<unknown[] | null> {
+  if (!modules) return null;
+  const key = Object.keys(modules).find((candidate) => candidate.endsWith('/media.json'));
+  if (!key) return null;
+  const raw = modules[key];
+  try {
+    const resolved = isLazyLoader(raw) ? await raw() : raw;
+    return pickMediaArray(resolved);
+  } catch {
+    /* 媒体加载失败不影响教材：按无媒体处理 */
+  }
+  return null;
+}
+
+/**
+ * 把媒体注册条目并入内容文档的 `media` 字段（QA-01 attempt 2 / MEDIA-VISIBLE 修正）。
+ *
+ * 为什么并入 doc 而不是另开接口：`buildIndex(doc)` 已是全站唯一索引入口，并进 doc 后
+ * 六入口、证据面板与详情页都能通过同一份 `index.media` 取到素材，不需要新的一层数据通路。
+ */
+function withMedia(doc: ContentDocument, mediaModules: Record<string, unknown> | null): ContentDocument {
+  if (!mediaModules) return doc;
+  const entries = extractMediaEntries(mediaModules);
+  if (!entries || entries.length === 0) return doc;
+  return { ...doc, media: entries as ContentDocument['media'] };
+}
+
 /** 同步读取内容状态（内容已内联在构建产物中时使用）。 */
-export function loadContent(modules: Record<string, unknown> = CONTENT_GLOB): ContentState {
+export function loadContent(
+  modules: Record<string, unknown> = CONTENT_GLOB,
+  mediaModules: Record<string, unknown> | null = MEDIA_GLOB,
+): ContentState {
   const key = Object.keys(modules).find((candidate) => candidate.endsWith('/history.json')) ?? null;
   if (key === null) {
     return {
@@ -158,9 +245,10 @@ export function loadContent(modules: Record<string, unknown> = CONTENT_GLOB): Co
   if (doc === null) {
     return { status: 'invalid', doc: null, issues, sourceKey: key };
   }
+  const merged = withMedia(doc, mediaModules);
   return {
-    status: doc.fixtureOnly ? 'fixture' : 'available',
-    doc,
+    status: merged.fixtureOnly ? 'fixture' : 'available',
+    doc: merged,
     issues,
     sourceKey: key,
   };
@@ -170,16 +258,23 @@ export function loadContent(modules: Record<string, unknown> = CONTENT_GLOB): Co
  * 异步读取内容状态：同时支持「已内联的对象」与「惰性/模块化加载」两种 glob 形态。
  * 站点在渲染前 await 它，因此既能显示 loading，也能在加载失败时诚实报错。
  */
-export async function loadContentAsync(modules: Record<string, unknown> = CONTENT_GLOB): Promise<ContentState> {
+export async function loadContentAsync(
+  modules: Record<string, unknown> = CONTENT_GLOB,
+  mediaModules: Record<string, unknown> | null = MEDIA_GLOB,
+): Promise<ContentState> {
   const key = Object.keys(modules).find((candidate) => candidate.endsWith('/history.json')) ?? null;
-  if (key === null) return loadContent({});
+  if (key === null) return loadContent({}, mediaModules);
   const raw = modules[key];
-  if (!isLazyLoader(raw)) return loadContent(modules);
+  if (!isLazyLoader(raw)) return loadContent(modules, mediaModules);
   try {
     const loaded: unknown = await raw();
     const { doc, issues } = inspectDocument(unwrapGlobValue(loaded));
     if (doc === null) return { status: 'invalid', doc: null, issues, sourceKey: key };
-    return { status: doc.fixtureOnly ? 'fixture' : 'available', doc, issues, sourceKey: key };
+    const mediaEntries = await extractMediaEntriesAsync(mediaModules);
+    const merged = mediaEntries && mediaEntries.length > 0
+      ? { ...doc, media: mediaEntries as ContentDocument['media'] }
+      : doc;
+    return { status: merged.fixtureOnly ? 'fixture' : 'available', doc: merged, issues, sourceKey: key };
   } catch (error) {
     return {
       status: 'error',

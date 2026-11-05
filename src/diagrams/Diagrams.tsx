@@ -128,13 +128,13 @@ export function SixEntriesDiagram() {
       })}
       <ellipse cx={center.x} cy={center.y} rx="86" ry="44" fill={NAVY} />
       <text x={center.x} y={center.y - 4} textAnchor="middle" fontSize="15" fontFamily="serif" fill={PAPER} fontWeight="700">
-        统一数据集
+        同一份教材内容
       </text>
       <text x={center.x} y={center.y + 14} textAnchor="middle" fontSize="10" fontFamily="monospace" fill={BRASS_LIGHT}>
-        content/history.json
+        事件 · 人物 · 地点 · 战役
       </text>
       <text x="360" y="288" textAnchor="middle" fontSize="12" fontFamily="monospace" fill={INK} opacity="0.65">
-        同一批稳定 ID · 引用关系即跳转关系
+        指向同一个人物或事件 · 跳转后仍是同一段历史
       </text>
     </FigureFrame>
   );
@@ -176,7 +176,7 @@ export function ReadingLayersDiagram() {
         </marker>
       </defs>
       <text x="360" y="272" textAnchor="middle" fontSize="12" fontFamily="monospace" fill={INK} opacity="0.65">
-        契约要求恰好三层，依次递进而非重复
+        三层一层比一层深，依次递进而非重复
       </text>
       <circle cx="660" cy="34" r="10" fill={GREEN_SOFT} opacity="0.5" />
     </FigureFrame>

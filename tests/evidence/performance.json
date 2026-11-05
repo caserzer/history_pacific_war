@@ -1,0 +1,98 @@
+{
+  "task": "QA-01",
+  "generatedAt": "2026-11-05T06:20:02.555Z",
+  "method": "Measured on the built dist/ produced by `node --run build` in this worktree. gzip = zlib.gzipSync(level 9) over the actual emitted files (a conservative upper bound for HTTP transfer size, which is why it is used for the budget).",
+  "budgetDefinition": {
+    "jsCssGzipKiB": "TS/JS + CSS emitted by Vite, gzip sum",
+    "initialContentJsonMiB": "the built history-*.js content chunk emitted from content/history.json (the initial curriculum payload)",
+    "initialCoreAssetsMiB": "index.html + every asset index.html references (JS/CSS) — the assets required before first interaction"
+  },
+  "budgets": {
+    "jsCssGzipKiB": {
+      "limit": 500,
+      "actualKiB": 311.1,
+      "pass": true
+    },
+    "initialContentJsonMiB": {
+      "limit": 1.5,
+      "actualMiB": 0.636,
+      "pass": true
+    },
+    "initialCoreAssetsMiB": {
+      "limit": 3,
+      "actualMiB": 0.367,
+      "pass": true
+    }
+  },
+  "detail": {
+    "jsCss": {
+      "jsFiles": [
+        {
+          "file": "assets/history-DG9SLuUW.js",
+          "rawBytes": 667285,
+          "gzipBytes": 201315
+        },
+        {
+          "file": "assets/index-CErOAuEZ.js",
+          "rawBytes": 355026,
+          "gzipBytes": 106789
+        },
+        {
+          "file": "assets/media-nvyB5E4N.js",
+          "rawBytes": 24891,
+          "gzipBytes": 5462
+        }
+      ],
+      "cssFiles": [
+        {
+          "file": "assets/index-_2WlzvfC.css",
+          "rawBytes": 27315,
+          "gzipBytes": 5045
+        }
+      ],
+      "rawTotalBytes": 1074517,
+      "gzipTotalBytes": 318611,
+      "gzipTotalKiB": 311.1
+    },
+    "contentJson": {
+      "sourceFile": "content/history.json",
+      "sourceBytes": 857143,
+      "builtChunk": "assets/history-DG9SLuUW.js",
+      "builtBytes": 667285,
+      "builtGzipBytes": 201315
+    },
+    "coreAssets": {
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 2115
+        },
+        {
+          "file": "assets/index-CErOAuEZ.js",
+          "bytes": 355026
+        },
+        {
+          "file": "assets/index-_2WlzvfC.css",
+          "bytes": 27315
+        }
+      ],
+      "totalBytes": 384456,
+      "totalMiB": 0.367
+    },
+    "media": {
+      "filesInDist": 22,
+      "totalBytes": 396449
+    },
+    "wholeDist": {
+      "files": 26,
+      "totalBytes": 1442833
+    },
+    "mediaChunk": {
+      "file": "assets/media-nvyB5E4N.js",
+      "rawBytes": 24891,
+      "gzipBytes": 5462
+    }
+  },
+  "allBudgetsPass": true,
+  "note": "QA-01 attempt 2：媒体渲染修复后新增一个 media-*.js 内容块（约 27 KB raw / 8 KB gzip），已计入 JS+CSS 预算，仍远低于上限。"
+}

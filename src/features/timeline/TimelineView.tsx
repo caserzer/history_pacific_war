@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
+import { MediaGallery } from '../../components/MediaFigure';
 import { CitationList } from '../../components/CitationList';
 import {
   ClaimTypeFilter,
@@ -294,6 +295,7 @@ export function EventDetail({ event }: { event: EventEntity }) {
         title={event.title}
         description={event.summary}
       />
+      <MediaGallery media={index.media} articleIds={[event.id]} />
       <MetaRow
         items={[
           { key: 'ID', value: <code>{event.id}</code> },

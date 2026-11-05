@@ -18,6 +18,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Phase, PlaceEntity } from '../data/types';
 import { MAP_REGION_LABELS } from './regions';
+import { planLabels, LABEL_PRIORITY, type LabelCandidate } from './declutter';
+import { mandatedPlaceIdSet } from './mapLabels';
 import {
   LAYER_LABELS,
   panView,
@@ -236,6 +238,50 @@ export function AtlasMapEngine({
   );
   const projectedById = useMemo(() => new Map(projectedPlaces.map(({ place, point }) => [place.id, point])), [projectedPlaces]);
 
+  /**
+   * 标签去重叠（ATLAS-READABILITY 修正）。
+   *
+   * 候选坐标用**屏幕坐标**（projected → 再套当前 zoom/pan 变换），因为标签文字本身
+   * 位于被 `svgTransform` 变换的分组内，两行文字的相对偏移在屏幕上的实际占位与
+   * 缩放无关；用屏幕坐标做包围盒判断才与读者看到的重叠一致。
+   */
+  const labelPlan = useMemo(() => {
+    const anchorIds = new Set(MAP_REGION_LABELS.map((region) => region.anchorPlaceId));
+    // 工单强制要求标注的地名：从**真实 places 数据**解析，不在渲染层硬编码 place ID。
+    const mandatedIds = mandatedPlaceIdSet(places);
+    const phasePlaceIds = new Set<string>();
+    for (const side of ['japan', 'allies'] as const) {
+      for (const id of phase?.positions?.[side]?.placeIds ?? []) phasePlaceIds.add(id);
+    }
+    const candidates: LabelCandidate[] = projectedPlaces.map(({ place, point }) => {
+      // 屏幕坐标 = 中心 + (用户坐标 - 中心) * zoom + 平移
+      const screenX = VIEW_WIDTH / 2 + (point.x - VIEW_WIDTH / 2) * transform.zoom + transform.tx;
+      const screenY = VIEW_HEIGHT / 2 + (point.y - VIEW_HEIGHT / 2) * transform.zoom + transform.ty;
+      // 优先级阶梯：必显地名 > 区域锚点 > 选中 > 阶段地点 > 陆地 > 水域。
+      const priority = mandatedIds.has(place.id)
+        ? LABEL_PRIORITY.mandated
+        : anchorIds.has(place.id)
+          ? LABEL_PRIORITY.regionAnchor
+          : place.id === selectedPlaceId
+            ? LABEL_PRIORITY.selected
+            : phasePlaceIds.has(place.id)
+              ? LABEL_PRIORITY.phasePlace
+              : place.placeType === 'sea' || place.placeType === 'strait'
+                ? LABEL_PRIORITY.water
+                : LABEL_PRIORITY.land;
+      return {
+        id: place.id,
+        x: screenX,
+        y: screenY,
+        historicalName: place.historicalName,
+        modernLine: `${place.modernName} · ${place.modernCountry}`,
+        priority,
+      };
+    });
+    return planLabels(candidates, transform.zoom, { width: VIEW_WIDTH, height: VIEW_HEIGHT });
+  }, [projectedPlaces, transform, phase, selectedPlaceId, places]);
+
+
   const sideGeometry = useMemo(() => {
     if (!phase) return null;
     const positions = (['japan', 'allies'] as const).map((side) => {
@@ -370,6 +416,15 @@ export function AtlasMapEngine({
           {layers.places
             ? projectedPlaces.map(({ place, point }) => {
                 const selected = place.id === selectedPlaceId;
+                // ATLAS-READABILITY：标签可能被去重叠逻辑隐藏，但**节点与可点圆始终渲染**。
+                const planForPlace = labelPlan.get(place.id);
+                const showLabel = Boolean(planForPlace);
+                const anchor =
+                  planForPlace?.placement.mode === 'right'
+                    ? 'start'
+                    : planForPlace?.placement.mode === 'left'
+                      ? 'end'
+                      : 'middle';
                 return (
                   <g
                     key={place.id}
@@ -378,6 +433,10 @@ export function AtlasMapEngine({
                     data-layer="place"
                     data-place-id={place.id}
                     data-selected={selected ? 'true' : 'false'}
+                    data-label-visible={showLabel ? 'true' : 'false'}
+                    data-label-placement={planForPlace?.placement.mode ?? 'none'}
+                    data-label-dx={planForPlace ? planForPlace.dx.toFixed(3) : ''}
+                    data-label-dy={planForPlace ? planForPlace.dy.toFixed(3) : ''}
                   >
                     <rect
                       x={-6}
@@ -388,12 +447,45 @@ export function AtlasMapEngine({
                       stroke="#1c2530"
                       strokeWidth="1.6"
                     />
-                    <text x={10} y={4} fontSize="11" aria-hidden="true" fill="#1c2530">
-                      {place.historicalName}
-                    </text>
-                    <text x={10} y={16} fontSize="9" aria-hidden="true" fill="#4a5561">
-                      {place.modernName} · {place.modernCountry}
-                    </text>
+                    {planForPlace ? (
+                      <>
+                        {planForPlace.leaderTo ? (
+                          <line
+                            x1={0}
+                            y1={0}
+                            x2={planForPlace.dx}
+                            y2={planForPlace.dy + 8}
+                            stroke="#7a6a55"
+                            strokeWidth="0.8"
+                            strokeDasharray="2 2"
+                            aria-hidden="true"
+                            data-label-leader=""
+                          />
+                        ) : null}
+                        <text
+                          x={planForPlace.dx}
+                          y={planForPlace.dy + 10}
+                          fontSize="11"
+                          textAnchor={anchor}
+                          aria-hidden="true"
+                          fill="#1c2530"
+                          data-place-label=""
+                        >
+                          {place.historicalName}
+                        </text>
+                        <text
+                          x={planForPlace.dx}
+                          y={planForPlace.dy + 22}
+                          fontSize="9"
+                          textAnchor={anchor}
+                          aria-hidden="true"
+                          fill="#4a5561"
+                          data-place-label=""
+                        >
+                          {place.modernName} · {place.modernCountry}
+                        </text>
+                      </>
+                    ) : null}
                     <title>{`${place.historicalName}（现代：${place.modernName}，${place.modernCountry}）。坐标精度约 ±${place.coordinateAccuracyKm} km。`}</title>
                     <circle
                       r={14}

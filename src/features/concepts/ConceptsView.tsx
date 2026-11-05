@@ -10,6 +10,7 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
+import { MediaGallery } from '../../components/MediaFigure';
 import { CitationList } from '../../components/CitationList';
 import { ClaimTypeFilter, ContextBar, EmptyState, MetaRow, PageHead, Prose, RelatedLinks } from '../../components/primitives';
 import type { ClaimType, ConceptEntity } from '../../data/types';
@@ -135,6 +136,7 @@ function ConceptDetail({ concept }: { concept: ConceptEntity }) {
         ]}
       />
       <PageHead eyebrow="知识专题" title={concept.title} description={concept.summary} />
+      <MediaGallery media={index.media} articleIds={[concept.id]} />
       <MetaRow
         items={[
           { key: 'ID', value: <code>{concept.id}</code> },

@@ -13,6 +13,7 @@ import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
 import { CitationList } from '../../components/CitationList';
 import { CertaintyTag, ClaimTag } from '../../components/ClaimTag';
+import { MediaGallery } from '../../components/MediaFigure';
 import {
   ClaimTypeFilter,
   ContextBar,
@@ -133,9 +134,10 @@ function BattleDetail({ battle }: { battle: BattleEntity }) {
         title={battle.title}
         description={battle.summary}
       />
+      <MediaGallery media={index.media} articleIds={[battle.id]} />
       <MetaRow
         items={[
-          { key: 'ID', value: <code>{battle.id}</code> },
+          // F3 READER-COPY：读者不需要内部 ID；技术编号保留在「本页信息」折叠区。
           { key: '日方', value: battle.belligerents.japan ?? '—' },
           { key: '盟军', value: battle.belligerents.allies ?? '—' },
           { key: '地图阶段', value: `${phases.length} 个` },
@@ -202,8 +204,8 @@ function BattleDetail({ battle }: { battle: BattleEntity }) {
         ) : (
           <>
             <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
-              每个阶段都分别记录「当时双方各自知道什么」与「不知道什么」。阶段位置与航线按契约标记为示意，
-              请把它理解为帮助理解的模型，而不是精确的历史航迹。
+              每个阶段都会分别记下「当时双方各自知道什么」和「还不知道什么」。阶段里的位置和航线都是示意，
+              请把它当成帮助理解的空间模型，而不是精确的历史航迹。
             </p>
             <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {phases.map((phase) => (

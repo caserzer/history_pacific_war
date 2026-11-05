@@ -13,13 +13,16 @@
     "check:site": "node scripts/validate-site.mjs",
     "check": "npm run typecheck && npm run check:site",
     "build": "npm run typecheck && node src/tools/build.mjs && node scripts/validate-site.mjs --dist dist",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

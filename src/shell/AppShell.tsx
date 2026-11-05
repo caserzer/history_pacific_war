@@ -115,7 +115,7 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
         {children}
       </main>
 
-      <footer className="pw-footer">
+      <footer className="pw-footer" data-content-schema-version={content.doc?.schemaVersion ?? ''}>
         <div className="pw-footer__inner">
           <div>
             <p style={{ margin: 0 }}>
@@ -126,8 +126,9 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
               {content.status === 'available' ? '已加载正式内容' : null}
               {content.status === 'fixture' ? '测试样本（未交付内容）' : null}
               {content.status === 'missing' ? '内容尚未加载' : null}
-              {content.status === 'invalid' ? '内容结构不符合契约' : null}
-              {content.doc ? ` · schemaVersion ${content.doc.schemaVersion}` : null}
+              {content.status === 'invalid' ? '内容文件有错误，暂未显示' : null}
+              {/* F3 READER-COPY：读者不需要看到 schemaVersion 之类的工程标识；
+                  版本信息保留在 <html data-schema-version> 与来源页，供审阅者查看。 */}
             </p>
           </div>
           <div>

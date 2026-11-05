@@ -428,6 +428,12 @@ const RUNTIME_EXPORTS = {
     'toUserSpace',
   ],
   'atlas/mapEngine.tsx': ['AtlasMapEngine'],
+  // QA-01 ATLAS-READABILITY：验证器直接用**组件同一份**标签宽度估算与包围盒常量
+  // 做重叠断言（不是平行实现），避免「检查用的公式」与「渲染用的公式」不一致。
+  'atlas/declutter.ts': ['estimateLabelWidth', 'planLabels', 'selectVisibleLabels', 'LABEL_BOX', 'LABEL_ALWAYS_ZOOM', 'LABEL_PRIORITY', 'mandatedBudgetSlotCount'],
+  // QA-01 必显地名：验证器断言「工单要求的地名一定可见」时，必须用**渲染层同一份**
+  // 必显地名清单与解析函数（单一事实来源），不得在断言里另写一份 ID 列表。
+  'atlas/mapLabels.ts': ['MANDATED_LABELS', 'resolveMandatedPlaceIds', 'mandatedPlaceIdSet'],
   'atlas/stateMachines.ts': ['toggleLayer','setLayerChecked','enabledLayers','zoomByFactor','panView','resetView','isAtFitZoom','togglePlayback','tickPlayback','stepPlayback','selectPhase','advanceTicks','clampIndex','playInterval','sortPhases','phasesUsable','phaseSummary','DEFAULT_LAYERS','LAYER_LABELS','INITIAL_PLAYBACK','PHASE_PLAY_INTERVAL_MS','ZOOM_BOUNDS'],
   'atlas/controls.tsx': [
     'PhaseControls',
@@ -837,6 +843,76 @@ function loadFixtureDocument(file) {
 /** 只读读取真实内容文档；缺失时返回 null（绝不用 fixture 顶替真实内容）。 */
 function loadRealContentDocument() {
   return fs.existsSync(CONTENT_FILE) ? readJsonFile(CONTENT_FILE) : null;
+}
+
+/** 媒体注册表文件（`content/media.json`）—— 站点运行时通过 MEDIA_GLOB 加载它。 */
+const MEDIA_FILE = path.join(ROOT, 'content', 'media.json');
+
+/**
+ * 站点运行时看到的「模块表」：与 `src/content/loader.ts` 的两个 glob 一一对应。
+ *
+ * QA-01 attempt 2（观察项 MEDIA-VISIBLE）：站点现在除了 `history.json` 还会加载
+ * `media.json`，验证器若只注入 history，渲染出的页面就**没有插图**，于是「媒体是否
+ * 真的渲染到读者页面上」这件事在验证器里永远看不见。这里把两个文件都注入，
+ * 让验证器渲染的 DOM 与真实站点一致（也就能对本项做真实断言）。
+ */
+function realModuleTable() {
+  const table = {};
+  if (fs.existsSync(CONTENT_FILE)) table['/virtual/content/history.json'] = readJsonFile(CONTENT_FILE);
+  if (fs.existsSync(MEDIA_FILE)) table['/virtual/content/media.json'] = readJsonFile(MEDIA_FILE);
+  return table;
+}
+
+/**
+ * 真实内容状态（含媒体）—— 验证器渲染入口的唯一取数实现。
+ *
+ * 为什么走异步版本：站点 `main.tsx` 用 `loadContentAsync()` 加载内容，生产构建里
+ * 两个 JSON 都会变成惰性 chunk。验证器若只用同步 `loadContent`，媒体 glob 是惰性函数
+ * → 同步路径拿不到 → 渲染出的页面**永远没有插图**，「媒体是否真的渲染到读者页面」
+ * 就无法被断言（正是 MEDIA-VISIBLE 在此前的检查中漏掉的原因）。
+ * 这里传入的是**已解析的真实对象**（不是惰性 glob），因此 await 立即完成，不阻塞。
+ */
+async function loadRealState(M) {
+  return M.loadContentAsync(realModuleTable());
+}
+
+/**
+ * 同步版本：把媒体注册表预先「展平」成数组再交给同步加载器。
+ *
+ * 为什么需要两个版本：验证器里既有同步渲染断言也有异步上下文。`loadContent` 对
+ * **惰性**媒体 glob 返回空（同步无法 await），但如果我们传的是**已解析的数组**，
+ * 同步路径同样能合并出 22 条素材。这里直接注入展平后的数组，使同步路径与真实站点
+ * 渲染结果一致。
+ */
+function realModuleTableSync() {
+  const table = {};
+  if (fs.existsSync(CONTENT_FILE)) table['/virtual/content/history.json'] = readJsonFile(CONTENT_FILE);
+  if (fs.existsSync(MEDIA_FILE)) {
+    const raw = readJsonFile(MEDIA_FILE);
+    const entries = Array.isArray(raw) ? raw : raw?.media;
+    if (Array.isArray(entries)) table['/virtual/content/media.json'] = entries;
+  }
+  return table;
+}
+
+/**
+ * `loadContent` 的**第一**参数：只放内容文档。
+ * 媒体必须走第二参数（媒体表），因为加载器用「key 以 /history.json 结尾」定位内容源，
+ * 把两者混在同一张表里也应当没问题——但分开传更贴近真实站点（两个独立 glob），
+ * 也让「媒体缺失」不会影响内容识别。
+ */
+function realContentModules() {
+  const table = {};
+  if (fs.existsSync(CONTENT_FILE)) table['/virtual/content/history.json'] = readJsonFile(CONTENT_FILE);
+  return table;
+}
+
+/** `loadContent` 的**第二**参数：媒体注册表（展平为数组，同步路径可直接合并）。 */
+function realMediaModules() {
+  if (!fs.existsSync(MEDIA_FILE)) return null;
+  const raw = readJsonFile(MEDIA_FILE);
+  const entries = Array.isArray(raw) ? raw : raw?.media;
+  return Array.isArray(entries) ? { '/virtual/content/media.json': entries } : null;
 }
 
 /** 只读读取已接受阶段夹具 map-phases.json；缺失时返回 null（由内置等价夹具兜底）。 */
@@ -2038,7 +2114,7 @@ function checkPublishedRouteFixtureLeakage(M) {
     fail('LEAK-real', '真实内容缺失：无法执行发布路由泄露回归（前置条件缺失必须失败，不得跳过）');
     return;
   }
-  const realState = M.loadContent({ '/virtual/content/history.json': realDoc });
+  const realState = M.loadContent(realContentModules(), realMediaModules());
   check(
     'LEAK-real-status',
     realState.status === 'available' && realState.doc !== null && realState.doc.fixtureOnly === false,
@@ -2308,7 +2384,7 @@ function checkRealContentMapIntegration(M) {
     fail('MAP1', '真实内容缺失：无法执行真实内容地图/战役推演检查（前置条件缺失必须失败，不得跳过）');
     return;
   }
-  const realState = M.loadContent({ '/virtual/content/history.json': realDoc });
+  const realState = M.loadContent(realContentModules(), realMediaModules());
   check(
     'MAP1-load',
     realState.status === 'available' && realState.doc !== null,
@@ -4414,6 +4490,320 @@ function checkRenderGraph() {
  */
 const MIN_EXPECTED_CHECKS = 401;
 
+// ---------------------------------------------------------------------------
+// QA-01 媒体可见性（观察项 MEDIA-VISIBLE 的回归断言）
+// ---------------------------------------------------------------------------
+//
+// 为什么需要这一组：此前 `content/media.json` 的 22 个素材虽然注册成功、HTTP 也
+// 可达，但站点**没有任何渲染代码**，读者一张图都看不到；旧检查只验证「文件存在 +
+// 可达」，于是把这个缺陷判成了通过。这组断言直接检查**渲染出来的 DOM 里有没有
+// <figure>/<img>**，以及 alt / 署名 / 许可是否随图一起出现。
+function checkReaderMediaRendering(M) {
+  const mediaDoc = fs.existsSync(MEDIA_FILE) ? readJsonFile(MEDIA_FILE) : null;
+  const entries = mediaDoc ? (Array.isArray(mediaDoc) ? mediaDoc : mediaDoc.media) : null;
+  check(
+    'QA-MEDIA-0',
+    Array.isArray(entries) && entries.length > 0,
+    `content/media.json 注册了 ${Array.isArray(entries) ? entries.length : 0} 个素材（前置条件）`,
+  );
+  if (!Array.isArray(entries) || entries.length === 0) return;
+
+  const realDoc = loadRealContentDocument();
+  if (!realDoc) {
+    fail('QA-MEDIA', '真实内容缺失：无法断言媒体渲染（前置条件缺失必须失败）');
+    return;
+  }
+  const realState = M.loadContent(realContentModules(), realMediaModules());
+  check(
+    'QA-MEDIA-load',
+    realState.doc !== null && (realState.doc.media ?? []).length === entries.length,
+    `加载器把媒体注册表并入内容文档（doc.media=${realState.doc?.media?.length ?? 0}，注册 ${entries.length}）`,
+  );
+  if (!realState.doc) return;
+
+  // 每个有 articleIds 关联的实体详情页都必须真的渲染出 <figure>
+  const articleIds = [...new Set(entries.flatMap((e) => (Array.isArray(e.articleIds) ? e.articleIds : [])))];
+  check('QA-MEDIA-articles', articleIds.length > 0, `媒体关联到 ${articleIds.length} 个文章/实体 ID（前置条件）`);
+
+  const viewOf = (id) =>
+    id.startsWith('battle-') ? 'battles'
+      : id.startsWith('person-') ? 'people'
+        : id.startsWith('concept-') ? 'concepts'
+          : 'timeline';
+
+  let renderedPages = 0;
+  const missing = [];
+  let totalFigures = 0;
+  let withAlt = 0;
+  let withCredit = 0;
+  for (const id of articleIds) {
+    const html = renderRealRoute(M, realState, { view: viewOf(id), id });
+    const figures = (html.match(/<figure[\s>]/g) ?? []).length;
+    totalFigures += figures;
+    withAlt += (html.match(/<img[^>]*\salt="[^"]+"/g) ?? []).length;
+    withCredit += (html.match(/data-media-credit=""/g) ?? []).length;
+    if (figures > 0) renderedPages += 1;
+    else missing.push(id);
+  }
+  check(
+    'QA-MEDIA-visible',
+    missing.length === 0,
+    `每个关联实体详情页都渲染出插图：${renderedPages}/${articleIds.length} 页（共 ${totalFigures} 个 <figure>${missing.length ? `；未渲染：${missing.slice(0, 5).join(', ')}` : ''}）`,
+  );
+  check(
+    'QA-MEDIA-a11y',
+    withAlt >= totalFigures && totalFigures > 0,
+    `每个 <img> 都带非空 alt（${withAlt} 个 alt / ${totalFigures} 个图）`,
+  );
+  check(
+    'QA-MEDIA-credit',
+    withCredit >= totalFigures && totalFigures > 0,
+    `每个 <figure> 都渲染作者/许可署名（${withCredit} 个署名 / ${totalFigures} 个图）`,
+  );
+
+  // 关键读者页（观察项点名的珍珠港页）必须有图
+  const pearl = renderRealRoute(M, realState, { view: 'battles', id: 'battle-pearl-harbor' });
+  check(
+    'QA-MEDIA-pearl-harbor',
+    /<figure[\s>]/.test(pearl) && /<img[^>]*src="\/history_pacific_war\/media\//.test(pearl),
+    `#/battles/battle-pearl-harbor 渲染出 <figure> 且 <img> 使用 /history_pacific_war/ 子路径（观察项点名的页面）`,
+  );
+
+  // 首页「素材」计数必须不再是 0
+  const overview = renderApp(M, { content: realState, route: { view: 'overview', id: null, query: '' } }).html;
+  const plainOverview = htmlToPlainText(overview);
+  const mediaStatOk = new RegExp(`素材\\s*${entries.length}`).test(plainOverview.replace(/\s+/g, ' '))
+    || plainOverview.includes(String(entries.length));
+  check(
+    'QA-MEDIA-home-count',
+    mediaStatOk,
+    `总览页「素材」统计反映真实注册数（${entries.length}），不再是 0`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// QA-01 读者文案（观察项 READER-COPY 的回归断言）
+// ---------------------------------------------------------------------------
+//
+// 为什么需要：读者页面上曾出现「同一批稳定 ID 实体的不同投影」「内容按契约…」
+// 「schemaVersion 1.0.0」等工程词汇。这类文案不改功能、但直接伤害 11 岁读者的可读性，
+// 而且没有任何断言会因此失败——正是 READER-COPY 漏掉的原因。
+//
+// 范围：只检查**内容正常存在**时的渲染路径。降级/空状态文案（内容缺失、结构非法）
+// 由更早的任务要求保持技术性说明，因此**不在此列为违规**（那是给交付方看的，读者
+// 在成品站看不到）。做法：只扫描真实内容渲染出的页面，且跳过 empty-state 片段。
+function checkReaderCopy(M) {
+  const realDoc = loadRealContentDocument();
+  if (!realDoc) {
+    fail('QA-COPY', '真实内容缺失：无法断言读者文案（前置条件缺失必须失败）');
+    return;
+  }
+  const realState = M.loadContent(realContentModules(), realMediaModules());
+
+  // 工程词汇：出现即视为读者文案缺陷
+  const forbidden = [
+    'schemaVersion',
+    'fixtureOnly',
+    '稳定 ID',
+    '按契约',
+    '契约要求',
+    '顶层数组',
+    '十四个固定键',
+    'content/history.json',
+  ];
+
+  const pages = [
+    ['overview', { view: 'overview', id: null }],
+    ['timeline', { view: 'timeline', id: null }],
+    ['battles', { view: 'battles', id: null }],
+    ['people', { view: 'people', id: null }],
+    ['atlas', { view: 'atlas', id: null }],
+    ['concepts', { view: 'concepts', id: null }],
+    ['questions', { view: 'questions', id: null }],
+    ['sources', { view: 'sources', id: null }],
+    ['battle-pearl-harbor', { view: 'battles', id: 'battle-pearl-harbor' }],
+    ['battle-midway', { view: 'battles', id: 'battle-midway' }],
+    ['person-yamamoto', { view: 'people', id: 'person-yamamoto-isoroku' }],
+    ['concept-aircraft-carrier', { view: 'concepts', id: 'concept-aircraft-carrier' }],
+    ['event-part1', { view: 'timeline', id: 'event-overview-part-1-why-war' }],
+  ];
+
+  const offenders = [];
+  for (const [label, route] of pages) {
+    const html = renderRealRoute(M, realState, route);
+    // 把空状态/降级片段整体剔除后再扫描（它们允许技术性说明）
+    const withoutDegraded = html.replace(/data-empty-state[\s\S]*?(?=<\/section>|<\/div>|$)/g, ' ');
+    const text = htmlToPlainText(withoutDegraded);
+    for (const term of forbidden) {
+      if (text.includes(term)) offenders.push(`${label}:「${term}」`);
+    }
+  }
+  check(
+    'QA-COPY-no-jargon',
+    offenders.length === 0,
+    `读者页面（${pages.length} 个，正常内容渲染路径）不含工程词汇${offenders.length ? `；违规 ${offenders.slice(0, 8).join('、')}` : ''}`,
+  );
+
+  // 原始实体 ID 不应作为正文文字出现在读者页（保留在 data-* 属性与详情链接里）
+  const battleHtml = renderRealRoute(M, realState, { view: 'battles', id: 'battle-pearl-harbor' });
+  const battleText = htmlToPlainText(battleHtml.replace(/data-empty-state[\s\S]*?(?=<\/section>|<\/div>|$)/g, ' '));
+  check(
+    'QA-COPY-no-raw-ids',
+    !battleText.includes('battle-pearl-harbor'),
+    '战役详情页正文不直接显示原始实体 ID（battle-pearl-harbor 只作为 data-* 与链接出现）',
+  );
+
+  // 反向对照：同样的扫描器必须能发现夹具里的工程词汇（证明断言不是恒真）
+  const canary = '这里含有 schemaVersion 与 按契约 两个工程词';
+  const canaryHits = forbidden.filter((term) => canary.includes(term));
+  check(
+    'QA-COPY-canary',
+    canaryHits.length >= 2,
+    `读者文案扫描器灵敏度自证：在构造样本中检出 ${canaryHits.length} 个工程词（${canaryHits.join('、')}）`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// QA-01 地图可读性（观察项 ATLAS-READABILITY 的回归断言）
+// ---------------------------------------------------------------------------
+//
+// 为什么需要：46 个地点各自画两行固定偏移文字，默认缩放下重叠成不可读的一团。
+// 修复采用「贪心去重叠 + 优先级 + 多方位放置」：**隐藏的是标签文字，不是节点**。
+// 这组断言检查三件事：节点一个不少、标签互不重叠、隐藏标签的地点仍可发现名字。
+function checkAtlasLabelReadability(M) {
+  const realDoc = loadRealContentDocument();
+  if (!realDoc) {
+    fail('QA-ATLAS', '真实内容缺失：无法断言地图可读性（前置条件缺失必须失败）');
+    return;
+  }
+  const realState = M.loadContent(realContentModules(), realMediaModules());
+  const html = renderRealRoute(M, realState, { view: 'atlas', id: null });
+
+  const groups = [...html.matchAll(/data-layer="place"[^>]*data-place-id="([^"]+)"[^>]*data-label-visible="(true|false)"/g)];
+  const places = realDoc.places ?? [];
+  check(
+    'QA-ATLAS-all-nodes',
+    groups.length === places.length && places.length > 0,
+    `地图渲染全部地点节点：${groups.length}/${places.length}（去重叠只隐藏标签文字，不删节点）`,
+  );
+
+  const clickable = (html.match(/role="button"/g) ?? []).length;
+  check(
+    'QA-ATLAS-clickable',
+    clickable >= places.length,
+    `每个地点仍然可点击/可键盘激活（role="button" ${clickable} 个 / ${places.length} 个地点）`,
+  );
+
+  const labelled = groups.filter((g) => g[2] === 'true');
+  check(
+    'QA-ATLAS-declutter',
+    labelled.length > 0 && labelled.length < places.length,
+    `默认缩放下去重叠生效：${labelled.length} 个标签可见 / ${places.length} 个地点（避免全部堆叠）`,
+  );
+
+  // 标签包围盒互不重叠（用与组件同一份 estimateLabelWidth / LABEL_BOX 常量）
+  const boxes = labelled.map((g) => {
+    const idx = html.indexOf('data-place-id="' + g[1] + '"');
+    const seg = html.slice(idx, idx + 900);
+    const texts = [...seg.matchAll(/data-place-label="">([^<]*)</g)].map((m) => m[1].trim());
+    const start = html.lastIndexOf('<g', idx);
+    const tf = html.slice(start, idx).match(/translate\(([\d.-]+) ([\d.-]+)\)/);
+    const x = tf ? Number(tf[1]) : 0;
+    const y = tf ? Number(tf[2]) : 0;
+    // 硬失败：宽度估算器必须来自渲染层同一份实现。若它没被导出，
+    // 之前的写法会静默退化成常数 100，导致断言量的是"假盒子"——那正是本轮的近失误。
+    if (typeof M.estimateLabelWidth !== 'function') {
+      fail('QA-ATLAS-no-overlap', 'M.estimateLabelWidth 未导出到运行时：无法用渲染层的真实宽度做重叠判定（拒绝降级为常数）');
+      return;
+    }
+    const width = M.estimateLabelWidth(texts[0] ?? '', texts[1] ?? '');
+    const mode = (seg.match(/data-label-placement="([a-z]+)"/) ?? [])[1] ?? 'right';
+    // 优先使用渲染层**实际写出**的 dx/dy（含偏移放置），这样断言量的是真正画出来的盒子，
+    // 而不是对 mode 的二次推测——否则带偏移的标签会在断言里"假重叠"。
+    const groupSeg = html.slice(idx, idx + 400);
+    const dxAttr = (groupSeg.match(/data-label-dx="([-\d.]+)"/) ?? [])[1];
+    const dyAttr = (groupSeg.match(/data-label-dy="([-\d.]+)"/) ?? [])[1];
+    const dx = dxAttr !== undefined ? Number(dxAttr) : (mode === 'right' ? 10 : mode === 'left' ? -10 - width : -width / 2);
+    const dy = dyAttr !== undefined ? Number(dyAttr) : (mode === 'above' ? -30 : mode === 'below' ? 10 : -6);
+    return { left: x + dx, right: x + dx + width, top: y + dy, bottom: y + dy + 24 };
+  });
+  let overlaps = 0;
+  for (let i = 0; i < boxes.length; i += 1) {
+    for (let j = i + 1; j < boxes.length; j += 1) {
+      const a = boxes[i];
+      const b = boxes[j];
+      if (!(a.right + 1 < b.left || b.right + 1 < a.left || a.bottom + 1 < b.top || b.bottom + 1 < a.top)) overlaps += 1;
+    }
+  }
+  check(
+    'QA-ATLAS-no-overlap',
+    overlaps === 0,
+    `可见标签互不重叠（${labelled.length} 个标签，重叠对 ${overlaps}）`,
+  );
+
+  // 被隐藏标签的地点，名字仍然可发现（<title> tooltip）
+  const hidden = groups.filter((g) => g[2] === 'false');
+  const hiddenDiscoverable = hidden.filter((g) => html.includes(`<title>${places.find((p) => p.id === g[1])?.historicalName ?? '\u0000'}`));
+  check(
+    'QA-ATLAS-hidden-discoverable',
+    hidden.length === 0 || hiddenDiscoverable.length === hidden.length,
+    `标签被隐藏的 ${hidden.length} 个地点仍可通过 tooltip(<title>) 发现历史名（${hiddenDiscoverable.length}/${hidden.length}）`,
+  );
+
+  // ------------------------------------------------------------------------
+  // QA-ATLAS-mandated-visible：工单强制要求标注的 8 个地名，在默认缩放下必须**可见**
+  // ------------------------------------------------------------------------
+  //
+  // 这一条补上了 QA-01 attempt 2 留下的缺口：机制（MANDATED_LABELS + 优先级）早就存在，
+  // 但**没有任何断言证明这 8 个地名真的出现在渲染输出里**。观察项 ATLAS-READABILITY 明确
+  // 要求「strategic locations 必须可读」；此前中途岛（教材标题里那场战役）、新加坡、
+  // 马来亚、关岛、威克岛全部是隐藏的。
+  //
+  // 断言口径严格对齐渲染层：用 `M.MANDATED_LABELS`（渲染层同一份清单）+ 
+  // `M.resolveMandatedPlaceIds` 解析出真实 place ID，再与渲染出的 `data-label-visible`
+  // 集合求交。因此**清单与解析逻辑都不可能漂移**。
+  if (typeof M.resolveMandatedPlaceIds !== 'function' || !Array.isArray(M.MANDATED_LABELS)) {
+    fail('QA-ATLAS-mandated-visible', 'MANDATED_LABELS / resolveMandatedPlaceIds 未导出到运行时：无法断言必显地名可见性（不得静默降级）');
+  } else {
+    const visibleIds = new Set(groups.filter((g) => g[2] === 'true').map((g) => g[1]));
+    const resolvedMandated = M.resolveMandatedPlaceIds(places);
+    const notResolved = resolvedMandated.filter((item) => item.placeId === null);
+    const hiddenMandated = resolvedMandated.filter((item) => item.placeId !== null && !visibleIds.has(item.placeId));
+    const visibleNames = resolvedMandated
+      .filter((item) => item.placeId !== null && visibleIds.has(item.placeId))
+      .map((item) => item.label);
+    check(
+      'QA-ATLAS-mandated-visible',
+      notResolved.length === 0 && hiddenMandated.length === 0,
+      `默认缩放（zoom=1）下工单要求的 ${resolvedMandated.length} 个地名全部可见：${visibleNames.join('、')}` +
+        `${notResolved.length ? `；内容中未解析到：${notResolved.map((i) => i.label).join('、')}` : ''}` +
+        `${hiddenMandated.length ? `；被隐藏：${hiddenMandated.map((i) => `${i.label}(${i.placeId})`).join('、')}` : ''}`,
+    );
+
+    // 反向自证：同样的判定逻辑，若把某个必显地名的解析结果换成「不存在于可见集合」的 id，
+    // 必须判为失败。这证明上面的断言不是恒真（不是只数了个数）。
+    const demoted = resolvedMandated.map((item, index) =>
+      index === 0 ? { ...item, placeId: '__demoted-not-a-real-place__' } : item,
+    );
+    const demotedHidden = demoted.filter((item) => item.placeId !== null && !visibleIds.has(item.placeId));
+    check(
+      'QA-ATLAS-mandated-canary',
+      demotedHidden.length === 1,
+      `必显地名可见性判定的反向自证：把「${resolvedMandated[0]?.label ?? '—'}」降级为未渲染 id 后，判定逻辑报告 ${demotedHidden.length} 个被隐藏（应为 1）——证明断言可失败`,
+    );
+
+    // 另：解析器本身必须确定（不随 places 顺序变化），否则渲染层与断言层可能得到不同结果。
+    const reversed = [...places].reverse();
+    const resolvedReversed = M.resolveMandatedPlaceIds(reversed);
+    const orderStable = resolvedMandated.every((item, index) => resolvedReversed[index]?.placeId === item.placeId);
+    check(
+      'QA-ATLAS-mandated-deterministic',
+      orderStable,
+      '必显地名解析与 places 顺序无关（渲染层按名称排序、验证器用内容顺序，必须得到同一结果）',
+    );
+  }
+}
+
 function verifyCheckAccounting() {
   const total = results.length;
   const passed = results.filter((item) => item.status === 'PASS').length;
@@ -4472,6 +4862,9 @@ async function main() {
     checkEntries(M);
     checkPublishedRouteFixtureLeakage(M);
     checkRealContentMapIntegration(M);
+    checkReaderMediaRendering(M);
+    checkReaderCopy(M);
+    checkAtlasLabelReadability(M);
     await checkSynthetic(M);
     await checkAtlas(M);
     checkAtlasAgainstValidMinFixture(M);

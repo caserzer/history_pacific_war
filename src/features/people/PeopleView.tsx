@@ -10,6 +10,7 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
+import { MediaGallery } from '../../components/MediaFigure';
 import { CitationList } from '../../components/CitationList';
 import { CertaintyTag } from '../../components/ClaimTag';
 import { ClaimTypeFilter, ContextBar, EmptyState, MetaRow, PageHead, Prose, RelatedLinks } from '../../components/primitives';
@@ -111,6 +112,7 @@ function PersonDetail({ person }: { person: PersonEntity }) {
         title={person.name}
         description={person.summary}
       />
+      <MediaGallery media={index.media} articleIds={[person.id]} />
       <MetaRow
         items={[
           { key: 'ID', value: <code>{person.id}</code> },

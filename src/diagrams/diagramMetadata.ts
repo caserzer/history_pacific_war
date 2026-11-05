@@ -43,8 +43,8 @@ export const DIAGRAMS: Record<string, DiagramMeta> = {
     id: 'diagram-six-entries',
     title: '六个入口共享同一份数据',
     caption:
-      '时间线、战役、人物、地图、知识专题与历史问题不是六份各自编写的内容，而是同一批稳定 ID 实体的不同投影。任何一处跳转都沿着实体之间的引用关系进行，因此不会出现「同一事件在两个入口说法不同」。',
-    alt: '示意图：中心是统一数据集，六个入口围绕它并用箭头表示互跳关系。',
+      '时间线、战役、人物、地图、知识专题与历史问题，讲的其实是同一段历史，只是看法不同。你在任何一处点开的事件、人物或地点，都能顺着链接走到另外几处讲同一件事的地方，所以不会出现「同一件事在两个入口说法不一样」。',
+    alt: '示意图：中心是同一份教材内容，六个入口围绕它并用箭头表示互跳关系。',
     author: 'experience 模块（WEB-01）',
     license: 'original-work',
     licenseNote: DIAGRAM_LICENCE_NOTE,
@@ -54,7 +54,7 @@ export const DIAGRAMS: Record<string, DiagramMeta> = {
     id: 'diagram-reading-layers',
     title: '三层解释：是什么 → 怎样运作 → 为什么影响决策',
     caption:
-      '知识专题按契约要求恰好三层：第一层给定义，第二层讲流程与限制，第三层放回具体战役说明它改变了哪些选择。三层依次递进而不是重复。',
+      '每个知识专题都分三层讲：第一层用日常语言说清它是什么，第二层讲它怎么运作、有哪些限制，第三层放回具体战役，说明它改变了哪些选择。三层一层比一层深，而不是把同一句话重复三遍。',
     alt: '三层阶梯示意图，标出第一层定义、第二层运作机制、第三层对决策的影响。',
     author: 'experience 模块（WEB-01）',
     license: 'original-work',

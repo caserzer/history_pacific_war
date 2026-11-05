@@ -1,0 +1,138 @@
+{
+  "task": "QA-01",
+  "generatedAt": "2026-11-05T05:54:23.995Z",
+  "recordedCheck": "npm.cmd run test:e2e",
+  "playwrightVersion": "1.64.1",
+  "environment": "DSH agent sandbox (Windows). Node subprocess creation is denied at the OS level for this process.",
+  "webkitExecuted": false,
+  "anyBrowserExecuted": false,
+  "summary": "BLOCKED — no browser project executed in this sandbox. 785 tests across 5 projects (157 per project) are enumerated and load correctly (`playwright test --list` exit 0), but no test body ran.",
+  "attemptEvidence": [
+    {
+      "cmd": "npx playwright install chromium",
+      "error": "Failed to download Chrome for Testing 156.0.8078.4 ... spawn EPERM",
+      "result": "exit 1"
+    },
+    {
+      "cmd": "playwright-core chromium.launch({executablePath: chromium-1208/chrome.exe})",
+      "result": "spawn EPERM"
+    },
+    {
+      "cmd": "direct exec chrome.exe --version",
+      "result": "crashpad OpenProcess 拒绝访问 (0x5), self-terminating"
+    },
+    {
+      "cmd": "node spawnSync(process.execPath)",
+      "result": "EPERM"
+    },
+    {
+      "cmd": "node fork()",
+      "result": "EPERM"
+    }
+  ],
+  "attemptsProse": [
+    "npx playwright install chromium -> exit 1: \"Failed to download Chrome for Testing 156.0.8078.4 ... Error: spawn EPERM\" (Playwright downloads via a forked child process).",
+    "playwright-core chromium.launch({executablePath: <cached chromium-1208/chrome.exe>}) -> \"browserType.launch: spawn EPERM\".",
+    "Direct exec of chrome.exe --version -> crashpad \"OpenProcess: 拒绝访问 (0x5)\" then self-terminates.",
+    "node child_process.spawnSync(process.execPath) -> EPERM.",
+    "node child_process.fork() -> EPERM.",
+    "npm.cmd run test:e2e -> exit 1, \"Error: spawn EPERM\" (the recorded check itself)."
+  ],
+  "conclusion": "Browser execution is impossible in this sandbox. The candidate is source-ready: config, static server and 785 tests typecheck (tsc exit 0) and enumerate (playwright test --list exit 0). Central must run `npm.cmd run test:e2e` with browsers installed to obtain real Chromium and WebKit results; until then the WebKit acceptance item is UNSATISFIED, not passed.",
+  "projects": [
+    {
+      "project": "chromium-desktop",
+      "engine": "chromium",
+      "viewport": "1440x900",
+      "device": "Desktop Chrome",
+      "status": "BLOCKED",
+      "reason": "Sandbox forbids process creation (spawn EPERM); Chromium cannot be launched."
+    },
+    {
+      "project": "chromium-tablet",
+      "engine": "chromium",
+      "viewport": "834x1112",
+      "device": "Desktop Chrome + hasTouch",
+      "status": "BLOCKED",
+      "reason": "same sandbox block"
+    },
+    {
+      "project": "chromium-mobile",
+      "engine": "chromium",
+      "viewport": "Pixel 7 (412x915)",
+      "device": "Pixel 7",
+      "status": "BLOCKED",
+      "reason": "same sandbox block"
+    },
+    {
+      "project": "webkit-desktop",
+      "engine": "webkit",
+      "viewport": "1440x900",
+      "device": "Desktop Safari",
+      "status": "BLOCKED",
+      "reason": "Sandbox forbids process creation (spawn EPERM); WebKit cannot be launched. Acceptance requires >=1 real WebKit run — NOT satisfied here, recorded as BLOCKED not passed."
+    },
+    {
+      "project": "webkit-mobile",
+      "engine": "webkit",
+      "viewport": "iPhone 13 (390x844)",
+      "device": "iPhone 13",
+      "status": "BLOCKED",
+      "reason": "same sandbox block"
+    }
+  ],
+  "whatStillWasVerifiedWithoutBrowser": {
+    "mediaReachability": "VERIFIED via real HTTP (Node http server serving dist under /history_pacific_war/): 22/22 registered images returned 200 with non-empty bodies and correct content-types; negative control 404. See media-gate.md.",
+    "performanceBudgets": "VERIFIED from the real dist (see performance.json): all three budgets pass.",
+    "contentGate": "VERIFIED: node scripts/validate-content.mjs --stage full --media exit 0. See media-gate.md.",
+    "staticSubpathServing": "VERIFIED: tests/support/serve-dist.mjs serves /history_pacific_war/* from dist and 404s outside the base."
+  },
+  "testCounts": {
+    "total": 795,
+    "perProject": 159,
+    "projects": 5,
+    "totalBeforeCoverageRevision": 250,
+    "totalAtAttempt1": 755,
+    "note": "attempt 3 added 2 browser-level tests/project: all 8 order-mandated labels visible at default zoom, and mandatory resolution determinism across reloads.",
+    "totalAtAttempt2": 785
+  },
+  "leakCoverage": {
+    "strategy": "exhaustive-on-one-project",
+    "primaryProject": "chromium-desktop",
+    "reason": "A fixture leak is a deterministic data→render property; the same build artifact renders the same content in every viewport. Running 95 detail routes × 5 projects would multiply runtime ~5x without adding information beyond browser-specific rendering differences (already covered by the other interaction tests on all 5 projects).",
+    "exhaustiveDetailRoutes": 95,
+    "entityCounts": {
+      "events": 19,
+      "battles": 3,
+      "people": 14,
+      "places": 46,
+      "concepts": 6,
+      "questions": 7,
+      "total": 95
+    },
+    "otherProjects": "list routes for all 6 entries are exhaustive; detail routes sample the first entity only, and the 3 focus battles are fully looped in the battle-detail tests.",
+    "before": "6 detail routes (1 per entry) ≈ 6.3% of 95 entities",
+    "after": "95/95 detail routes = 100% on chromium-desktop"
+  },
+  "attempt2Findings": {
+    "MEDIA-VISIBLE": "Fixed in source: loader now loads content/media.json; new components/MediaFigure.tsx renders <figure><img alt> + caption + author/license credit on battle/person/concept/event detail pages. Verified without a browser via SSR: 19/19 associated pages render, 22 figures, 22 non-empty alts, 22 credits; homepage media count 22 (was 0). Validator guards: QA-MEDIA-*.",
+    "ATLAS-READABILITY": "Fixed in source: new atlas/declutter.ts does greedy collision-based label placement with priority + 4 placement modes + leader lines. All 46 place nodes still render and remain role=button/focusable; 11 labels visible at zoom 1 with 0 overlapping pairs; hidden labels remain discoverable via <title>, detail pages and the site index. Validator guards: QA-ATLAS-*.",
+    "READER-COPY": "Fixed in source: removed engineering vocabulary (schemaVersion/fixtureOnly/稳定 ID/按契约/契约要求/content/history.json) from reader-facing pages (overview, diagrams, battles, sources). Degraded/empty-state copy kept technical intentionally. Validator guards: QA-COPY-* (13 pages) with a canary proving the scanner is not vacuous."
+  },
+  "attempt3": {
+    "ATLAS-READABILITY": {
+      "status": "mechanism completed + proven by assertion (browser confirmation still pending)",
+      "change": "Added validator assertions QA-ATLAS-mandated-visible / -canary / -deterministic. At default zoom all 8 order-mandated labels are now in the rendered data-label-visible set: 中途岛、夏威夷、菲律宾、新加坡、马来亚、关岛、威克岛、澳大利亚北部 (14 labels visible / 46 nodes, 0 overlapping pairs).",
+      "rootCauseFixed": "resolveMandatedPlaceIds was order-dependent (first substring match won, so 夏威夷 bound to place-pearl-harbor or place-oahu depending on array order, and 中途岛 bound to place-us-tf-area). Now scored by field (name vs country) with a deterministic short-name tiebreak — verified identical across content / sorted / reversed orders.",
+      "canary": "QA-ATLAS-mandated-canary demotes one mandated label and requires the judgement to report exactly 1 hidden; separately I verified demoting ANY of the 8 individually would fail the assertion."
+    },
+    "ATLAS-zoom-tiers": {
+      "status": "KNOWN LIMITATION (not fixed)",
+      "detail": "Collision still binds before the 18/26/40 budget tiers: measured 14 / 15 / 15 labels at zoom 1 / 1.5 / 2, then all 46 at zoom >= 3. The tiers remain effectively dead. Reported as a limitation rather than claimed fixed."
+    },
+    "estimateLabelWidth-fallback": {
+      "status": "hardened",
+      "detail": "The `: 100` width fallback in QA-ATLAS-no-overlap was replaced with an explicit fail() so the check can never silently degrade to a constant again."
+    }
+  }
+}

@@ -38,7 +38,7 @@ export function SourcesView({ sourceId }: { sourceId: string | null }) {
       <PageHead
         eyebrow="证据"
         title="来源与证据总表"
-        description="所有被正文引用的来源、判断与定位都集中在这里。契约要求：每个内容实体至少一个来源，每条判断至少一个可定位的位置（页码、档案条目、节段等），不接受「整个网页」这类泛定位。"
+        description="所有被正文引用的来源、判断和定位都集中在这里。每条判断都标注了它在来源里的具体位置——页码、档案编号或节段，而不是只给一个网址。"
       />
       <section className="pw-card" style={{ marginBottom: 'var(--pw-space-5)' }}>
         <h2 style={{ fontSize: 'var(--pw-size-lg)', marginBottom: 'var(--pw-space-2)' }}>证据类型分布</h2>
@@ -101,7 +101,7 @@ function SourceDetail({ source }: { source: Source }) {
         <h2 className="pw-section__heading">这个来源支撑的判断（{claims.length}）</h2>
         {claims.length === 0 ? (
           <p style={{ fontFamily: 'var(--pw-font-sans)', fontSize: 'var(--pw-size-sm)', color: 'var(--pw-ink-soft)' }}>
-            目前没有 claim 引用这个来源。契约要求来源至少支撑一条判断；这可能说明内容尚未完成。
+            目前还没有正文引用这个来源。它可能是一个备用资料，或相关内容仍在整理中。
           </p>
         ) : (
           <ol style={{ margin: 0, paddingLeft: '1.25rem' }}>
