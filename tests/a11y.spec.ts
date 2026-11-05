@@ -32,6 +32,22 @@ async function openRoute(page: import('@playwright/test').Page, hash: string) {
   await page.waitForFunction(() => (document.querySelector('#root')?.childElementCount ?? 0) > 0, null, {
     timeout: 20_000,
   });
+  /*
+   * QA-01 attempt 5：内容加载是异步的（首次渲染 status='loading'）。
+   * 这里原先只等 #root 有子节点就开始跑 axe，于是**几乎每一页每一个项目**
+   * 都在「正在加载共享内容」的空壳上做审计 —— 既可能报出假阳性，
+   * 也完全没有审到真正的教材页面。必须等内容状态离开 loading 再审计。
+   * （learning.spec.ts 已用同一标记；此处补齐，两处口径一致。）
+   */
+  await page.waitForFunction(
+    () => {
+      const marker = document.querySelector('[data-content-status]');
+      const status = marker?.getAttribute('data-content-status');
+      return status !== null && status !== undefined && status !== 'loading';
+    },
+    null,
+    { timeout: 30_000 },
+  );
   await page.waitForTimeout(300); // 让首屏稳定（无动画依赖）
 }
 
