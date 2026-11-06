@@ -1,5 +1,13 @@
 # 太平洋战争：从珍珠港到中途岛（站点模块）
 
+网站地址：https://caserzer.github.io/history_pacific_war/
+
+## GitHub Pages 发布
+
+`.github/workflows/pages.yml` 在合并到 `main` 后执行内容与素材门禁、站点检查和生产构建，上传 `dist`，随后部署到 `github-pages` 环境。仓库 Pages 的 Source 应设为 **GitHub Actions**。只有构建成功才会部署；PR 继续使用独立的 `ci` 门禁。
+
+发布产物的 `build-info.json` 包含构建提交 SHA，可用于确认线上版本；资源使用 `/history_pacific_war/` 子路径，详情页使用 hash 路由。此发布流程补齐原 SHIP-01 的部署能力，不将旧实验中尚未完成的 QA、证据汇编或最终验收工单追认为通过。
+
 面向 11 岁读者的中文交互历史教材站点（静态站点，GitHub Pages 子路径可用）。
 本站点是 DSH 矩阵团队 `experience` 模块的交付物，内容来自同一份共享历史 JSON，
 交互地图/时间线/战役/人物/专题/问题与来源证据相互链接。
