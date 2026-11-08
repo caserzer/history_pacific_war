@@ -19,7 +19,7 @@
  * 链接生成一律走 buildHref()，绝不手写 URL，保证 base 子路径无关。
  */
 
-export const VIEWS = ['overview', 'timeline', 'battles', 'people', 'atlas', 'concepts', 'questions', 'search', 'sources'] as const;
+export const VIEWS = ['overview', 'timeline', 'battles', 'people', 'atlas', 'concepts', 'questions', 'search', 'sources', 'midway'] as const;
 
 export type ViewId = (typeof VIEWS)[number];
 

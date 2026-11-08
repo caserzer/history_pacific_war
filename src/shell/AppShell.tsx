@@ -40,6 +40,9 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
     heading?.focus({ preventScroll: true });
   }, [route.view, route.id]);
 
+  // 独立样板拥有紧凑的阅读外壳，原站各入口保留用于对照。
+  if (route.view === 'midway') return <>{children}</>;
+
   return (
     <div className="pw-shell">
       <a className="pw-skip-link" href="#pw-main">

@@ -31,6 +31,7 @@ import { ConceptsView } from './features/concepts/ConceptsView';
 import { QuestionsView } from './features/questions/QuestionsView';
 import { SearchView } from './features/search/SearchView';
 import { SourcesView } from './features/sources/SourcesView';
+import { MidwayChapter } from './features/midway/MidwayChapter';
 import { EmptyState, PageHead } from './components/primitives';
 import { applyReadingSize, readStoredReadingSize } from './a11y/readingSize';
 import type { ContentState } from './content/loader';
@@ -93,6 +94,8 @@ function ContentLoading() {
 
 function RouteView({ route }: { route: Route }) {
   switch (route.view) {
+    case 'midway':
+      return <MidwayChapter />;
     case 'overview':
       return <OverviewView />;
     case 'timeline':

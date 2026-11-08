@@ -74,7 +74,10 @@ export function BattlesView({ battleId }: { battleId: string | null }) {
         description="深入单场战斗：从背景、地理、军力到决策、损失与历史争议共十四类分析。每类分析都带自己的来源与判断，读者可以逐节查看证据。"
       />
       {selected ? (
-        <BattleDetail battle={selected} />
+        <>
+          {selected.id === 'battle-midway' ? <p className="pw-card"><a className="pw-btn" href={buildHref('midway')}>体验中途岛新版：分层阅读与战役地图 →</a></p> : null}
+          <BattleDetail battle={selected} />
+        </>
       ) : (
         <ol className="pw-entry-grid" aria-label="战役列表">
           {battles.map((battle) => (

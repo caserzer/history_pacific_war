@@ -48,6 +48,8 @@ export function OverviewView() {
 
       {statusCopy ? <div style={{ marginBottom: 'var(--pw-space-5)' }}>{statusCopy}</div> : null}
 
+      {index.battles.has('battle-midway') ? <p className="pw-card"><a className="pw-btn" href={buildHref('midway')}>新版样板 · 中途岛海战：开始阅读 →</a><span style={{ display: 'block', marginTop: '0.5rem', fontSize: 'var(--pw-size-sm)' }}>适配手机与桌面，体验新的正文、引用与地图。</span></p> : null}
+
       <section aria-labelledby="entries-heading">
         <h2 className="pw-section__heading" id="entries-heading">
           <span className="pw-section__index">六入口</span>

@@ -2,6 +2,14 @@
 
 网站地址：https://caserzer.github.io/history_pacific_war/
 
+## 中途岛响应式样板
+
+新版试读：[中途岛海战](https://caserzer.github.io/history_pacific_war/#/midway)。原版保留，站点首页与原中途岛详情页均提供新版入口；新版页首有“原版对照”。
+
+样板独立位于 `src/features/midway/`，继续消费同一份历史内容。桌面提供侧边目录与证据抽屉，手机提供单栏正文、可展开目录与底部证据面板。十四类分析全部保留，补充背景与延伸阅读按需展开。地图提供太平洋全局、战区放大、五阶段切换、双方情报与不确定范围。
+
+验证记录与地理数据来源见 `docs/midway-pilot.md`。这次发布仅试行中途岛新版，尚未推广到其他章节。
+
 ## GitHub Pages 发布
 
 `.github/workflows/pages.yml` 在合并到 `main` 后执行内容与素材门禁、站点检查和生产构建，上传 `dist`，随后部署到 `github-pages` 环境。仓库 Pages 的 Source 应设为 **GitHub Actions**。只有构建成功才会部署；PR 继续使用独立的 `ci` 门禁。
