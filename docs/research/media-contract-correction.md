@@ -1,5 +1,7 @@
 # 媒体注册表结构修正说明（media-contract-correction）
 
+> 2026-11-08 增补：注册表形状仍为 v1；`portrait` 可关联任意已存在的人物，其他媒体仍限重点文章。原有重点文章覆盖要求不变。当前 31 项素材及 14 张真实人物照片的登记见 [historical-portraits.md](historical-portraits.md)；下文的 22 项计数是原始迁移快照。
+
 > 归属：MEDIA-02。本文件只**说明**已接受文档中的媒体结构矛盾、正确结构、`content/history.json` 遗留
 > 顶层 `media` 字段到 `content/media.json` 的迁移映射与归属；**不在 `contracts/` 或 `src/` 内写入，也不编辑
 > `content/history.json`**（HIST-04 已冻结为只读）。

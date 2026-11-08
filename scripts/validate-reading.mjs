@@ -59,6 +59,23 @@ const check = (condition, message) => {
   assertions++;
   assert.ok(condition, message);
 };
+// Every published person needs one locally hosted, traceable historical photograph.
+const portraitSources = JSON.parse(
+  fs.readFileSync(path.join(root, "docs/research/portrait-sources.json"), "utf8"),
+).portraits;
+for (const person of doc.people) {
+  const portraits = registry.media.filter(
+    (asset) => asset.mediaType === "portrait" && asset.articleIds.includes(person.id),
+  );
+  check(portraits.length === 1, `${person.id}: exactly one historical portrait`);
+  const portrait = portraits[0];
+  const provenance = portraitSources.find((item) => item.personId === person.id);
+  check(provenance?.path === portrait.path, `${person.id}: photograph has its own provenance`);
+  check(portrait.license === "public-domain" && /^https:\/\//.test(portrait.sourcePage), `${person.id}: reusable photo with source link`);
+  check(portrait.path.endsWith(".jpg"), `${person.id}: schematic SVG portrait cannot return`);
+  const photo = fs.readFileSync(path.join(root, portrait.path));
+  check(photo[0] === 0xff && photo[1] === 0xd8 && photo.length === provenance.bytes, `${person.id}: local JPEG matches audited file`);
+}
 const text = (html) =>
   html
     .replace(/<[^>]*>/g, "")
@@ -276,5 +293,5 @@ console.log(
   `Responsive reading validation: PASS ${assertions} assertions; ${pages} pages; ${links} internal links.`,
 );
 console.log(
-  "Covered: all 93 content entities, 7 questions, 31 sources, 22 media items, 12 phase deep links, search and invalid IDs.",
+  `Covered: all ${index.entities.size} content entities, ${doc.questions.length} questions, ${doc.sources.length} sources, ${registry.media.length} media items, ${doc.people.length} historical portraits, phase deep links, search and invalid IDs.`,
 );

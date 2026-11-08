@@ -151,15 +151,26 @@ export function EvidenceProvider({ children }: { children: ReactNode }) {
               </>
             ) : (
               <>
-                <CitationList
-                  sourceIds={sources}
-                  sourceById={index.sources}
-                  heading="完整引用信息"
-                />
+                {!selection.media ? (
+                  <CitationList
+                    sourceIds={sources}
+                    sourceById={index.sources}
+                    heading="完整引用信息"
+                  />
+                ) : null}
                 {selection.media ? (
                   <div className="mw-photo-license">
+                    <h3>图像来源与许可</h3>
                     <p>{selection.media.caption}</p>
+                    <p>摄影 / 制作：{selection.media.author}</p>
                     <p>{selection.media.creditLine}</p>
+                    {selection.media.sourcePage ? (
+                      <p>
+                        <a href={selection.media.sourcePage} target="_blank" rel="noreferrer">
+                          查看图像来源登记 ↗
+                        </a>
+                      </p>
+                    ) : null}
                     <p>{selection.media.rightsStatement}</p>
                     {selection.media.licenseUrl ? (
                       <a
@@ -171,6 +182,16 @@ export function EvidenceProvider({ children }: { children: ReactNode }) {
                       </a>
                     ) : null}
                   </div>
+                ) : null}
+                {selection.media ? (
+                  <details className="rs-photo-context">
+                    <summary>相关正文文献</summary>
+                    <CitationList
+                      sourceIds={sources}
+                      sourceById={index.sources}
+                      heading="正文背景来源"
+                    />
+                  </details>
                 ) : null}
               </>
             )}

@@ -622,12 +622,12 @@
   max-height: 380px;
   object-fit: contain;
 }
-.rs-media:has(img[src$=".jpg"]) > img,
-.rs-media:has(img[src$=".png"]) > img {
+.rs-media:not(.rs-media-compact):has(img[src$=".jpg"]) > img,
+.rs-media:not(.rs-media-compact):has(img[src$=".png"]) > img {
   object-fit: cover;
 }
 .rs-media-compact > img {
-  height: 180px;
+  height: 250px;
   object-fit: contain;
 }
 .rs-media-compact {
@@ -1469,7 +1469,7 @@
     margin: 0 auto 20px;
   }
   .rs-media-compact > img {
-    height: 150px;
+    height: 220px;
   }
   .rs-related-grid {
     grid-template-columns: 1fr;

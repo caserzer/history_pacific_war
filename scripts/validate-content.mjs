@@ -2350,8 +2350,8 @@ function validateMedia(media, index, errors, maps, coverage, options) {
   }
   if (Array.isArray(media.articleIds)) {
     for (const articleId of media.articleIds) {
-      if (!coverage.keyArticleIds.includes(articleId)) {
-        addError(errors, `${pointer}.articleIds: '${articleId}' 不在 coverage.keyArticleIds 中；媒体关联必须使用重点文章 ID`);
+      if (!coverage.keyArticleIds.includes(articleId) && !(media.mediaType === 'portrait' && maps.people.has(articleId))) {
+        addError(errors, `${pointer}.articleIds: '${articleId}' 不是重点文章或已存在的人物肖像属主`);
       }
     }
   }
@@ -2837,7 +2837,7 @@ function validateMediaGate(doc, maps, coverage, stage, options, errors) {
       continue;
     }
     for (const articleId of item.articleIds) {
-      if (!keys.includes(articleId)) addError(errors, `[media] $.media[${mediaIndex}]: articleId '${articleId}' 不是 coverage 重点文章`);
+      if (!keys.includes(articleId) && !(item.mediaType === 'portrait' && maps.people.has(articleId))) addError(errors, `[media] $.media[${mediaIndex}]: articleId '${articleId}' 不是重点文章或已存在的人物肖像属主`);
     }
     if (!ALLOWED_LICENSES.includes(item.license)) {
       addError(errors, `[media] $.media[${mediaIndex}]: 许可 '${item.license}' 不可用于发布`);

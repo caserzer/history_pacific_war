@@ -1,5 +1,7 @@
 # MEDIA-02 素材审计与注册矩阵（media-audit）
 
+> 历史交付记录：下文保留原 MEDIA-02 的 22 个素材快照。2026-11-08 的人物照片更新已替换 5 张 SVG 示意画像，并为其余 9 位人物补齐真实照片；现行登记为 31 项。人物照片的最新来源、年代、许可和文件记录见 [historical-portraits.md](historical-portraits.md) 与 [portrait-sources.json](portrait-sources.json)，下文关于示意肖像的描述不再适用于现站。
+
 > 本文件是 MEDIA-02「媒体属主：原创图解与统一媒体注册」的逐篇素材矩阵、档案查阅证据、许可核验与渲染路径约定。
 > **矩阵由 `contracts/coverage.json` 的 `keyArticleIds` / `requiredMediaTypes` 生成，并由脚本对照 `content/media.json` 与
 > `public/media/` 的真实文件逐项核对**（不是手抄）。本候选为 **19** 篇重点文章、**22** 个“文章 × 类型”槽位，
