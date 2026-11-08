@@ -2,13 +2,13 @@
 
 网站地址：https://caserzer.github.io/history_pacific_war/
 
-## 中途岛响应式样板
+## 全站响应式阅读版（2026-11-08）
 
-新版试读：[中途岛海战](https://caserzer.github.io/history_pacific_war/#/midway)。原版保留，站点首页与原中途岛详情页均提供新版入口；新版页首有“原版对照”。
+从[教材导读](https://caserzer.github.io/history_pacific_war/)开始。首页、时间线、战役、人物、地图、知识专题、问题、来源和搜索均使用统一的响应式阅读界面。原样板地址 `#/midway` 继续指向中途岛章节。
 
-样板独立位于 `src/features/midway/`，继续消费同一份历史内容。桌面提供侧边目录与证据抽屉，手机提供单栏正文、可展开目录与底部证据面板。十四类分析全部保留，补充背景与延伸阅读按需展开。地图提供太平洋全局、战区放大、五阶段切换、双方情报与不确定范围。
+当前生产入口使用 `src/reading/ReadingSite.tsx`。`Reader.tsx` 统一文章目录、阅读分段、相关内容与下一篇；`Evidence.tsx` 提供按需证据抽屉/底部面板；`BattleMap.tsx` 为三场战役提供地理底图、阶段、双方情报、播放与不确定范围。历史内容仍来自 `content/history.json`，22 项素材及署名由 `content/media.json` 提供。
 
-验证记录与地理数据来源见 `docs/midway-pilot.md`。这次发布仅试行中途岛新版，尚未推广到其他章节。
+全站验证、地理数据来源与维护说明见 `docs/reading-redesign.md`。`docs/midway-pilot.md` 记录首轮样板；旧 `src/features/*` 视图保留为先前契约的回归参照，不再作为生产路由。`npm run check` 同时执行既有检查与新生产界面的逐页检查。
 
 ## GitHub Pages 发布
 

@@ -454,7 +454,8 @@ function matchesEntityTitle(id: string, title: string, needle: string): boolean 
 export function entityTitle(entity: ArticleEntity): string {
   if ('name' in entity) return entity.name;
   if ('title' in entity) return entity.title;
-  return 'id' in entity ? String(entity.id) : '';
+  if ('historicalName' in entity) return entity.historicalName;
+  return String((entity as { id?: string }).id ?? '');
 }
 
 export function entitySnippet(entity: ArticleEntity): string {

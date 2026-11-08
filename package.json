@@ -11,7 +11,8 @@
     "dev": "vite",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "check:site": "node scripts/validate-site.mjs",
-    "check": "npm run typecheck && npm run check:site",
+    "check:reading": "node scripts/validate-reading.mjs",
+    "check": "npm run typecheck && npm run check:site && npm run check:reading",
     "build": "npm run typecheck && node src/tools/build.mjs && node scripts/validate-site.mjs --dist dist",
     "preview": "vite preview"
   },
