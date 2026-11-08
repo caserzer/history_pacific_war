@@ -755,7 +755,7 @@
 }
 .rs-battle-select {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 26px;
   border: 1px solid #d9ddd3;
 }
@@ -763,9 +763,9 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
-  padding: 19px 22px;
+  padding: 13px 16px;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 14px;
 }
 .rs-battle-select a + a {
   border-left: 1px solid #d9ddd3;
@@ -777,7 +777,7 @@
 .rs-battle-select a[aria-current] {
   background: #e7eadc;
   border-top: 2px solid #a7874b;
-  padding-top: 17px;
+  padding-top: 11px;
 }
 .rs-map-read {
   font-size: 12px;
@@ -1485,12 +1485,12 @@
     gap: 10px 20px;
   }
   .rs-battle-select a {
-    padding: 15px 10px;
-    font-size: 13px;
+    padding: 12px 8px;
+    font-size: 11px;
     line-height: 1.7;
   }
   .rs-battle-select a[aria-current] {
-    padding-top: 13px;
+    padding-top: 10px;
   }
   .rs-battle-select a span {
     font-size: 9px;

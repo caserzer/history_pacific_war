@@ -14,6 +14,11 @@ export const HISTORICAL_PART_IDS = [
   'part-3-expansion',
   'part-4-turning-point',
   'part-5-midway',
+  'part-6-guadalcanal',
+  'part-7-counteroffensive',
+  'part-8-philippines',
+  'part-9-home-islands',
+  'part-10-surrender',
 ] as const;
 
 export type HistoricalPartId = (typeof HISTORICAL_PART_IDS)[number];

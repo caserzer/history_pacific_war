@@ -61,20 +61,42 @@ const check = (condition, message) => {
 };
 // Every published person needs one locally hosted, traceable historical photograph.
 const portraitSources = JSON.parse(
-  fs.readFileSync(path.join(root, "docs/research/portrait-sources.json"), "utf8"),
+  fs.readFileSync(
+    path.join(root, "docs/research/portrait-sources.json"),
+    "utf8",
+  ),
 ).portraits;
 for (const person of doc.people) {
   const portraits = registry.media.filter(
-    (asset) => asset.mediaType === "portrait" && asset.articleIds.includes(person.id),
+    (asset) =>
+      asset.mediaType === "portrait" && asset.articleIds.includes(person.id),
   );
-  check(portraits.length === 1, `${person.id}: exactly one historical portrait`);
+  check(
+    portraits.length === 1,
+    `${person.id}: exactly one historical portrait`,
+  );
   const portrait = portraits[0];
-  const provenance = portraitSources.find((item) => item.personId === person.id);
-  check(provenance?.path === portrait.path, `${person.id}: photograph has its own provenance`);
-  check(portrait.license === "public-domain" && /^https:\/\//.test(portrait.sourcePage), `${person.id}: reusable photo with source link`);
-  check(portrait.path.endsWith(".jpg"), `${person.id}: schematic SVG portrait cannot return`);
+  const provenance = portraitSources.find(
+    (item) => item.personId === person.id,
+  );
+  check(
+    provenance?.path === portrait.path,
+    `${person.id}: photograph has its own provenance`,
+  );
+  check(
+    portrait.license === "public-domain" &&
+      /^https:\/\//.test(portrait.sourcePage),
+    `${person.id}: reusable photo with source link`,
+  );
+  check(
+    portrait.path.endsWith(".jpg"),
+    `${person.id}: schematic SVG portrait cannot return`,
+  );
   const photo = fs.readFileSync(path.join(root, portrait.path));
-  check(photo[0] === 0xff && photo[1] === 0xd8 && photo.length === provenance.bytes, `${person.id}: local JPEG matches audited file`);
+  check(
+    photo[0] === 0xff && photo[1] === 0xd8 && photo.length === provenance.bytes,
+    `${person.id}: local JPEG matches audited file`,
+  );
 }
 const text = (html) =>
   html
@@ -150,6 +172,40 @@ for (const view of [
   "midway",
 ])
   render(view === "overview" ? "#/" : `#/${view}`);
+const home = render("#/");
+for (const part of [
+  "part-6-guadalcanal",
+  "part-7-counteroffensive",
+  "part-8-philippines",
+  "part-9-home-islands",
+  "part-10-surrender",
+]) {
+  const id = `event-overview-${part}`;
+  check(
+    home.html.includes(`#/timeline/${id}`),
+    `${part}: reachable from the home chapter list`,
+  );
+  check(
+    doc.questions.some((q) => q.historicalPart === part),
+    `${part}: has an evidence-linked question`,
+  );
+}
+const ending = render("#/timeline/event-japan-surrender-1945");
+check(
+  ending.plain.includes("1945-09-02") &&
+    ending.plain.includes("重光葵") &&
+    ending.plain.includes("梅津美治郎"),
+  "final chapter identifies the formal signing date and both Japanese representatives",
+);
+check(
+  !ending.html.includes("rs-next-reading"),
+  "formal surrender is the end of the reading sequence",
+);
+const tokyoBay = render("#/atlas/place-tokyo-bay");
+check(
+  !tokyoBay.html.includes("mw-phase-facts"),
+  "unrelated early-war battle intelligence is not shown for the surrender location",
+);
 const all = [
   ...doc.events,
   ...doc.battles,
@@ -249,6 +305,16 @@ for (const battle of doc.battles)
         plain.includes(text(phase.decision.japan)),
       `${phase.id}: stage-specific intelligence and decision`,
     );
+    const ruler = html.match(
+      /aria-label="纬向近似比例尺([\d.]+)公里"><path d="M0 -5V0H([\d.]+)V-5"/,
+    );
+    check(
+      ruler &&
+        Number(ruler[1]) > 0 &&
+        Number(ruler[2]) >= 30 &&
+        Number(ruler[2]) <= 200,
+      `${phase.id}: scale bar stays inside the map at small-island and ocean scales`,
+    );
   }
 for (const view of [
   "timeline",
@@ -260,7 +326,7 @@ for (const view of [
   "atlas",
 ])
   render(`#/${view}/does-not-exist`, { missing: true });
-for (const query of ["雷达", "中途岛", "赤城"]) {
+for (const query of ["雷达", "中途岛", "赤城", "莱特湾", "冲绳", "投降书"]) {
   const { html } = render(`#/search?q=${encodeURIComponent(query)}`);
   check(
     html.includes("rs-search-results"),

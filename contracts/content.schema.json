@@ -239,7 +239,7 @@
         "id": { "$ref": "#/$defs/eventId" },
         "title": { "type": "string", "minLength": 2, "maxLength": 80 },
         "historicalPart": {
-          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway", "part-6-guadalcanal", "part-7-counteroffensive", "part-8-philippines", "part-9-home-islands", "part-10-surrender"]
         },
         "eventType": {
           "enum": ["background", "diplomacy", "policy", "campaign", "battle", "raid", "occupation", "aftermath", "analysis"]
@@ -581,7 +581,7 @@
         "id": { "$ref": "#/$defs/battleId" },
         "title": { "type": "string", "minLength": 3, "maxLength": 80 },
         "historicalPart": {
-          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway", "part-6-guadalcanal", "part-7-counteroffensive", "part-8-philippines", "part-9-home-islands", "part-10-surrender"]
         },
         "battleType": { "enum": ["air-raid", "carrier-battle", "surface-battle", "amphibious", "mixed"] },
         "theater": { "enum": ["pacific"] },
@@ -929,7 +929,7 @@
         },
         "author": { "type": "string", "minLength": 2, "maxLength": 200 },
         "license": {
-          "enum": ["public-domain", "cc0-1.0", "cc-by-4.0", "cc-by-sa-4.0", "original-work", "permission-granted"]
+          "enum": ["public-domain", "cc0-1.0", "cc-by-2.0", "cc-by-4.0", "cc-by-sa-4.0", "original-work", "permission-granted"]
         },
         "licenseUrl": {
           "type": "string",
@@ -972,7 +972,7 @@
       "properties": {
         "id": { "$ref": "#/$defs/questionId" },
         "historicalPart": {
-          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+          "enum": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway", "part-6-guadalcanal", "part-7-counteroffensive", "part-8-philippines", "part-9-home-islands", "part-10-surrender"]
         },
         "prompt": {
           "type": "string",

@@ -6,6 +6,7 @@ import type {
   Side,
 } from "../data/types";
 import land from "./land.json";
+import localLand from "./local-land.json";
 
 interface Props {
   battle: BattleEntity;
@@ -70,6 +71,8 @@ export function BattleMap({
   const id = useId().replace(/:/g, "");
   const phase = battle.phases[step];
   if (!phase) return <p>这场战役尚未登记可查看的地图阶段。</p>;
+  const geographyOnly =
+    focusPlace && selectedPlace && !battle.placeIds.includes(selectedPlace.id);
   const PHASE_NAMES = battle.phases.map((p) =>
     p.title
       .split("：")
@@ -85,15 +88,12 @@ export function BattleMap({
     lng: (Math.min(...lngs) + Math.max(...lngs)) / 2,
     lat: (Math.min(...lats) + Math.max(...lats)) / 2,
     span: Math.max(
-      4,
-      Math.max(...lngs) - Math.min(...lngs) + 3,
-      ((Math.max(...lats) - Math.min(...lats) + 2) * W) / H,
+      0.16,
+      (Math.max(...lngs) - Math.min(...lngs)) * 1.65,
+      ((Math.max(...lats) - Math.min(...lats)) * W * 1.65) / H,
     ),
   };
-  const isCoral = battle.id === "battle-coral-sea";
-  const overview = isCoral
-    ? { lng: 163, lat: 3, span: 110 }
-    : { lng: 173, lat: 30, span: 100 };
+  const overview = { lng: 155, lat: 15, span: 135 };
   const base =
     focusPlace && selectedPlace
       ? {
@@ -106,6 +106,11 @@ export function BattleMap({
         : local;
   const span = base.span / zoom;
   const scale = W / span;
+  const scaleTargetKm = (span * 111.32) / 5;
+  const scaleMagnitude = 10 ** Math.floor(Math.log10(scaleTargetKm));
+  const scaleKm =
+    ([5, 2, 1].find((n) => n * scaleMagnitude <= scaleTargetKm) ?? 1) *
+    scaleMagnitude;
   const center = { lng: base.lng + offset.x, lat: base.lat + offset.y };
   const project = (point: Coordinates) => ({
     x: W / 2 + (longitude(point.lng) - center.lng) * scale,
@@ -143,24 +148,29 @@ export function BattleMap({
     focusPlace && selectedPlace
       ? [selectedPlace.id]
       : mode === "pacific"
-        ? [
-            "place-japan-home-islands",
-            "place-pearl-harbor",
-            isCoral ? "place-port-moresby" : "place-midway",
-          ]
-        : battle.id === "battle-midway"
-          ? ["place-midway"]
-          : isCoral
-            ? ["place-port-moresby", "place-tulagi"]
-            : ["place-pearl-harbor"];
+        ? [...new Set(["place-japan-home-islands", ...battle.placeIds])]
+        : battle.placeIds.filter((placeId) => {
+            const place = places.get(placeId);
+            if (!place) return false;
+            const p = project(place.coordinates);
+            return p.x > 25 && p.x < W - 25 && p.y > 25 && p.y < H - 45;
+          });
   const mapPoints = ids
     .filter((placeId) => places.has(placeId))
-    .map((placeId) => ({
+    .map((placeId, i) => ({
       id: placeId,
-      label: places.get(placeId)!.historicalName.replace(/（.*?）/g, ""),
+      label: places
+        .get(placeId)!
+        .historicalName.replace(/（.*?）/g, "")
+        .replace("硫磺岛东南登陆海岸", "东南登陆海岸")
+        .replace("硫磺岛北部阵地地区", "北部阵地"),
       dx: 0,
-      dy: 32,
+      dy: i % 2 === 0 ? -18 : 32,
     }));
+  const coastRings =
+    mode === "battle" || focusPlace
+      ? ((localLand as Record<string, number[][][]>)[battle.id] ?? land)
+      : land;
 
   return (
     <div
@@ -202,7 +212,7 @@ export function BattleMap({
           viewBox={`0 0 ${W} ${H}`}
           role="group"
           tabIndex={0}
-          aria-label={`${battle.title}，${mode === "pacific" ? "太平洋全局" : "战区"}地图，阶段${step + 1}：${PHASE_NAMES[step]}。方向键平移，加减号缩放，0复位。舰位与航线为示意。`}
+          aria-label={`${battle.title}，${mode === "pacific" ? "太平洋全局" : "战区"}地图，阶段${step + 1}：${PHASE_NAMES[step]}。方向键平移，加减号缩放，0复位。部队位置与行动方向为示意。`}
           onKeyDown={(event) => {
             const shifts: Record<string, [number, number]> = {
               ArrowLeft: [-1, 0],
@@ -318,7 +328,7 @@ export function BattleMap({
           <rect width={W} height={H} fill="#e5efed" />
           <rect width={W} height={H} fill={`url(#${id}-grid)`} />
           <g clipPath={`url(#${id}-clip)`}>
-            {land.map((ring, i) => (
+            {coastRings.map((ring, i) => (
               <path
                 d={`${path(ring)}Z`}
                 fill="#cbd6ba"
@@ -339,7 +349,7 @@ export function BattleMap({
             ) : (
               <>
                 <text x="515" y="375" className="mw-ocean-label">
-                  {battle.title.replace("海战", "").replace("袭击", "")}周边海域
+                  {battle.title.replace("海战", "").replace("袭击", "")}战区
                 </text>
                 <text x="515" y="398" className="mw-ocean-en">
                   BATTLE AREA / SCHEMATIC
@@ -460,16 +470,16 @@ export function BattleMap({
           </g>
           <g
             transform="translate(26 420)"
-            aria-label={`纬向近似比例尺${mode === "pacific" ? 1000 : 100}公里`}
+            aria-label={`纬向近似比例尺${scaleKm}公里`}
           >
             <path
-              d={`M0 -5V0H${((mode === "pacific" ? 1000 : 100) / 111.32) * scale}V-5`}
+              d={`M0 -5V0H${(scaleKm / 111.32) * scale}V-5`}
               fill="none"
               stroke="#2c5359"
               strokeWidth="2"
             />
             <text y="18" fontSize="12" fill="#2c5359">
-              约 {mode === "pacific" ? "1,000" : "100"} km · 纬向
+              约 {scaleKm} km · 纬向
             </text>
           </g>
         </svg>
@@ -494,7 +504,7 @@ export function BattleMap({
             ↺
           </button>
         </div>
-        <span className="mw-map-schematic">舰位与航线为示意</span>
+        <span className="mw-map-schematic">部队位置与行动方向为示意</span>
       </div>
       <div className="mw-map-caption">
         <div>
@@ -522,149 +532,159 @@ export function BattleMap({
         （公有领域）。小岛以定位点表示；底图不表示历史疆界。手机上可直接滑动页面。
       </p>
 
-      <ol
-        className="mw-phase-steps"
-        style={{ gridTemplateColumns: `repeat(${battle.phases.length},1fr)` }}
-        aria-label="选择战役阶段"
-      >
-        {battle.phases.map((item, i) => (
-          <li key={item.id}>
-            <button
-              type="button"
-              aria-current={step === i ? "step" : undefined}
-              onClick={() => selectStep(i)}
-              aria-label={`第${i + 1}阶段：${PHASE_NAMES[i]}`}
-            >
-              <span>{String(i + 1).padStart(2, "0")}</span>
-              <span>{PHASE_NAMES[i]}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-      <div className="mw-phase-detail">
-        <div className="mw-phase-heading">
-          <div>
-            <span>
-              阶段 {step + 1} / {battle.phases.length}
-            </span>
-            <h3 aria-live="polite" aria-atomic="true">
-              {PHASE_NAMES[step]}
-            </h3>
-          </div>
-          <div className="mw-phase-arrows">
-            <button
-              type="button"
-              className="rs-map-play"
-              aria-label={playing ? "暂停阶段" : "播放阶段"}
-              aria-pressed={playing}
-              onClick={() => {
-                setFocusPlace(false);
-                setMode("battle");
-                if (step === battle.phases.length - 1) setStep(0);
-                setPlaying(!playing);
-              }}
-            >
-              {playing ? "Ⅱ" : "▶"}
-            </button>
-            <button
-              type="button"
-              disabled={step === 0}
-              onClick={() => selectStep(step - 1)}
-              aria-label="上一个阶段"
-            >
-              ←
-            </button>
-            <button
-              type="button"
-              disabled={step === battle.phases.length - 1}
-              onClick={() => selectStep(step + 1)}
-              aria-label="下一个阶段"
-            >
-              →
-            </button>
-          </div>
-        </div>
-        <p className="mw-phase-time">{phase.time.display}</p>
-        <div
-          className="mw-side-tabs"
-          role="group"
-          aria-label="查看一方的情报与决策"
-        >
-          <button
-            type="button"
-            aria-pressed={side === "japan"}
-            onClick={() => setSide("japan")}
+      {geographyOnly ? (
+        <p className="rs-small">
+          当前查看历史地点的位置。选择上方战役，再查看相应阶段与双方行动。
+        </p>
+      ) : (
+        <>
+          <ol
+            className="mw-phase-steps"
+            style={{
+              gridTemplateColumns: `repeat(${battle.phases.length},1fr)`,
+            }}
+            aria-label="选择战役阶段"
           >
-            ■ 日方视角
-          </button>
-          <button
-            type="button"
-            aria-pressed={side === "allies"}
-            onClick={() => setSide("allies")}
-          >
-            ▲ 盟军视角
-          </button>
-        </div>
-        <div className="mw-phase-facts" aria-live="polite">
-          <div>
-            <span>当时知道什么</span>
-            <p>{phase.knownEnemy[side]}</p>
-          </div>
-          <div>
-            <span>还不知道什么</span>
-            <p>{phase.unknownEnemy[side]}</p>
-          </div>
-          <div>
-            <span>做了什么决定</span>
-            <p>{phase.decision[side]}</p>
-          </div>
-          <div>
-            <span>带来了什么后果</span>
-            <p>{phase.consequence[side]}</p>
-          </div>
-        </div>
-        <div className="mw-phase-bottom">
-          <button
-            type="button"
-            className="mw-cite"
-            onClick={() =>
-              onEvidence({
-                title: `地图阶段 ${step + 1}：${PHASE_NAMES[step]}`,
-                claimIds: phase.claimIds,
-                sourceIds: phase.sourceIds,
-              })
-            }
-          >
-            ↗ 阶段证据与来源 <span>{phase.claimIds.length}</span>
-          </button>
-          <button
-            type="button"
-            className="mw-map-note-toggle"
-            aria-expanded={expanded}
-            onClick={() => setExpanded(!expanded)}
-          >
-            示意与不确定性说明 {expanded ? "−" : "＋"}
-          </button>
-        </div>
-        {expanded ? (
-          <div className="mw-map-notes">
-            <p>{phase.uncertaintyNote}</p>
-            <p>时间：{phase.time.uncertainty}</p>
-            {SIDES.map((team) => (
-              <p key={team}>
-                {team === "japan" ? "日方" : "美方"}位置约 ±
-                {phase.positions[team].uncertaintyRadiusKm} 公里：
-                {phase.positions[team].uncertaintyNote}
-              </p>
+            {battle.phases.map((item, i) => (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  aria-current={step === i ? "step" : undefined}
+                  onClick={() => selectStep(i)}
+                  aria-label={`第${i + 1}阶段：${PHASE_NAMES[i]}`}
+                >
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                  <span>{PHASE_NAMES[i]}</span>
+                </button>
+              </li>
             ))}
-            {phase.routes.map((route) => (
-              <p key={route.id}>
-                {route.label}：{route.note}
-              </p>
-            ))}
+          </ol>
+          <div className="mw-phase-detail">
+            <div className="mw-phase-heading">
+              <div>
+                <span>
+                  阶段 {step + 1} / {battle.phases.length}
+                </span>
+                <h3 aria-live="polite" aria-atomic="true">
+                  {PHASE_NAMES[step]}
+                </h3>
+              </div>
+              <div className="mw-phase-arrows">
+                <button
+                  type="button"
+                  className="rs-map-play"
+                  aria-label={playing ? "暂停阶段" : "播放阶段"}
+                  aria-pressed={playing}
+                  onClick={() => {
+                    setFocusPlace(false);
+                    setMode("battle");
+                    if (step === battle.phases.length - 1) setStep(0);
+                    setPlaying(!playing);
+                  }}
+                >
+                  {playing ? "Ⅱ" : "▶"}
+                </button>
+                <button
+                  type="button"
+                  disabled={step === 0}
+                  onClick={() => selectStep(step - 1)}
+                  aria-label="上一个阶段"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  disabled={step === battle.phases.length - 1}
+                  onClick={() => selectStep(step + 1)}
+                  aria-label="下一个阶段"
+                >
+                  →
+                </button>
+              </div>
+            </div>
+            <p className="mw-phase-time">{phase.time.display}</p>
+            <div
+              className="mw-side-tabs"
+              role="group"
+              aria-label="查看一方的情报与决策"
+            >
+              <button
+                type="button"
+                aria-pressed={side === "japan"}
+                onClick={() => setSide("japan")}
+              >
+                ■ 日方视角
+              </button>
+              <button
+                type="button"
+                aria-pressed={side === "allies"}
+                onClick={() => setSide("allies")}
+              >
+                ▲ 盟军视角
+              </button>
+            </div>
+            <div className="mw-phase-facts" aria-live="polite">
+              <div>
+                <span>当时知道什么</span>
+                <p>{phase.knownEnemy[side]}</p>
+              </div>
+              <div>
+                <span>还不知道什么</span>
+                <p>{phase.unknownEnemy[side]}</p>
+              </div>
+              <div>
+                <span>做了什么决定</span>
+                <p>{phase.decision[side]}</p>
+              </div>
+              <div>
+                <span>带来了什么后果</span>
+                <p>{phase.consequence[side]}</p>
+              </div>
+            </div>
+            <div className="mw-phase-bottom">
+              <button
+                type="button"
+                className="mw-cite"
+                onClick={() =>
+                  onEvidence({
+                    title: `地图阶段 ${step + 1}：${PHASE_NAMES[step]}`,
+                    claimIds: phase.claimIds,
+                    sourceIds: phase.sourceIds,
+                  })
+                }
+              >
+                ↗ 阶段证据与来源 <span>{phase.claimIds.length}</span>
+              </button>
+              <button
+                type="button"
+                className="mw-map-note-toggle"
+                aria-expanded={expanded}
+                onClick={() => setExpanded(!expanded)}
+              >
+                示意与不确定性说明 {expanded ? "−" : "＋"}
+              </button>
+            </div>
+            {expanded ? (
+              <div className="mw-map-notes">
+                <p>{phase.uncertaintyNote}</p>
+                <p>时间：{phase.time.uncertainty}</p>
+                {SIDES.map((team) => (
+                  <p key={team}>
+                    {team === "japan" ? "日方" : "美方"}位置约 ±
+                    {phase.positions[team].uncertaintyRadiusKm} 公里：
+                    {phase.positions[team].uncertaintyNote}
+                  </p>
+                ))}
+                {phase.routes.map((route) => (
+                  <p key={route.id}>
+                    {route.label}：{route.note}
+                  </p>
+                ))}
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </div>
+        </>
+      )}
     </div>
   );
 }

@@ -620,6 +620,487 @@
       "articleIds": [
         "person-takagi-takeo"
       ]
+    },
+    {
+      "id": "media-portrait-ozawa",
+      "title": "小泽治三郎历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-ozawa.jpg",
+      "author": "推定为日本海军官方摄影，摄影者未具名",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AJisabur%C5%8D_Ozawa_as_vice_admiral.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-marianas",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AJisabur%C5%8D_Ozawa_as_vice_admiral.jpg",
+      "creditLine": "Commons历史照片登记；未列原始馆藏 · Wikimedia Commons",
+      "alt": "小泽治三郎的真实历史照片（1940—1945年间）",
+      "caption": "小泽治三郎，1940—1945年间。",
+      "width": 500,
+      "height": 708,
+      "articleIds": [
+        "person-ozawa-jisaburo"
+      ]
+    },
+    {
+      "id": "media-portrait-kurita",
+      "title": "栗田健男历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-kurita.jpg",
+      "author": "摄影者不详",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3ATakeo_Kurita.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-kurita-interview",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3ATakeo_Kurita.jpg",
+      "creditLine": "美国海军历史与遗产司 · NH 63694 · Wikimedia Commons",
+      "alt": "栗田健男的真实历史照片（拍摄年代未注明）",
+      "caption": "栗田健男，拍摄年代未注明。",
+      "width": 580,
+      "height": 738,
+      "articleIds": [
+        "person-kurita-takeo"
+      ]
+    },
+    {
+      "id": "media-portrait-kuribayashi",
+      "title": "栗林忠道历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-kuribayashi.jpg",
+      "author": "摄影者不详",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3ATadamichi_Kuribayashi_(cropped).jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-iwo",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3ATadamichi_Kuribayashi_(cropped).jpg",
+      "creditLine": "Commons历史照片登记（原有裁切） · Wikimedia Commons",
+      "alt": "栗林忠道的真实历史照片（1943年）",
+      "caption": "栗林忠道，1943年。",
+      "width": 500,
+      "height": 728,
+      "articleIds": [
+        "person-kuribayashi-tadamichi"
+      ]
+    },
+    {
+      "id": "media-portrait-ushijima",
+      "title": "牛岛满历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-ushijima.jpg",
+      "author": "摄影者不详",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AMitsuru_Ushijima.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-okinawa",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AMitsuru_Ushijima.jpg",
+      "creditLine": "日本防卫省旧资料经Commons保存 · Wikimedia Commons",
+      "alt": "牛岛满的真实历史照片（拍摄年代未注明）",
+      "caption": "牛岛满，拍摄年代未注明。",
+      "width": 500,
+      "height": 677,
+      "articleIds": [
+        "person-ushijima-mitsuru"
+      ]
+    },
+    {
+      "id": "media-portrait-halsey",
+      "title": "威廉·哈尔西历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-halsey.jpg",
+      "author": "美国海军",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AW_Halsey.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-leyte",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AW_Halsey.jpg",
+      "creditLine": "美国国家档案馆 · 80-G-K-15137 · Wikimedia Commons",
+      "alt": "威廉·哈尔西的真实历史照片（约1945年末，战后）",
+      "caption": "威廉·哈尔西，约1945年末，战后。",
+      "width": 590,
+      "height": 733,
+      "articleIds": [
+        "person-halsey-william"
+      ]
+    },
+    {
+      "id": "media-portrait-hirohito",
+      "title": "裕仁（昭和天皇）历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-hirohito.jpg",
+      "author": "摄影者不详",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AHirohito_in_dress_uniform_(cropped).jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-rescript",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AHirohito_in_dress_uniform_(cropped).jpg",
+      "creditLine": "美国国会图书馆 · cph.3a40859（局部） · Wikimedia Commons",
+      "alt": "裕仁（昭和天皇）的真实历史照片（1935年）",
+      "caption": "裕仁（昭和天皇），1935年。",
+      "width": 500,
+      "height": 734,
+      "articleIds": [
+        "person-hirohito"
+      ]
+    },
+    {
+      "id": "media-portrait-truman",
+      "title": "哈里·杜鲁门历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-truman.jpg",
+      "author": "美国政府官方照片",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3ATRUMAN_58-766-06_(cropped).jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-airwar",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3ATRUMAN_58-766-06_(cropped).jpg",
+      "creditLine": "杜鲁门总统图书馆 / NARA 7865583（局部） · Wikimedia Commons",
+      "alt": "哈里·杜鲁门的真实历史照片（约1947年，战后）",
+      "caption": "哈里·杜鲁门，约1947年，战后。",
+      "width": 500,
+      "height": 675,
+      "articleIds": [
+        "person-truman-harry"
+      ]
+    },
+    {
+      "id": "media-portrait-shigemitsu",
+      "title": "重光葵历史照片",
+      "mediaType": "portrait",
+      "path": "public/media/portrait-shigemitsu.jpg",
+      "author": "摄影者不详",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AShigemitsu_Mamoru.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-surrender",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AShigemitsu_Mamoru.jpg",
+      "creditLine": "Commons历史照片登记 · Wikimedia Commons",
+      "alt": "重光葵的真实历史照片（1945年）",
+      "caption": "重光葵，1945年。",
+      "width": 500,
+      "height": 679,
+      "articleIds": [
+        "person-shigemitsu-mamoru"
+      ]
+    },
+    {
+      "id": "media-guadalcanal-photo",
+      "title": "瓜岛战役期间的盟军士兵休息场景，1942年。来源对具体日期及部队辨识有不同描述",
+      "mediaType": "photograph",
+      "path": "public/media/guadalcanal-photo.jpg",
+      "author": "美国海军官方照片",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AMarines_rest_in_the_field_on_Guadalcanal.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-solomons",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AMarines_rest_in_the_field_on_Guadalcanal.jpg",
+      "creditLine": "美国国家档案馆 · 80-G-20683 · Wikimedia Commons",
+      "alt": "瓜岛战役期间的盟军士兵休息场景，1942年。来源对具体日期及部队辨识有不同描述。",
+      "caption": "瓜岛战役期间的盟军士兵休息场景，1942年。来源对具体日期及部队辨识有不同描述。",
+      "width": 500,
+      "height": 361,
+      "articleIds": [
+        "battle-guadalcanal"
+      ]
+    },
+    {
+      "id": "media-philippine-sea-photo",
+      "title": "瑞鹤号与护航驱逐舰在美军空袭下机动，1944年6月20日",
+      "mediaType": "photograph",
+      "path": "public/media/philippine-sea-photo.jpg",
+      "author": "美国海军，摄影者未具名",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AJapanese_aircraft_carrier_Zuikaku_and_two_destroyers_under_attack_on_20_June_1944_(80-G-238025).jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-marianas",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AJapanese_aircraft_carrier_Zuikaku_and_two_destroyers_under_attack_on_20_June_1944_(80-G-238025).jpg",
+      "creditLine": "美国国家档案馆 · 80-G-238025 · Wikimedia Commons",
+      "alt": "瑞鹤号与护航驱逐舰在美军空袭下机动，1944年6月20日。",
+      "caption": "瑞鹤号与护航驱逐舰在美军空袭下机动，1944年6月20日。",
+      "width": 500,
+      "height": 379,
+      "articleIds": [
+        "battle-philippine-sea"
+      ]
+    },
+    {
+      "id": "media-leyte-gulf-photo",
+      "title": "普林斯顿号轻型航母遭炸弹命中后起火，1944年10月24日",
+      "mediaType": "photograph",
+      "path": "public/media/leyte-gulf-photo.jpg",
+      "author": "美国海军，摄影者未具名",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AUSS_Princeton_(CVL-23)_burning_on_24_October_1944_(80-G-287970).jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-leyte",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AUSS_Princeton_(CVL-23)_burning_on_24_October_1944_(80-G-287970).jpg",
+      "creditLine": "美国国家档案馆 · 80-G-287970 · Wikimedia Commons",
+      "alt": "普林斯顿号轻型航母遭炸弹命中后起火，1944年10月24日。",
+      "caption": "普林斯顿号轻型航母遭炸弹命中后起火，1944年10月24日。",
+      "width": 500,
+      "height": 400,
+      "articleIds": [
+        "battle-leyte-gulf"
+      ]
+    },
+    {
+      "id": "media-iwo-jima-photo",
+      "title": "载有美军的履带登陆车向硫磺岛海岸前进，1945年2月",
+      "mediaType": "photograph",
+      "path": "public/media/iwo-jima-photo.jpg",
+      "author": "美国海军陆战队历史部档案室",
+      "license": "cc-by-2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "rightsStatement": "按CC BY 2.0使用，署名：Archives Branch, USMC History Division。来源照片经Commons提供缩略图，未进行其他编辑。",
+      "sourceId": "source-late-iwo",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3ALVTs_Arriving_at_Iwo_Jima%2C_February_1945.jpg",
+      "creditLine": "USMC Archives · Thayer Soule Collection (COLL/2266) · Wikimedia Commons",
+      "alt": "载有美军的履带登陆车向硫磺岛海岸前进，1945年2月。",
+      "caption": "载有美军的履带登陆车向硫磺岛海岸前进，1945年2月。",
+      "width": 960,
+      "height": 737,
+      "articleIds": [
+        "battle-iwo-jima"
+      ]
+    },
+    {
+      "id": "media-okinawa-photo",
+      "title": "美军士兵在冲绳南部瓦纳岭作战，1945年5月",
+      "mediaType": "photograph",
+      "path": "public/media/okinawa-photo.jpg",
+      "author": "Walter F. Kleine，美国海军陆战队",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AWw2_158.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-okinawa",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AWw2_158.jpg",
+      "creditLine": "美国海军陆战队 · USMC 123170 · Wikimedia Commons",
+      "alt": "美军士兵在冲绳南部瓦纳岭作战，1945年5月。",
+      "caption": "美军士兵在冲绳南部瓦纳岭作战，1945年5月。",
+      "width": 500,
+      "height": 397,
+      "articleIds": [
+        "battle-okinawa"
+      ]
+    },
+    {
+      "id": "media-japan-surrender-photo",
+      "title": "重光葵代表日本政府在密苏里号签署投降书，1945年9月2日",
+      "mediaType": "photograph",
+      "path": "public/media/japan-surrender-photo.jpg",
+      "author": "Stephen E. Korpanty（美国陆军通信兵）；Adam Cuerden修复",
+      "license": "public-domain",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File%3AMamoru_Shigemitsu_signs_the_Instrument_of_Surrender%2C_officially_ending_the_Second_World_War.jpg#Licensing",
+      "rightsStatement": "Commons文件页标注为公有领域，具体依据见文件登记。保留来源提供的照片或既有裁切版本，不以网页上传时间代替拍摄时间。",
+      "sourceId": "source-late-surrender",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File%3AMamoru_Shigemitsu_signs_the_Instrument_of_Surrender%2C_officially_ending_the_Second_World_War.jpg",
+      "creditLine": "美国国家档案馆 · SC 213700（来源页修复版本） · Wikimedia Commons",
+      "alt": "重光葵代表日本政府在密苏里号签署投降书，1945年9月2日。",
+      "caption": "重光葵代表日本政府在密苏里号签署投降书，1945年9月2日。",
+      "width": 500,
+      "height": 400,
+      "articleIds": [
+        "event-overview-part-10-surrender",
+        "event-japan-surrender-1945"
+      ]
+    },
+    {
+      "id": "media-late-map-part-6",
+      "title": "第六部分：瓜岛与消耗战：地理线索",
+      "mediaType": "map",
+      "path": "public/media/late-map-part-6.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-solomons",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-7.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "第六部分：瓜岛与消耗战：地理线索：标出瓜达尔卡纳尔岛、图拉吉（所罗门群岛）、拉包尔、布纳附近、莫尔兹比港（巴布亚新几内亚）的地理位置。",
+      "caption": "本部分涉及的主要真实地点。编号不表示行动的时间先后，具体过程请按正文与事件日期阅读。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "event-overview-part-6-guadalcanal"
+      ]
+    },
+    {
+      "id": "media-late-map-part-7",
+      "title": "第七部分：盟军反攻：地理线索",
+      "mediaType": "map",
+      "path": "public/media/late-map-part-7.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-new-guinea",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-8.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "第七部分：盟军反攻：地理线索：标出塔拉瓦、夸贾林、塞班岛、关岛、因帕尔、湖南省的地理位置。",
+      "caption": "本部分涉及的主要真实地点。编号不表示行动的时间先后，具体过程请按正文与事件日期阅读。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "event-overview-part-7-counteroffensive"
+      ]
+    },
+    {
+      "id": "media-late-map-part-8",
+      "title": "第八部分：重返菲律宾：地理线索",
+      "mediaType": "map",
+      "path": "public/media/late-map-part-8.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-leyte",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USA/USA-P-Return/USA-P-Return-6.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "第八部分：重返菲律宾：地理线索：标出莱特岛、萨马岛东部、圣贝纳迪诺海峡、苏里高海峡、马尼拉的地理位置。",
+      "caption": "本部分涉及的主要真实地点。编号不表示行动的时间先后，具体过程请按正文与事件日期阅读。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "event-overview-part-8-philippines"
+      ]
+    },
+    {
+      "id": "media-late-map-part-9",
+      "title": "第九部分：逼近日本本土：地理线索",
+      "mediaType": "map",
+      "path": "public/media/late-map-part-9.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-iwo",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USMC/USMC-C-Iwo/index.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "第九部分：逼近日本本土：地理线索：标出硫黄岛（Iōtō）、冲绳岛、东京、天宁岛的地理位置。",
+      "caption": "本部分涉及的主要真实地点。编号不表示行动的时间先后，具体过程请按正文与事件日期阅读。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "event-overview-part-9-home-islands"
+      ]
+    },
+    {
+      "id": "media-late-map-part-10",
+      "title": "第十部分：战争如何结束：地理线索",
+      "mediaType": "map",
+      "path": "public/media/late-map-part-10.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-end-chronology",
+      "sourcePage": "https://www.ndl.go.jp/constitution/e/etc/history01.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "第十部分：战争如何结束：地理线索：标出广岛市、长崎市、中国东北地区、东京湾、天宁岛的地理位置。",
+      "caption": "本部分涉及的主要真实地点。编号不表示行动的时间先后，具体过程请按正文与事件日期阅读。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "event-overview-part-10-surrender"
+      ]
+    },
+    {
+      "id": "media-late-battle-map-guadalcanal",
+      "title": "瓜达尔卡纳尔战役：战区地理",
+      "mediaType": "battle-map",
+      "path": "public/media/late-battle-map-guadalcanal.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-solomons",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/AAF/USSBS/PTO-Campaigns/USSBS-PTO-7.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "瓜达尔卡纳尔战役：战区地理：标出瓜达尔卡纳尔岛、图拉吉（所罗门群岛）、拉包尔的地理位置。",
+      "caption": "瓜达尔卡纳尔战役的主要地点。动态部署与双方情报请使用正文中的分阶段交互地图，本图仅说明真实地理关系。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "battle-guadalcanal"
+      ]
+    },
+    {
+      "id": "media-late-battle-map-philippine-sea",
+      "title": "菲律宾海海战：战区地理",
+      "mediaType": "battle-map",
+      "path": "public/media/late-battle-map-philippine-sea.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-marianas",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USA/USA-P-Marianas/USA-P-Marianas-7.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "菲律宾海海战：战区地理：标出菲律宾海、塞班岛、关岛的地理位置。",
+      "caption": "菲律宾海海战的主要地点。动态部署与双方情报请使用正文中的分阶段交互地图，本图仅说明真实地理关系。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "battle-philippine-sea"
+      ]
+    },
+    {
+      "id": "media-late-battle-map-leyte-gulf",
+      "title": "莱特湾海战：战区地理",
+      "mediaType": "battle-map",
+      "path": "public/media/late-battle-map-leyte-gulf.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-leyte",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USA/USA-P-Return/USA-P-Return-6.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "莱特湾海战：战区地理：标出莱特岛、萨马岛东部、圣贝纳迪诺海峡、苏里高海峡的地理位置。",
+      "caption": "莱特湾海战的主要地点。动态部署与双方情报请使用正文中的分阶段交互地图，本图仅说明真实地理关系。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "battle-leyte-gulf"
+      ]
+    },
+    {
+      "id": "media-late-battle-map-iwo-jima",
+      "title": "硫磺岛战役：战区地理",
+      "mediaType": "battle-map",
+      "path": "public/media/late-battle-map-iwo-jima.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-iwo",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USMC/USMC-C-Iwo/index.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "硫磺岛战役：战区地理：标出硫黄岛（Iōtō）、硫黄岛东南海岸、硫黄岛北部的地理位置。",
+      "caption": "硫磺岛战役的主要地点。动态部署与双方情报请使用正文中的分阶段交互地图，本图仅说明真实地理关系。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "battle-iwo-jima"
+      ]
+    },
+    {
+      "id": "media-late-battle-map-okinawa",
+      "title": "冲绳战役：战区地理",
+      "mediaType": "battle-map",
+      "path": "public/media/late-battle-map-okinawa.svg",
+      "author": "太平洋战争教材内容组；底图：Natural Earth",
+      "license": "original-work",
+      "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "rightsStatement": "基于Natural Earth公有领域海岸线及地点经纬度制作的原创教学定位图，非历史地图扫描。编号仅标识地理节点，不表示部队位置、行动次序或精确航线。",
+      "sourceId": "source-late-okinawa",
+      "sourcePage": "https://www.ibiblio.org/hyperwar/USA/USA-C-Ryukyus/index.html",
+      "creditLine": "原创定位图 · Natural Earth公有领域底图",
+      "alt": "冲绳战役：战区地理：标出冲绳岛、冲绳读谷附近西海岸、那霸市首里的地理位置。",
+      "caption": "冲绳战役的主要地点。动态部署与双方情报请使用正文中的分阶段交互地图，本图仅说明真实地理关系。",
+      "width": 1000,
+      "height": 610,
+      "articleIds": [
+        "battle-okinawa"
+      ]
     }
   ]
 }

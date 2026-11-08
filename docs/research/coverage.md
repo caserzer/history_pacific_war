@@ -1,5 +1,7 @@
 # 历史内容覆盖矩阵与交付门禁（v4 / ARCH-02 attempt 5）
 
+> 2026-11-08 更新：下文为原始 ARCH-02 交付记录。现行范围已扩至1945-09-02、十个历史部分、29篇重点文章、31个必需事件与37个媒体类型槽位；自测计数仍153。最新范围、资料及验证见 [history-through-surrender.md](../history-through-surrender.md)，精确集合以 `contracts/coverage.json` 为准。
+
 状态：**契约/覆盖/验证器已交付；HIST-00 已交付战略背景内容；HIST-01..04 内容尚未交付**。本候选基座（`df6ae36` + ARCH-02 delta）的 `content/history.json` 有 4 个 strategy 事件、2 个问题、22 个来源、110 条 claim；**没有**早期扩张、战役、地图阶段或媒体内容。本文件中的每一条“required”都是后续内容任务的验收条件，不是“已完成内容”的声明。
 
 规范机器文件：`contracts/coverage.json`。本文解释其精确集合；两者冲突时以机器文件与 `contracts/content.schema.json` 为准，并须由架构审查修正。

@@ -85,6 +85,11 @@ export const HISTORICAL_PART_META: Record<HistoricalPartId, { title: string; sho
   'part-3-expansion': { title: '第三部分：日本的快速扩张', short: '日本的快速扩张', ordinal: 3 },
   'part-4-turning-point': { title: '第四部分：战局开始发生变化', short: '战局开始发生变化', ordinal: 4 },
   'part-5-midway': { title: '第五部分：中途岛海战', short: '中途岛海战', ordinal: 5 },
+  'part-6-guadalcanal': { title: '第六部分：瓜岛与消耗战', short: '瓜岛与消耗战', ordinal: 6 },
+  'part-7-counteroffensive': { title: '第七部分：盟军反攻', short: '盟军反攻', ordinal: 7 },
+  'part-8-philippines': { title: '第八部分：重返菲律宾', short: '重返菲律宾', ordinal: 8 },
+  'part-9-home-islands': { title: '第九部分：逼近日本本土', short: '逼近日本本土', ordinal: 9 },
+  'part-10-surrender': { title: '第十部分：战争如何结束', short: '战争如何结束', ordinal: 10 },
 };
 
 /** 战役十四类字段的中文标题，逐字来自 contracts/coverage.json 的 battleSectionKeys[].title。 */

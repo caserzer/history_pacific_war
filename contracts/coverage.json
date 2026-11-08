@@ -1,41 +1,72 @@
 {
   "schemaVersion": "1.0.0",
-  "stageOrder": ["strategy", "background", "pearl", "coral", "full"],
+  "stageOrder": [
+    "strategy",
+    "background",
+    "pearl",
+    "coral",
+    "full"
+  ],
   "stages": [
     {
       "id": "strategy",
       "histTask": "HIST-00",
       "title": "战略背景与基础",
       "summary": "建立战争背景、侵略与资源禁运、双方战略困境的基础叙述。",
-      "requiredQuestionParts": ["part-1-why-war"]
+      "requiredQuestionParts": [
+        "part-1-why-war"
+      ]
     },
     {
       "id": "background",
       "histTask": "HIST-01",
       "title": "日本快速扩张",
       "summary": "增加香港、马来亚与新加坡、菲律宾、荷属东印度、威克岛、关岛、达尔文、印度洋等早期扩张内容及补给限制。",
-      "requiredQuestionParts": ["part-1-why-war", "part-3-expansion"]
+      "requiredQuestionParts": [
+        "part-1-why-war",
+        "part-3-expansion"
+      ]
     },
     {
       "id": "pearl",
       "histTask": "HIST-02",
       "title": "珍珠港与战争爆发",
       "summary": "增加珍珠港十四类分析、山本与南云档案，以及航母、舰载机、海军航空作战基础专题。",
-      "requiredQuestionParts": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion"]
+      "requiredQuestionParts": [
+        "part-1-why-war",
+        "part-2-pearl-harbor",
+        "part-3-expansion"
+      ]
     },
     {
       "id": "coral",
       "histTask": "HIST-03",
       "title": "战局开始变化",
       "summary": "增加美军早期航母行动、杜立特空袭、珊瑚海与莫尔兹比港、弗莱彻档案、雷达与密码分析专题。",
-      "requiredQuestionParts": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point"]
+      "requiredQuestionParts": [
+        "part-1-why-war",
+        "part-2-pearl-harbor",
+        "part-3-expansion",
+        "part-4-turning-point"
+      ]
     },
     {
       "id": "full",
       "histTask": "HIST-04",
-      "title": "中途岛与全量交付",
-      "summary": "增加中途岛十四类分析、尼米兹与斯普鲁恩斯档案、补给专题，交付全部重点文章、五部分问题与最终门禁。",
-      "requiredQuestionParts": ["part-1-why-war", "part-2-pearl-harbor", "part-3-expansion", "part-4-turning-point", "part-5-midway"]
+      "title": "中途岛至日本正式投降的全量交付",
+      "summary": "保留原有内容，延伸至1945年9月2日东京湾正式签署投降书，涵盖陆海空战场、平民经历与终战文件。",
+      "requiredQuestionParts": [
+        "part-1-why-war",
+        "part-2-pearl-harbor",
+        "part-3-expansion",
+        "part-4-turning-point",
+        "part-5-midway",
+        "part-6-guadalcanal",
+        "part-7-counteroffensive",
+        "part-8-philippines",
+        "part-9-home-islands",
+        "part-10-surrender"
+      ]
     }
   ],
   "historicalParts": [
@@ -63,23 +94,90 @@
       "id": "part-5-midway",
       "title": "第五部分：中途岛海战",
       "questionStage": "full"
+    },
+    {
+      "id": "part-6-guadalcanal",
+      "title": "第六部分：瓜岛与消耗战",
+      "questionStage": "full"
+    },
+    {
+      "id": "part-7-counteroffensive",
+      "title": "第七部分：盟军反攻",
+      "questionStage": "full"
+    },
+    {
+      "id": "part-8-philippines",
+      "title": "第八部分：重返菲律宾",
+      "questionStage": "full"
+    },
+    {
+      "id": "part-9-home-islands",
+      "title": "第九部分：逼近日本本土",
+      "questionStage": "full"
+    },
+    {
+      "id": "part-10-surrender",
+      "title": "第十部分：战争如何结束",
+      "questionStage": "full"
     }
   ],
   "battleSectionKeys": [
-    { "key": "background", "title": "背景" },
-    { "key": "geography", "title": "地理环境" },
-    { "key": "participants", "title": "主要参与方" },
-    { "key": "commanders", "title": "主要指挥官" },
-    { "key": "forces", "title": "双方军力对比" },
-    { "key": "objectives", "title": "各自战略目标" },
-    { "key": "constraints", "title": "决策约束" },
-    { "key": "plan", "title": "作战计划" },
-    { "key": "course", "title": "战斗经过" },
-    { "key": "decisions", "title": "关键决策" },
-    { "key": "results", "title": "结果与损失" },
-    { "key": "aftermath", "title": "后续影响" },
-    { "key": "controversies", "title": "历史争议" },
-    { "key": "furtherReading", "title": "延伸阅读" }
+    {
+      "key": "background",
+      "title": "背景"
+    },
+    {
+      "key": "geography",
+      "title": "地理环境"
+    },
+    {
+      "key": "participants",
+      "title": "主要参与方"
+    },
+    {
+      "key": "commanders",
+      "title": "主要指挥官"
+    },
+    {
+      "key": "forces",
+      "title": "双方军力对比"
+    },
+    {
+      "key": "objectives",
+      "title": "各自战略目标"
+    },
+    {
+      "key": "constraints",
+      "title": "决策约束"
+    },
+    {
+      "key": "plan",
+      "title": "作战计划"
+    },
+    {
+      "key": "course",
+      "title": "战斗经过"
+    },
+    {
+      "key": "decisions",
+      "title": "关键决策"
+    },
+    {
+      "key": "results",
+      "title": "结果与损失"
+    },
+    {
+      "key": "aftermath",
+      "title": "后续影响"
+    },
+    {
+      "key": "controversies",
+      "title": "历史争议"
+    },
+    {
+      "key": "furtherReading",
+      "title": "延伸阅读"
+    }
   ],
   "battleSectionMinHanChars": 160,
   "questionMinimumAnswerHanChars": 160,
@@ -103,22 +201,42 @@
     "battle-midway",
     "person-nimitz-chester",
     "person-spruance-raymond",
-    "concept-logistics"
+    "concept-logistics",
+    "event-overview-part-6-guadalcanal",
+    "event-overview-part-7-counteroffensive",
+    "event-overview-part-8-philippines",
+    "event-overview-part-9-home-islands",
+    "event-overview-part-10-surrender",
+    "battle-guadalcanal",
+    "battle-philippine-sea",
+    "battle-leyte-gulf",
+    "battle-iwo-jima",
+    "battle-okinawa"
   ],
   "stageOwnership": {
     "description": "ARCH-02 单一阶段归属来源：每个阶段同时拥有 keyArticles（重点文章）与 events（必需事件）。验证器只从这里派生交付阶段，不再有第二套归属表或硬编码映射。requiredEvents[].stage 必须与 events 列表一致（交叉一致性负例）。",
     "eventPartPolicy": {
       "description": "事件可跨导读写入的显式声明（机器可读）。这是允许集合，不是归属表：归属仍只来自 stageOwnership.<stage>.events；验证器从本字段派生事件 historicalPart 的允许集合，代码中不再有第二份跨阶段表。",
       "crossStageArticles": {
-        "background": ["event-overview-part-4-turning-point"]
+        "background": [
+          "event-overview-part-4-turning-point"
+        ]
       }
     },
     "strategy": {
-      "keyArticles": ["event-overview-part-1-why-war"],
-      "events": ["event-japan-expansion-china", "event-us-oil-embargo-1941", "event-japan-war-decision-1941"]
+      "keyArticles": [
+        "event-overview-part-1-why-war"
+      ],
+      "events": [
+        "event-japan-expansion-china",
+        "event-us-oil-embargo-1941",
+        "event-japan-war-decision-1941"
+      ]
     },
     "background": {
-      "keyArticles": ["event-overview-part-3-expansion"],
+      "keyArticles": [
+        "event-overview-part-3-expansion"
+      ],
       "events": [
         "event-hong-kong-1941",
         "event-malaya-singapore-1942",
@@ -141,7 +259,9 @@
         "concept-carrier-aircraft",
         "concept-naval-aviation"
       ],
-      "events": ["event-us-declares-war-1941"]
+      "events": [
+        "event-us-declares-war-1941"
+      ]
     },
     "coral": {
       "keyArticles": [
@@ -151,7 +271,9 @@
         "concept-radar",
         "concept-codebreaking"
       ],
-      "events": ["event-us-carrier-raids-early-1942"]
+      "events": [
+        "event-us-carrier-raids-early-1942"
+      ]
     },
     "full": {
       "keyArticles": [
@@ -159,31 +281,135 @@
         "battle-midway",
         "person-nimitz-chester",
         "person-spruance-raymond",
-        "concept-logistics"
+        "concept-logistics",
+        "event-overview-part-6-guadalcanal",
+        "event-overview-part-7-counteroffensive",
+        "event-overview-part-8-philippines",
+        "event-overview-part-9-home-islands",
+        "event-overview-part-10-surrender",
+        "battle-guadalcanal",
+        "battle-philippine-sea",
+        "battle-leyte-gulf",
+        "battle-iwo-jima",
+        "battle-okinawa"
       ],
-      "events": []
+      "events": [
+        "event-papua-kokoda-1942",
+        "event-guadalcanal-landings-1942",
+        "event-bismarck-sea-1943",
+        "event-cartwheel-rabaul-1943",
+        "event-gilberts-marshalls-1943",
+        "event-china-burma-1944",
+        "event-marianas-landings-1944",
+        "event-leyte-return-1944",
+        "event-manila-luzon-1945",
+        "event-iwo-landings-1945",
+        "event-okinawa-landings-1945",
+        "event-blockade-firebombing-1945",
+        "event-potsdam-declaration-1945",
+        "event-hiroshima-nagasaki-1945",
+        "event-soviet-entry-1945",
+        "event-japan-acceptance-1945",
+        "event-japan-surrender-1945"
+      ]
     }
   },
   "requiredMediaTypes": {
-    "event-overview-part-1-why-war": ["map"],
-    "event-overview-part-3-expansion": ["map"],
-    "event-overview-part-2-pearl-harbor": ["map"],
-    "battle-pearl-harbor": ["battle-map", "photograph"],
-    "person-yamamoto-isoroku": ["portrait"],
-    "person-nagumo-chuichi": ["portrait"],
-    "concept-aircraft-carrier": ["diagram"],
-    "concept-carrier-aircraft": ["diagram"],
-    "concept-naval-aviation": ["diagram"],
-    "event-overview-part-4-turning-point": ["map"],
-    "battle-coral-sea": ["battle-map", "photograph"],
-    "person-fletcher-frank-jack": ["portrait"],
-    "concept-radar": ["diagram"],
-    "concept-codebreaking": ["diagram"],
-    "event-overview-part-5-midway": ["map"],
-    "battle-midway": ["battle-map", "photograph"],
-    "person-nimitz-chester": ["portrait"],
-    "person-spruance-raymond": ["portrait"],
-    "concept-logistics": ["diagram"]
+    "event-overview-part-1-why-war": [
+      "map"
+    ],
+    "event-overview-part-3-expansion": [
+      "map"
+    ],
+    "event-overview-part-2-pearl-harbor": [
+      "map"
+    ],
+    "battle-pearl-harbor": [
+      "battle-map",
+      "photograph"
+    ],
+    "person-yamamoto-isoroku": [
+      "portrait"
+    ],
+    "person-nagumo-chuichi": [
+      "portrait"
+    ],
+    "concept-aircraft-carrier": [
+      "diagram"
+    ],
+    "concept-carrier-aircraft": [
+      "diagram"
+    ],
+    "concept-naval-aviation": [
+      "diagram"
+    ],
+    "event-overview-part-4-turning-point": [
+      "map"
+    ],
+    "battle-coral-sea": [
+      "battle-map",
+      "photograph"
+    ],
+    "person-fletcher-frank-jack": [
+      "portrait"
+    ],
+    "concept-radar": [
+      "diagram"
+    ],
+    "concept-codebreaking": [
+      "diagram"
+    ],
+    "event-overview-part-5-midway": [
+      "map"
+    ],
+    "battle-midway": [
+      "battle-map",
+      "photograph"
+    ],
+    "person-nimitz-chester": [
+      "portrait"
+    ],
+    "person-spruance-raymond": [
+      "portrait"
+    ],
+    "concept-logistics": [
+      "diagram"
+    ],
+    "event-overview-part-6-guadalcanal": [
+      "map"
+    ],
+    "event-overview-part-7-counteroffensive": [
+      "map"
+    ],
+    "event-overview-part-8-philippines": [
+      "map"
+    ],
+    "event-overview-part-9-home-islands": [
+      "map"
+    ],
+    "event-overview-part-10-surrender": [
+      "map"
+    ],
+    "battle-guadalcanal": [
+      "battle-map",
+      "photograph"
+    ],
+    "battle-philippine-sea": [
+      "battle-map",
+      "photograph"
+    ],
+    "battle-leyte-gulf": [
+      "battle-map",
+      "photograph"
+    ],
+    "battle-iwo-jima": [
+      "battle-map",
+      "photograph"
+    ],
+    "battle-okinawa": [
+      "battle-map",
+      "photograph"
+    ]
   },
   "keyArticles": [
     {
@@ -502,6 +728,196 @@
         "claimIds": 3,
         "relatedEntityIds": 3
       }
+    },
+    {
+      "id": "event-overview-part-6-guadalcanal",
+      "kind": "part-overview",
+      "entityType": "event",
+      "historicalPart": "part-6-guadalcanal",
+      "stage": "full",
+      "titleZh": "瓜岛与消耗战：导读",
+      "minimumDepth": {
+        "articleSections": 4,
+        "hanChars": 520,
+        "sourceIds": 2,
+        "claimIds": 4,
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
+      },
+      "requiredArticleHeadings": [
+        "中途岛以后，战争为什么没有结束",
+        "瓜岛：机场、海域与夜间运输",
+        "巴布亚：山地道路也是战略条件",
+        "从局部胜负到持续作战能力"
+      ]
+    },
+    {
+      "id": "event-overview-part-7-counteroffensive",
+      "kind": "part-overview",
+      "entityType": "event",
+      "historicalPart": "part-7-counteroffensive",
+      "stage": "full",
+      "titleZh": "盟军反攻：导读",
+      "minimumDepth": {
+        "articleSections": 4,
+        "hanChars": 520,
+        "sourceIds": 2,
+        "claimIds": 4,
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
+      },
+      "requiredArticleHeadings": [
+        "反攻有不止一条路线",
+        "绕过基地与两栖登陆的代价",
+        "大陆战场仍在改变局势",
+        "马里亚纳把战争带向日本本土"
+      ]
+    },
+    {
+      "id": "event-overview-part-8-philippines",
+      "kind": "part-overview",
+      "entityType": "event",
+      "historicalPart": "part-8-philippines",
+      "stage": "full",
+      "titleZh": "重返菲律宾：导读",
+      "minimumDepth": {
+        "articleSections": 4,
+        "hanChars": 520,
+        "sourceIds": 2,
+        "claimIds": 4,
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
+      },
+      "requiredArticleHeadings": [
+        "为什么菲律宾重新成为中心",
+        "莱特湾不是一个地点的一场决斗",
+        "争议应回到当时掌握的信息",
+        "从舰队失败到城市解放"
+      ]
+    },
+    {
+      "id": "event-overview-part-9-home-islands",
+      "kind": "part-overview",
+      "entityType": "event",
+      "historicalPart": "part-9-home-islands",
+      "stage": "full",
+      "titleZh": "逼近日本本土：导读",
+      "minimumDepth": {
+        "articleSections": 4,
+        "hanChars": 520,
+        "sourceIds": 2,
+        "claimIds": 4,
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
+      },
+      "requiredArticleHeadings": [
+        "越靠近本土，防御为何仍然困难",
+        "硫磺岛：象征照片之外的战斗",
+        "冲绳：军事作战与居民灾难",
+        "封锁、城市空袭与尚未实施的登陆"
+      ]
+    },
+    {
+      "id": "event-overview-part-10-surrender",
+      "kind": "part-overview",
+      "entityType": "event",
+      "historicalPart": "part-10-surrender",
+      "stage": "full",
+      "titleZh": "战争如何结束：导读",
+      "minimumDepth": {
+        "articleSections": 4,
+        "hanChars": 520,
+        "sourceIds": 2,
+        "claimIds": 4,
+        "placeIds": 2,
+        "requiredHeadingHanChars": 100
+      },
+      "requiredArticleHeadings": [
+        "先把五个日期分开",
+        "为什么不只给出一个投降原因",
+        "广播之后，为什么还需要投降书",
+        "战争结束不能抹去战争责任与人的经历"
+      ]
+    },
+    {
+      "id": "battle-guadalcanal",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "full",
+      "titleZh": "瓜达尔卡纳尔战役",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 3,
+        "personIds": 2,
+        "placeIds": 2,
+        "sourceIds": 2,
+        "claimIds": 10,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "battle-philippine-sea",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "full",
+      "titleZh": "菲律宾海海战",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 3,
+        "personIds": 2,
+        "placeIds": 2,
+        "sourceIds": 2,
+        "claimIds": 10,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "battle-leyte-gulf",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "full",
+      "titleZh": "莱特湾海战",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 3,
+        "personIds": 2,
+        "placeIds": 2,
+        "sourceIds": 2,
+        "claimIds": 10,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "battle-iwo-jima",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "full",
+      "titleZh": "硫磺岛战役",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 3,
+        "personIds": 2,
+        "placeIds": 2,
+        "sourceIds": 2,
+        "claimIds": 10,
+        "disputedClaims": 1
+      }
+    },
+    {
+      "id": "battle-okinawa",
+      "kind": "battle",
+      "entityType": "battle",
+      "stage": "full",
+      "titleZh": "冲绳战役",
+      "minimumDepth": {
+        "sectionCount": 14,
+        "phases": 3,
+        "personIds": 2,
+        "placeIds": 2,
+        "sourceIds": 2,
+        "claimIds": 10,
+        "disputedClaims": 1
+      }
     }
   ],
   "requiredEvents": [
@@ -644,6 +1060,176 @@
         "sourceIds": 2,
         "claimIds": 2
       }
+    },
+    {
+      "id": "event-papua-kokoda-1942",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-guadalcanal-landings-1942",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-bismarck-sea-1943",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-cartwheel-rabaul-1943",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-gilberts-marshalls-1943",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-china-burma-1944",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-marianas-landings-1944",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-leyte-return-1944",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-manila-luzon-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-iwo-landings-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-okinawa-landings-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-blockade-firebombing-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-potsdam-declaration-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-hiroshima-nagasaki-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-soviet-entry-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-japan-acceptance-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
+    },
+    {
+      "id": "event-japan-surrender-1945",
+      "stage": "full",
+      "minimumDepth": {
+        "articleSections": 2,
+        "hanChars": 200,
+        "sourceIds": 1,
+        "claimIds": 2
+      }
     }
   ],
   "earlyCampaign": {
@@ -651,7 +1237,13 @@
     "legacyAnalysis": {
       "description": "旧五键迁移映射（仅记录历史形状与迁移目标，不是门禁豁免）。自 HIST-01 起旧形状在门禁中一律被拒绝：验证器对只带 earlyCampaignAnalysis 的事件报具名错误，并继续给出逐键诊断以便迁移定位。",
       "acceptedShape": "earlyCampaignAnalysis",
-      "acceptedKeys": ["background", "course", "constraints", "results", "impact"],
+      "acceptedKeys": [
+        "background",
+        "course",
+        "constraints",
+        "results",
+        "impact"
+      ],
       "targetShape": "analysisProfiles",
       "enforcement": "off",
       "legacyDisabledBy": "HIST-01",
@@ -667,102 +1259,268 @@
           "key": "background",
           "title": "背景",
           "question": "这场行动之前发生了什么？为什么会发生？",
-          "requiredElements": ["此前局势", "起因"],
+          "requiredElements": [
+            "此前局势",
+            "起因"
+          ],
           "elementMarkers": {
-            "此前局势": ["此前", "之前", "战前", "局势"],
-            "起因": ["起因", "因为", "由于", "原因", "为什么"]
+            "此前局势": [
+              "此前",
+              "之前",
+              "战前",
+              "局势"
+            ],
+            "起因": [
+              "起因",
+              "因为",
+              "由于",
+              "原因",
+              "为什么"
+            ]
           }
         },
         {
           "key": "geography",
           "title": "地理环境",
           "question": "战场在哪里？距离、地形或海域条件如何？对作战意味着什么？",
-          "requiredElements": ["地点", "距离或地形", "战略意义"],
+          "requiredElements": [
+            "地点",
+            "距离或地形",
+            "战略意义"
+          ],
           "elementMarkers": {
-            "地点": ["地点", "位置", "位于", "哪里", "港", "岛"],
-            "距离或地形": ["距离", "地形", "海域", "远近", "航程"],
-            "战略意义": ["战略", "意义", "意味着", "价值"]
+            "地点": [
+              "地点",
+              "位置",
+              "位于",
+              "哪里",
+              "港",
+              "岛"
+            ],
+            "距离或地形": [
+              "距离",
+              "地形",
+              "海域",
+              "远近",
+              "航程"
+            ],
+            "战略意义": [
+              "战略",
+              "意义",
+              "意味着",
+              "价值"
+            ]
           }
         },
         {
           "key": "participants",
           "title": "参与方与指挥",
           "question": "双方哪些国家、军种、部队参与？指挥体系如何？",
-          "requiredElements": ["双方阵营", "参战部队或军种", "指挥关系"],
+          "requiredElements": [
+            "双方阵营",
+            "参战部队或军种",
+            "指挥关系"
+          ],
           "elementMarkers": {
-            "双方阵营": ["日方", "盟方", "日本", "盟军", "双方"],
-            "参战部队或军种": ["部队", "军种", "舰队", "陆军", "海军", "空军"],
-            "指挥关系": ["指挥", "司令部", "由谁", "层级"]
+            "双方阵营": [
+              "日方",
+              "盟方",
+              "日本",
+              "盟军",
+              "双方"
+            ],
+            "参战部队或军种": [
+              "部队",
+              "军种",
+              "舰队",
+              "陆军",
+              "海军",
+              "空军"
+            ],
+            "指挥关系": [
+              "指挥",
+              "司令部",
+              "由谁",
+              "层级"
+            ]
           }
         },
         {
           "key": "objectivesAndForces",
           "title": "双方目标与军力",
           "question": "双方各自想达到什么目标？投入了哪些兵力与装备？",
-          "requiredElements": ["日方目标", "盟方目标", "兵力或装备对比"],
+          "requiredElements": [
+            "日方目标",
+            "盟方目标",
+            "兵力或装备对比"
+          ],
           "elementMarkers": {
-            "日方目标": ["日方", "日本"],
-            "盟方目标": ["盟方", "盟军", "美方"],
-            "兵力或装备对比": ["兵力", "舰艇", "飞机", "装备", "对比", "比较"]
+            "日方目标": [
+              "日方",
+              "日本"
+            ],
+            "盟方目标": [
+              "盟方",
+              "盟军",
+              "美方"
+            ],
+            "兵力或装备对比": [
+              "兵力",
+              "舰艇",
+              "飞机",
+              "装备",
+              "对比",
+              "比较"
+            ]
           }
         },
         {
           "key": "constraints",
           "title": "约束条件",
           "question": "双方受到哪些情报、补给、距离、天气、时间或指挥链限制？",
-          "requiredElements": ["具体限制", "限制如何影响行动"],
+          "requiredElements": [
+            "具体限制",
+            "限制如何影响行动"
+          ],
           "elementMarkers": {
-            "具体限制": ["限制", "不足", "太远", "恶劣", "紧迫", "不畅", "缺乏"],
-            "限制如何影响行动": ["影响到", "影响", "因此", "所以", "无法", "不能", "只能"]
+            "具体限制": [
+              "限制",
+              "不足",
+              "太远",
+              "恶劣",
+              "紧迫",
+              "不畅",
+              "缺乏"
+            ],
+            "限制如何影响行动": [
+              "影响到",
+              "影响",
+              "因此",
+              "所以",
+              "无法",
+              "不能",
+              "只能"
+            ]
           }
         },
         {
           "key": "course",
           "title": "阶段经过",
           "question": "按时间解释重要行动、转折点及其原因。",
-          "requiredElements": ["时间顺序", "转折点及原因"],
+          "requiredElements": [
+            "时间顺序",
+            "转折点及原因"
+          ],
           "elementMarkers": {
-            "时间顺序": ["时间顺序", "按时间", "先", "再", "最后"],
-            "转折点及原因": ["转折", "原因", "为什么", "由什么"]
+            "时间顺序": [
+              "时间顺序",
+              "按时间",
+              "先",
+              "再",
+              "最后"
+            ],
+            "转折点及原因": [
+              "转折",
+              "原因",
+              "为什么",
+              "由什么"
+            ]
           }
         },
         {
           "key": "options",
           "title": "可选方案与被排除它的约束",
           "question": "当时有哪些真实可选方案？每个方案被什么约束排除？",
-          "requiredElements": ["真实选项", "排除它的约束"],
+          "requiredElements": [
+            "真实选项",
+            "排除它的约束"
+          ],
           "elementMarkers": {
-            "真实选项": ["可以", "方案", "选项", "本来", "另一个", "要么"],
-            "排除它的约束": ["受限于", "无法", "因为", "约束", "补给", "风险", "代价", "不能"]
+            "真实选项": [
+              "可以",
+              "方案",
+              "选项",
+              "本来",
+              "另一个",
+              "要么"
+            ],
+            "排除它的约束": [
+              "受限于",
+              "无法",
+              "因为",
+              "约束",
+              "补给",
+              "风险",
+              "代价",
+              "不能"
+            ]
           }
         },
         {
           "key": "resultsAndLosses",
           "title": "结果与损失口径",
           "question": "结果与损失如何？采用的统计口径与来源是什么？",
-          "requiredElements": ["结果", "损失数字的口径"],
+          "requiredElements": [
+            "结果",
+            "损失数字的口径"
+          ],
           "elementMarkers": {
-            "结果": ["结果", "最终", "结局"],
-            "损失数字的口径": ["口径", "统计", "来源", "数字", "时点"]
+            "结果": [
+              "结果",
+              "最终",
+              "结局"
+            ],
+            "损失数字的口径": [
+              "口径",
+              "统计",
+              "来源",
+              "数字",
+              "时点"
+            ]
           }
         },
         {
           "key": "impact",
           "title": "后续影响",
           "question": "对后续战役、战略与当地平民意味着什么？",
-          "requiredElements": ["对后续战局的影响"],
+          "requiredElements": [
+            "对后续战局的影响"
+          ],
           "elementMarkers": {
-            "对后续战局的影响": ["后续", "影响", "长期", "战略", "平民"]
+            "对后续战局的影响": [
+              "后续",
+              "影响",
+              "长期",
+              "战略",
+              "平民"
+            ]
           }
         },
         {
           "key": "uncertainty",
           "title": "不确定性",
           "question": "哪些有证据支持？哪些仍有争议？哪些无法确定？",
-          "requiredElements": ["有证据支持的内容", "争议或无法确定的内容"],
+          "requiredElements": [
+            "有证据支持的内容",
+            "争议或无法确定的内容"
+          ],
           "elementMarkers": {
-            "有证据支持的内容": ["有证据", "证据支持", "可以确认", "档案", "史料", "来源"],
-            "争议或无法确定的内容": ["争议", "无法确定", "不确定", "尚未", "缺口", "不同说法"]
+            "有证据支持的内容": [
+              "有证据",
+              "证据支持",
+              "可以确认",
+              "档案",
+              "史料",
+              "来源"
+            ],
+            "争议或无法确定的内容": [
+              "争议",
+              "无法确定",
+              "不确定",
+              "尚未",
+              "缺口",
+              "不同说法"
+            ]
           }
         }
       ]
@@ -775,8 +1533,18 @@
       "field": "researchStatus",
       "requiredForEarlyCampaignEvents": true,
       "enforcedFrom": "HIST-01",
-      "enum": ["not-started", "sources-identified", "sources-retrieved", "cross-checked", "final"],
-      "forbiddenIn": ["event.article[].body", "event.summary", "claims[].text"]
+      "enum": [
+        "not-started",
+        "sources-identified",
+        "sources-retrieved",
+        "cross-checked",
+        "final"
+      ],
+      "forbiddenIn": [
+        "event.article[].body",
+        "event.summary",
+        "claims[].text"
+      ]
     },
     "eventIds": [
       "event-hong-kong-1941",
@@ -792,7 +1560,10 @@
     "overviewTopics": {
       "description": "HIST-EXPANSION 要求同时解释“盟军为何连败”与“日本扩张中的补给/防御压力”。这两项不依赖单一事件，而由 part 3 导读的两个强制小节承担；这里把它们正式锁定为机器断言。",
       "overviewArticleId": "event-overview-part-3-expansion",
-      "requiredHeadings": ["盟军为何连续失败", "日本的补给与防御压力"],
+      "requiredHeadings": [
+        "盟军为何连续失败",
+        "日本的补给与防御压力"
+      ],
       "minHanCharsPerHeading": 120
     }
   },

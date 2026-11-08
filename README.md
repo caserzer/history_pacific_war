@@ -1,12 +1,22 @@
-# 太平洋战争：从珍珠港到中途岛（站点模块）
+# 太平洋战争：从珍珠港到日本投降（站点模块）
 
 网站地址：https://caserzer.github.io/history_pacific_war/
+
+## 历史范围扩展至正式投降（2026-11-08）
+
+主线延伸到 **1945 年 9 月 2 日日本在东京湾密苏里号签署投降书**，与 8 月 15 日终战广播分别叙述。全站现有 10 个历史部分、41 个事件、8 场重点战役、27 个地图阶段、22 位人物、70 个地点、13 个问题、53 个文献来源及 55 项素材。
+
+新增部分包括瓜岛与消耗战、盟军反攻、重返菲律宾、逼近日本本土、战争如何结束；同时纳入中国与缅印战场、平民经历、波茨坦公告、原子弹轰炸及苏联参战。新增五场重点战役保留十四类分析与分阶段地图，新增人物均使用真实历史照片。
+
+- [从第六部分继续读](https://caserzer.github.io/history_pacific_war/#/timeline/event-overview-part-6-guadalcanal)
+- [阅读正式投降书终章](https://caserzer.github.io/history_pacific_war/#/timeline/event-japan-surrender-1945)
+- 内容范围、来源与地理数据维护见 [docs/history-through-surrender.md](docs/history-through-surrender.md)。
 
 ## 全站响应式阅读版（2026-11-08）
 
 从[教材导读](https://caserzer.github.io/history_pacific_war/)开始。首页、时间线、战役、人物、地图、知识专题、问题、来源和搜索均使用统一的响应式阅读界面。原样板地址 `#/midway` 继续指向中途岛章节。
 
-当前生产入口使用 `src/reading/ReadingSite.tsx`。`Reader.tsx` 统一文章目录、阅读分段、相关内容与下一篇；`Evidence.tsx` 提供按需证据抽屉/底部面板；`BattleMap.tsx` 为三场战役提供地理底图、阶段、双方情报、播放与不确定范围。历史内容仍来自 `content/history.json`，22 项素材及署名由 `content/media.json` 提供。
+当前生产入口使用 `src/reading/ReadingSite.tsx`。`Reader.tsx` 统一文章目录、阅读分段、相关内容与下一篇；`Evidence.tsx` 提供按需证据抽屉/底部面板；`BattleMap.tsx` 为八场战役提供地理底图、阶段、双方情报、播放与不确定范围。历史内容来自 `content/history.json`，55 项素材及署名由 `content/media.json` 提供。
 
 全站验证、地理数据来源与维护说明见 `docs/reading-redesign.md`。`docs/midway-pilot.md` 记录首轮样板；旧 `src/features/*` 视图保留为先前契约的回归参照，不再作为生产路由。`npm run check` 同时执行既有检查与新生产界面的逐页检查。
 

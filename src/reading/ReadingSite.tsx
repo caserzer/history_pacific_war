@@ -241,7 +241,7 @@ export function ReadingSite({ route }: { route: Route }) {
         </main>
         <footer className="mw-footer rs-footer" inert={menu}>
           <a className="rs-footer-brand" href={buildHref("overview")}>
-            太平洋战争 · 从珍珠港到中途岛
+            太平洋战争 · 从珍珠港到日本投降
           </a>
           <span>从事实出发，理解当时的选择。</span>
           <a href={buildHref("sources")}>来源与素材许可 ↗</a>
@@ -366,7 +366,7 @@ function RouteContent({ route }: { route: Route }) {
 
 function Home() {
   useEffect(() => {
-    document.title = "太平洋战争：从珍珠港到中途岛";
+    document.title = "太平洋战争：从珍珠港到日本投降";
   }, []);
   const { index } = useApp();
   const photograph = mediaFor("battle-pearl-harbor").find(
@@ -378,15 +378,15 @@ function Home() {
       <section className="mw-hero rs-home-hero">
         <div className="mw-hero-copy">
           <p className="mw-kicker">一部可以探索的历史教材</p>
-          <p className="mw-hero-date">1941.12 — 1942.06 / THE PACIFIC WAR</p>
+          <p className="mw-hero-date">1941.12 — 1945.09 / THE PACIFIC WAR</p>
           <h1 tabIndex={-1} data-route-heading="">
             从珍珠港
             <br />
-            到中途岛<span>THE PACIFIC WAR</span>
+            到日本投降<span>THE PACIFIC WAR</span>
           </h1>
           <p className="mw-hero-question">看见战场，也理解选择。</p>
           <p className="mw-hero-description">
-            从战争为什么爆发开始，沿着地图、人物与关键决策，读懂太平洋战争初期的局势变化。
+            从战争为什么爆发开始，沿着地图、人物与关键决策，理解从战争爆发、盟军反攻到日本签署投降书的全过程。
           </p>
           <div className="mw-hero-bottom">
             <a
@@ -398,6 +398,14 @@ function Home() {
             <a className="rs-hero-link" href={buildHref("atlas")}>
               在地图上探索 ↗
             </a>
+            {index.events.has("event-japan-surrender-1945") ? (
+              <a
+                className="rs-hero-link"
+                href={entityHref("event-japan-surrender-1945")}
+              >
+                阅读投降书终章 ↗
+              </a>
+            ) : null}
           </div>
         </div>
         {photograph ? (
@@ -418,7 +426,7 @@ function Home() {
           <div className="rs-section-head">
             <div>
               <p className="rs-eyebrow">按章节阅读 / START HERE</p>
-              <h2>五个部分，一条理解历史的线索</h2>
+              <h2>十个部分，从战争爆发到正式投降</h2>
             </div>
             <p>
               初次阅读，可以依次开始。
@@ -443,9 +451,13 @@ function Home() {
                       : buildHref("timeline")
                 }
               >
-                <span className="rs-large-number">0{i + 1}</span>
+                <span className="rs-large-number">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <div>
-                  <span className="rs-eyebrow">CHAPTER 0{i + 1}</span>
+                  <span className="rs-eyebrow">
+                    CHAPTER {String(i + 1).padStart(2, "0")}
+                  </span>
                   <h3>{PART(part)}</h3>
                   <p>{overview?.summary ?? battle?.summary}</p>
                 </div>
@@ -458,7 +470,7 @@ function Home() {
           <div className="rs-section-head">
             <div>
               <p className="rs-eyebrow">关键战役 / BATTLES</p>
-              <h2>走进三场海战的现场</h2>
+              <h2>走进关键战役的现场</h2>
             </div>
             <a href={buildHref("battles")}>查看全部 ↗</a>
           </div>
@@ -484,7 +496,7 @@ function Home() {
             {ENTRY_NAV.map((entry, i) => (
               <a href={buildHref(entry.view)} key={entry.view}>
                 <span>
-                  0{i + 1} / {entry.labelEn}
+                  {String(i + 1).padStart(2, "0")} / {entry.labelEn}
                 </span>
                 <h3>
                   {entry.label} <span>↗</span>
@@ -600,7 +612,8 @@ function Collection({
           return questions.length ? (
             <section className="rs-question-group" key={part}>
               <p className="rs-eyebrow">
-                0{HISTORICAL_PART_META[part].ordinal} / {PART(part)}
+                {String(HISTORICAL_PART_META[part].ordinal).padStart(2, "0")} /{" "}
+                {PART(part)}
               </p>
               {questions.map((q) => (
                 <a
@@ -688,7 +701,7 @@ function TimelinePage({ initialDate }: { initialDate?: string }) {
       <PageIntro
         eyebrow="TIMELINE / 时间线"
         title="沿着时间，理解局势如何变化"
-        description="从战争背景到中途岛，把事件与战役放回彼此相连的时间里。"
+        description="从战争背景到日本签署投降书，把事件与战役放回彼此相连的时间里。"
       />
       <div className="rs-toolbar">
         <label>
@@ -734,7 +747,9 @@ function TimelinePage({ initialDate }: { initialDate?: string }) {
         return items.length ? (
           <section className="rs-timeline-group" key={p}>
             <h2>
-              <span>0{HISTORICAL_PART_META[p].ordinal}</span>
+              <span>
+                {String(HISTORICAL_PART_META[p].ordinal).padStart(2, "0")}
+              </span>
               {PART(p)}
             </h2>
             <ol>
@@ -845,6 +860,10 @@ function nextReading(index: ContentIndex, id: string) {
 }
 function EventArticle({ event }: { event: EventEntity }) {
   const { index } = useApp();
+  const assets = mediaFor(event.id);
+  const leadMedia =
+    assets.find((asset) => asset.mediaType === "photograph") ?? assets[0];
+  const extraMedia = assets.filter((asset) => asset !== leadMedia);
   const profiles = analysisProfileBlocks(event);
   const sections: ReadingSection[] = event.article.map((s, i) =>
     bodySection(`article-${i}`, s.heading, s.body, s.sourceIds, s.claimIds),
@@ -860,6 +879,17 @@ function EventArticle({ event }: { event: EventEntity }) {
         <ReadingBlock key={p.key} section={{ ...p, id: `profile-${p.key}` }} />
       )),
     });
+  if (extraMedia.length)
+    sections.push({
+      id: "supplemental-media",
+      title: "地理线索与补充影像",
+      optional: true,
+      claimIds: [],
+      sourceIds: [],
+      content: extraMedia.map((asset) => (
+        <MediaFigure key={asset.id} asset={asset} />
+      )),
+    });
   const evidence = collectEntityEvidence(event);
   return (
     <Reader
@@ -869,7 +899,7 @@ function EventArticle({ event }: { event: EventEntity }) {
       meta={`${event.startDate}${event.endDate && event.endDate !== event.startDate ? ` — ${event.endDate}` : ""}`}
       summary={event.summary}
       sections={sections}
-      media={mediaFor(event.id)}
+      media={leadMedia ? [leadMedia] : []}
       evidence={{ title: event.title, ...evidence }}
       next={nextReading(index, event.id)}
       related={
@@ -1204,10 +1234,13 @@ function MapPage({ route }: { route: Route }) {
   const open = useEvidence();
   const [query, setQuery] = useState("");
   const [showPlaces, setShowPlaces] = useState(!!route.id);
+  const place = route.id ? index.places.get(route.id) : undefined;
   const battle =
     (route.battle ? index.battles.get(route.battle) : null) ??
+    [...index.battles.values()].find(
+      (item) => place && item.placeIds.includes(place.id),
+    ) ??
     index.battles.values().next().value;
-  const place = route.id ? index.places.get(route.id) : undefined;
   if (route.id && !place) return <NotFound />;
   const matches = [...index.places.values()].filter(
     (p) =>
@@ -1219,7 +1252,7 @@ function MapPage({ route }: { route: Route }) {
       <PageIntro
         eyebrow="ATLAS / 交互地图"
         title="先看清位置，再理解行动"
-        description="选择一场战役，按阶段观察局势变化。地图区分真实地点与示意舰位，手机上可以直接滑动页面。"
+        description="选择一场战役，按阶段观察局势变化。地图区分真实地点与示意部署，手机上可以直接滑动页面。"
       />
       <nav className="rs-battle-select" aria-label="选择地图战役">
         {[...index.battles.values()].map((b) => (
@@ -1250,6 +1283,7 @@ function MapPage({ route }: { route: Route }) {
             });
           }}
           onPhaseChange={(phase) => {
+            if (place && !battle.placeIds.includes(place.id)) return;
             history.replaceState(
               null,
               "",

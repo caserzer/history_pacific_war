@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { HISTORICAL_PART_IDS } from '../../data/types';
 import { useApp } from '../AppContext';
 import { EvidencePanel } from '../../components/EvidencePanel';
 import { CitationList } from '../../components/CitationList';
@@ -61,7 +62,7 @@ export function TimelineView({ eventId, initialDate = null }: { eventId: string 
   );
 
   const groups = useMemo(
-    () => groupByPart(dateFiltered, ['part-1-why-war', 'part-2-pearl-harbor', 'part-3-expansion', 'part-4-turning-point', 'part-5-midway']),
+    () => groupByPart(dateFiltered, HISTORICAL_PART_IDS),
     [dateFiltered],
   );
 

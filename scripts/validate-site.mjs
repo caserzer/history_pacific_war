@@ -2376,8 +2376,8 @@ function checkRealContentMapIntegration(M) {
   const selectorIds = [...atlasList.matchAll(/data-battle-select="([^"]+)"/g)].map((match) => match[1]);
   check(
     'MAP1-atlas-selector',
-    MAP1_FOCUS_BATTLE_IDS.every((id) => selectorIds.includes(id)) && selectorIds.length === MAP1_FOCUS_BATTLE_IDS.length,
-    `地图渲染战役选择器并覆盖三场重点战役（实际：${selectorIds.join(' / ')}）`,
+    doc.battles.every((battle) => selectorIds.includes(battle.id)) && selectorIds.length === doc.battles.length,
+    `地图渲染战役选择器并覆盖全部 ${doc.battles.length} 场战役（实际：${selectorIds.join(' / ')}）`,
   );
   check(
     'MAP1-atlas-default-battle',

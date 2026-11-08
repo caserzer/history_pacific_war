@@ -2,7 +2,7 @@
   "name": "pacific-war-experience",
   "version": "0.1.0",
   "private": true,
-  "description": "《太平洋战争：从珍珠港到中途岛》中文交互教材 —— 档案馆风格静态阅读站点（experience 模块）",
+  "description": "《太平洋战争：从珍珠港到日本投降》中文交互教材 —— 档案馆风格静态阅读站点（experience 模块）",
   "type": "module",
   "engines": {
     "node": ">=24"

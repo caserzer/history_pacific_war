@@ -37,13 +37,19 @@ const PART_IDS = [
   'part-3-expansion',
   'part-4-turning-point',
   'part-5-midway',
+  'part-6-guadalcanal',
+  'part-7-counteroffensive',
+  'part-8-philippines',
+  'part-9-home-islands',
+  'part-10-surrender',
 ];
 const MIN_HISTORICAL_DATE = '1931-09-18';
-const MAX_HISTORICAL_DATE = '1942-06-30';
+const MAX_HISTORICAL_DATE = '1945-09-02';
 const ALLOWED_LICENSES = [
   'public-domain',
   'cc0-1.0',
   'cc-by-4.0',
+  'cc-by-2.0',
   'cc-by-sa-4.0',
   'original-work',
   'permission-granted',
@@ -111,9 +117,10 @@ const EARLY_CAMPAIGN_KEYS = LEGACY_EARLY_CAMPAIGN_KEYS;
  */
 function historicalPartFromArticleId(articleId) {
   if (typeof articleId !== 'string') return null;
-  const match = /^event-overview-part-([1-5])-/.exec(articleId);
+  const match = /^event-overview-part-(\d+)-/.exec(articleId);
   if (!match) return null;
-  return PART_IDS[Number(match[1]) - 1] || null;
+  const part = PART_IDS[Number(match[1]) - 1];
+  return part && articleId === `event-overview-${part}` ? part : null;
 }
 const COLLECTIONS = [
   'events',
@@ -191,7 +198,7 @@ const CANONICAL_REQUIREMENTS = [
  * 不是“至少”：多一个或少一个都算偏离工单。
  */
 const REQUIRED_COVERAGE_COMPOSITION = {
-  battle: ['battle-pearl-harbor', 'battle-coral-sea', 'battle-midway'],
+  battle: ['battle-pearl-harbor', 'battle-coral-sea', 'battle-midway', 'battle-guadalcanal', 'battle-philippine-sea', 'battle-leyte-gulf', 'battle-iwo-jima', 'battle-okinawa'],
   'commander-profile': [
     'person-yamamoto-isoroku',
     'person-nagumo-chuichi',
@@ -213,6 +220,11 @@ const REQUIRED_COVERAGE_COMPOSITION = {
     'event-overview-part-3-expansion',
     'event-overview-part-4-turning-point',
     'event-overview-part-5-midway',
+    'event-overview-part-6-guadalcanal',
+    'event-overview-part-7-counteroffensive',
+    'event-overview-part-8-philippines',
+    'event-overview-part-9-home-islands',
+    'event-overview-part-10-surrender',
   ],
 };
 const ARTICLE_ENTITY_COLLECTIONS = [
@@ -607,7 +619,7 @@ function printHelp() {
   --check-contracts
       只检查契约文件本身（不需要 content/history.json）：requirements.json
       必须与工单 canonical 清单逐字一致；coverage.json 的重点集合必须恰好是
-      3 场战役 + 5 位指挥官 + 6 篇专题 + 5 个历史部分导读。发布前 CI 可直接调用。
+      8 场战役 + 5 位指挥官 + 6 篇专题 + 10 个历史部分导读。发布前 CI 可直接调用。
   --file <path>
       指定内容文件；默认 <root>/content/history.json。
   --root <path>
@@ -659,9 +671,9 @@ function validateCoverageContract(coverage) {
   }
 
   if (!Array.isArray(coverage.historicalParts) || coverage.historicalParts.length !== PART_IDS.length) {
-    addError(errors, 'coverage.historicalParts 必须包含五个历史部分');
+    addError(errors, 'coverage.historicalParts 必须包含十个历史部分');
   } else if (canonicalJson(coverage.historicalParts.map((part) => part.id)) !== canonicalJson(PART_IDS)) {
-    addError(errors, 'coverage.historicalParts ID 必须严格等于五部分标准 ID');
+    addError(errors, 'coverage.historicalParts ID 必须严格等于十部分标准 ID');
   } else {
     for (const part of coverage.historicalParts) {
       if (!STAGE_IDS.includes(part.questionStage)) {
@@ -749,11 +761,11 @@ function validateCoverageContract(coverage) {
       } else if (entry.minimumDepth && entry.minimumDepth.articleSections < entry.requiredArticleHeadings.length) {
         addError(errors, `${entry.id}: articleSections 不能小于必需要求标题数`);
       }
-      // D6：导读必须显式绑定它所代表的五个历史部分之一，且必须与 ID 中编码的部分一致。
+      // D6：导读必须显式绑定它所代表的十个历史部分之一，且必须与 ID 中编码的部分一致。
       if (!PART_IDS.includes(entry.historicalPart)) {
         addError(
           errors,
-          `${entry.id}: part-overview 必须声明 historicalPart 且为五部分之一，实际 ${JSON.stringify(entry.historicalPart)}`,
+          `${entry.id}: part-overview 必须声明 historicalPart 且为十部分之一，实际 ${JSON.stringify(entry.historicalPart)}`,
         );
       } else {
         const encodedPart = historicalPartFromArticleId(entry.id);
@@ -1914,7 +1926,7 @@ function validateQuestion(question, index, errors, maps, coverage) {
   checkRefs(question, 'sourceIds', maps.sources, '来源', pointer, errors);
   checkRefs(question, 'claimIds', maps.claims, 'claim', pointer, errors);
   if (!PART_IDS.includes(question.historicalPart)) {
-    addError(errors, `${pointer}.historicalPart: 必须是五部分之一`);
+    addError(errors, `${pointer}.historicalPart: 必须是十部分之一`);
   }
   if (Array.isArray(question.entityIds) && question.entityIds.length < coverage.questionMinimumEntityRefs) {
     addError(errors, `${pointer}.entityIds: 至少关联 ${coverage.questionMinimumEntityRefs} 个内容实体`);
@@ -2350,7 +2362,7 @@ function validateMedia(media, index, errors, maps, coverage, options) {
   }
   if (Array.isArray(media.articleIds)) {
     for (const articleId of media.articleIds) {
-      if (!coverage.keyArticleIds.includes(articleId) && !(media.mediaType === 'portrait' && maps.people.has(articleId))) {
+      if (!coverage.keyArticleIds.includes(articleId) && !(media.mediaType === 'portrait' && maps.people.has(articleId)) && !(coverage.requiredEvents || []).some(event => event.id === articleId)) {
         addError(errors, `${pointer}.articleIds: '${articleId}' 不是重点文章或已存在的人物肖像属主`);
       }
     }
@@ -2837,7 +2849,7 @@ function validateMediaGate(doc, maps, coverage, stage, options, errors) {
       continue;
     }
     for (const articleId of item.articleIds) {
-      if (!keys.includes(articleId) && !(item.mediaType === 'portrait' && maps.people.has(articleId))) addError(errors, `[media] $.media[${mediaIndex}]: articleId '${articleId}' 不是重点文章或已存在的人物肖像属主`);
+      if (!keys.includes(articleId) && !(item.mediaType === 'portrait' && maps.people.has(articleId)) && !(coverage.requiredEvents || []).some(event => event.id === articleId)) addError(errors, `[media] $.media[${mediaIndex}]: articleId '${articleId}' 不是重点文章、必需事件或已存在的人物肖像属主`);
     }
     if (!ALLOWED_LICENSES.includes(item.license)) {
       addError(errors, `[media] $.media[${mediaIndex}]: 许可 '${item.license}' 不可用于发布`);
@@ -3167,7 +3179,7 @@ function requirementsFileErrors(source) {
 
 /**
  * 校验 coverage.json 的重点集合精确等于工单构成：
- * 3 场战役 + 5 位指挥官 + 6 篇专题 + 5 个历史部分导读 = 19。
+ * 8 场战役 + 5 位指挥官 + 6 篇专题 + 10 个历史部分导读 = 29。
  */
 function coverageCompositionErrors(coverage) {
   const errors = [];
@@ -4649,7 +4661,7 @@ function buildSelfTests() {
     },
   ]);
   tests.push([
-    'D6 导读 historicalPart 不在五部分内被拒绝',
+    'D6 导读 historicalPart 不在十部分内被拒绝',
     () => {
       const broken = clone(coverage);
       broken.keyArticles.find((item) => item.id === PART3_OVERVIEW_ID).historicalPart = 'part-9-nope';
@@ -4689,6 +4701,11 @@ function buildSelfTests() {
         ['event-overview-part-3-expansion', 'part-3-expansion'],
         ['event-overview-part-4-turning-point', 'part-4-turning-point'],
         ['event-overview-part-5-midway', 'part-5-midway'],
+        ['event-overview-part-6-guadalcanal', 'part-6-guadalcanal'],
+        ['event-overview-part-7-counteroffensive', 'part-7-counteroffensive'],
+        ['event-overview-part-8-philippines', 'part-8-philippines'],
+        ['event-overview-part-9-home-islands', 'part-9-home-islands'],
+        ['event-overview-part-10-surrender', 'part-10-surrender'],
       ];
       for (const [id, expected] of cases) {
         const actual = historicalPartFromArticleId(id);
@@ -6212,12 +6229,12 @@ function buildSelfTests() {
         'out of range date',
         (() => {
           const doc = clone(base);
-          doc.events[0].startDate = '1943-01-01';
-          doc.events[0].endDate = '1943-02-01';
+          doc.events[0].startDate = '1945-09-03';
+          doc.events[0].endDate = '1945-09-04';
           return doc;
         })(),
         coverage,
-        /超出允许范围|1943/,
+        /超出允许范围|1945/,
       ),
   ]);
   tests.push([
