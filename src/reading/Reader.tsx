@@ -68,6 +68,14 @@ export function MediaFigure({
       />
       <figcaption>
         <span>{asset.caption}</span>
+        <a
+          href={mediaUrl(asset)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rs-original-image"
+        >
+          查看原图 ↗
+        </a>
         <button
           type="button"
           onClick={() =>
@@ -93,7 +101,11 @@ export function ReadingBlock({ section }: { section: ReadingSection }) {
       <h3>{section.title}</h3>
       {section.body ? <ReadingProse body={section.body} /> : null}
       {section.content}
-      <EvidenceLink {...section} />
+      <EvidenceLink
+        title={section.title}
+        claimIds={section.claimIds}
+        sourceIds={section.sourceIds}
+      />
     </div>
   );
 }
@@ -245,7 +257,11 @@ export function Reader({
                   <div>
                     {section.body ? <ReadingProse body={section.body} /> : null}
                     {section.content}
-                    <EvidenceLink {...section} />
+                    <EvidenceLink
+                      title={section.title}
+                      claimIds={section.claimIds}
+                      sourceIds={section.sourceIds}
+                    />
                   </div>
                 </details>
               ) : (
@@ -253,7 +269,11 @@ export function Reader({
                   <h2>{section.title}</h2>
                   {section.body ? <ReadingProse body={section.body} /> : null}
                   {section.content}
-                  <EvidenceLink {...section} />
+                  <EvidenceLink
+                    title={section.title}
+                    claimIds={section.claimIds}
+                    sourceIds={section.sourceIds}
+                  />
                 </>
               )}
             </section>
